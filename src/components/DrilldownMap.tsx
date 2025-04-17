@@ -97,7 +97,11 @@ export default function DrilldownMap({ data }: Props) {
       regionStats.forEach(([region, count]) => {
         const coords = regionCoords[region];
         if (!coords || count <= 0) return;
-        const [x, y] = projection([coords.lon, coords.lat]);
+
+        const projected = projection([coords.lon, coords.lat]);
+        if (!projected) return;
+
+        const [x, y] = projected;
 
         g.append('circle')
           .attr('cx', x)
@@ -113,7 +117,10 @@ export default function DrilldownMap({ data }: Props) {
       });
     } else {
       const coords = regionCoords[focusedRegion];
-      const [tx, ty] = projection([coords.lon, coords.lat]);
+      const projected = projection([coords.lon, coords.lat]);
+      if (!projected) return;
+
+      const [tx, ty] = projected;
       const k = 2;
 
       g.transition()
