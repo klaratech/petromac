@@ -44,14 +44,17 @@ export default function CarouselView({
     const container = scrollRef.current;
     if (!container) return;
 
-    const offset = dir === 'left' ? -1 : 1;
-    const nextIndex = Math.max(0, Math.min(items.length - 1, visibleCenterIndex + offset));
-    const card = cardRefs.current[nextIndex];
-    if (!card) return;
+    setVisibleCenterIndex((prevIndex) => {
+      const offset = dir === 'left' ? -1 : 1;
+      const nextIndex = Math.max(0, Math.min(items.length - 1, prevIndex + offset));
+      const card = cardRefs.current[nextIndex];
+      if (!card) return prevIndex;
 
-    const scrollTo = card.offsetLeft + card.offsetWidth / 2 - container.offsetWidth / 2;
-    container.scrollTo({ left: scrollTo, behavior: 'smooth' });
-    setVisibleCenterIndex(nextIndex);
+      const scrollTo = card.offsetLeft + card.offsetWidth / 2 - container.offsetWidth / 2;
+      container.scrollTo({ left: scrollTo, behavior: 'smooth' });
+
+      return nextIndex;
+    });
   };
 
   useEffect(() => {
@@ -65,9 +68,16 @@ export default function CarouselView({
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setModalItem(null);
+      if (e.key === 'Escape') {
+        setModalItem(null);
+      } else if (e.key === 'ArrowLeft') {
+        scroll('left');
+      } else if (e.key === 'ArrowRight') {
+        scroll('right');
+      }
       resetInactivityTimer();
     };
+
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [resetInactivityTimer]);
@@ -76,11 +86,48 @@ export default function CarouselView({
     resetInactivityTimer();
     const events = ['mousemove', 'click', 'keydown', 'touchstart'];
     events.forEach(event => window.addEventListener(event, resetInactivityTimer));
+
     return () => {
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
       events.forEach(event => window.removeEventListener(event, resetInactivityTimer));
     };
   }, [resetInactivityTimer]);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    let startX = 0;
+    let isSwiping = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+      isSwiping = true;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isSwiping) return;
+      const dx = e.touches[0].clientX - startX;
+      if (Math.abs(dx) > 50) {
+        scroll(dx > 0 ? 'left' : 'right');
+        isSwiping = false;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isSwiping = false;
+    };
+
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchmove', handleTouchMove);
+    container.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [scroll]);
 
   return (
     <div
