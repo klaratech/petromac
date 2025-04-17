@@ -39,7 +39,7 @@ export default function CarouselView({
     }
   }, [modalItem, onResetToSplash]);
 
-  const scroll = (dir: 'left' | 'right') => {
+  const scroll = useCallback((dir: 'left' | 'right') => {
     resetInactivityTimer();
     const container = scrollRef.current;
     if (!container) return;
@@ -55,7 +55,7 @@ export default function CarouselView({
 
       return nextIndex;
     });
-  };
+  }, [resetInactivityTimer, items.length]);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -80,16 +80,16 @@ export default function CarouselView({
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [resetInactivityTimer]);
+  }, [resetInactivityTimer, scroll]);
 
   useEffect(() => {
     resetInactivityTimer();
     const events = ['mousemove', 'click', 'keydown', 'touchstart'];
-    events.forEach(event => window.addEventListener(event, resetInactivityTimer));
+    events.forEach((event) => window.addEventListener(event, resetInactivityTimer));
 
     return () => {
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
-      events.forEach(event => window.removeEventListener(event, resetInactivityTimer));
+      events.forEach((event) => window.removeEventListener(event, resetInactivityTimer));
     };
   }, [resetInactivityTimer]);
 
