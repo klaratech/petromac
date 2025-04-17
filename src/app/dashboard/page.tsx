@@ -3,10 +3,16 @@
 import DrilldownMap from '@/components/DrilldownMap';
 import operationsData from '@/data/operations_data.json';
 
+interface JobRecord {
+  Region: string;
+  Country: string;
+  Successful: number;
+  Job_Status: string;
+}
+
 export default function DashboardPage() {
-  // Pre-filtered to only include successful jobs
-  const filteredData = operationsData.filter(
-    (d) => d.Job_Status === 'Successful'
+  const filteredData: JobRecord[] = operationsData.filter(
+    (d: JobRecord) => d.Job_Status === 'Successful'
   );
 
   return (

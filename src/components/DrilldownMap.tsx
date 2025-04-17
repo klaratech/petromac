@@ -21,29 +21,23 @@ interface RegionCoords {
   [region: string]: { lon: number; lat: number };
 }
 
-interface RegionMapping {
-  [country: string]: string;
-}
-
 export default function DrilldownMap({ data }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
-  const [worldData, setWorldData] = useState<any>(null);
+  const [worldData, setWorldData] = useState<GeoJSON.FeatureCollection | null>(null);
 
   useEffect(() => {
-    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then((world: any) => {
-      const countries = topojson.feature(world, world.objects.countries);
-
-      countries.features = countries.features.filter((d: any) => {
-        const name = d.properties.name;
-        const [lon, lat] = d3.geoCentroid(d);
-        const isAntarctica = name === 'Antarctica';
-        const isFarPacific = lon < -150 && lat > 10;
-        return !isAntarctica && !isFarPacific;
-      });
-
-      setWorldData(countries);
-    });
+    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+      .then((world: any) => {
+        const countries = topojson.feature(world, world.objects.countries) as GeoJSON.FeatureCollection;
+        countries.features = countries.features.filter((d) => {
+          const name = d.properties?.name;
+          const [lon, lat] = d3.geoCentroid(d);
+          return name !== 'Antarctica' && !(lon < -150 && lat > 10);
+        });
+        setWorldData(countries);
+      })
+      .catch((err) => console.error('Failed to load world map:', err));
   }, []);
 
   const regionStats = useMemo(() => {
@@ -73,10 +67,8 @@ export default function DrilldownMap({ data }: Props) {
     const width = 960;
     const height = 540;
 
-    const projection = d3.geoNaturalEarth1();
-    projection.fitSize([width, height], worldData);
+    const projection = d3.geoNaturalEarth1().fitSize([width, height], worldData);
     const path = d3.geoPath().projection(projection);
-
     const g = svg.append('g');
 
     g.selectAll('path')
@@ -115,7 +107,7 @@ export default function DrilldownMap({ data }: Props) {
         .attr('transform', `translate(${width / 2 - k * tx}, ${height / 2 - k * ty}) scale(${k})`);
 
       countryStats.forEach(([country, count]) => {
-        const feature = worldData.features.find((f: any) => f.properties.name === country);
+        const feature = worldData.features.find((f) => f.properties?.name === country);
         if (!feature) {
           console.warn(`No shape found for country: ${country}`);
           return;
