@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import DrilldownMap from '@/components/DrilldownMap';
 import operationsData from '@/data/operations_data.json';
@@ -12,7 +12,7 @@ interface JobRecord {
   Job_Status: string;
 }
 
-export default function DashboardPage() {
+function DashboardContent() {
   const searchParams = useSearchParams();
   const from = searchParams.get('from');
 
@@ -61,5 +61,13 @@ export default function DashboardPage() {
         <DrilldownMap data={filteredData} />
       </section>
     </main>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading dashboard...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
