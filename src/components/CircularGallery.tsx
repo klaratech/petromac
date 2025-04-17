@@ -11,7 +11,7 @@ const models = [
   { name: 'CP-8', file: '/models/CP-8.glb' },
 ];
 
-// Preload models for smooth rendering
+// Preload models
 models.forEach((m) => useGLTF.preload(m.file));
 
 function FloatingModel({
@@ -60,31 +60,45 @@ function RotatingGroup({ children }: { children: React.ReactNode }) {
 
 export default function CircularGallery({
   onSelectDevice,
+  onClose,
 }: {
   onSelectDevice: (file: string) => void;
+  onClose: () => void;
 }) {
   return (
-    <Canvas camera={{ position: [0, 0, 12], fov: 50 }}>
-      <ambientLight intensity={1.2} />
-      <directionalLight position={[5, 5, 5]} />
-      <Suspense fallback={null}>
-        <RotatingGroup>
-          {models.map((model, index) => {
-            const angle = (index / models.length) * 2 * Math.PI;
-            const x = Math.cos(angle) * 6;
-            const z = Math.sin(angle) * 6;
-            return (
-              <FloatingModel
-                key={model.name}
-                name={model.name}
-                url={model.file}
-                position={[x, 0, z]}
-                onClick={() => onSelectDevice(model.file)}
-              />
-            );
-          })}
-        </RotatingGroup>
-      </Suspense>
-    </Canvas>
+    <div className="w-full h-screen relative group">
+      {/* ✕ Close Button */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-50 px-4 py-2 text-white text-sm font-semibold bg-white/10 border border-white/20 rounded-lg shadow-lg backdrop-blur-md transition-opacity
+                 opacity-100 touch:opacity-100 group-hover:opacity-100 hover:bg-white/20"
+        style={{ transition: 'opacity 0.3s ease' }}
+      >
+        ✕ Close
+      </button>
+
+      <Canvas camera={{ position: [0, 0, 12], fov: 50 }}>
+        <ambientLight intensity={1.2} />
+        <directionalLight position={[5, 5, 5]} />
+        <Suspense fallback={null}>
+          <RotatingGroup>
+            {models.map((model, index) => {
+              const angle = (index / models.length) * 2 * Math.PI;
+              const x = Math.cos(angle) * 6;
+              const z = Math.sin(angle) * 6;
+              return (
+                <FloatingModel
+                  key={model.name}
+                  name={model.name}
+                  url={model.file}
+                  position={[x, 0, z]}
+                  onClick={() => onSelectDevice(model.file)}
+                />
+              );
+            })}
+          </RotatingGroup>
+        </Suspense>
+      </Canvas>
+    </div>
   );
 }

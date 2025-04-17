@@ -17,7 +17,7 @@ export default function DeviceViewer({
   };
 
   return (
-    <div className="w-screen h-screen relative">
+    <div className="w-screen h-screen relative group">
       <Canvas camera={{ position: [0, 0, 10], fov: 50 }} shadows>
         <ambientLight intensity={0.8} />
         <directionalLight position={[5, 5, 5]} />
@@ -28,9 +28,13 @@ export default function DeviceViewer({
           <OrbitControls enablePan enableZoom enableRotate />
         </Suspense>
       </Canvas>
+
+      {/* ✕ Close Button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 bg-white text-black px-4 py-2 rounded shadow hover:bg-gray-100"
+        className="absolute top-4 right-4 z-50 px-4 py-2 text-white text-sm font-semibold bg-white/10 border border-white/20 rounded-lg shadow-lg backdrop-blur-md transition-opacity
+                   opacity-100 touch:opacity-100 group-hover:opacity-100 hover:bg-white/20"
+        style={{ transition: 'opacity 0.3s ease' }}
       >
         ✕ Close
       </button>
@@ -38,6 +42,7 @@ export default function DeviceViewer({
   );
 }
 
+// Preload models
 useGLTF.preload('/models/CP-12.glb');
 useGLTF.preload('/models/THOR.glb');
 useGLTF.preload('/models/CP-8.glb');
