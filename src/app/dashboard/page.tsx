@@ -19,15 +19,20 @@ export default function DashboardPage() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        window.location.href = from === 'carousel' ? '/?mode=carousel' : '/';
+        const redirectTo = from === 'carousel' ? '/?mode=carousel' : '/';
+        window.location.href = redirectTo;
       }
     };
 
     const handleFullscreenChange = () => {
-      const isFullscreen =
-        document.fullscreenElement || (document as any).webkitFullscreenElement;
+      const doc = document as Document & {
+        webkitFullscreenElement?: Element | null;
+      };
+
+      const isFullscreen = document.fullscreenElement || doc.webkitFullscreenElement;
       if (!isFullscreen) {
-        window.location.href = from === 'carousel' ? '/?mode=carousel' : '/';
+        const redirectTo = from === 'carousel' ? '/?mode=carousel' : '/';
+        window.location.href = redirectTo;
       }
     };
 
@@ -42,8 +47,8 @@ export default function DashboardPage() {
     };
   }, [from]);
 
-  const filteredData: JobRecord[] = operationsData.filter(
-    (d: JobRecord) => d.Job_Status === 'Successful'
+  const filteredData: JobRecord[] = (operationsData as JobRecord[]).filter(
+    (d) => d.Job_Status === 'Successful'
   );
 
   return (
