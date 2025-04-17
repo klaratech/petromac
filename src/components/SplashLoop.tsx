@@ -5,21 +5,25 @@ import dynamic from 'next/dynamic';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
-export default function SplashLoop({
-  onActivate,
-}: {
+interface SplashLoopProps {
   onActivate: () => void;
-}) {
+}
+
+export default function SplashLoop({ onActivate }: SplashLoopProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const requestFullscreen = () => {
-    const el = document.documentElement;
+    const el = document.documentElement as HTMLElement & {
+      webkitRequestFullscreen?: () => void;
+      msRequestFullscreen?: () => void;
+    };
+
     if (el.requestFullscreen) {
       el.requestFullscreen();
-    } else if ((el as any).webkitRequestFullscreen) {
-      (el as any).webkitRequestFullscreen();
-    } else if ((el as any).msRequestFullscreen) {
-      (el as any).msRequestFullscreen();
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) {
+      el.msRequestFullscreen();
     }
   };
 
@@ -30,10 +34,12 @@ export default function SplashLoop({
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      const isFullscreen =
-        document.fullscreenElement || (document as any).webkitFullscreenElement;
+      const doc = document as Document & {
+        webkitFullscreenElement?: Element | null;
+      };
+
+      const isFullscreen = document.fullscreenElement || doc.webkitFullscreenElement;
       if (!isFullscreen) {
-        // Exit from fullscreen resets the experience
         window.location.reload();
       }
     };
