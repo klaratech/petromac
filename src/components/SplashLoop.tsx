@@ -1,40 +1,79 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 
-type SplashLoopProps = {
-  onEnter: () => void;
-};
+const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
-export default function SplashLoop({ onEnter }: SplashLoopProps) {
+export default function SplashLoop({
+  onActivate,
+}: {
+  onActivate: () => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const requestFullscreen = () => {
+    const el = document.documentElement;
+    if (el.requestFullscreen) {
+      el.requestFullscreen();
+    } else if ((el as any).webkitRequestFullscreen) {
+      (el as any).webkitRequestFullscreen();
+    } else if ((el as any).msRequestFullscreen) {
+      (el as any).msRequestFullscreen();
+    }
+  };
+
+  const handleClick = () => {
+    requestFullscreen();
+    onActivate();
+  };
+
   useEffect(() => {
-    const handleInteraction = () => {
-      onEnter();
+    const handleFullscreenChange = () => {
+      const isFullscreen =
+        document.fullscreenElement || (document as any).webkitFullscreenElement;
+      if (!isFullscreen) {
+        // Exit from fullscreen resets the experience
+        window.location.reload();
+      }
     };
 
-    window.addEventListener('click', handleInteraction);
-    window.addEventListener('keydown', handleInteraction);
-    window.addEventListener('touchstart', handleInteraction);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
     return () => {
-      window.removeEventListener('click', handleInteraction);
-      window.removeEventListener('keydown', handleInteraction);
-      window.removeEventListener('touchstart', handleInteraction);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
     };
-  }, [onEnter]);
+  }, []);
 
   return (
-    <div className="w-screen h-screen overflow-hidden bg-black">
-      <video
-        autoPlay
-        muted
+    <div
+      ref={containerRef}
+      className="relative w-screen h-screen bg-black overflow-hidden flex items-center justify-center"
+    >
+      <ReactPlayer
+        url="/videos/intro-loop.mp4"
+        playing
         loop
-        playsInline
-        className="w-full h-full object-cover"
+        muted
+        width="100vw"
+        height="100vh"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          objectFit: 'cover',
+          zIndex: -1,
+        }}
+      />
+
+      <button
+        onClick={handleClick}
+        className="z-10 px-6 py-4 text-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-lg transition-all"
       >
-        <source src="/videos/intro-loop.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+        Start Kiosk Mode
+      </button>
     </div>
   );
 }
