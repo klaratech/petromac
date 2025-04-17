@@ -1,22 +1,17 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import CarouselView from '@/components/CarouselView';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
 export default function Home() {
-  const searchParams = useSearchParams();
-  const paramMode = searchParams.get('mode');
-  const [mode, setMode] = useState<'home' | 'video' | 'carousel'>(
-    paramMode === 'carousel' ? 'carousel' : 'home'
-  );
+  const [mode, setMode] = useState<'video' | 'carousel'>('video');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [playVideo, setPlayVideo] = useState(false);
+  const playerRef = useRef<any>(null);
 
-  const videoContainerRef = useRef<HTMLDivElement>(null);
-
-  // Request fullscreen mode
   const enterFullscreen = () => {
     const el = document.documentElement as HTMLElement & {
       webkitRequestFullscreen?: () => void;
@@ -30,71 +25,78 @@ export default function Home() {
     } else if (el.msRequestFullscreen) {
       el.msRequestFullscreen();
     }
+
+    setPlayVideo(true);
   };
 
-  // Reset to home if fullscreen is exited
+  const exitFullscreen = () => {
+    const doc = document as Document & {
+      webkitExitFullscreen?: () => void;
+      msExitFullscreen?: () => void;
+    };
+
+    const handleExit = () => {
+      setIsFullscreen(false);
+      setPlayVideo(false);
+      document.removeEventListener('fullscreenchange', handleExit);
+      document.removeEventListener('webkitfullscreenchange', handleExit);
+    };
+
+    document.addEventListener('fullscreenchange', handleExit);
+    document.addEventListener('webkitfullscreenchange', handleExit);
+
+    if (document.exitFullscreen) {
+      document.exitFullscreen().catch(handleExit);
+    } else if (doc.webkitExitFullscreen) {
+      doc.webkitExitFullscreen();
+    } else if (doc.msExitFullscreen) {
+      doc.msExitFullscreen();
+    } else {
+      handleExit();
+    }
+  };
+
+  // Track fullscreen state
   useEffect(() => {
-    const handleFullscreenChange = () => {
+    const handleChange = () => {
       const doc = document as Document & {
         webkitFullscreenElement?: Element | null;
       };
 
-      const isFullscreen = document.fullscreenElement || doc.webkitFullscreenElement;
-      if (!isFullscreen) {
-        setMode('home');
-      }
+      const isFs = !!(document.fullscreenElement || doc.webkitFullscreenElement);
+      setIsFullscreen(isFs);
     };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('fullscreenchange', handleChange);
+    document.addEventListener('webkitfullscreenchange', handleChange);
 
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('fullscreenchange', handleChange);
+      document.removeEventListener('webkitfullscreenchange', handleChange);
     };
   }, []);
 
-  // Set focus on video container for keyboard input
-  useEffect(() => {
-    if (mode === 'video' && videoContainerRef.current) {
-      videoContainerRef.current.focus();
-    }
-  }, [mode]);
-
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative">
-      {/* Home screen with kiosk button */}
-      {mode === 'home' && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <button
-            onClick={() => {
-              enterFullscreen();
-              setMode('video');
-            }}
-            className="px-6 py-4 text-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-lg transition-all"
-          >
-            Enter Kiosk Mode
-          </button>
-        </div>
-      )}
+      {/* Fullscreen Toggle Button */}
+      <button
+        onClick={isFullscreen ? exitFullscreen : enterFullscreen}
+        className="absolute top-4 right-4 z-50 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100"
+      >
+        {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+      </button>
 
-      {/* Fullscreen video screen */}
+      {/* Video View */}
       {mode === 'video' && (
         <div
-          ref={videoContainerRef}
-          tabIndex={0}
           className="absolute inset-0"
           onClick={() => setMode('carousel')}
           onTouchStart={() => setMode('carousel')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              setMode('carousel');
-            }
-          }}
         >
           <ReactPlayer
+            ref={playerRef}
             url="/videos/intro-loop.mp4"
-            playing
+            playing={playVideo}
             loop
             muted
             width="100%"
@@ -104,7 +106,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Carousel mode */}
+      {/* Carousel View */}
       {mode === 'carousel' && (
         <div className="absolute inset-0">
           <CarouselView onResetToSplash={() => setMode('video')} />
