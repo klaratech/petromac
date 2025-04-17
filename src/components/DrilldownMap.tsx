@@ -22,15 +22,6 @@ interface RegionCoords {
   [region: string]: { lon: number; lat: number };
 }
 
-interface WorldAtlas extends Topology {
-  objects: {
-    countries: {
-      type: 'GeometryCollection';
-      geometries: GeoJSON.Geometry[];
-    };
-  };
-}
-
 export default function DrilldownMap({ data }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
@@ -39,7 +30,7 @@ export default function DrilldownMap({ data }: Props) {
   useEffect(() => {
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then((world: unknown) => {
-        const topology = world as WorldAtlas;
+        const topology = world as Topology;
         const countries = topojson.feature(
           topology,
           topology.objects.countries
