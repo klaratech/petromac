@@ -2,14 +2,17 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface CarouselViewProps {
   onResetToSplash: () => void;
 }
 
 export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
+  const router = useRouter();
+
   const items = [
-    { title: 'Global Deployment', image: 'global.jpg', type: 'link', href: '/dashboard' },
+    { title: 'Global Deployment', image: 'global.jpg', type: 'link', href: '/dashboard?from=carousel' },
     { title: 'Conveyance, Solved', image: 'conveyance.jpg', type: 'modal' },
     { title: 'No More Tool Sticking', image: 'sticking.jpg', type: 'modal' },
     { title: 'Precise Tool Orientation', image: 'orientation.jpg', type: 'modal' },
@@ -218,7 +221,7 @@ export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
               onClick={() => {
                 resetInactivityTimer();
                 if (item.type === 'link' && item.href) {
-                  window.location.href = item.href;
+                  router.push(item.href); // ✅ with ?from=carousel
                 } else {
                   setModalItem(item);
                 }

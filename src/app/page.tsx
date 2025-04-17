@@ -1,13 +1,19 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import CarouselView from '@/components/CarouselView';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
 export default function Home() {
-  const [mode, setMode] = useState<'home' | 'video' | 'carousel'>('home');
+  const searchParams = useSearchParams();
+  const paramMode = searchParams.get('mode');
+  const [mode, setMode] = useState<'home' | 'video' | 'carousel'>(
+    paramMode === 'carousel' ? 'carousel' : 'home'
+  );
+
   const videoContainerRef = useRef<HTMLDivElement>(null);
 
   // Request fullscreen mode

@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import DrilldownMap from '@/components/DrilldownMap';
 import operationsData from '@/data/operations_data.json';
 
@@ -11,6 +13,35 @@ interface JobRecord {
 }
 
 export default function DashboardPage() {
+  const searchParams = useSearchParams();
+  const from = searchParams.get('from');
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        window.location.href = from === 'carousel' ? '/?mode=carousel' : '/';
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      const isFullscreen =
+        document.fullscreenElement || (document as any).webkitFullscreenElement;
+      if (!isFullscreen) {
+        window.location.href = from === 'carousel' ? '/?mode=carousel' : '/';
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
+  }, [from]);
+
   const filteredData: JobRecord[] = operationsData.filter(
     (d: JobRecord) => d.Job_Status === 'Successful'
   );
