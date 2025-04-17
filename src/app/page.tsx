@@ -24,14 +24,14 @@ export default function Home() {
 
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative">
-      {/* Splash attract loop */}
+      {/* Splash intro loop */}
       <div
         className={`absolute inset-0 transition-opacity duration-700 ${
           active ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}
       >
         <ReactPlayer
-          url="/videos/attract-loop.mp4"
+          url="/videos/intro-loop.mp4"
           playing
           loop
           muted
