@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import CarouselView from '@/components/CarouselView';
 
@@ -8,6 +8,7 @@ const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
 export default function Home() {
   const [mode, setMode] = useState<'home' | 'video' | 'carousel'>('home');
+  const videoContainerRef = useRef<HTMLDivElement>(null);
 
   // Request fullscreen mode
   const enterFullscreen = () => {
@@ -21,7 +22,7 @@ export default function Home() {
     }
   };
 
-  // Reset to home if fullscreen is exited
+  // Watch for fullscreen exit and reset to home
   useEffect(() => {
     const handleFullscreenChange = () => {
       const isFullscreen =
@@ -40,9 +41,16 @@ export default function Home() {
     };
   }, []);
 
+  // Focus video container so keydown events work
+  useEffect(() => {
+    if (mode === 'video' && videoContainerRef.current) {
+      videoContainerRef.current.focus();
+    }
+  }, [mode]);
+
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative">
-      {/* Home screen with button */}
+      {/* Home screen with kiosk button */}
       {mode === 'home' && (
         <div className="absolute inset-0 flex items-center justify-center">
           <button
@@ -57,13 +65,14 @@ export default function Home() {
         </div>
       )}
 
-      {/* Fullscreen intro video */}
+      {/* Fullscreen video screen */}
       {mode === 'video' && (
         <div
+          ref={videoContainerRef}
+          tabIndex={0}
           className="absolute inset-0"
           onClick={() => setMode('carousel')}
           onTouchStart={() => setMode('carousel')}
-          tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               setMode('carousel');
@@ -82,7 +91,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Carousel view */}
+      {/* Carousel mode */}
       {mode === 'carousel' && (
         <div className="absolute inset-0">
           <CarouselView onResetToSplash={() => setMode('video')} />
