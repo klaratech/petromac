@@ -1,11 +1,12 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 
-export default function CarouselView() {
-  const router = useRouter();
-
+export default function CarouselView({
+  onResetToSplash,
+}: {
+  onResetToSplash: () => void;
+}) {
   const items = [
     { title: 'Global Deployment', image: 'global.jpg', type: 'link', href: '/dashboard' },
     { title: 'Conveyance, Solved', image: 'conveyance.jpg', type: 'modal' },
@@ -32,11 +33,11 @@ export default function CarouselView() {
       inactivityTimer.current = setTimeout(() => {
         setFadeOut(true);
         setTimeout(() => {
-          router.push('/');
+          onResetToSplash();
         }, 1000);
       }, IDLE_TIMEOUT);
     }
-  }, [modalItem, router]);
+  }, [modalItem, onResetToSplash]);
 
   const scroll = (dir: 'left' | 'right') => {
     resetInactivityTimer();
@@ -164,7 +165,7 @@ export default function CarouselView() {
               onClick={() => {
                 resetInactivityTimer();
                 if (item.type === 'link' && item.href) {
-                  router.push(item.href);
+                  window.location.href = item.href;
                 } else {
                   setModalItem(item);
                 }

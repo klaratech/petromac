@@ -13,18 +13,13 @@ export default function Home() {
 
   useEffect(() => {
     if (active) return;
-
     const events = ['click', 'touchstart', 'keydown'];
-    events.forEach(event => window.addEventListener(event, handleInteraction));
-
-    return () => {
-      events.forEach(event => window.removeEventListener(event, handleInteraction));
-    };
+    events.forEach(e => window.addEventListener(e, handleInteraction));
+    return () => events.forEach(e => window.removeEventListener(e, handleInteraction));
   }, [active]);
 
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative">
-      {/* Splash intro loop */}
       <div
         className={`absolute inset-0 transition-opacity duration-700 ${
           active ? 'opacity-0 pointer-events-none' : 'opacity-100'
@@ -41,10 +36,9 @@ export default function Home() {
         />
       </div>
 
-      {/* Carousel view shown after interaction */}
       {active && (
         <div className="absolute inset-0">
-          <CarouselView />
+          <CarouselView onResetToSplash={() => setActive(false)} />
         </div>
       )}
     </div>
