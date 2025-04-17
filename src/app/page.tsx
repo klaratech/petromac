@@ -12,21 +12,28 @@ export default function Home() {
 
   // Request fullscreen mode
   const enterFullscreen = () => {
-    const el = document.documentElement;
+    const el = document.documentElement as HTMLElement & {
+      webkitRequestFullscreen?: () => void;
+      msRequestFullscreen?: () => void;
+    };
+
     if (el.requestFullscreen) {
       el.requestFullscreen();
-    } else if ((el as any).webkitRequestFullscreen) {
-      (el as any).webkitRequestFullscreen();
-    } else if ((el as any).msRequestFullscreen) {
-      (el as any).msRequestFullscreen();
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) {
+      el.msRequestFullscreen();
     }
   };
 
-  // Watch for fullscreen exit and reset to home
+  // Reset to home if fullscreen is exited
   useEffect(() => {
     const handleFullscreenChange = () => {
-      const isFullscreen =
-        document.fullscreenElement || (document as any).webkitFullscreenElement;
+      const doc = document as Document & {
+        webkitFullscreenElement?: Element | null;
+      };
+
+      const isFullscreen = document.fullscreenElement || doc.webkitFullscreenElement;
       if (!isFullscreen) {
         setMode('home');
       }
@@ -41,7 +48,7 @@ export default function Home() {
     };
   }, []);
 
-  // Focus video container so keydown events work
+  // Set focus on video container for keyboard input
   useEffect(() => {
     if (mode === 'video' && videoContainerRef.current) {
       videoContainerRef.current.focus();
