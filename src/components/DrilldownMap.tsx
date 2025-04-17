@@ -5,6 +5,7 @@ import * as topojson from 'topojson-client';
 import { useEffect, useRef, useState, useMemo } from 'react';
 import regionMapping from '@/data/region_mapping.json';
 import regionCoords from '@/data/region_coords.json';
+import type { Topology } from 'topojson-specification';
 
 interface JobRecord {
   Region: string;
@@ -21,16 +22,13 @@ interface RegionCoords {
   [region: string]: { lon: number; lat: number };
 }
 
-interface WorldAtlas {
-  type: 'Topology';
+interface WorldAtlas extends Topology {
   objects: {
     countries: {
       type: 'GeometryCollection';
-      geometries: any[];
+      geometries: GeoJSON.Geometry[];
     };
   };
-  arcs: any[];
-  transform: any;
 }
 
 export default function DrilldownMap({ data }: Props) {
@@ -42,7 +40,10 @@ export default function DrilldownMap({ data }: Props) {
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then((world: unknown) => {
         const topology = world as WorldAtlas;
-        const countries = topojson.feature(topology, topology.objects.countries) as GeoJSON.FeatureCollection;
+        const countries = topojson.feature(
+          topology,
+          topology.objects.countries
+        ) as GeoJSON.FeatureCollection;
 
         countries.features = countries.features.filter((d) => {
           const name = d.properties?.name;
@@ -119,10 +120,15 @@ export default function DrilldownMap({ data }: Props) {
 
       g.transition()
         .duration(750)
-        .attr('transform', `translate(${width / 2 - k * tx}, ${height / 2 - k * ty}) scale(${k})`);
+        .attr(
+          'transform',
+          `translate(${width / 2 - k * tx}, ${height / 2 - k * ty}) scale(${k})`
+        );
 
       countryStats.forEach(([country, count]) => {
-        const feature = worldData.features.find((f) => f.properties?.name === country);
+        const feature = worldData.features.find(
+          (f) => f.properties?.name === country
+        );
         if (!feature) {
           console.warn(`No shape found for country: ${country}`);
           return;
