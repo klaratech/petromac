@@ -3,9 +3,20 @@
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import regionMapping from '@/data/region_mapping.json';
-import regionCoords from '@/data/region_coords.json';
+import rawRegionMapping from '@/data/region_mapping.json';
+import rawRegionCoords from '@/data/region_coords.json';
 import type { Topology } from 'topojson-specification';
+
+type RegionMapping = {
+  [country: string]: string;
+};
+
+type RegionCoords = {
+  [region: string]: { lon: number; lat: number };
+};
+
+const regionMapping = rawRegionMapping as RegionMapping;
+const regionCoords = rawRegionCoords as RegionCoords;
 
 interface JobRecord {
   Region: string;
@@ -16,10 +27,6 @@ interface JobRecord {
 
 interface Props {
   data: JobRecord[];
-}
-
-interface RegionCoords {
-  [region: string]: { lon: number; lat: number };
 }
 
 export default function DrilldownMap({ data }: Props) {
@@ -88,7 +95,7 @@ export default function DrilldownMap({ data }: Props) {
 
     if (!focusedRegion) {
       regionStats.forEach(([region, count]) => {
-        const coords = (regionCoords as RegionCoords)[region];
+        const coords = regionCoords[region];
         if (!coords || count <= 0) return;
         const [x, y] = projection([coords.lon, coords.lat]);
 
@@ -105,7 +112,7 @@ export default function DrilldownMap({ data }: Props) {
           .attr('r', Math.sqrt(count) * 2);
       });
     } else {
-      const coords = (regionCoords as RegionCoords)[focusedRegion];
+      const coords = regionCoords[focusedRegion];
       const [tx, ty] = projection([coords.lon, coords.lat]);
       const k = 2;
 
