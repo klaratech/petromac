@@ -21,6 +21,18 @@ interface RegionCoords {
   [region: string]: { lon: number; lat: number };
 }
 
+interface WorldAtlas {
+  type: 'Topology';
+  objects: {
+    countries: {
+      type: 'GeometryCollection';
+      geometries: any[];
+    };
+  };
+  arcs: any[];
+  transform: any;
+}
+
 export default function DrilldownMap({ data }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
@@ -28,13 +40,16 @@ export default function DrilldownMap({ data }: Props) {
 
   useEffect(() => {
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-      .then((world: any) => {
-        const countries = topojson.feature(world, world.objects.countries) as GeoJSON.FeatureCollection;
+      .then((world: unknown) => {
+        const topology = world as WorldAtlas;
+        const countries = topojson.feature(topology, topology.objects.countries) as GeoJSON.FeatureCollection;
+
         countries.features = countries.features.filter((d) => {
           const name = d.properties?.name;
           const [lon, lat] = d3.geoCentroid(d);
           return name !== 'Antarctica' && !(lon < -150 && lat > 10);
         });
+
         setWorldData(countries);
       })
       .catch((err) => console.error('Failed to load world map:', err));
@@ -68,14 +83,14 @@ export default function DrilldownMap({ data }: Props) {
     const height = 540;
 
     const projection = d3.geoNaturalEarth1().fitSize([width, height], worldData);
-    const path = d3.geoPath().projection(projection);
+    const path = d3.geoPath(projection);
     const g = svg.append('g');
 
     g.selectAll('path')
       .data(worldData.features)
       .enter()
       .append('path')
-      .attr('d', path as any)
+      .attr('d', (d) => path(d) || '')
       .attr('fill', '#f3f4f6')
       .attr('stroke', '#ccc');
 
