@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function CarouselView() {
@@ -22,22 +22,21 @@ export default function CarouselView() {
   const [visibleCenterIndex, setVisibleCenterIndex] = useState(centerIndex);
   const [modalItem, setModalItem] = useState<{ title: string; image: string } | null>(null);
   const [fadeOut, setFadeOut] = useState(false);
+  const IDLE_TIMEOUT = 60000;
+  const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
-  const IDLE_TIMEOUT = 60000; // 60 seconds
-  let inactivityTimer: ReturnType<typeof setTimeout>;
-
-  const resetInactivityTimer = () => {
-    clearTimeout(inactivityTimer);
+  const resetInactivityTimer = useCallback(() => {
+    if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
 
     if (!modalItem) {
-      inactivityTimer = setTimeout(() => {
+      inactivityTimer.current = setTimeout(() => {
         setFadeOut(true);
         setTimeout(() => {
           router.push('/');
-        }, 1000); // match fade duration
+        }, 1000);
       }, IDLE_TIMEOUT);
     }
-  };
+  }, [modalItem, router]);
 
   const scroll = (dir: 'left' | 'right') => {
     resetInactivityTimer();
@@ -61,7 +60,7 @@ export default function CarouselView() {
 
     const scrollTo = card.offsetLeft + card.offsetWidth / 2 - container.offsetWidth / 2;
     container.scrollTo({ left: scrollTo, behavior: 'auto' });
-  }, []);
+  }, [centerIndex]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -70,17 +69,17 @@ export default function CarouselView() {
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [modalItem]);
+  }, [resetInactivityTimer]);
 
   useEffect(() => {
     resetInactivityTimer();
     const events = ['mousemove', 'click', 'keydown', 'touchstart'];
     events.forEach(event => window.addEventListener(event, resetInactivityTimer));
     return () => {
-      clearTimeout(inactivityTimer);
+      if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
       events.forEach(event => window.removeEventListener(event, resetInactivityTimer));
     };
-  }, [modalItem]);
+  }, [resetInactivityTimer]);
 
   return (
     <div
@@ -159,7 +158,9 @@ export default function CarouselView() {
           return (
             <div
               key={index}
-              ref={(el) => (cardRefs.current[index] = el)}
+              ref={(el: HTMLDivElement | null) => {
+                cardRefs.current[index] = el;
+              }}
               onClick={() => {
                 resetInactivityTimer();
                 if (item.type === 'link' && item.href) {
