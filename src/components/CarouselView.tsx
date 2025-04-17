@@ -1,12 +1,13 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 
-export default function CarouselView({
-  onResetToSplash,
-}: {
+interface CarouselViewProps {
   onResetToSplash: () => void;
-}) {
+}
+
+export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
   const items = [
     { title: 'Global Deployment', image: 'global.jpg', type: 'link', href: '/dashboard' },
     { title: 'Conveyance, Solved', image: 'conveyance.jpg', type: 'modal' },
@@ -39,23 +40,26 @@ export default function CarouselView({
     }
   }, [modalItem, onResetToSplash]);
 
-  const scroll = useCallback((dir: 'left' | 'right') => {
-    resetInactivityTimer();
-    const container = scrollRef.current;
-    if (!container) return;
+  const scroll = useCallback(
+    (dir: 'left' | 'right') => {
+      resetInactivityTimer();
+      const container = scrollRef.current;
+      if (!container) return;
 
-    setVisibleCenterIndex((prevIndex) => {
-      const offset = dir === 'left' ? -1 : 1;
-      const nextIndex = Math.max(0, Math.min(items.length - 1, prevIndex + offset));
-      const card = cardRefs.current[nextIndex];
-      if (!card) return prevIndex;
+      setVisibleCenterIndex((prevIndex) => {
+        const offset = dir === 'left' ? -1 : 1;
+        const nextIndex = Math.max(0, Math.min(items.length - 1, prevIndex + offset));
+        const card = cardRefs.current[nextIndex];
+        if (!card) return prevIndex;
 
-      const scrollTo = card.offsetLeft + card.offsetWidth / 2 - container.offsetWidth / 2;
-      container.scrollTo({ left: scrollTo, behavior: 'smooth' });
+        const scrollTo = card.offsetLeft + card.offsetWidth / 2 - container.offsetWidth / 2;
+        container.scrollTo({ left: scrollTo, behavior: 'smooth' });
 
-      return nextIndex;
-    });
-  }, [resetInactivityTimer, items.length]);
+        return nextIndex;
+      });
+    },
+    [resetInactivityTimer, items.length]
+  );
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -152,9 +156,11 @@ export default function CarouselView({
               ✕
             </button>
             <h2 className="text-2xl font-semibold mb-4">{modalItem.title}</h2>
-            <img
+            <Image
               src={`/images/${modalItem.image}`}
               alt={modalItem.title}
+              width={800}
+              height={600}
               className="w-full max-h-[70vh] object-contain rounded-lg"
             />
           </div>
@@ -199,14 +205,14 @@ export default function CarouselView({
             transform = 'rotateY(-30deg) scale(0.9)';
             opacity = 0.6;
           } else {
-            transform = `translateZ(-200px) scale(0.6)`;
+            transform = 'translateZ(-200px) scale(0.6)';
             opacity = 0.3;
           }
 
           return (
             <div
               key={index}
-              ref={(el: HTMLDivElement | null) => {
+              ref={(el) => {
                 cardRefs.current[index] = el;
               }}
               onClick={() => {
@@ -222,15 +228,15 @@ export default function CarouselView({
                 transform,
                 opacity,
                 transformStyle: 'preserve-3d',
-                WebkitBoxReflect:
-                  'below 0.5em linear-gradient(transparent, rgba(0, 0, 0, 0.25))',
+                WebkitBoxReflect: 'below 0.5em linear-gradient(transparent, rgba(0, 0, 0, 0.25))',
               }}
             >
-              <img
+              <Image
                 src={`/images/${item.image}`}
                 alt={item.title}
+                width={208}
+                height={208}
                 className="w-full h-full object-cover rounded-xl"
-                style={{ backgroundColor: '#ccc' }}
               />
             </div>
           );
