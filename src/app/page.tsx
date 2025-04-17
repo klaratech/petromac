@@ -10,7 +10,7 @@ export default function Home() {
   const [mode, setMode] = useState<'video' | 'carousel'>('video');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [playVideo, setPlayVideo] = useState(false);
-  const playerRef = useRef<any>(null);
+  const playerContainerRef = useRef<HTMLDivElement | null>(null);
 
   const enterFullscreen = () => {
     const el = document.documentElement as HTMLElement & {
@@ -56,9 +56,8 @@ export default function Home() {
     }
   };
 
-  // Track fullscreen state
   useEffect(() => {
-    const handleChange = () => {
+    const handleFullscreenChange = () => {
       const doc = document as Document & {
         webkitFullscreenElement?: Element | null;
       };
@@ -67,18 +66,18 @@ export default function Home() {
       setIsFullscreen(isFs);
     };
 
-    document.addEventListener('fullscreenchange', handleChange);
-    document.addEventListener('webkitfullscreenchange', handleChange);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
     return () => {
-      document.removeEventListener('fullscreenchange', handleChange);
-      document.removeEventListener('webkitfullscreenchange', handleChange);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
     };
   }, []);
 
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative">
-      {/* Fullscreen Toggle Button */}
+      {/* Fullscreen control button */}
       <button
         onClick={isFullscreen ? exitFullscreen : enterFullscreen}
         className="absolute top-4 right-4 z-50 px-4 py-2 bg-white text-black rounded shadow hover:bg-gray-100"
@@ -86,15 +85,15 @@ export default function Home() {
         {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
       </button>
 
-      {/* Video View */}
+      {/* Video screen */}
       {mode === 'video' && (
         <div
+          ref={playerContainerRef}
           className="absolute inset-0"
           onClick={() => setMode('carousel')}
           onTouchStart={() => setMode('carousel')}
         >
           <ReactPlayer
-            ref={playerRef}
             url="/videos/intro-loop.mp4"
             playing={playVideo}
             loop
@@ -106,7 +105,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Carousel View */}
+      {/* Carousel screen */}
       {mode === 'carousel' && (
         <div className="absolute inset-0">
           <CarouselView onResetToSplash={() => setMode('video')} />
