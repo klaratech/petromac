@@ -2,8 +2,10 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, useGLTF } from '@react-three/drei';
-import { Suspense, useRef } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import * as THREE from 'three';
+import DeviceViewer from './DeviceViewer'; // Adjust the import path if needed
+import { deviceSpecs } from '@/data/deviceSpecs';
 
 const models = [
   { name: 'CP-12', file: '/models/CP-12.glb' },
@@ -37,8 +39,8 @@ function FloatingModel({
   return (
     <group position={position} onClick={onClick} ref={ref}>
       <primitive object={scene} scale={1.5} />
-      <Html center distanceFactor={10}>
-        <div className="text-white text-sm text-center mt-2 bg-black/60 px-2 py-1 rounded">
+      <Html center position={[0, -1.8, 0]} distanceFactor={10}>
+        <div className="text-white text-sm text-center bg-black/60 px-2 py-1 rounded mt-2">
           {name}
         </div>
       </Html>
@@ -59,12 +61,22 @@ function RotatingGroup({ children }: { children: React.ReactNode }) {
 }
 
 export default function CircularGallery({
-  onSelectDevice,
   onClose,
 }: {
-  onSelectDevice: (file: string) => void;
   onClose: () => void;
 }) {
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
+
+  if (selectedModel) {
+    return (
+      <DeviceViewer
+        model={selectedModel}
+        specs={deviceSpecs[selectedModel]}
+        onClose={() => setSelectedModel(null)}
+      />
+    );
+  }
+
   return (
     <div className="w-full h-screen relative group">
       {/* ✕ Close Button */}
@@ -92,7 +104,7 @@ export default function CircularGallery({
                   name={model.name}
                   url={model.file}
                   position={[x, 0, z]}
-                  onClick={() => onSelectDevice(model.file)}
+                  onClick={() => setSelectedModel(model.file)}
                 />
               );
             })}
