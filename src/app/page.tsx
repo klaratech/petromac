@@ -1,11 +1,13 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 import CarouselView from '@/components/CarouselView';
 
-const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
+const ReactPlayer = dynamicImport(() => import('react-player/lazy'), { ssr: false });
 
 export default function Home() {
   const [mode, setMode] = useState<'video' | 'carousel'>('video');
@@ -13,7 +15,7 @@ export default function Home() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Handle ?mode=carousel query
+  // Handle ?mode=carousel query param
   useEffect(() => {
     const param = searchParams.get('mode');
     if (param === 'carousel' && mode !== 'carousel') {
