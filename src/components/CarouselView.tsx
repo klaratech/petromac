@@ -18,7 +18,7 @@ export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
     { title: 'Precise Tool Orientation', image: 'orientation.jpg', type: 'modal' },
     { title: 'Enhanced Sampling & Imaging', image: 'sampling.jpg', type: 'modal' },
     { title: 'Navigating Ledges & Washouts', image: 'ledges.jpg', type: 'modal' },
-    { title: 'Engineering Excellence', image: 'catalog.jpg', type: 'link', href: '/catalog?from=carousel' },
+    { title: 'Engineering Excellence', image: 'catalog.png', type: 'link', href: '/catalog?from=carousel' },
   ];
 
   const scrollRef = useRef<HTMLDivElement>(null);
