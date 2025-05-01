@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Petromac",
   description: "Petromac Kiosk App",
+  icons: {
+    icon: '/favicon.ico',
+  }
 };
 
 export default function RootLayout({
