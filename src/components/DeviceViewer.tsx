@@ -1,8 +1,9 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Stage } from '@react-three/drei';
-import { Suspense, useState } from 'react';
+import { Canvas, useFrame} from '@react-three/fiber';
+import { OrbitControls, useGLTF } from '@react-three/drei';
+import { Suspense, useState, useRef, useEffect } from 'react';
+import * as THREE from 'three';
 
 export default function DeviceViewer({
   model,
@@ -14,37 +15,67 @@ export default function DeviceViewer({
   onClose: () => void;
 }) {
   const [showSpecs, setShowSpecs] = useState(true);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
 
   const Model = () => {
     const { scene } = useGLTF(model);
-    return <primitive object={scene} scale={2.5} />;
+    const ref = useRef<THREE.Group>(null);
+
+    useEffect(() => {
+      scene.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+        }
+      });
+    }, [scene]);
+
+    useFrame(() => {
+      if (ref.current && !isUserInteracting) {
+        ref.current.rotation.y += 0.002;
+      }
+    });
+
+    return (
+      <group ref={ref}>
+        <primitive object={scene} scale={6} />
+      </group>
+    );
   };
+
+  const hasVideo = model.includes('helix');
 
   return (
     <div className="w-screen h-screen relative group bg-black">
       {/* 3D Canvas */}
       <Canvas camera={{ position: [0, 0, 10], fov: 50 }} shadows>
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[5, 5, 5]} />
+        <ambientLight intensity={0.2} />
+        <directionalLight position={[5, 5, 5]} intensity={0.6} castShadow />
+        <directionalLight position={[-5, -5, -5]} intensity={0.3} />
+        <hemisphereLight intensity={0.1} />
         <Suspense fallback={null}>
-          <Stage environment="city" intensity={0.6} shadows>
-            <Model />
-          </Stage>
-          <OrbitControls enablePan enableZoom enableRotate />
+          <Model />
+          <OrbitControls
+            enablePan
+            enableZoom
+            enableRotate
+            onStart={() => setIsUserInteracting(true)}
+            onEnd={() => setIsUserInteracting(false)}
+          />
         </Suspense>
       </Canvas>
 
       {/* ✕ Close Button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-50 px-4 py-2 text-white text-sm font-semibold bg-white/10 border border-white/20 rounded-lg shadow-lg backdrop-blur-md transition-opacity
-                   opacity-100 touch:opacity-100 group-hover:opacity-100 hover:bg-white/20"
-        style={{ transition: 'opacity 0.3s ease' }}
+        className="absolute top-4 right-4 z-50 px-4 py-2 text-white text-sm font-semibold bg-white/10 border border-white/20 rounded-lg shadow-lg backdrop-blur-md transition-opacity hover:bg-white/20"
       >
         ✕ Close
       </button>
 
-      {/* Toggle Button for Specs */}
+      {/* Toggle Specs Button */}
       {specs && (
         <button
           onClick={() => setShowSpecs(!showSpecs)}
@@ -58,7 +89,7 @@ export default function DeviceViewer({
       {specs && showSpecs && (
         <div className="absolute top-14 left-4 z-40 w-[300px] max-h-[80vh] overflow-auto bg-white/90 backdrop-blur-md rounded-xl shadow-xl p-4 border border-gray-300">
           <h2 className="text-lg font-semibold mb-3 text-gray-900">Specifications</h2>
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left mb-4">
             <tbody>
               {Object.entries(specs).map(([key, value]) => (
                 <tr key={key} className="border-b border-gray-200 last:border-b-0">
@@ -68,13 +99,35 @@ export default function DeviceViewer({
               ))}
             </tbody>
           </table>
+
+          {hasVideo && (
+            <button
+              onClick={() => setShowVideo(true)}
+              className="w-full py-2 mt-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+            >
+              ▶ Introduction
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Video Overlay */}
+      {showVideo && (
+        <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
+          <video
+            src="/videos/helix.mp4"
+            controls
+            autoPlay
+            className="w-full h-full object-contain bg-black"
+          />
+          <button
+            onClick={() => setShowVideo(false)}
+            className="absolute top-4 right-4 px-5 py-2 text-white bg-white/10 border border-white/20 rounded-lg shadow-lg backdrop-blur hover:bg-white/20 text-sm font-semibold"
+          >
+            ✕ Close
+          </button>
         </div>
       )}
     </div>
   );
 }
-
-// Preload models
-useGLTF.preload('/models/CP-12.glb');
-useGLTF.preload('/models/THOR.glb');
-useGLTF.preload('/models/CP-8.glb');

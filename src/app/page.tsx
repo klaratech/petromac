@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import CarouselView from '@/components/CarouselView';
 
@@ -11,27 +11,23 @@ export default function Home() {
   const [mode, setMode] = useState<'video' | 'carousel'>('video');
   const playerContainerRef = useRef<HTMLDivElement | null>(null);
   const searchParams = useSearchParams();
-  const router = useRouter();
 
-  // Enable carousel mode if ?mode=carousel is in the URL
   useEffect(() => {
-    const isCarouselMode = searchParams.get('mode') === 'carousel';
-    if (isCarouselMode && mode !== 'carousel') {
+    const param = searchParams.get('mode');
+    if (param === 'carousel' && mode !== 'carousel') {
       setMode('carousel');
     }
   }, [searchParams, mode]);
 
-  // Clean the URL by removing ?mode once carousel is active
   useEffect(() => {
-    if (mode === 'carousel' && searchParams.get('mode') === 'carousel') {
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
+    const param = searchParams.get('mode');
+    if (mode === 'carousel' && param === 'carousel') {
+      window.history.replaceState({}, '', window.location.pathname);
     }
   }, [mode, searchParams]);
 
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative">
-      {/* Intro video screen */}
       {mode === 'video' && (
         <div
           ref={playerContainerRef}
@@ -51,7 +47,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Carousel screen */}
       {mode === 'carousel' && (
         <div className="absolute inset-0">
           <CarouselView onResetToSplash={() => setMode('video')} />

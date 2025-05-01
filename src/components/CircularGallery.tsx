@@ -1,6 +1,6 @@
 'use client';
 
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Html, useGLTF, Center } from '@react-three/drei';
 import { Suspense, useRef, useState, useEffect } from 'react';
 import * as THREE from 'three';
@@ -15,8 +15,16 @@ const models = [
   { name: 'Helix', file: '/models/helix.glb' },
 ];
 
-// Preload all models on startup
+// Preload all models
 models.forEach((m) => useGLTF.preload(m.file));
+
+function SceneBackground() {
+  const { scene } = useThree();
+  useEffect(() => {
+    scene.background = new THREE.Color('#1a1a1a');
+  }, [scene]);
+  return null;
+}
 
 function FloatingModel({
   url,
@@ -31,20 +39,26 @@ function FloatingModel({
 }) {
   const { scene } = useGLTF(url);
   const ref = useRef<THREE.Group>(null);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
-    // Scale model uniformly
     scene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
+        const mesh = child as THREE.Mesh;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        const mat = mesh.material as THREE.MeshStandardMaterial;
+        if (mat?.color) mat.color.multiplyScalar(1.3);
       }
     });
 
-    const box = new THREE.Box3().setFromObject(scene);
-    const size = box.getSize(new THREE.Vector3()).length();
-    const scaleFactor = 3 / size;
-    scene.scale.setScalar(scaleFactor);
+    requestAnimationFrame(() => {
+      const box = new THREE.Box3().setFromObject(scene);
+      const size = box.getSize(new THREE.Vector3()).length();
+      const scaleFactor = 4.5 / size;
+      setScale(scaleFactor);
+    });
   }, [scene]);
 
   useFrame(({ clock }) => {
@@ -54,11 +68,11 @@ function FloatingModel({
   });
 
   return (
-    <group position={position} onClick={onClick} ref={ref}>
+    <group position={position} onClick={onClick} ref={ref} scale={scale}>
       <Center>
         <primitive object={scene} />
       </Center>
-      <Html center position={[0, -1.2, 0]} distanceFactor={8}>
+      <Html center position={[0, -0.8, 0]} distanceFactor={6}>
         <div className="text-white text-xs text-center bg-black/70 px-3 py-1 rounded whitespace-nowrap max-w-[140px]">
           {name}
         </div>
@@ -88,7 +102,7 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
     setTimeout(() => {
       setSelectedModel(file);
       setIsZooming(false);
-    }, 600); // match animation duration
+    }, 600);
   };
 
   return (
@@ -103,7 +117,6 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
             transition={{ duration: 0.6 }}
             className="w-full h-full absolute inset-0"
           >
-            {/* ✕ Close Button */}
             <button
               onClick={onClose}
               className="absolute top-4 right-4 z-50 px-5 py-3 text-white text-sm font-semibold bg-white/10 border border-white/20 rounded-lg shadow-lg backdrop-blur-md hover:bg-white/20"
@@ -112,9 +125,11 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
             </button>
 
             <Canvas shadows camera={{ position: [0, 0, 12], fov: 50 }}>
-              <ambientLight intensity={0.8} />
-              <directionalLight position={[5, 5, 5]} intensity={1.2} castShadow />
-              <hemisphereLight intensity={0.3} />
+              <SceneBackground />
+              <ambientLight intensity={0.2} />
+              <directionalLight position={[5, 5, 5]} intensity={0.6} castShadow />
+              <directionalLight position={[-5, -5, -5]} intensity={0.3} />
+              <hemisphereLight intensity={0.1} />
               <Suspense fallback={null}>
                 <RotatingGroup>
                   {models.map((model, index) => {
