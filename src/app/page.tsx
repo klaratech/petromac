@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import CarouselView from '@/components/CarouselView';
 
@@ -9,10 +10,28 @@ const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 export default function Home() {
   const [mode, setMode] = useState<'video' | 'carousel'>('video');
   const playerContainerRef = useRef<HTMLDivElement | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Enable carousel mode if ?mode=carousel is in the URL
+  useEffect(() => {
+    const isCarouselMode = searchParams.get('mode') === 'carousel';
+    if (isCarouselMode && mode !== 'carousel') {
+      setMode('carousel');
+    }
+  }, [searchParams, mode]);
+
+  // Clean the URL by removing ?mode once carousel is active
+  useEffect(() => {
+    if (mode === 'carousel' && searchParams.get('mode') === 'carousel') {
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [mode, searchParams]);
 
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative">
-      {/* Video screen */}
+      {/* Intro video screen */}
       {mode === 'video' && (
         <div
           ref={playerContainerRef}
@@ -22,7 +41,7 @@ export default function Home() {
         >
           <ReactPlayer
             url="/videos/intro-loop.mp4"
-            playing={true}
+            playing
             loop
             muted
             width="100%"
