@@ -8,14 +8,10 @@ import CircularGallery from '@/components/CircularGallery';
 export default function CatalogPage() {
   const router = useRouter();
 
-  const returnToCarousel = () => {
-    router.push('/?mode=carousel');
-  };
-
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        returnToCarousel();
+        router.push('/?mode=carousel');
       }
     };
 
@@ -26,7 +22,7 @@ export default function CatalogPage() {
   return (
     <main className="w-screen h-screen bg-black text-white">
       <Suspense fallback={<div className="p-6">Loading 3D content...</div>}>
-        <CircularGallery onClose={returnToCarousel} />
+        <CircularGallery onClose={() => router.push('/?mode=carousel')} />
       </Suspense>
     </main>
   );
