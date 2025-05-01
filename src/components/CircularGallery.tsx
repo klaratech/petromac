@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const models = [
   { name: 'CP-12', file: '/models/cp12.glb' },
   { name: 'TTB-S75', file: '/models/ttbs75.glb' },
-  { name: 'CP-8', file: '/models/CP8.glb' },
+  { name: 'CP-8', file: '/models/cp8.glb' },
   { name: 'Helix', file: '/models/helix.glb' },
 ];
 
