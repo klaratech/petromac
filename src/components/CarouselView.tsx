@@ -12,7 +12,7 @@ export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
   const router = useRouter();
 
   const items = [
-    { title: 'Global Deployment', image: 'global.jpg', type: 'link', href: '/dashboard?from=carousel' },
+    { title: 'Global Deployment', image: 'trackrecord.png', type: 'link', href: '/dashboard?from=carousel' },
     { title: 'Conveyance, Solved', image: 'conveyance.jpg', type: 'modal' },
     { title: 'No More Tool Sticking', image: 'sticking.jpg', type: 'modal' },
     { title: 'Precise Tool Orientation', image: 'orientation.jpg', type: 'modal' },
