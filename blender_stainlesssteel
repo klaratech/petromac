@@ -1,0 +1,64 @@
+import bpy
+
+# Create a new material
+material = bpy.data.materials.new(name="Brushed_Stainless_Steel")
+material.use_nodes = True
+nodes = material.node_tree.nodes
+links = material.node_tree.links
+
+# Clear default nodes
+nodes.clear()
+
+# Create Nodes
+output = nodes.new(type="ShaderNodeOutputMaterial")
+bsdf = nodes.new(type="ShaderNodeBsdfPrincipled")
+coord = nodes.new(type="ShaderNodeTexCoord")
+mapping = nodes.new(type="ShaderNodeMapping")
+noise = nodes.new(type="ShaderNodeTexNoise")
+voronoi = nodes.new(type="ShaderNodeTexVoronoi")
+ramp = nodes.new(type="ShaderNodeValToRGB")
+mix = nodes.new(type="ShaderNodeMixRGB")
+
+# Set Node Properties
+bsdf.inputs["Metallic"].default_value = 1.0
+bsdf.inputs["Roughness"].default_value = 0.45
+bsdf.inputs["Base Color"].default_value = (0.75, 0.75, 0.75, 1)
+
+mapping.inputs["Scale"].default_value = (2.0, 0.2, 0.2)
+
+noise.inputs["Scale"].default_value = 50
+noise.inputs["Detail"].default_value = 2
+noise.inputs["Roughness"].default_value = 0.3
+
+voronoi.feature = 'SMOOTH_F1'
+voronoi.distance = 'CHEBYCHEV'
+voronoi.inputs["Scale"].default_value = 400
+
+mix.blend_type = 'MULTIPLY'
+mix.inputs["Fac"].default_value = 0.3
+
+# Set ColorRamp positions
+ramp.color_ramp.elements[0].position = 0.3
+ramp.color_ramp.elements[1].position = 0.7
+
+# Position nodes (optional, for cleanliness)
+for i, node in enumerate([coord, mapping, noise, voronoi, ramp, mix, bsdf, output]):
+    node.location = (i * 250, 0)
+
+# Link nodes
+links.new(coord.outputs["Generated"], mapping.inputs["Vector"])
+links.new(mapping.outputs["Vector"], noise.inputs["Vector"])
+links.new(mapping.outputs["Vector"], voronoi.inputs["Vector"])
+links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
+links.new(ramp.outputs["Color"], mix.inputs[1])
+links.new(voronoi.outputs["Distance"], mix.inputs[2])
+links.new(mix.outputs["Color"], bsdf.inputs["Roughness"])
+links.new(bsdf.outputs["BSDF"], output.inputs["Surface"])
+
+# Assign to selected object
+if bpy.context.object:
+    obj = bpy.context.object
+    if obj.data.materials:
+        obj.data.materials[0] = material
+    else:
+        obj.data.materials.append(material)

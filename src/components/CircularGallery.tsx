@@ -8,9 +8,11 @@ import DeviceViewer from './DeviceViewer'; // Adjust the import path if needed
 import { deviceSpecs } from '@/data/deviceSpecs';
 
 const models = [
-  { name: 'CP-12', file: '/models/CP-12.glb' },
-  { name: 'THOR', file: '/models/THOR.glb' },
-  { name: 'CP-8', file: '/models/CP-8.glb' },
+  { name: 'CP-12', file: '/models/cp12.glb' },
+  { name: 'TTB-S75', file: '/models/ttbs75.glb' },
+  { name: 'CP-8', file: '/models/CP8.glb' },
+  { name: 'Helix', file: '/models/helix.glb' },
+  
 ];
 
 // Preload models
