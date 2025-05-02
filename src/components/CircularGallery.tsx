@@ -5,7 +5,6 @@ import { Html, useGLTF, Center } from '@react-three/drei';
 import { Suspense, useRef, useState, useEffect } from 'react';
 import * as THREE from 'three';
 import DeviceViewer from './DeviceViewer';
-import { deviceSpecs } from '@/data/deviceSpecs';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const models = [
@@ -163,7 +162,6 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
           >
             <DeviceViewer
               model={selectedModel}
-              specs={deviceSpecs[selectedModel]}
               onClose={() => setSelectedModel(null)}
             />
           </motion.div>
