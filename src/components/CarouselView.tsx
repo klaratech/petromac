@@ -39,7 +39,6 @@ export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
 
   const resetInactivityTimer = useCallback(() => {
     if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
-
     if (!modalItem) {
       inactivityTimer.current = setTimeout(() => {
         setFadeOut(true);
@@ -98,6 +97,43 @@ export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
     };
   }, [resetInactivityTimer]);
 
+  // 🌟 Simple swipe logic for tablets
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    let startX = 0;
+    let isSwiping = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+      isSwiping = true;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isSwiping) return;
+      const dx = e.touches[0].clientX - startX;
+      if (Math.abs(dx) > 60) {
+        scroll(dx > 0 ? 'left' : 'right');
+        isSwiping = false;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isSwiping = false;
+    };
+
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchmove', handleTouchMove);
+    container.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [scroll]);
+
   return (
     <div
       className={`relative w-full h-screen bg-blue-800 flex items-center justify-center overflow-hidden transition-opacity duration-1000 ${
@@ -132,11 +168,11 @@ export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
         </div>
       )}
 
-      {/* Fades */}
+      {/* Gradient Fades */}
       <div className="absolute top-0 left-0 h-full w-24 bg-gradient-to-r from-blue-800 to-transparent z-10 pointer-events-none" />
       <div className="absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-blue-800 to-transparent z-10 pointer-events-none" />
 
-      {/* Arrows */}
+      {/* Arrows for Desktop */}
       <button
         onClick={() => scroll('left')}
         className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-white text-black p-3 rounded-full shadow hover:bg-gray-200"
