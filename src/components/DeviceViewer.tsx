@@ -104,39 +104,26 @@ export default function DeviceViewer({
       )}
 
       {/* Media Panel */}
-      {media && (
+      {(media?.introVideo || media?.successStories?.length) && (
         <div className="absolute top-14 right-4 z-40 w-[300px] max-h-[80vh] overflow-auto bg-white/90 backdrop-blur-md rounded-xl shadow-xl p-4 border border-gray-300">
-          <h2 className="text-lg font-semibold mb-3 text-gray-900">Media</h2>
-          {media.introVideo && (
+          {media?.introVideo && (
             <button
               onClick={() => setShowVideo(true)}
               className="w-full py-2 mb-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition"
             >
-              ▶ Intro Video
+              ▶ Introduction
             </button>
           )}
-          {media.successStories?.map((url, idx) => (
+          {media?.successStories && media.successStories.length > 0 && (
             <a
-              key={idx}
-              href={url}
+              href={media.successStories[0]}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full py-2 mb-2 text-sm text-center font-medium text-white bg-green-600 rounded hover:bg-green-700 transition"
             >
-              ★ Success Story {idx + 1}
+              ★ Success Stories
             </a>
-          ))}
-          {media.otherResources?.map((res, idx) => (
-            <a
-              key={idx}
-              href={res.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full py-2 mb-2 text-sm text-center font-medium text-white bg-gray-700 rounded hover:bg-gray-800 transition"
-            >
-              {res.label}
-            </a>
-          ))}
+          )}
         </div>
       )}
 
