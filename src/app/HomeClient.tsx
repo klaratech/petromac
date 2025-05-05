@@ -34,12 +34,7 @@ export default function HomeClient() {
   return (
     <div className="w-screen h-screen bg-black overflow-hidden relative">
       {mode === 'video' && (
-        <div
-          ref={playerContainerRef}
-          className="absolute inset-0"
-          onClick={() => setMode('carousel')}
-          onTouchStart={() => setMode('carousel')}
-        >
+        <div ref={playerContainerRef} className="absolute inset-0">
           <ReactPlayer
             url="/videos/intro-loop.mp4"
             playing
@@ -49,6 +44,17 @@ export default function HomeClient() {
             height="100%"
             className="absolute top-0 left-0"
           />
+
+          {/* Floating Touch to Begin Button */}
+          <div className="absolute inset-0 flex items-end justify-center pb-16 pointer-events-none">
+            <button
+              onClick={() => setMode('carousel')}
+              onTouchStart={() => setMode('carousel')}
+              className="pointer-events-auto px-8 py-3 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition"
+            >
+              Touch to Begin
+            </button>
+          </div>
         </div>
       )}
 
