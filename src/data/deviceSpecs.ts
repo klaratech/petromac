@@ -1,7 +1,6 @@
 export interface DeviceMedia {
   introVideo?: string;
   successStories?: string[];
-  otherResources?: { label: string; url: string }[];
 }
 
 export const deviceSpecs: Record<
@@ -26,6 +25,10 @@ export const deviceSpecs: Record<
       'Max Load': '500 lbs',
       'Casing Compatibility': 'Open hole ≥ 10-5/8”',
     },
+    media: {
+      introVideo: '/videos/cp12-placeholder.mp4',
+      successStories: ['https://example.com/success-cp12'],
+    },
   },
   '/models/cp8.glb': {
     specs: {
@@ -42,6 +45,10 @@ export const deviceSpecs: Record<
       'Max Load': '350 lbs',
       Compatibility: 'Open hole ≥ 8"',
     },
+    media: {
+      introVideo: '/videos/cp8-placeholder.mp4',
+      successStories: ['https://example.com/success-cp8'],
+    },
   },
   '/models/ttbs75.glb': {
     specs: {
@@ -56,6 +63,10 @@ export const deviceSpecs: Record<
       'Drag Coefficient (Static)': '4%',
       'Max Load': 'Up to 12,700 lbs (tool-dependent)',
       Compatibility: '8.25” to 14.75”',
+    },
+    media: {
+      introVideo: '/videos/ttbs75-placeholder.mp4',
+      successStories: ['https://example.com/success-ttbs75'],
     },
   },
   '/models/helix.glb': {
@@ -75,7 +86,6 @@ export const deviceSpecs: Record<
     media: {
       introVideo: '/videos/helix.mp4',
       successStories: ['https://youtu.be/dQw4w9WgXcQ'],
-      otherResources: [{ label: 'Whitepaper', url: '/docs/helix-whitepaper.pdf' }],
     },
   },
 };
