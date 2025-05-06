@@ -13,7 +13,7 @@ export default function DeviceViewer({
   model: string;
   onClose: () => void;
 }) {
-  const [showSpecs, setShowSpecs] = useState(true);
+  const [showSpecs, setShowSpecs] = useState(false);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
 
@@ -76,36 +76,9 @@ export default function DeviceViewer({
         ✕ Close
       </button>
 
-      {/* Toggle Specs Button */}
-      {specs && (
-        <button
-          onClick={() => setShowSpecs(!showSpecs)}
-          className="absolute top-4 left-4 z-50 px-3 py-1 text-xs font-medium rounded-lg bg-white/20 text-white hover:bg-white/30 border border-white/30 backdrop-blur transition-all"
-        >
-          {showSpecs ? 'Hide Specs' : 'Show Specs'}
-        </button>
-      )}
-
-      {/* Specs Panel */}
-      {specs && showSpecs && (
-        <div className="absolute top-14 left-4 z-40 w-[300px] max-h-[80vh] overflow-auto bg-white/90 backdrop-blur-md rounded-xl shadow-xl p-4 border border-gray-300">
-          <h2 className="text-lg font-semibold mb-3 text-gray-900">Specifications</h2>
-          <table className="w-full text-sm text-left mb-4">
-            <tbody>
-              {Object.entries(specs).map(([key, value]) => (
-                <tr key={key} className="border-b border-gray-200 last:border-b-0">
-                  <td className="py-1 pr-4 text-gray-600 font-medium">{key}</td>
-                  <td className="py-1 text-gray-800">{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Media Panel */}
-      {(media?.introVideo || media?.successStories?.length) && (
-        <div className="absolute top-14 right-4 z-40 w-[300px] max-h-[80vh] overflow-auto bg-white/90 backdrop-blur-md rounded-xl shadow-xl p-4 border border-gray-300">
+      {/* Media + Specs Panel */}
+      {(media?.introVideo || Array.isArray(media?.successStories) || specs) && (
+        <div className="absolute top-14 right-4 z-40 w-[300px] bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-gray-300 p-4 overflow-hidden">
           {media?.introVideo && (
             <button
               onClick={() => setShowVideo(true)}
@@ -114,15 +87,48 @@ export default function DeviceViewer({
               ▶ Introduction
             </button>
           )}
-          {media?.successStories && media.successStories.length > 0 && (
+
+          {Array.isArray(media?.successStories) && media.successStories.length > 0 && (
             <a
-              href={media.successStories[0]}
+              href={media.successStories[0] ?? '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full py-2 mb-2 text-sm text-center font-medium text-white bg-green-600 rounded hover:bg-green-700 transition"
             >
               ★ Success Stories
             </a>
+          )}
+
+          {specs && (
+            <>
+              <button
+                onClick={() => setShowSpecs(!showSpecs)}
+                className="w-full py-2 text-sm font-medium text-white bg-gray-700 rounded hover:bg-gray-800 transition mb-2"
+              >
+                {showSpecs ? 'Hide Specifications' : 'Show Specifications'}
+              </button>
+
+              {/* Specs Panel with smooth transition */}
+              <div
+                className={`transition-all duration-300 overflow-hidden ${
+                  showSpecs ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="mt-2 p-2 bg-white rounded border border-gray-200">
+                  <h2 className="text-md font-semibold mb-2 text-gray-800">Specifications</h2>
+                  <table className="w-full text-sm text-left">
+                    <tbody>
+                      {Object.entries(specs).map(([key, value]) => (
+                        <tr key={key} className="border-b border-gray-200 last:border-b-0">
+                          <td className="py-1 pr-3 text-gray-600 font-medium">{key}</td>
+                          <td className="py-1 text-gray-800">{value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
           )}
         </div>
       )}
