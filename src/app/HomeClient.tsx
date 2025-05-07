@@ -114,7 +114,7 @@ export default function HomeClient() {
       {mode === 'video' && (
         <div className="absolute inset-0">
           <ReactPlayer
-            url="/videos/intro-loop2.mp4"
+            url="/videos/intro-loop.mp4"
             playing
             loop
             muted
