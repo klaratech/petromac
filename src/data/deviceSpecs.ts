@@ -79,8 +79,7 @@ export const deviceSpecs: Record<
       'Operating Temp': 'Up to 400°F',
       'Pressure Rating': '30,000 psi',
       'Drag Coefficient (Dynamic)': '3%',
-      'Drag Coefficient (Static)': '—',
-      'Max Load': '190–225 lbs (temperature/casing dependent)',
+      'Max Load': '190–225 lbs',
       'Casing Compatibility': '7” to 9-5/8” casing',
     },
     media: {

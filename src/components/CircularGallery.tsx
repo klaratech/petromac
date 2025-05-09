@@ -1,11 +1,12 @@
 'use client';
 
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Html, useGLTF, Center } from '@react-three/drei';
-import { Suspense, useRef, useState, useEffect } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { useGLTF, Center } from '@react-three/drei';
+import { Suspense, useRef, useState, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import DeviceViewer from './DeviceViewer';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 const models = [
   { name: 'CP-12', file: '/models/cp12.glb' },
@@ -17,22 +18,12 @@ const models = [
 // Preload all models
 models.forEach((m) => useGLTF.preload(m.file));
 
-function SceneBackground() {
-  const { scene } = useThree();
-  useEffect(() => {
-    scene.background = new THREE.Color('#1a1a1a');
-  }, [scene]);
-  return null;
-}
-
 function FloatingModel({
   url,
-  name,
   position,
   onClick,
 }: {
   url: string;
-  name: string;
   position: [number, number, number];
   onClick: () => void;
 }) {
@@ -40,25 +31,29 @@ function FloatingModel({
   const ref = useRef<THREE.Group>(null);
   const [scale, setScale] = useState(1);
 
-  useEffect(() => {
-    scene.traverse((child) => {
+  const clonedScene = useMemo(() => {
+    const cloned = scene.clone(true);
+    cloned.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+        mesh.castShadow = false;
+        mesh.receiveShadow = false;
 
         const mat = mesh.material as THREE.MeshStandardMaterial;
         if (mat?.color) mat.color.multiplyScalar(1.3);
       }
     });
+    return cloned;
+  }, [scene]);
 
+  useEffect(() => {
     requestAnimationFrame(() => {
-      const box = new THREE.Box3().setFromObject(scene);
+      const box = new THREE.Box3().setFromObject(clonedScene);
       const size = box.getSize(new THREE.Vector3()).length();
       const scaleFactor = 4.5 / size;
       setScale(scaleFactor);
     });
-  }, [scene]);
+  }, [clonedScene]);
 
   useFrame(({ clock }) => {
     if (ref.current) {
@@ -69,13 +64,8 @@ function FloatingModel({
   return (
     <group position={position} onClick={onClick} ref={ref} scale={scale}>
       <Center>
-        <primitive object={scene} />
+        <primitive object={clonedScene} />
       </Center>
-      <Html center position={[0, -0.8, 0]} distanceFactor={6}>
-        <div className="text-white text-xs text-center bg-black/70 px-3 py-1 rounded whitespace-nowrap max-w-[140px]">
-          {name}
-        </div>
-      </Html>
     </group>
   );
 }
@@ -106,6 +96,14 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="w-full h-screen relative group">
+      <Image
+        src="/images/tv-bg.png"
+        alt="Background"
+        fill
+        priority
+        className="absolute inset-0 object-cover z-0"
+      />
+
       <AnimatePresence>
         {!selectedModel && (
           <motion.div
@@ -114,7 +112,7 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
             animate={{ opacity: 1, scale: isZooming ? 1.5 : 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
-            className="w-full h-full absolute inset-0"
+            className="w-full h-full absolute inset-0 z-10"
           >
             <button
               onClick={onClose}
@@ -124,11 +122,8 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
             </button>
 
             <Canvas shadows camera={{ position: [0, 0, 12], fov: 50 }}>
-              <SceneBackground />
-              <ambientLight intensity={0.2} />
-              <directionalLight position={[5, 5, 5]} intensity={0.6} castShadow />
-              <directionalLight position={[-5, -5, -5]} intensity={0.3} />
-              <hemisphereLight intensity={0.1} />
+              <ambientLight intensity={0.5} />
+              <directionalLight position={[5, 5, 5]} intensity={0.8} />
               <Suspense fallback={null}>
                 <RotatingGroup>
                   {models.map((model, index) => {
@@ -138,7 +133,6 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
                     return (
                       <FloatingModel
                         key={model.name}
-                        name={model.name}
                         url={model.file}
                         position={[x, 0, z]}
                         onClick={() => handleModelClick(model.file)}
@@ -158,7 +152,7 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-0"
+            className="absolute inset-0 z-10"
           >
             <DeviceViewer
               model={selectedModel}
