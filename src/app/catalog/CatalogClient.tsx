@@ -4,6 +4,13 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import CircularGallery from '@/components/CircularGallery';
 
+const models = [
+  { name: 'TTB-S75', file: '/models/ttbs75.glb' },
+  { name: 'CP-12', file: '/models/cp12.glb' },
+  { name: 'CP-8', file: '/models/cp8.glb' },
+  { name: 'Helix', file: '/models/helix.glb' },
+];
+
 export default function CatalogClient() {
   const router = useRouter();
 
@@ -19,6 +26,9 @@ export default function CatalogClient() {
   }, [router]);
 
   return (
-    <CircularGallery onClose={() => router.push('/?mode=carousel')} />
+    <CircularGallery
+      models={models}
+      onClose={() => router.push('/?mode=carousel')}
+    />
   );
 }

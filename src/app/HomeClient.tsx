@@ -1,26 +1,31 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import CarouselView from '@/components/CarouselView';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
+const introVideo = '/videos/intro-loop.mp4';
 
 export default function HomeClient() {
-  const [mode, setMode] = useState<'intro' | 'video' | 'carousel'>('intro');
+  const [mode, setMode] = useState<'intro' | 'video'>('intro');
   const [typedText, setTypedText] = useState('');
   const [showButton, setShowButton] = useState(false);
+  const [videoKey, setVideoKey] = useState(0);
 
-  const searchParams = useSearchParams();
   const router = useRouter();
-
-  // 🧠 Tracks last interaction timestamp (idle logic)
+  const searchParams = useSearchParams();
   const lastInteractionRef = useRef<number>(Date.now());
 
   const fullText = 'Disruptive Conveyance Solutions';
 
-  // ✨ Typewriter effect
+  useEffect(() => {
+    const param = searchParams.get('mode');
+    if (param === 'video') {
+      setMode('video');
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (mode !== 'intro') return;
 
@@ -41,27 +46,6 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, [mode]);
 
-  // 🔁 Support `?mode=carousel`
-  useEffect(() => {
-    const param = searchParams.get('mode');
-    if (param === 'carousel') {
-      setMode('carousel');
-    }
-  }, [searchParams]);
-
-  // ⌨️ Allow Escape to jump to carousel
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        router.push('/?mode=carousel');
-      }
-    };
-
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [router]);
-
-  // 🧠 Track interaction for idle timeout logic
   useEffect(() => {
     const updateInteraction = () => {
       lastInteractionRef.current = Date.now();
@@ -80,19 +64,18 @@ export default function HomeClient() {
     };
   }, []);
 
-  // 💤 TODO: Auto-reset to intro after X seconds of inactivity
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (Date.now() - lastInteractionRef.current > 120000) {
-  //       setMode('intro');
-  //     }
-  //   }, 10000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (Date.now() - lastInteractionRef.current > 120000) {
+        setMode('video');
+        setVideoKey((prev) => prev + 1);
+      }
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="w-screen h-screen bg-black text-white relative overflow-hidden flex items-center justify-center">
-      {/* Intro Mode */}
       {mode === 'intro' && (
         <div className="flex flex-col items-center text-center">
           <h1 className="text-5xl font-extrabold mb-6">Petromac</h1>
@@ -110,11 +93,11 @@ export default function HomeClient() {
         </div>
       )}
 
-      {/* Video Mode */}
       {mode === 'video' && (
         <div className="absolute inset-0">
           <ReactPlayer
-            url="/videos/intro-loop.mp4"
+            key={videoKey}
+            url={introVideo}
             playing
             loop
             muted
@@ -123,23 +106,14 @@ export default function HomeClient() {
             className="absolute top-0 left-0"
           />
 
-          {/* Tap to Explore button */}
           <div className="absolute inset-0 flex items-end justify-center pb-16 pointer-events-none">
             <button
-              onClick={() => setMode('carousel')}
-              onTouchStart={() => setMode('carousel')}
+              onClick={() => router.push('/productlines')}
               className="pointer-events-auto px-8 py-3 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition"
             >
               Tap to Explore
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Carousel Mode */}
-      {mode === 'carousel' && (
-        <div className="absolute inset-0">
-          <CarouselView onResetToSplash={() => setMode('intro')} />
         </div>
       )}
     </div>

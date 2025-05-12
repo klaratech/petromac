@@ -5,19 +5,16 @@ import { OrbitControls, useGLTF } from '@react-three/drei';
 import { Suspense, useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { deviceSpecs } from '@/data/deviceSpecs';
+import Image from 'next/image';
 
-export default function DeviceViewer({
-  model,
-  onClose,
-}: {
-  model: string;
-  onClose: () => void;
-}) {
+export default function DeviceViewer({ model, onClose }: { model: string; onClose: () => void }) {
   const [showSpecs, setShowSpecs] = useState(false);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
 
-  const entry = deviceSpecs[model] || {};
+  // ✅ Strip version query to match deviceSpecs keys
+  const cleanModel = model.split('?')[0];
+  const entry = deviceSpecs[cleanModel] || {};
   const specs = entry.specs;
   const media = entry.media;
 
@@ -49,13 +46,19 @@ export default function DeviceViewer({
   };
 
   return (
-    <div className="w-screen h-screen relative group bg-black">
-      {/* 3D Canvas */}
+    <div className="w-screen h-screen relative group">
+      <Image
+        src="/images/tv-bg.png"
+        alt="Background"
+        fill
+        priority
+        className="absolute inset-0 object-cover z-0"
+      />
+
       <Canvas camera={{ position: [0, 0, 10], fov: 50 }} shadows>
-        <ambientLight intensity={0.2} />
-        <directionalLight position={[5, 5, 5]} intensity={0.6} castShadow />
-        <directionalLight position={[-5, -5, -5]} intensity={0.3} />
-        <hemisphereLight intensity={0.1} />
+        <ambientLight intensity={0.02} />
+        <directionalLight position={[4, 4, 6]} intensity={0.15} castShadow />
+        <directionalLight position={[-3, -3, -4]} intensity={0.1} />
         <Suspense fallback={null}>
           <Model />
           <OrbitControls
@@ -68,7 +71,6 @@ export default function DeviceViewer({
         </Suspense>
       </Canvas>
 
-      {/* ✕ Close Button */}
       <button
         onClick={onClose}
         className="absolute top-4 right-4 z-50 px-4 py-2 text-white text-sm font-semibold bg-white/10 border border-white/20 rounded-lg shadow-lg backdrop-blur-md transition-opacity hover:bg-white/20"
@@ -76,9 +78,8 @@ export default function DeviceViewer({
         ✕ Close
       </button>
 
-      {/* Media + Specs Panel */}
       {(media?.introVideo || Array.isArray(media?.successStories) || specs) && (
-        <div className="absolute top-14 right-4 z-40 w-[300px] bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-gray-300 p-4 overflow-hidden">
+        <div className="absolute top-14 right-4 z-50 w-[260px] bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-gray-300 p-4 overflow-hidden">
           {media?.introVideo && (
             <button
               onClick={() => setShowVideo(true)}
@@ -105,10 +106,9 @@ export default function DeviceViewer({
                 onClick={() => setShowSpecs(!showSpecs)}
                 className="w-full py-2 text-sm font-medium text-white bg-gray-700 rounded hover:bg-gray-800 transition mb-2"
               >
-                {showSpecs ? 'Hide Specifications' : 'Show Specifications'}
+                Specifications
               </button>
 
-              {/* Specs Panel with smooth transition */}
               <div
                 className={`transition-all duration-300 overflow-hidden ${
                   showSpecs ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
@@ -133,7 +133,6 @@ export default function DeviceViewer({
         </div>
       )}
 
-      {/* Video Overlay */}
       {showVideo && media?.introVideo && (
         <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
           <video

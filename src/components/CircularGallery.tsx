@@ -8,83 +8,24 @@ import DeviceViewer from './DeviceViewer';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
-const models = [
-  { name: 'CP-12', file: '/models/cp12.glb' },
-  { name: 'TTB-S75', file: '/models/ttbs75.glb' },
-  { name: 'CP-8', file: '/models/cp8.glb' },
-  { name: 'Helix', file: '/models/helix.glb' },
-];
-
-// Preload all models
-models.forEach((m) => useGLTF.preload(m.file));
-
-function FloatingModel({
-  url,
-  position,
-  onClick,
-}: {
-  url: string;
-  position: [number, number, number];
-  onClick: () => void;
-}) {
-  const { scene } = useGLTF(url);
-  const ref = useRef<THREE.Group>(null);
-  const [scale, setScale] = useState(1);
-
-  const clonedScene = useMemo(() => {
-    const cloned = scene.clone(true);
-    cloned.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh;
-        mesh.castShadow = false;
-        mesh.receiveShadow = false;
-
-        const mat = mesh.material as THREE.MeshStandardMaterial;
-        if (mat?.color) mat.color.multiplyScalar(1.3);
-      }
-    });
-    return cloned;
-  }, [scene]);
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      const box = new THREE.Box3().setFromObject(clonedScene);
-      const size = box.getSize(new THREE.Vector3()).length();
-      const scaleFactor = 4.5 / size;
-      setScale(scaleFactor);
-    });
-  }, [clonedScene]);
-
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      ref.current.rotation.y = clock.getElapsedTime() * 0.5;
-    }
-  });
-
-  return (
-    <group position={position} onClick={onClick} ref={ref} scale={scale}>
-      <Center>
-        <primitive object={clonedScene} />
-      </Center>
-    </group>
-  );
+interface ModelItem {
+  name: string;
+  file: string;
 }
 
-function RotatingGroup({ children }: { children: React.ReactNode }) {
-  const groupRef = useRef<THREE.Group>(null);
-
-  useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += 0.002;
-    }
-  });
-
-  return <group ref={groupRef}>{children}</group>;
+interface Props {
+  onClose: () => void;
+  models: ModelItem[];
 }
 
-export default function CircularGallery({ onClose }: { onClose: () => void }) {
+export default function CircularGallery({ onClose, models }: Props) {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [isZooming, setIsZooming] = useState(false);
+
+  // Preload all models passed in
+  useEffect(() => {
+    models.forEach((m) => useGLTF.preload(m.file));
+  }, [models]);
 
   const handleModelClick = (file: string) => {
     setIsZooming(true);
@@ -93,6 +34,62 @@ export default function CircularGallery({ onClose }: { onClose: () => void }) {
       setIsZooming(false);
     }, 600);
   };
+
+  function FloatingModel({ url, position, onClick }: { url: string; position: [number, number, number]; onClick: () => void }) {
+    const { scene } = useGLTF(url);
+    const ref = useRef<THREE.Group>(null);
+    const [scale, setScale] = useState(1);
+
+    const clonedScene = useMemo(() => {
+      const cloned = scene.clone(true);
+      cloned.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          mesh.castShadow = false;
+          mesh.receiveShadow = false;
+
+          const mat = mesh.material as THREE.MeshStandardMaterial;
+          if (mat?.color) mat.color.multiplyScalar(1.3);
+        }
+      });
+      return cloned;
+    }, [scene]);
+
+    useEffect(() => {
+      requestAnimationFrame(() => {
+        const box = new THREE.Box3().setFromObject(clonedScene);
+        const size = box.getSize(new THREE.Vector3()).length();
+        const scaleFactor = 4.5 / size;
+        setScale(scaleFactor);
+      });
+    }, [clonedScene]);
+
+    useFrame(({ clock }) => {
+      if (ref.current) {
+        ref.current.rotation.y = clock.getElapsedTime() * 0.5;
+      }
+    });
+
+    return (
+      <group position={position} onClick={onClick} ref={ref} scale={scale}>
+        <Center>
+          <primitive object={clonedScene} />
+        </Center>
+      </group>
+    );
+  }
+
+  function RotatingGroup({ children }: { children: React.ReactNode }) {
+    const groupRef = useRef<THREE.Group>(null);
+
+    useFrame(() => {
+      if (groupRef.current) {
+        groupRef.current.rotation.y += 0.002;
+      }
+    });
+
+    return <group ref={groupRef}>{children}</group>;
+  }
 
   return (
     <div className="w-full h-screen relative group">
