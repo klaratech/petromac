@@ -11,12 +11,12 @@ export default function HomeClient() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
   const [typedText, setTypedText] = useState('');
   const [showButton, setShowButton] = useState(false);
+  const [showExploreButton, setShowExploreButton] = useState(false);
   const [videoKey, setVideoKey] = useState(0);
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const lastInteractionRef = useRef<number>(Date.now());
-
   const fullText = 'Disruptive Conveyance Solutions';
 
   useEffect(() => {
@@ -28,7 +28,6 @@ export default function HomeClient() {
 
   useEffect(() => {
     if (mode !== 'intro') return;
-
     setTypedText('');
     setShowButton(false);
     let i = 0;
@@ -36,7 +35,6 @@ export default function HomeClient() {
     const interval = setInterval(() => {
       setTypedText(fullText.slice(0, i + 1));
       i++;
-
       if (i >= fullText.length) {
         clearInterval(interval);
         setTimeout(() => setShowButton(true), 500);
@@ -74,6 +72,17 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, []);
 
+  // ⏱ Handle hiding explore button and restarting video after 10s
+  useEffect(() => {
+    if (showExploreButton) {
+      const timeout = setTimeout(() => {
+        setShowExploreButton(false);
+        setVideoKey((prev) => prev + 1); // restart video
+      }, 10000);
+      return () => clearTimeout(timeout);
+    }
+  }, [showExploreButton]);
+
   return (
     <div className="w-screen h-screen bg-black text-white relative overflow-hidden flex items-center justify-center">
       {mode === 'intro' && (
@@ -99,21 +108,24 @@ export default function HomeClient() {
             key={videoKey}
             url={introVideo}
             playing
-            loop
+            loop={false}
             muted
             width="100%"
             height="100%"
             className="absolute top-0 left-0"
+            onEnded={() => setShowExploreButton(true)}
           />
 
-          <div className="absolute inset-0 flex items-end justify-center pb-16 pointer-events-none">
-            <button
-              onClick={() => router.push('/productlines')}
-              className="pointer-events-auto px-8 py-3 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition"
-            >
-              Tap to Explore
-            </button>
-          </div>
+          {showExploreButton && (
+            <div className="absolute inset-0 flex items-end justify-center pb-16 pointer-events-none">
+              <button
+                onClick={() => router.push('/productlines')}
+                className="pointer-events-auto px-8 py-3 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-500"
+              >
+                Tap to Explore
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
