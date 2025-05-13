@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 from github import Github
 from calendar import month_name
+import json
 
 # === CONFIGURATION ===
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -11,6 +12,7 @@ EXCEL_PATH = os.path.join(BASE_DIR, "jobhistory.xlsx")
 OUTPUT_CSV = os.path.join(BASE_DIR, "runs-summary.csv")
 OUTPUT_COUNTRY_JSON = os.path.join(BASE_DIR, "country-stats.json")
 OUTPUT_REGION_JSON = os.path.join(BASE_DIR, "region-stats.json")
+OUTPUT_FULL_JSON = os.path.join(BASE_DIR, "operations_data.json")
 
 # GitHub push config
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
@@ -19,6 +21,7 @@ REPO_NAME = "petromac-kiosk"
 TARGET_CSV_PATH = "public/data/runs-summary.csv"
 TARGET_COUNTRY_JSON = "public/data/country-stats.json"
 TARGET_REGION_JSON = "public/data/region-stats.json"
+TARGET_FULL_JSON = "public/data/operations_data.json"
 TARGET_BRANCH = "main"
 
 # === HELPERS ===
@@ -99,6 +102,12 @@ def generate_stats(df):
     df["Successful"] = df["Successful"].fillna("1").astype(int)
     df["Unsuccessful"] = df["Successful"].apply(lambda x: 0 if x == 1 else 1)
 
+    # Write full JSON with all records (for filtering)
+    full_records = df.to_dict(orient="records")
+    with open(OUTPUT_FULL_JSON, "w") as f:
+        json.dump(full_records, f, indent=2)
+    print(f"✅ Wrote full records to {OUTPUT_FULL_JSON}")
+
     # Country-level stats
     country = (
         df.groupby("Country")[["Successful", "Unsuccessful"]]
@@ -109,11 +118,11 @@ def generate_stats(df):
     country.rename(columns={"Country": "id"}, inplace=True)
     country_records = country.to_dict(orient="records")
     with open(OUTPUT_COUNTRY_JSON, "w") as f:
-        import json
         json.dump(country_records, f, indent=2)
     print(f"✅ Wrote country stats to {OUTPUT_COUNTRY_JSON}")
 
     # Region-level stats (if Region column exists)
+    region_files = [OUTPUT_COUNTRY_JSON, OUTPUT_FULL_JSON]
     if "Region" in df.columns:
         region = (
             df.groupby("Region")[["Successful", "Unsuccessful"]]
@@ -126,9 +135,9 @@ def generate_stats(df):
         with open(OUTPUT_REGION_JSON, "w") as f:
             json.dump(region_records, f, indent=2)
         print(f"✅ Wrote region stats to {OUTPUT_REGION_JSON}")
-        return [OUTPUT_COUNTRY_JSON, OUTPUT_REGION_JSON]
+        region_files.append(OUTPUT_REGION_JSON)
 
-    return [OUTPUT_COUNTRY_JSON]
+    return region_files
 
 # === MAIN ENTRY POINT ===
 def main():
@@ -136,16 +145,16 @@ def main():
     df.to_csv(OUTPUT_CSV, index=False)
     print(f"✅ Wrote cleaned CSV to: {OUTPUT_CSV}")
 
-    # Push CSV
     push_to_github(OUTPUT_CSV, TARGET_CSV_PATH)
 
-    # Write and push JSON stats
     generated = generate_stats(df)
     for json_file in generated:
         if json_file.endswith("country-stats.json"):
             push_to_github(json_file, TARGET_COUNTRY_JSON)
         elif json_file.endswith("region-stats.json"):
             push_to_github(json_file, TARGET_REGION_JSON)
+        elif json_file.endswith("operations_data.json"):
+            push_to_github(json_file, TARGET_FULL_JSON)
 
 if __name__ == "__main__":
     main()

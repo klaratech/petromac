@@ -2,11 +2,13 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import { Suspense, useState, useRef, useEffect } from 'react';
+import { Suspense, useState, useRef, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
 import { deviceSpecs } from '@/data/deviceSpecs';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import DrilldownMap from '@/components/DrilldownMap';
+import drilldownData from '@/data/operations_data.json';
 
 export default function DeviceViewer({
   model,
@@ -20,6 +22,7 @@ export default function DeviceViewer({
   const [showSpecs, setShowSpecs] = useState(false);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [showSuccessMap, setShowSuccessMap] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
 
   const cleanModel = model.split('?')[0];
@@ -27,12 +30,24 @@ export default function DeviceViewer({
   const specs = entry.specs;
   const media = entry.media;
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setFadingOut(true);
     setTimeout(() => {
       onClose(directView ? 'exit' : 'back');
     }, 400);
-  };
+  }, [onClose, directView]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (showVideo) setShowVideo(false);
+        else if (showSuccessMap) setShowSuccessMap(false);
+        else handleClose();
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [showVideo, showSuccessMap, handleClose]);
 
   const Model = () => {
     const { scene } = useGLTF(model);
@@ -115,14 +130,12 @@ export default function DeviceViewer({
               )}
 
               {Array.isArray(media?.successStories) && media.successStories.length > 0 && (
-                <a
-                  href={media.successStories[0] ?? '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full py-2 mb-2 text-sm text-center font-medium text-white bg-green-600 rounded hover:bg-green-700 transition"
+                <button
+                  onClick={() => setShowSuccessMap(true)}
+                  className="w-full py-2 mb-2 text-sm text-center font-medium text-white bg-green-600 rounded hover:bg-green-700 transition"
                 >
                   ★ Success Stories
-                </a>
+                </button>
               )}
 
               {specs && (
@@ -169,6 +182,18 @@ export default function DeviceViewer({
               <button
                 onClick={() => setShowVideo(false)}
                 className="absolute top-4 right-4 px-5 py-2 text-white bg-white/10 border border-white/20 rounded-lg shadow-lg backdrop-blur hover:bg-white/20 text-sm font-semibold"
+              >
+                ✕ Close
+              </button>
+            </div>
+          )}
+
+          {showSuccessMap && (
+            <div className="absolute inset-0 z-50 bg-white">
+              <DrilldownMap data={drilldownData} />
+              <button
+                onClick={() => setShowSuccessMap(false)}
+                className="absolute top-4 right-4 z-50 px-4 py-2 text-white text-sm font-semibold bg-black/60 border border-white/30 rounded-lg shadow-lg backdrop-blur hover:bg-black/80"
               >
                 ✕ Close
               </button>
