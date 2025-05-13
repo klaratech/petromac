@@ -7,3 +7,4 @@ Helix
 CP-12
 CP-8
 Rocker
+THOR
