@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
-const introVideo = '/videos/intro-loop.mp4';
+const introVideo = '/videos/intro-loop1.mp4';
 
 export default function HomeClient() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
