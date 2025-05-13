@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import json
 from datetime import datetime
 from github import Github
 
@@ -8,13 +7,13 @@ from github import Github
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 EXCEL_PATH = os.path.join(BASE_DIR, "jobhistory.xlsx")
-OUTPUT_JSON = os.path.join(BASE_DIR, "runs-summary.json")
+OUTPUT_CSV = os.path.join(BASE_DIR, "runs-summary.csv")
 
 # GitHub push config
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 REPO_OWNER = "Klaratech"
 REPO_NAME = "petromac-kiosk"
-TARGET_PATH = "public/data/runs-summary.json"  # in the GitHub repo
+TARGET_PATH = "public/data/runs-summary.csv"  # GitHub path
 TARGET_BRANCH = "main"
 
 # === HELPERS ===
@@ -51,40 +50,39 @@ def push_to_github(local_path, github_path):
         )
         print(f"✅ Created {github_path}")
 
-# === MAIN ===
+# === CORE LOGIC ===
+
+def load_clean_data():
+    print("📥 Reading Excel...")
+    df = pd.read_excel(EXCEL_PATH, sheet_name="MasterData_Operations", dtype=str)
+
+    print("🧹 Trimming to 'Remarks' column...")
+    df.columns = df.columns.str.strip()
+    if "Remarks" not in df.columns:
+        raise ValueError("❌ 'Remarks' column not found")
+
+    remarks_index = df.columns.get_loc("Remarks")
+    df = df.iloc[:, :remarks_index + 1]
+
+    print("🔍 Searching for 'add row above' marker...")
+    end_index = df.apply(lambda row: row.astype(str).str.lower().str.contains("add row above").any(), axis=1)
+    if end_index.any():
+        cutoff = end_index.idxmax()
+        df = df.iloc[:cutoff]
+        print(f"✂️ Truncated at row {cutoff} (marker found)")
+    else:
+        print("⚠️ Marker 'add row above' not found — using full data")
+
+    return df
+
+# === MAIN ENTRY POINT ===
 
 def main():
-    print("📥 Reading Excel file...")
-    if not os.path.exists(EXCEL_PATH):
-        raise FileNotFoundError(f"❌ Excel file not found: {EXCEL_PATH}")
+    df = load_clean_data()
+    df.to_csv(OUTPUT_CSV, index=False)
+    print(f"✅ Wrote cleaned CSV to: {OUTPUT_CSV}")
 
-    df = pd.read_excel(EXCEL_PATH, sheet_name="MasterData_Operations", dtype=str)
-    print(f"✅ Loaded {len(df)} rows")
-
-    # Clean fields
-    df["Country"] = df["Country"].str.strip()
-    df = df[df["Year"].notna()]
-    df["Year"] = df["Year"].astype(int)
-    df["Successful"] = df["Successful"].fillna("1").astype(int)
-
-    # Group data
-    grouped = (
-        df.groupby(["Country", "Year", "Successful"])
-        .size()
-        .reset_index(name="Count")
-        .sort_values(["Country", "Year"])
-    )
-
-    # Save JSON
-    result = grouped.to_dict(orient="records")
-    with open(OUTPUT_JSON, "w") as f:
-        json.dump(result, f, indent=2)
-
-    print(f"📤 Wrote summary to: {OUTPUT_JSON}")
-    print(f"✅ {len(result)} aggregated records written")
-
-    # Push to GitHub
-    push_to_github(OUTPUT_JSON, TARGET_PATH)
+    push_to_github(OUTPUT_CSV, TARGET_PATH)
 
 if __name__ == "__main__":
     main()
