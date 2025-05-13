@@ -16,16 +16,28 @@ interface ModelItem {
 interface Props {
   onClose: () => void;
   models: ModelItem[];
+  forceSingleModel?: boolean;
 }
 
-export default function CircularGallery({ onClose, models }: Props) {
+export default function CircularGallery({
+  onClose,
+  models,
+  forceSingleModel = false,
+}: Props) {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [isZooming, setIsZooming] = useState(false);
 
-  // Preload all models passed in
+  // Preload models
   useEffect(() => {
     models.forEach((m) => useGLTF.preload(m.file));
   }, [models]);
+
+  // Auto-launch viewer if single model
+  useEffect(() => {
+    if (forceSingleModel && models.length === 1) {
+      setSelectedModel(models[0].file);
+    }
+  }, [forceSingleModel, models]);
 
   const handleModelClick = (file: string) => {
     setIsZooming(true);
@@ -35,7 +47,15 @@ export default function CircularGallery({ onClose, models }: Props) {
     }, 600);
   };
 
-  function FloatingModel({ url, position, onClick }: { url: string; position: [number, number, number]; onClick: () => void }) {
+  function FloatingModel({
+    url,
+    position,
+    onClick,
+  }: {
+    url: string;
+    position: [number, number, number];
+    onClick: () => void;
+  }) {
     const { scene } = useGLTF(url);
     const ref = useRef<THREE.Group>(null);
     const [scale, setScale] = useState(1);
@@ -153,7 +173,14 @@ export default function CircularGallery({ onClose, models }: Props) {
           >
             <DeviceViewer
               model={selectedModel}
-              onClose={() => setSelectedModel(null)}
+              directView={forceSingleModel}
+              onClose={(reason) => {
+                if (reason === 'exit') {
+                  onClose(); // Return to productlines
+                } else {
+                  setSelectedModel(null); // Back to gallery
+                }
+              }}
             />
           </motion.div>
         )}

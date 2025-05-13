@@ -14,12 +14,16 @@ const MODEL_MAP: Record<string, { name: string; file: string }[]> = {
   wirelineexpress: [
     { name: 'TTB-S75', file: '/models/ttbs75.glb?v=20240509' },
   ],
+  thor: [
+    { name: 'Thor Alpha', file: '/models/thor.glb?v=20240509' },
+  ],
 };
 
 export default function ProductlinesClient() {
   const router = useRouter();
   const [fading, setFading] = useState(false);
   const [selectedModels, setSelectedModels] = useState<{ name: string; file: string }[] | null>(null);
+  const [forceSingleModel, setForceSingleModel] = useState(false);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -29,8 +33,23 @@ export default function ProductlinesClient() {
     return () => clearTimeout(timeout);
   }, [router]);
 
+  const handleProductClick = (productKey: keyof typeof MODEL_MAP) => {
+    const models = MODEL_MAP[productKey];
+    setSelectedModels(models);
+    setForceSingleModel(models.length === 1);
+  };
+
   if (selectedModels) {
-    return <CircularGallery models={selectedModels} onClose={() => setSelectedModels(null)} />;
+    return (
+      <CircularGallery
+        models={selectedModels}
+        onClose={() => {
+          setSelectedModels(null);
+          setForceSingleModel(false);
+        }}
+        forceSingleModel={forceSingleModel}
+      />
+    );
   }
 
   return (
@@ -47,30 +66,46 @@ export default function ProductlinesClient() {
         className="absolute inset-0 object-cover z-0"
       />
 
-      <div className="relative z-10 flex gap-16">
+      <div className="relative z-10 flex gap-16 items-center justify-center">
+        {/* Wireline Express */}
         <div
-          className="cursor-pointer hover:scale-105 transition-transform"
-          onClick={() => setSelectedModels(MODEL_MAP['wirelineexpress'])}
+          className="w-[220px] h-[220px] flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+          onClick={() => handleProductClick('wirelineexpress')}
         >
           <Image
             src="/images/wirelineexpress.png"
             alt="Wireline Express"
-            width={200}
-            height={200}
-            className="rounded-xl shadow-xl"
+            width={180}
+            height={180}
+            className="rounded-xl shadow-xl object-contain"
           />
         </div>
 
+        {/* Focus */}
         <div
-          className="cursor-pointer hover:scale-105 transition-transform"
-          onClick={() => setSelectedModels(MODEL_MAP['focus'])}
+          className="w-[220px] h-[220px] flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+          onClick={() => handleProductClick('focus')}
         >
           <Image
             src="/images/focus.png"
             alt="Focus"
-            width={200}
-            height={200}
-            className="rounded-xl shadow-xl"
+            width={180}
+            height={180}
+            className="rounded-xl shadow-xl object-contain"
+          />
+        </div>
+
+        {/* Thor */}
+        <div
+          className="w-[220px] h-[220px] flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+          onClick={() => handleProductClick('thor')}
+        >
+          <Image
+            src="/images/thor.png"
+            alt="Thor"
+            width={180}
+            height={180}
+            className="rounded-xl shadow-xl object-contain"
           />
         </div>
       </div>

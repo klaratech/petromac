@@ -69,6 +69,24 @@ export const deviceSpecs: Record<
       successStories: ['https://example.com/success-ttbs75'],
     },
   },
+  '/models/thor.glb': {
+  specs: {
+    Name: 'Thor Hammer Tool',
+    Material: 'Titanium Alloy',
+    Length: '22"',
+    OD: '6.5"',
+    Weight: '33 lbs',
+    'Operating Temp': 'Up to 450°F',
+    'Pressure Rating': '35,000 psi',
+    'Impact Force': 'High-intensity vibrational',
+    'Use Case': 'Stuck pipe remediation',
+    Compatibility: '6”–12” hole sizes',
+  },
+  media: {
+    introVideo: '/videos/helix.mp4',
+    successStories: ['https://example.com/success-thor'],
+  },
+},
   '/models/helix.glb': {
     specs: {
       Name: 'CX-9 Helix Centralizer',
