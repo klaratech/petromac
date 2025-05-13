@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 const introVideo = '/videos/intro-loop.mp4';
@@ -13,12 +14,15 @@ export default function HomeClient() {
   const [showButton, setShowButton] = useState(false);
   const [showExploreButton, setShowExploreButton] = useState(false);
   const [videoKey, setVideoKey] = useState(0);
+  const [fadingOut, setFadingOut] = useState(false);
+  const [videoStartTime, setVideoStartTime] = useState<number | null>(null);
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const lastInteractionRef = useRef<number>(Date.now());
   const fullText = 'Disruptive Conveyance Solutions';
 
+  // Check for ?mode=video
   useEffect(() => {
     const param = searchParams.get('mode');
     if (param === 'video') {
@@ -26,6 +30,7 @@ export default function HomeClient() {
     }
   }, [searchParams]);
 
+  // Typewriter intro
   useEffect(() => {
     if (mode !== 'intro') return;
     setTypedText('');
@@ -44,6 +49,7 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, [mode]);
 
+  // Reset to video after idle
   useEffect(() => {
     const updateInteraction = () => {
       lastInteractionRef.current = Date.now();
@@ -72,62 +78,98 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, []);
 
-  // ⏱ Handle hiding explore button and restarting video after 10s
+  // Restart video after 10s if no interaction
   useEffect(() => {
     if (showExploreButton) {
       const timeout = setTimeout(() => {
         setShowExploreButton(false);
-        setVideoKey((prev) => prev + 1); // restart video
+        setVideoKey((prev) => prev + 1);
       }, 10000);
       return () => clearTimeout(timeout);
     }
   }, [showExploreButton]);
 
+  const handleStartVideo = () => {
+    setMode('video');
+    setVideoStartTime(Date.now());
+  };
+
+  const handleExplore = () => {
+    if (videoStartTime && Date.now() - videoStartTime < 2000) return; // debounce early taps
+    setFadingOut(true);
+    setTimeout(() => router.push('/productlines'), 500); // match animation
+  };
+
   return (
     <div className="w-screen h-screen bg-black text-white relative overflow-hidden flex items-center justify-center">
-      {mode === 'intro' && (
-        <div className="flex flex-col items-center text-center">
-          <h1 className="text-5xl font-extrabold mb-6">Petromac</h1>
-          <p className="text-xl h-6 font-medium tracking-wide">{typedText}</p>
+      <AnimatePresence>
+        {mode === 'intro' && !fadingOut && (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-center text-center"
+          >
+            <h1 className="text-5xl font-extrabold mb-6">Petromac</h1>
+            <p className="text-xl h-6 font-medium tracking-wide">{typedText}</p>
 
-          {showButton && (
-            <button
-              onClick={() => setMode('video')}
-              onTouchStart={() => setMode('video')}
-              className="mt-12 px-8 py-3 text-lg font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-1000 opacity-100"
-            >
-              Touch to Begin
-            </button>
-          )}
-        </div>
-      )}
-
-      {mode === 'video' && (
-        <div className="absolute inset-0">
-          <ReactPlayer
-            key={videoKey}
-            url={introVideo}
-            playing
-            loop={false}
-            muted
-            width="100%"
-            height="100%"
-            className="absolute top-0 left-0"
-            onEnded={() => setShowExploreButton(true)}
-          />
-
-          {showExploreButton && (
-            <div className="absolute inset-0 flex items-end justify-center pb-16 pointer-events-none">
+            {showButton && (
               <button
-                onClick={() => router.push('/productlines')}
-                className="pointer-events-auto px-8 py-3 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-500"
+                onClick={handleStartVideo}
+                onTouchStart={handleStartVideo}
+                className="mt-12 px-8 py-3 text-lg font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-1000 opacity-100"
               >
-                Tap to Explore
+                Touch to Begin
               </button>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </motion.div>
+        )}
+
+        {mode === 'video' && (
+          <motion.div
+            key="video"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 z-10"
+          >
+            <ReactPlayer
+              key={videoKey}
+              url={introVideo}
+              playing
+              loop={false}
+              muted
+              width="100%"
+              height="100%"
+              className="absolute top-0 left-0"
+              onStart={() => setVideoStartTime(Date.now())}
+              onEnded={() => setShowExploreButton(true)}
+            />
+
+            {/* Fullscreen transparent button */}
+            <button
+              onClick={handleExplore}
+              className="absolute inset-0 z-20 w-full h-full bg-transparent cursor-pointer"
+              aria-label="Tap to explore"
+            />
+
+            {/* Optional visual cue after video ends */}
+            {showExploreButton && (
+              <div className="absolute inset-0 z-30 flex items-end justify-center pb-16">
+                <button
+                  onClick={handleExplore}
+                  className="px-8 py-3 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-500"
+                >
+                  Tap to Explore
+                </button>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
