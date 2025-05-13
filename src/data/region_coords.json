@@ -1,12 +1,8 @@
 {
     "NAM": { "lat": 40.0, "lon": -100.0 },
     "LAM": { "lat": -15.0, "lon": -60.0 },
-    "North Africa": { "lat": 28.0, "lon": 10.0 },
-    "Sub-Saharan Africa": { "lat": -5.0, "lon": 20.0 },
-    "Europe": { "lat": 54.0, "lon": 15.0 },
-    "Eurasia": { "lat": 50.0, "lon": 70.0 },
-    "Middle East and India": { "lat": 25.0, "lon": 55.0 },
-    "Asia": { "lat": 20.0, "lon": 100.0 },
-    "Australia/NZ": { "lat": -25.0, "lon": 135.0 },
-    "Other": { "lat": 0.0, "lon": 0.0 }
+    "AFR": { "lat": -5.0, "lon": 20.0 },
+    "EUR": { "lat": 54.0, "lon": 15.0 },
+    "MENA": { "lat": 25.0, "lon": 55.0 },
+    "APAC": { "lat": 20.0, "lon": 100.0 }
   }

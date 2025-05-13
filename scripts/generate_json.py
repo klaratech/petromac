@@ -10,8 +10,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 EXCEL_PATH = os.path.join(BASE_DIR, "jobhistory.xlsx")
 OUTPUT_CSV = os.path.join(BASE_DIR, "runs-summary.csv")
-OUTPUT_COUNTRY_JSON = os.path.join(BASE_DIR, "country-stats.json")
-OUTPUT_REGION_JSON = os.path.join(BASE_DIR, "region-stats.json")
 OUTPUT_FULL_JSON = os.path.join(BASE_DIR, "operations_data.json")
 
 # GitHub push config
@@ -19,8 +17,6 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 REPO_OWNER = "Klaratech"
 REPO_NAME = "petromac-kiosk"
 TARGET_CSV_PATH = "public/data/runs-summary.csv"
-TARGET_COUNTRY_JSON = "public/data/country-stats.json"
-TARGET_REGION_JSON = "public/data/region-stats.json"
 TARGET_FULL_JSON = "public/data/operations_data.json"
 TARGET_BRANCH = "main"
 
@@ -58,7 +54,6 @@ def push_to_github(local_path, github_path):
         )
         print(f"✅ Created {github_path}")
 
-
 def normalize_month(value):
     if pd.isna(value):
         return None
@@ -74,8 +69,8 @@ def normalize_month(value):
             return i
     return None
 
-
 # === CORE LOGIC ===
+
 def load_clean_data():
     print("📥 Reading Excel...")
     df = pd.read_excel(EXCEL_PATH, sheet_name="MasterData_Operations", dtype=str)
@@ -95,66 +90,25 @@ def load_clean_data():
         print("🧮 Normalizing 'Month' column...")
         df["Month"] = df["Month"].apply(normalize_month)
 
+    print("🧽 Replacing NaNs with 0...")
+    df = df.fillna(0)
+
     return df
 
+# === MAIN ENTRY POINT ===
 
-def generate_stats(df):
-    df["Successful"] = df["Successful"].fillna("1").astype(int)
-    df["Unsuccessful"] = df["Successful"].apply(lambda x: 0 if x == 1 else 1)
+def main():
+    df = load_clean_data()
 
-    # Write full JSON with all records (for filtering)
+    df.to_csv(OUTPUT_CSV, index=False)
+    print(f"✅ Wrote cleaned CSV to: {OUTPUT_CSV}")
+    push_to_github(OUTPUT_CSV, TARGET_CSV_PATH)
+
     full_records = df.to_dict(orient="records")
     with open(OUTPUT_FULL_JSON, "w") as f:
         json.dump(full_records, f, indent=2)
-    print(f"✅ Wrote full records to {OUTPUT_FULL_JSON}")
-
-    # Country-level stats
-    country = (
-        df.groupby("Country")[["Successful", "Unsuccessful"]]
-        .sum()
-        .reset_index()
-    )
-    country["Total"] = country["Successful"] + country["Unsuccessful"]
-    country.rename(columns={"Country": "id"}, inplace=True)
-    country_records = country.to_dict(orient="records")
-    with open(OUTPUT_COUNTRY_JSON, "w") as f:
-        json.dump(country_records, f, indent=2)
-    print(f"✅ Wrote country stats to {OUTPUT_COUNTRY_JSON}")
-
-    # Region-level stats (if Region column exists)
-    region_files = [OUTPUT_COUNTRY_JSON, OUTPUT_FULL_JSON]
-    if "Region" in df.columns:
-        region = (
-            df.groupby("Region")[["Successful", "Unsuccessful"]]
-            .sum()
-            .reset_index()
-        )
-        region["Total"] = region["Successful"] + region["Unsuccessful"]
-        region.rename(columns={"Region": "id"}, inplace=True)
-        region_records = region.to_dict(orient="records")
-        with open(OUTPUT_REGION_JSON, "w") as f:
-            json.dump(region_records, f, indent=2)
-        print(f"✅ Wrote region stats to {OUTPUT_REGION_JSON}")
-        region_files.append(OUTPUT_REGION_JSON)
-
-    return region_files
-
-# === MAIN ENTRY POINT ===
-def main():
-    df = load_clean_data()
-    df.to_csv(OUTPUT_CSV, index=False)
-    print(f"✅ Wrote cleaned CSV to: {OUTPUT_CSV}")
-
-    push_to_github(OUTPUT_CSV, TARGET_CSV_PATH)
-
-    generated = generate_stats(df)
-    for json_file in generated:
-        if json_file.endswith("country-stats.json"):
-            push_to_github(json_file, TARGET_COUNTRY_JSON)
-        elif json_file.endswith("region-stats.json"):
-            push_to_github(json_file, TARGET_REGION_JSON)
-        elif json_file.endswith("operations_data.json"):
-            push_to_github(json_file, TARGET_FULL_JSON)
+    print(f"✅ Wrote operations data JSON to {OUTPUT_FULL_JSON}")
+    push_to_github(OUTPUT_FULL_JSON, TARGET_FULL_JSON)
 
 if __name__ == "__main__":
     main()
