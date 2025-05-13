@@ -15,7 +15,7 @@ const MODEL_MAP: Record<string, { name: string; file: string }[]> = {
     { name: 'TTB-S75', file: '/models/ttbs75.glb?v=20240509' },
   ],
   thor: [
-    { name: 'Thor Alpha', file: '/models/thor.glb?v=20240509' },
+    { name: 'Thor', file: '/models/thor.glb?v=20240509' },
   ],
 };
 
