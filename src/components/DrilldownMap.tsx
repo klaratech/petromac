@@ -25,14 +25,10 @@ interface Props {
 }
 
 export default function DrilldownMap({ data }: Props) {
-  console.log('🚦 DrilldownMap received data:', data?.length);
-  console.log('🔍 Sample record:', data?.[0]);
-
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
   const [worldData, setWorldData] = useState<FeatureCollection<Geometry, { name?: string }> | null>(null);
 
-  // Load and filter world map
   useEffect(() => {
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
       .then((topologyData) => {
@@ -46,20 +42,17 @@ export default function DrilldownMap({ data }: Props) {
           return f.properties?.name !== 'Antarctica' && !(lon < -150 && lat > 10);
         });
 
-        console.log('🌍 Loaded world map with', filtered.length, 'countries');
         setWorldData({ ...countries, features: filtered });
       })
       .catch((err) => console.error('❌ Failed to load world map:', err));
   }, []);
 
   const regionStats = useMemo(() => {
-    const stats = d3.rollups(
+    return d3.rollups(
       data,
-      (entries) => entries.filter((d) => d.Job_Status === 'Successful').length,
+      (entries) => d3.sum(entries, (d) => +d.Successful),
       (d) => d.Region || 'Unknown'
     );
-    console.log('📊 Aggregated regionStats:', stats);
-    return stats;
   }, [data]);
 
   const countryStats = useMemo(() => {
@@ -67,7 +60,7 @@ export default function DrilldownMap({ data }: Props) {
     const filtered = data.filter((d) => d.Region === focusedRegion);
     return d3.rollups(
       filtered,
-      (entries) => entries.filter((d) => d.Job_Status === 'Successful').length,
+      (entries) => d3.sum(entries, (d) => +d.Successful),
       (d) => d.Country
     );
   }, [data, focusedRegion]);
@@ -101,12 +94,10 @@ export default function DrilldownMap({ data }: Props) {
 
     if (!focusedRegion) {
       regionStats.forEach(([region, count]) => {
-        if (!regionCoords[region]) {
-          console.warn(`⚠️ No coords for region: ${region}`);
-          return;
-        }
+        const coords = regionCoords[region];
+        if (!coords || count <= 0) return;
 
-        const projected = projection([regionCoords[region].lon, regionCoords[region].lat]);
+        const projected = projection([coords.lon, coords.lat]);
         if (!projected) return;
 
         const [x, y] = projected;

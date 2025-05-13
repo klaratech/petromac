@@ -90,8 +90,9 @@ def load_clean_data():
         print("🧮 Normalizing 'Month' column...")
         df["Month"] = df["Month"].apply(normalize_month)
 
-    print("🧽 Replacing NaNs with 0...")
+    print("🧽 Replacing NaNs with 0 and standardizing region labels...")
     df = df.fillna(0)
+    df["Region"] = df["Region"].replace({"MEA": "MENA"})
 
     return df
 
