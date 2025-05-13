@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import DrilldownMap from '@/components/DrilldownMap';
-import operationsData from '@/data/operations_data.json';
 
 interface JobRecord {
   Region: string;
@@ -16,24 +15,30 @@ export default function DashboardClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const from = searchParams.get('from');
-
   const redirectTo = from === 'carousel' ? '/?mode=carousel' : '/';
+
+  const [data, setData] = useState<JobRecord[] | null>(null);
+
+  useEffect(() => {
+    fetch('/data/operations_data.json')
+      .then((res) => res.json())
+      .then((json: JobRecord[]) => {
+        const successfulOnly = json.filter((d) => d.Job_Status === 'Successful');
+        setData(successfulOnly);
+      })
+      .catch((err) => {
+        console.error('❌ Failed to load operations data:', err);
+      });
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        router.push(redirectTo);
-      }
+      if (e.key === 'Escape') router.push(redirectTo);
     };
-
     const handleFullscreenChange = () => {
-      const doc = document as Document & {
-        webkitFullscreenElement?: Element | null;
-      };
+      const doc = document as Document & { webkitFullscreenElement?: Element | null };
       const isFullscreen = document.fullscreenElement || doc.webkitFullscreenElement;
-      if (!isFullscreen) {
-        router.push(redirectTo);
-      }
+      if (!isFullscreen) router.push(redirectTo);
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -47,10 +52,6 @@ export default function DashboardClient() {
     };
   }, [router, redirectTo]);
 
-  const filteredData: JobRecord[] = (operationsData as JobRecord[]).filter(
-    (d) => d.Job_Status === 'Successful'
-  );
-
   return (
     <main className="min-h-screen bg-gray-50 p-6 flex flex-col items-center gap-6 relative">
       <h1 className="text-4xl font-bold text-center font-sans">
@@ -58,10 +59,13 @@ export default function DashboardClient() {
       </h1>
 
       <section className="w-full">
-        <DrilldownMap data={filteredData} />
+        {data ? (
+          <DrilldownMap data={data} />
+        ) : (
+          <p className="text-gray-500 text-lg text-center mt-10">Loading map data...</p>
+        )}
       </section>
 
-      {/* ✕ Close Button */}
       <button
         onClick={() => router.push(redirectTo)}
         className="absolute top-4 right-4 px-4 py-2 text-sm font-semibold text-white bg-black/40 border border-white/30 rounded-lg shadow-lg backdrop-blur hover:bg-black/60 transition"
