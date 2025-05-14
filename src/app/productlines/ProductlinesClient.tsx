@@ -101,7 +101,7 @@ export default function ProductlinesClient() {
           onClick={() => handleProductClick('thor')}
         >
           <Image
-            src="/images/thor.png"
+            src="/images/thor1.png"
             alt="Thor"
             width={180}
             height={180}
