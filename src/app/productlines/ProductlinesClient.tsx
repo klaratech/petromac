@@ -13,6 +13,7 @@ const MODEL_MAP: Record<string, { name: string; file: string }[]> = {
   ],
   wirelineexpress: [
     { name: 'TTB-S75', file: '/models/ttbs75.glb?v=20240509' },
+    { name: 'Pathfinder', file: '/models/pathfinderht.glb?v=20240509' },
   ],
   thor: [
     { name: 'Thor', file: '/models/thor.glb?v=20240509' },
