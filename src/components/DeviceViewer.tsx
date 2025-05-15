@@ -131,7 +131,7 @@ export default function DeviceViewer({
             ✕ Close
           </button>
 
-          {(media?.introVideo || Array.isArray(media?.successStories) || specs) && (
+          {(media?.introVideo || specs) && (
             <div className="absolute top-14 right-4 z-50 w-[260px] bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-gray-300 p-4 overflow-hidden">
               {media?.introVideo && (
                 <button
@@ -142,7 +142,7 @@ export default function DeviceViewer({
                 </button>
               )}
 
-              {Array.isArray(media?.successStories) && media.successStories.length > 0 && (
+              {system && (
                 <button
                   onClick={() => setShowSuccessMap(true)}
                   className="w-full py-2 mb-2 text-sm text-center font-medium text-white bg-green-600 rounded hover:bg-green-700 transition"
@@ -182,7 +182,6 @@ export default function DeviceViewer({
           {showSuccessMap && (
             <div className="absolute inset-0 z-50 bg-white">
               {drilldownData ? (
-                
                 <DrilldownMap data={drilldownData} initialSystem={system} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">

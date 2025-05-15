@@ -4,9 +4,10 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { useEffect, useRef, useState, useMemo } from 'react';
 import regionDataJson from '@/data/region_data.json';
+import { successStories, type SuccessStory } from '@/data/successStories';
 import type { Topology } from 'topojson-specification';
 import type { FeatureCollection, Geometry, Feature } from 'geojson';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { JobRecord } from '@/types/JobRecord';
 
 interface RegionData {
@@ -29,6 +30,7 @@ export default function DrilldownMap({ data, initialSystem }: Props) {
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
   const [worldData, setWorldData] = useState<FeatureCollection<Geometry, { name?: string }> | null>(null);
   const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
+  const [storyModal, setStoryModal] = useState<SuccessStory | null>(null);
 
   const systemOptions = useMemo(() => {
     return Array.from(new Set(data.map((job) => job.System).filter(Boolean))).sort();
@@ -36,7 +38,6 @@ export default function DrilldownMap({ data, initialSystem }: Props) {
 
   useEffect(() => {
     if (selectedSystems.length > 0 || systemOptions.length === 0) return;
-
     if (initialSystem && systemOptions.includes(initialSystem)) {
       setSelectedSystems([initialSystem]);
     } else {
@@ -47,6 +48,10 @@ export default function DrilldownMap({ data, initialSystem }: Props) {
   const filteredData = useMemo(() => {
     return selectedSystems.length > 0 ? data.filter((job) => selectedSystems.includes(job.System)) : [];
   }, [data, selectedSystems]);
+
+  const filteredStories: SuccessStory[] = useMemo(() => {
+    return successStories.filter((s) => selectedSystems.includes(s.system));
+  }, [selectedSystems]);
 
   const regionStats = useMemo(() => d3.rollups(
     filteredData,
@@ -132,8 +137,29 @@ export default function DrilldownMap({ data, initialSystem }: Props) {
 
         circle.append('title').text(`${region}: ${count} successful jobs`);
       });
+
+      // Region-level stars
+      filteredStories.forEach((story) => {
+        const regionCoords = regionData[story.region];
+        if (!regionCoords) return;
+
+        const projected = projection([regionCoords.lon, regionCoords.lat]);
+        if (!projected) return;
+        const [x, y] = projected;
+
+        gSel.append('text')
+          .attr('x', x)
+          .attr('y', y)
+          .text('★')
+          .attr('font-size', 18)
+          .attr('fill', '#facc15')
+          .attr('text-anchor', 'middle')
+          .attr('alignment-baseline', 'middle')
+          .style('cursor', 'pointer')
+          .on('click', () => setStoryModal(story));
+      });
     }
-  }, [worldData, regionStats, focusedRegion]);
+  }, [worldData, regionStats, focusedRegion, filteredStories]);
 
   useEffect(() => {
     if (!worldData || !focusedRegion || !gRef.current) return;
@@ -171,7 +197,26 @@ export default function DrilldownMap({ data, initialSystem }: Props) {
         const count = countryMap.get(name) || 0;
         return `${name}: ${count} successful job${count !== 1 ? 's' : ''}`;
       });
-  }, [focusedRegion, worldData, countryMap]);
+
+    // Country-level stars
+    filteredStories.forEach((story) => {
+      const [lon, lat] = [story.countryLon, story.countryLat];
+      const projected = projection([lon, lat]);
+      if (!projected) return;
+      const [x, y] = projected;
+
+      gSel.append('text')
+        .attr('x', x)
+        .attr('y', y)
+        .text('★')
+        .attr('font-size', 18)
+        .attr('fill', '#facc15')
+        .attr('text-anchor', 'middle')
+        .attr('alignment-baseline', 'middle')
+        .style('cursor', 'pointer')
+        .on('click', () => setStoryModal(story));
+    });
+  }, [focusedRegion, worldData, countryMap, filteredStories]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -244,6 +289,29 @@ export default function DrilldownMap({ data, initialSystem }: Props) {
         viewBox="0 0 960 540"
         preserveAspectRatio="xMidYMid meet"
       />
+
+      <AnimatePresence>
+        {storyModal && (
+          <motion.div
+            key="story-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 bg-black/70 flex items-center justify-center"
+            onClick={() => setStoryModal(null)}
+          >
+            <div className="bg-white rounded-lg p-4 w-[80vw] h-[80vh] shadow-xl overflow-hidden relative" onClick={(e) => e.stopPropagation()}>
+              <iframe src={storyModal.link} className="w-full h-full" />
+              <button
+                className="absolute top-2 right-2 px-3 py-1 bg-black text-white rounded"
+                onClick={() => setStoryModal(null)}
+              >
+                ✕
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -28,7 +28,6 @@ export const deviceSpecs: Record<
     },
     media: {
       introVideo: '/videos/cp12-placeholder.mp4',
-      successStories: ['https://example.com/success-cp12'],
     },
     system: 'Focus-OH', // <-- example system tag
   },
@@ -49,7 +48,6 @@ export const deviceSpecs: Record<
     },
     media: {
       introVideo: '/videos/cp8-placeholder.mp4',
-      successStories: ['https://example.com/success-cp8'],
     },
     system: 'Focus - OH',
   },
@@ -69,7 +67,6 @@ export const deviceSpecs: Record<
     },
     media: {
       introVideo: '/videos/ttbs75-placeholder.mp4',
-      successStories: ['https://example.com/success-ttbs75'],
     },
     system: 'Wireline Express',
   },
@@ -90,7 +87,6 @@ export const deviceSpecs: Record<
     },
     media: {
       introVideo: '/videos/helix.mp4',
-      successStories: ['https://example.com/success-thor'],
     },
     system: 'Thor',
   },
@@ -110,7 +106,6 @@ export const deviceSpecs: Record<
     },
     media: {
       introVideo: '/videos/helix.mp4',
-      successStories: ['https://youtu.be/dQw4w9WgXcQ'],
     },
     system: 'Focus - CH',
   },
@@ -129,7 +124,6 @@ export const deviceSpecs: Record<
     },
     media: {
       introVideo: '/videos/helix.mp4',
-      successStories: ['https://example.com/success-thor'],
     },
     system: 'PathFinder',
   },
