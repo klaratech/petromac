@@ -6,7 +6,8 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
-const introVideo = '/videos/intro-loop1.mp4';
+
+const videos = ['/videos/intro-loop1.mp4', '/videos/intro-loop2.mp4'];
 
 export default function HomeClient() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
@@ -16,13 +17,13 @@ export default function HomeClient() {
   const [videoKey, setVideoKey] = useState(0);
   const [fadingOut, setFadingOut] = useState(false);
   const [videoStartTime, setVideoStartTime] = useState<number | null>(null);
+  const [videoIndex, setVideoIndex] = useState(0); // alternates between 0 and 1
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const lastInteractionRef = useRef<number>(Date.now());
   const fullText = 'Disruptive Conveyance Solutions';
 
-  // Check for ?mode=video
   useEffect(() => {
     const param = searchParams.get('mode');
     if (param === 'video') {
@@ -30,7 +31,6 @@ export default function HomeClient() {
     }
   }, [searchParams]);
 
-  // Typewriter intro
   useEffect(() => {
     if (mode !== 'intro') return;
     setTypedText('');
@@ -49,7 +49,6 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, [mode]);
 
-  // Reset to video after idle
   useEffect(() => {
     const updateInteraction = () => {
       lastInteractionRef.current = Date.now();
@@ -78,11 +77,11 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, []);
 
-  // Restart video after 10s if no interaction
   useEffect(() => {
     if (showExploreButton) {
       const timeout = setTimeout(() => {
         setShowExploreButton(false);
+        setVideoIndex((prev) => (prev + 1) % videos.length);
         setVideoKey((prev) => prev + 1);
       }, 10000);
       return () => clearTimeout(timeout);
@@ -95,9 +94,9 @@ export default function HomeClient() {
   };
 
   const handleExplore = () => {
-    if (videoStartTime && Date.now() - videoStartTime < 2000) return; // debounce early taps
+    if (videoStartTime && Date.now() - videoStartTime < 2000) return;
     setFadingOut(true);
-    setTimeout(() => router.push('/productlines'), 500); // match animation
+    setTimeout(() => router.push('/productlines'), 500);
   };
 
   return (
@@ -138,7 +137,7 @@ export default function HomeClient() {
           >
             <ReactPlayer
               key={videoKey}
-              url={introVideo}
+              url={videos[videoIndex]}
               playing
               loop={false}
               muted
@@ -149,14 +148,12 @@ export default function HomeClient() {
               onEnded={() => setShowExploreButton(true)}
             />
 
-            {/* Fullscreen transparent button */}
             <button
               onClick={handleExplore}
               className="absolute inset-0 z-20 w-full h-full bg-transparent cursor-pointer"
               aria-label="Tap to explore"
             />
 
-            {/* Optional visual cue after video ends */}
             {showExploreButton && (
               <div className="absolute inset-0 z-30 flex items-end justify-center pb-16">
                 <button

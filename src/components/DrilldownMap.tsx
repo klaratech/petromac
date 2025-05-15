@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import rawRegionCoords from '@/data/region_coords.json';
 import type { Topology } from 'topojson-specification';
 import type { FeatureCollection, Geometry, Feature } from 'geojson';
+import { motion } from 'framer-motion';
 
 interface RegionCoords {
   [region: string]: { lon: number; lat: number };
@@ -26,6 +27,7 @@ interface Props {
 
 export default function DrilldownMap({ data }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const gRef = useRef<SVGGElement | null>(null);
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
   const [worldData, setWorldData] = useState<FeatureCollection<Geometry, { name?: string }> | null>(null);
 
@@ -82,9 +84,24 @@ export default function DrilldownMap({ data }: Props) {
 
     const projection = d3.geoNaturalEarth1().fitSize([width, height], worldData);
     const path = d3.geoPath(projection);
-    const g = svg.append('g');
 
-    g.selectAll('path')
+    const zoom = d3.zoom<SVGSVGElement, unknown>().on('zoom', (event) => {
+      if (gRef.current) {
+        d3.select(gRef.current).attr('transform', event.transform.toString());
+      }
+    });
+
+    if (svgRef.current) {
+      const svgEl = svgRef.current;
+      d3.select<SVGSVGElement, unknown>(svgEl).call(zoom);
+    }
+
+    const g = svg.append('g').node();
+    if (!g) return;
+    gRef.current = g as SVGGElement;
+    const gSel = d3.select(g);
+
+    gSel.selectAll('path')
       .data(worldData.features)
       .enter()
       .append('path')
@@ -102,14 +119,31 @@ export default function DrilldownMap({ data }: Props) {
 
         const [x, y] = projected;
 
-        g.append('circle')
+        const circle = gSel.append('circle')
           .attr('cx', x)
           .attr('cy', y)
           .attr('r', Math.sqrt(count) * 2)
           .attr('fill', 'rgba(34,197,94,0.6)')
           .attr('stroke', '#fff')
-          .attr('stroke-width', 1.5)
-          .on('click', () => setFocusedRegion(region));
+          .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))')
+          .on('click', () => {
+            console.log('Region clicked:', region);
+            setFocusedRegion(region);
+          })
+          .on('mouseover', function () {
+            d3.select(this)
+              .transition().duration(150)
+              .attr('r', parseFloat(d3.select(this).attr('r')) * 1.2)
+              .style('filter', 'drop-shadow(0 0 6px rgba(34,197,94,0.8))');
+          })
+          .on('mouseout', function () {
+            d3.select(this)
+              .transition().duration(150)
+              .attr('r', parseFloat(d3.select(this).attr('r')) / 1.2)
+              .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))');
+          });
+
+        circle.append('title').text(`${region}: ${count} successful jobs`);
       });
     } else {
       const coords = regionCoords[focusedRegion];
@@ -119,7 +153,7 @@ export default function DrilldownMap({ data }: Props) {
       const [tx, ty] = projected;
       const k = 2;
 
-      g.transition()
+      gSel.transition()
         .duration(750)
         .attr('transform', `translate(${width / 2 - k * tx}, ${height / 2 - k * ty}) scale(${k})`);
 
@@ -127,13 +161,18 @@ export default function DrilldownMap({ data }: Props) {
       const max = d3.max(countryStats, ([, val]) => val) || 1;
       const color = d3.scaleLinear<string>().domain([0, max]).range(['#d1fae5', '#065f46']);
 
-      g.selectAll('path')
+      gSel.selectAll('path')
+        .transition()
+        .duration(800)
         .attr('fill', (d) => {
           const name = (d as Feature<Geometry, { name?: string }>).properties?.name || '';
           const count = countryMap.get(name) || 0;
           return count > 0 ? color(count) : '#f3f4f6';
         })
-        .on('click', null)
+        .selectAll('title')
+        .remove();
+
+      gSel.selectAll('path')
         .append('title')
         .text((d) => {
           const name = (d as Feature<Geometry, { name?: string }>).properties?.name || 'Unknown';
@@ -161,19 +200,25 @@ export default function DrilldownMap({ data }: Props) {
 
   return (
     <div className="relative w-full max-w-[1440px] aspect-[16/9] mx-auto overflow-hidden rounded-xl shadow-lg">
-      <div className="absolute top-4 left-4 z-50 bg-white border border-gray-200 rounded-lg shadow px-4 py-2 text-gray-800">
-        <div className="text-sm font-medium">
-          {focusedRegion ? `Jobs in ${focusedRegion}` : 'Global Jobs'}
+      <motion.div
+        drag
+        dragConstraints={{ left: 0, top: 0, right: 1200, bottom: 900 }}
+        className="absolute top-4 left-4 z-50 pointer-events-none"
+      >
+        <div className="pointer-events-auto bg-white border border-gray-200 rounded-lg shadow px-4 py-2 text-gray-800 cursor-grab">
+          <div className="text-sm font-medium">
+            {focusedRegion ? `Jobs in ${focusedRegion}` : 'Global Jobs'}
+          </div>
+          <div className="text-2xl font-bold">{totalJobs}</div>
         </div>
-        <div className="text-2xl font-bold">{totalJobs}</div>
-      </div>
+      </motion.div>
 
       {focusedRegion && (
         <button
-          className="absolute top-4 left-36 bg-white border border-gray-300 shadow px-3 py-1 rounded z-50 hover:bg-gray-100"
+          className="absolute top-4 left-36 text-2xl z-50 bg-white/80 hover:bg-white rounded-full p-1 border border-gray-300 shadow"
           onClick={() => setFocusedRegion(null)}
         >
-          ⬅ Back
+          ←
         </button>
       )}
 
