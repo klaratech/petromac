@@ -49,12 +49,13 @@ export default function DeviceViewer({
       if (e.key === 'Escape') {
         if (showVideo) setShowVideo(false);
         else if (showSuccessMap) setShowSuccessMap(false);
+        else if (showSpecs) setShowSpecs(false);
         else handleClose();
       }
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
-  }, [showVideo, showSuccessMap, handleClose]);
+  }, [showVideo, showSuccessMap, showSpecs, handleClose]);
 
   useEffect(() => {
     fetch('/data/operations_data.json')
@@ -155,34 +156,12 @@ export default function DeviceViewer({
               )}
 
               {specs && (
-                <>
-                  <button
-                    onClick={() => setShowSpecs(!showSpecs)}
-                    className="w-full py-2 text-sm font-medium text-white bg-gray-700 rounded hover:bg-gray-800 transition mb-2"
-                  >
-                    Specifications
-                  </button>
-
-                  <div
-                    className={`transition-all duration-300 overflow-hidden ${
-                      showSpecs ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-                    }`}
-                  >
-                    <div className="mt-2 p-2 bg-white rounded border border-gray-200">
-                      <h2 className="text-md font-semibold mb-2 text-gray-800">Specifications</h2>
-                      <table className="w-full text-sm text-left">
-                        <tbody>
-                          {Object.entries(specs).map(([key, value]) => (
-                            <tr key={key} className="border-b border-gray-200 last:border-b-0">
-                              <td className="py-1 pr-3 text-gray-600 font-medium">{key}</td>
-                              <td className="py-1 text-gray-800">{value}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </>
+                <button
+                  onClick={() => setShowSpecs(true)}
+                  className="w-full py-2 text-sm font-medium text-white bg-gray-700 rounded hover:bg-gray-800 transition mb-2"
+                >
+                  Specifications
+                </button>
               )}
             </div>
           )}
@@ -219,6 +198,30 @@ export default function DeviceViewer({
               >
                 ✕ Close
               </button>
+            </div>
+          )}
+
+          {showSpecs && specs && (
+            <div className="absolute inset-0 z-50 bg-black/70 flex items-center justify-center">
+              <div className="w-[90%] max-w-md bg-white rounded-xl shadow-2xl border border-gray-200 p-6 relative">
+                <h2 className="text-lg font-semibold mb-4 text-gray-800">Specifications</h2>
+                <table className="w-full text-sm text-left">
+                  <tbody>
+                    {Object.entries(specs).map(([key, value]) => (
+                      <tr key={key} className="border-b border-gray-200 last:border-b-0">
+                        <td className="py-1 pr-3 text-gray-600 font-medium">{key}</td>
+                        <td className="py-1 text-gray-800">{value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <button
+                  onClick={() => setShowSpecs(false)}
+                  className="absolute top-4 right-4 px-3 py-1 text-white bg-black/50 border border-white/20 rounded-lg text-sm hover:bg-black/70"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           )}
         </motion.div>
