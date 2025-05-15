@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -13,26 +13,18 @@ export default function HomeClient() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
   const [typedText, setTypedText] = useState('');
   const [showButton, setShowButton] = useState(false);
-  const [showExploreButton, setShowExploreButton] = useState(false);
-  const [videoKey, setVideoKey] = useState(0);
-  const [fadingOut, setFadingOut] = useState(false);
-  const [videoStartTime, setVideoStartTime] = useState<number | null>(null);
-  const [videoIndex, setVideoIndex] = useState(0); // alternates between 0 and 1
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [videoIndex, setVideoIndex] = useState(0);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const lastInteractionRef = useRef<number>(Date.now());
   const fullText = 'Disruptive Conveyance Solutions';
+  const lastInteractionRef = useRef(Date.now());
+  const overlayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const param = searchParams.get('mode');
-    if (param === 'video') {
-      setMode('video');
-    }
-  }, [searchParams]);
-
+  // Start typing on intro
   useEffect(() => {
     if (mode !== 'intro') return;
+
     setTypedText('');
     setShowButton(false);
     let i = 0;
@@ -49,60 +41,58 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, [mode]);
 
+  // Reset inactivity
   useEffect(() => {
     const updateInteraction = () => {
       lastInteractionRef.current = Date.now();
     };
-
     window.addEventListener('mousemove', updateInteraction);
     window.addEventListener('keydown', updateInteraction);
-    window.addEventListener('touchstart', updateInteraction);
     window.addEventListener('click', updateInteraction);
-
+    window.addEventListener('touchstart', updateInteraction);
     return () => {
       window.removeEventListener('mousemove', updateInteraction);
       window.removeEventListener('keydown', updateInteraction);
-      window.removeEventListener('touchstart', updateInteraction);
       window.removeEventListener('click', updateInteraction);
+      window.removeEventListener('touchstart', updateInteraction);
     };
   }, []);
 
+  // Timeout: switch to video mode after 2 mins idle
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Date.now() - lastInteractionRef.current > 120000) {
+      if (Date.now() - lastInteractionRef.current > 120_000) {
         setMode('video');
-        setVideoKey((prev) => prev + 1);
       }
     }, 10000);
     return () => clearInterval(interval);
   }, []);
 
+  // If overlay is visible and not clicked, go to next video after 10s
   useEffect(() => {
-    if (showExploreButton) {
-      const timeout = setTimeout(() => {
-        setShowExploreButton(false);
+    if (showOverlay) {
+      overlayTimeoutRef.current = setTimeout(() => {
+        setShowOverlay(false);
         setVideoIndex((prev) => (prev + 1) % videos.length);
-        setVideoKey((prev) => prev + 1);
       }, 10000);
-      return () => clearTimeout(timeout);
     }
-  }, [showExploreButton]);
+    return () => {
+      if (overlayTimeoutRef.current) clearTimeout(overlayTimeoutRef.current);
+    };
+  }, [showOverlay]);
 
   const handleStartVideo = () => {
     setMode('video');
-    setVideoStartTime(Date.now());
   };
 
   const handleExplore = () => {
-    if (videoStartTime && Date.now() - videoStartTime < 2000) return;
-    setFadingOut(true);
-    setTimeout(() => router.push('/productlines'), 500);
+    router.push('/productlines');
   };
 
   return (
     <div className="w-screen h-screen bg-black text-white relative overflow-hidden flex items-center justify-center">
       <AnimatePresence>
-        {mode === 'intro' && !fadingOut && (
+        {mode === 'intro' && (
           <motion.div
             key="intro"
             initial={{ opacity: 0 }}
@@ -117,8 +107,7 @@ export default function HomeClient() {
             {showButton && (
               <button
                 onClick={handleStartVideo}
-                onTouchStart={handleStartVideo}
-                className="mt-12 px-8 py-3 text-lg font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-1000 opacity-100"
+                className="mt-12 px-8 py-3 text-lg font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-1000"
               >
                 Touch to Begin
               </button>
@@ -136,7 +125,6 @@ export default function HomeClient() {
             className="absolute inset-0 z-10"
           >
             <ReactPlayer
-              key={videoKey}
               url={videos[videoIndex]}
               playing
               loop={false}
@@ -144,17 +132,20 @@ export default function HomeClient() {
               width="100%"
               height="100%"
               className="absolute top-0 left-0"
-              onStart={() => setVideoStartTime(Date.now())}
-              onEnded={() => setShowExploreButton(true)}
+              onEnded={() => setShowOverlay(true)}
             />
 
-            <button
-              onClick={handleExplore}
-              className="absolute inset-0 z-20 w-full h-full bg-transparent cursor-pointer"
-              aria-label="Tap to explore"
-            />
+            {/* Overlay to catch click only when overlay is NOT showing */}
+            {!showOverlay && (
+              <button
+                onClick={handleExplore}
+                className="absolute inset-0 z-20 w-full h-full bg-transparent"
+                aria-label="Tap to explore"
+              />
+            )}
 
-            {showExploreButton && (
+            {/* "Tap to Explore" button */}
+            {showOverlay && (
               <div className="absolute inset-0 z-30 flex items-end justify-center pb-16">
                 <button
                   onClick={handleExplore}
