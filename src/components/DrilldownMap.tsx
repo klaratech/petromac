@@ -20,9 +20,10 @@ const regionData = regionDataJson as unknown as RegionData;
 
 interface Props {
   data: JobRecord[];
+  initialSystem?: string;
 }
 
-export default function DrilldownMap({ data }: Props) {
+export default function DrilldownMap({ data, initialSystem }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const gRef = useRef<SVGGElement | null>(null);
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
@@ -34,10 +35,14 @@ export default function DrilldownMap({ data }: Props) {
   }, [data]);
 
   useEffect(() => {
-    if (systemOptions.length && selectedSystems.length === 0) {
+    if (selectedSystems.length > 0 || systemOptions.length === 0) return;
+
+    if (initialSystem && systemOptions.includes(initialSystem)) {
+      setSelectedSystems([initialSystem]);
+    } else {
       setSelectedSystems(systemOptions);
     }
-  }, [systemOptions, selectedSystems.length]);
+  }, [initialSystem, systemOptions, selectedSystems.length]);
 
   const filteredData = useMemo(() => {
     return selectedSystems.length > 0 ? data.filter((job) => selectedSystems.includes(job.System)) : [];
@@ -58,13 +63,12 @@ export default function DrilldownMap({ data }: Props) {
     );
   }, [filteredData, focusedRegion]);
 
-  const countryMap = useMemo(() => {
-    return new Map(countryStats);
-  }, [countryStats]);
+  const countryMap = useMemo(() => new Map(countryStats), [countryStats]);
 
-  const totalJobs = useMemo(() => {
-    return focusedRegion ? filteredData.filter((d) => d.Region === focusedRegion).length : filteredData.length;
-  }, [filteredData, focusedRegion]);
+  const totalJobs = useMemo(() => focusedRegion
+    ? filteredData.filter((d) => d.Region === focusedRegion).length
+    : filteredData.length
+  , [filteredData, focusedRegion]);
 
   useEffect(() => {
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')

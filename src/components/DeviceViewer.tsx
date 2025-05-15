@@ -31,6 +31,7 @@ export default function DeviceViewer({
   const entry = deviceSpecs[cleanModel] || {};
   const specs = entry.specs;
   const media = entry.media;
+  const system = entry.system;
 
   const handleClose = useCallback(() => {
     setFadingOut(true);
@@ -181,7 +182,8 @@ export default function DeviceViewer({
           {showSuccessMap && (
             <div className="absolute inset-0 z-50 bg-white">
               {drilldownData ? (
-                <DrilldownMap data={drilldownData} />
+                
+                <DrilldownMap data={drilldownData} initialSystem={system} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <p className="text-lg text-gray-600">Loading map data...</p>

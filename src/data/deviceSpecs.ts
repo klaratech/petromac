@@ -8,6 +8,7 @@ export const deviceSpecs: Record<
   {
     specs: Record<string, string>;
     media?: DeviceMedia;
+    system?: string;
   }
 > = {
   '/models/cp12.glb': {
@@ -29,6 +30,7 @@ export const deviceSpecs: Record<
       introVideo: '/videos/cp12-placeholder.mp4',
       successStories: ['https://example.com/success-cp12'],
     },
+    system: 'Focus-OH', // <-- example system tag
   },
   '/models/cp8.glb': {
     specs: {
@@ -49,6 +51,7 @@ export const deviceSpecs: Record<
       introVideo: '/videos/cp8-placeholder.mp4',
       successStories: ['https://example.com/success-cp8'],
     },
+    system: 'Focus - OH',
   },
   '/models/ttbs75.glb': {
     specs: {
@@ -68,6 +71,7 @@ export const deviceSpecs: Record<
       introVideo: '/videos/ttbs75-placeholder.mp4',
       successStories: ['https://example.com/success-ttbs75'],
     },
+    system: 'Wireline Express',
   },
   '/models/thor.glb': {
     specs: {
@@ -88,6 +92,7 @@ export const deviceSpecs: Record<
       introVideo: '/videos/helix.mp4',
       successStories: ['https://example.com/success-thor'],
     },
+    system: 'Thor',
   },
   '/models/helix.glb': {
     specs: {
@@ -107,6 +112,7 @@ export const deviceSpecs: Record<
       introVideo: '/videos/helix.mp4',
       successStories: ['https://youtu.be/dQw4w9WgXcQ'],
     },
+    system: 'Focus - CH',
   },
   '/models/pathfinderht.glb': {
     specs: {
@@ -125,5 +131,6 @@ export const deviceSpecs: Record<
       introVideo: '/videos/helix.mp4',
       successStories: ['https://example.com/success-thor'],
     },
+    system: 'PathFinder',
   },
 };
