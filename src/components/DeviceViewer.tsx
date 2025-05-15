@@ -202,27 +202,29 @@ export default function DeviceViewer({
           )}
 
           {showSpecs && specs && (
-            <div className="absolute inset-0 z-50 bg-black/70 flex items-center justify-center">
-              <div className="w-[90%] max-w-md bg-white rounded-xl shadow-2xl border border-gray-200 p-6 relative">
-                <h2 className="text-lg font-semibold mb-4 text-gray-800">Specifications</h2>
-                <table className="w-full text-sm text-left">
-                  <tbody>
-                    {Object.entries(specs).map(([key, value]) => (
-                      <tr key={key} className="border-b border-gray-200 last:border-b-0">
-                        <td className="py-1 pr-3 text-gray-600 font-medium">{key}</td>
-                        <td className="py-1 text-gray-800">{value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <button
-                  onClick={() => setShowSpecs(false)}
-                  className="absolute top-4 right-4 px-3 py-1 text-white bg-black/50 border border-white/20 rounded-lg text-sm hover:bg-black/70"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
+            <motion.div
+              drag
+              dragConstraints={{ left: 0, top: 0, right: 1000, bottom: 800 }}
+              className="absolute top-20 left-20 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 cursor-grab"
+            >
+              <h2 className="text-lg font-semibold mb-4 text-gray-800">Specifications</h2>
+              <table className="w-full text-sm text-left">
+                <tbody>
+                  {Object.entries(specs).map(([key, value]) => (
+                    <tr key={key} className="border-b border-gray-200 last:border-b-0">
+                      <td className="py-1 pr-3 text-gray-600 font-medium">{key}</td>
+                      <td className="py-1 text-gray-800">{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button
+                onClick={() => setShowSpecs(false)}
+                className="absolute top-2 right-2 px-3 py-1 text-white bg-black/50 border border-white/20 rounded-lg text-sm hover:bg-black/70"
+              >
+                ✕
+              </button>
+            </motion.div>
           )}
         </motion.div>
       )}
