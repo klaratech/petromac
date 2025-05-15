@@ -20,13 +20,14 @@ SYSTEM_GROUPS = {
     "Wireline Express": "Wireline Express",
     "Wireline Express (In-Line)": "Wireline Express",
     "PathFinder": "PathFinder",
-    "Pathfinder - HT": "PathFinder",
+    "PathFinder - HT": "PathFinder",
     "Helix": "Focus - CH",
     "Rocker": "Focus - CH",
     "CA7": "Focus - CH",
     "CP8": "Focus - OH",
     "CP12": "Focus - OH",
-    "Thor": "Thor"
+    "Thor": "Thor",
+    "RO17": "Other"
     # Add more or collapse groupings as needed
 }
 
