@@ -9,12 +9,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMap from '@/components/DrilldownMap';
 
-interface JobRecord {
-  Region: string;
-  Country: string;
-  Successful: number;
-  Job_Status: string;
-}
+import type { JobRecord } from '@/types/JobRecord';
 
 export default function DeviceViewer({
   model,
