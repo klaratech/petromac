@@ -8,6 +8,8 @@ import type { Topology } from 'topojson-specification';
 import type { FeatureCollection, Geometry, Feature } from 'geojson';
 import { motion } from 'framer-motion';
 
+
+
 interface RegionCoords {
   [region: string]: { lon: number; lat: number };
 }
@@ -20,10 +22,11 @@ interface JobRecord {
   Successful: number;
   System: string;
 }
-
 interface Props {
   data: JobRecord[];
 }
+
+
 
 export default function DrilldownMap({ data }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);

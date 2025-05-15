@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import DrilldownMap from '@/components/DrilldownMap';
 
+
 interface JobRecord {
   Region: string;
   Country: string;
   Successful: number;
-  Job_Status: string;
+  System: string;
 }
+
 
 export default function DashboardClient() {
   const searchParams = useSearchParams();
@@ -23,8 +25,10 @@ export default function DashboardClient() {
     fetch('/data/operations_data.json')
       .then((res) => res.json())
       .then((json: JobRecord[]) => {
-        const successfulOnly = json.filter((d) => d.Job_Status === 'Successful');
-        setData(successfulOnly);
+        // If Job_Status is no longer part of JobRecord, remove the filter below
+        // const successfulOnly = json.filter((d) => d.Job_Status === 'Successful');
+        // setData(successfulOnly);
+        setData(json);
       })
       .catch((err) => {
         console.error('❌ Failed to load operations data:', err);
