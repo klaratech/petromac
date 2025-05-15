@@ -4,6 +4,7 @@ from datetime import datetime
 from github import Github
 from calendar import month_name
 import json
+from normalization_config import COUNTRY_NORMALIZATION, REGION_NORMALIZATION, SYSTEM_GROUPS, SUCCESS_VALUES
 
 # === CONFIGURATION ===
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -69,6 +70,18 @@ def normalize_month(value):
             return i
     return None
 
+def normalize_country(value):
+    return COUNTRY_NORMALIZATION.get(value.strip(), value.strip())
+
+def normalize_region(value):
+    return REGION_NORMALIZATION.get(str(value).strip(), str(value).strip())
+
+def normalize_success(value):
+    return SUCCESS_VALUES.get(str(value).strip().lower(), 0)
+
+def group_system(value):
+    return SYSTEM_GROUPS.get(str(value).strip(), str(value).strip())
+
 # === CORE LOGIC ===
 
 def load_clean_data():
@@ -90,9 +103,16 @@ def load_clean_data():
         print("🧮 Normalizing 'Month' column...")
         df["Month"] = df["Month"].apply(normalize_month)
 
-    print("🧽 Replacing NaNs with 0 and standardizing region labels...")
+    print("🧽 Replacing NaNs with 0 and standardizing key fields...")
     df = df.fillna(0)
-    df["Region"] = df["Region"].replace({"MEA": "MENA"})
+    if "Region" in df.columns:
+        df["Region"] = df["Region"].apply(normalize_region)
+    if "Country" in df.columns:
+        df["Country"] = df["Country"].apply(normalize_country)
+    if "Successful" in df.columns:
+        df["Successful"] = df["Successful"].apply(normalize_success)
+    if "System" in df.columns:
+        df["System"] = df["System"].apply(group_system)
 
     return df
 

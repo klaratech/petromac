@@ -1,0 +1,43 @@
+# normalization_config.py
+
+# Country name corrections
+COUNTRY_NORMALIZATION = {
+    "UAE": "United Arab Emirates",
+    "USA": "United States",
+    "UK": "United Kingdom",
+    "KSA": "Saudi Arabia",
+    # Add more as needed
+}
+
+# Region corrections
+REGION_NORMALIZATION = {
+    "MEA": "MENA"
+    # Add more if needed
+}
+
+# System groupings (e.g. variants grouped under logical families)
+SYSTEM_GROUPS = {
+    "Wireline Express": "Wireline Express",
+    "Wireline Express (In-Line)": "Wireline Express",
+    "PathFinder": "PathFinder",
+    "Pathfinder - HT": "PathFinder",
+    "Helix": "Focus - CH",
+    "Rocker": "Focus - CH",
+    "CA7": "Focus - CH",
+    "CP8": "Focus - OH",
+    "CP12": "Focus - OH",
+    "Thor": "Thor"
+    # Add more or collapse groupings as needed
+}
+
+# Success value normalization
+SUCCESS_VALUES = {
+    "1": 1,
+    "yes": 1,
+    "true": 1,
+    "successful": 1,
+    "0": 0,
+    "no": 0,
+    "false": 0,
+    "unsuccessful": 0
+}
