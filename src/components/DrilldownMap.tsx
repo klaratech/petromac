@@ -30,8 +30,7 @@ export default function DrilldownMap({ data }: Props) {
   const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
 
   const systemOptions = useMemo(() => {
-    const systems = Array.from(new Set(data.map((job) => job.System).filter(Boolean))).sort();
-    return systems;
+    return Array.from(new Set(data.map((d) => d.System).filter(Boolean))).sort();
   }, [data]);
 
   useEffect(() => {
@@ -41,26 +40,28 @@ export default function DrilldownMap({ data }: Props) {
   }, [systemOptions, selectedSystems.length]);
 
   const filteredData = useMemo(() => {
-    return selectedSystems.length > 0 ? data.filter((job) => selectedSystems.includes(job.System)) : data;
+    return selectedSystems.length > 0 ? data.filter((d) => selectedSystems.includes(d.System)) : data;
   }, [data, selectedSystems]);
 
-  const regionStats = useMemo(() => d3.rollups(
-    filteredData,
-    (entries) => d3.sum(entries, (d) => +d.Successful),
-    (d) => d.Region || 'Unknown'
-  ), [filteredData]);
-
-  const countryStats = useMemo(() => {
-    if (!focusedRegion) return [];
+  const regionStats = useMemo(() => {
     return d3.rollups(
-      filteredData.filter((d) => d.Region === focusedRegion),
+      filteredData,
       (entries) => d3.sum(entries, (d) => +d.Successful),
-      (d) => d.Country
+      (d) => d.Region || 'Unknown'
+    );
+  }, [filteredData]);
+
+  const countriesInFocusedRegion = useMemo(() => {
+    if (!focusedRegion) return new Set<string>();
+    return new Set(
+      filteredData.filter((d) => d.Region === focusedRegion).map((d) => d.Country)
     );
   }, [filteredData, focusedRegion]);
 
   const totalJobs = useMemo(() => {
-    return focusedRegion ? filteredData.filter((d) => d.Region === focusedRegion).length : filteredData.length;
+    return focusedRegion
+      ? filteredData.filter((d) => d.Region === focusedRegion).length
+      : filteredData.length;
   }, [filteredData, focusedRegion]);
 
   useEffect(() => {
@@ -68,7 +69,7 @@ export default function DrilldownMap({ data }: Props) {
       .then((topologyData) => {
         const topology = topologyData as Topology;
         const geo = topojson.feature(topology, topology.objects.countries);
-        if (!('features' in geo)) throw new Error('Invalid GeoJSON FeatureCollection');
+        if (!('features' in geo)) throw new Error('Invalid GeoJSON');
 
         const countries = geo as FeatureCollection<Geometry, { name?: string }>;
         const filtered = countries.features.filter((f) => {
@@ -127,29 +128,14 @@ export default function DrilldownMap({ data }: Props) {
       .duration(750)
       .attr('transform', `translate(${960 / 2 - k * tx}, ${540 / 2 - k * ty}) scale(${k})`);
 
-    const countryMap = new Map(countryStats);
-    const max = d3.max(countryStats, ([, val]) => val) || 1;
-    const color = d3.scaleLinear<string>().domain([0, max]).range(['#d1fae5', '#065f46']);
-
     gSel.selectAll('path')
       .transition()
       .duration(800)
       .attr('fill', (d) => {
         const name = (d as Feature<Geometry, { name?: string }>).properties?.name || '';
-        const count = countryMap.get(name) || 0;
-        return count > 0 ? color(count) : '#f3f4f6';
-      })
-      .selectAll('title')
-      .remove();
-
-    gSel.selectAll('path')
-      .append('title')
-      .text((d) => {
-        const name = (d as Feature<Geometry, { name?: string }>).properties?.name || 'Unknown';
-        const count = countryMap.get(name) || 0;
-        return `${name}: ${count} successful job${count !== 1 ? 's' : ''}`;
+        return countriesInFocusedRegion.has(name) ? '#34d399' : '#f3f4f6';
       });
-  }, [focusedRegion, countryStats]);
+  }, [focusedRegion, countriesInFocusedRegion]);
 
   useEffect(() => {
     if (!worldData) return;
@@ -180,7 +166,7 @@ export default function DrilldownMap({ data }: Props) {
     } else {
       zoomToRegion(gSel, projection);
     }
-  }, [worldData, regionStats, countryStats, focusedRegion, drawRegionBubbles, zoomToRegion]);
+  }, [worldData, regionStats, focusedRegion, drawRegionBubbles, zoomToRegion]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -192,6 +178,7 @@ export default function DrilldownMap({ data }: Props) {
 
   return (
     <div className="relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white">
+      {/* Stats panel */}
       <motion.div
         drag
         dragConstraints={{ left: 0, right: 1200, top: 0, bottom: 900 }}
@@ -203,7 +190,6 @@ export default function DrilldownMap({ data }: Props) {
         <div className="text-2xl font-bold mb-3">{totalJobs}</div>
       </motion.div>
 
-      {/* Back button */}
       {focusedRegion && (
         <button
           className="absolute top-4 left-4 text-sm font-semibold z-50 bg-white text-black hover:bg-gray-100 rounded px-4 py-2 border border-gray-300 shadow flex items-center gap-1"
@@ -213,7 +199,7 @@ export default function DrilldownMap({ data }: Props) {
         </button>
       )}
 
-      {/* Filters panel */}
+      {/* Filters */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg shadow flex gap-2 overflow-x-auto">
         {systemOptions.map((sys) => (
           <span
@@ -234,7 +220,6 @@ export default function DrilldownMap({ data }: Props) {
         ))}
       </div>
 
-      {/* Map container */}
       <svg
         ref={svgRef}
         className="w-full h-full"
