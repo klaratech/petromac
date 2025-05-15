@@ -7,7 +7,7 @@ import rawRegionCoords from '@/data/region_coords.json';
 import type { Topology } from 'topojson-specification';
 import type { FeatureCollection, Geometry, Feature } from 'geojson';
 import { motion } from 'framer-motion';
-
+import type { JobRecord } from '@/types/JobRecord';
 
 
 interface RegionCoords {
@@ -16,12 +16,6 @@ interface RegionCoords {
 
 const regionCoords = rawRegionCoords as RegionCoords;
 
-interface JobRecord {
-  Region: string;
-  Country: string;
-  Successful: number;
-  System: string;
-}
 interface Props {
   data: JobRecord[];
 }

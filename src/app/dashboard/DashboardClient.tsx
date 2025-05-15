@@ -3,15 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import DrilldownMap from '@/components/DrilldownMap';
-
-
-interface JobRecord {
-  Region: string;
-  Country: string;
-  Successful: number;
-  System: string;
-}
-
+import type { JobRecord } from '@/types/JobRecord';
 
 export default function DashboardClient() {
   const searchParams = useSearchParams();
