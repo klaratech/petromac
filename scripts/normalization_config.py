@@ -3,7 +3,7 @@
 # Country name corrections
 COUNTRY_NORMALIZATION = {
     "UAE": "United Arab Emirates",
-    "USA": "United States",
+    "USA": "United States of America",
     "UK": "United Kingdom",
     "KSA": "Saudi Arabia",
     # Add more as needed

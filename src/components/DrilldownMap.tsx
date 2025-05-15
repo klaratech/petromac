@@ -3,17 +3,20 @@
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import rawRegionCoords from '@/data/region_coords.json';
+import regionDataJson from '@/data/region_data.json';
 import type { Topology } from 'topojson-specification';
 import type { FeatureCollection, Geometry, Feature } from 'geojson';
 import { motion } from 'framer-motion';
 import type { JobRecord } from '@/types/JobRecord';
 
-interface RegionCoords {
-  [region: string]: { lon: number; lat: number };
+interface RegionData {
+  [region: string]: {
+    lat: number;
+    lon: number;
+  };
 }
 
-const regionCoords = rawRegionCoords as RegionCoords;
+const regionData = regionDataJson as unknown as RegionData;
 
 interface Props {
   data: JobRecord[];
@@ -38,9 +41,7 @@ export default function DrilldownMap({ data }: Props) {
   }, [systemOptions, selectedSystems.length]);
 
   const filteredData = useMemo(() => {
-    return selectedSystems.length > 0
-      ? data.filter((job) => selectedSystems.includes(job.System))
-      : data;
+    return selectedSystems.length > 0 ? data.filter((job) => selectedSystems.includes(job.System)) : data;
   }, [data, selectedSystems]);
 
   const regionStats = useMemo(() => d3.rollups(
@@ -59,9 +60,7 @@ export default function DrilldownMap({ data }: Props) {
   }, [filteredData, focusedRegion]);
 
   const totalJobs = useMemo(() => {
-    return focusedRegion
-      ? filteredData.filter((d) => d.Region === focusedRegion).length
-      : filteredData.length;
+    return focusedRegion ? filteredData.filter((d) => d.Region === focusedRegion).length : filteredData.length;
   }, [filteredData, focusedRegion]);
 
   useEffect(() => {
@@ -84,7 +83,7 @@ export default function DrilldownMap({ data }: Props) {
 
   const drawRegionBubbles = useCallback((gSel: d3.Selection<SVGGElement, unknown, null, undefined>, projection: d3.GeoProjection) => {
     regionStats.forEach(([region, count]) => {
-      const coords = regionCoords[region];
+      const coords = regionData[region];
       if (!coords || count <= 0) return;
 
       const projected = projection([coords.lon, coords.lat]);
@@ -117,7 +116,7 @@ export default function DrilldownMap({ data }: Props) {
   }, [regionStats]);
 
   const zoomToRegion = useCallback((gSel: d3.Selection<SVGGElement, unknown, null, undefined>, projection: d3.GeoProjection) => {
-    const coords = regionCoords[focusedRegion!];
+    const coords = regionData[focusedRegion!];
     const projected = projection([coords.lon, coords.lat]);
     if (!projected) return;
 
@@ -163,16 +162,6 @@ export default function DrilldownMap({ data }: Props) {
     const projection = d3.geoNaturalEarth1().fitSize([width, height], worldData);
     const path = d3.geoPath(projection);
 
-    const zoom = d3.zoom<SVGSVGElement, unknown>().on('zoom', (event) => {
-      if (gRef.current) {
-        d3.select(gRef.current).attr('transform', event.transform.toString());
-      }
-    });
-
-    if (svgRef.current) {
-      d3.select(svgRef.current as SVGSVGElement).call(zoom);
-    }
-
     const g = svg.append('g').node();
     if (!g) return;
     gRef.current = g as SVGGElement;
@@ -202,46 +191,50 @@ export default function DrilldownMap({ data }: Props) {
   }, []);
 
   return (
-    <div className="relative w-full max-w-[1440px] aspect-[16/9] mx-auto overflow-hidden rounded-xl shadow-lg bg-gray-100">
-      {/* Draggable stats + filters panel */}
+    <div className="relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white">
       <motion.div
         drag
         dragConstraints={{ left: 0, right: 1200, top: 0, bottom: 900 }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-white text-black border border-gray-200 rounded-lg shadow px-4 py-4 w-64"
+        className="absolute top-1/2 left-4 -translate-y-1/2 z-50 bg-white text-black border border-gray-200 rounded-lg shadow px-4 py-4 w-64"
       >
         <div className="text-sm font-medium">
           {focusedRegion ? `Jobs in ${focusedRegion}` : 'Global Jobs'}
         </div>
         <div className="text-2xl font-bold mb-3">{totalJobs}</div>
-
-        <div className="flex flex-wrap gap-2">
-          {systemOptions.map((sys) => (
-            <span
-              key={sys}
-              className={`text-xs px-2 py-1 border rounded-full flex items-center gap-1 cursor-pointer transition ${
-                selectedSystems.includes(sys) ? 'bg-green-100 text-green-800 border-green-300' : 'bg-gray-100 text-gray-500 border-gray-300 line-through'
-              }`}
-              onClick={() => {
-                setSelectedSystems((prev) =>
-                  prev.includes(sys) ? prev.filter((s) => s !== sys) : [...prev, sys]
-                );
-              }}
-            >
-              {sys} <span className="text-xs">✕</span>
-            </span>
-          ))}
-        </div>
       </motion.div>
 
+      {/* Back button */}
       {focusedRegion && (
         <button
-          className="absolute top-4 left-36 text-sm font-semibold z-50 bg-white text-black hover:bg-gray-100 rounded px-4 py-2 border border-gray-300 shadow flex items-center gap-1"
+          className="absolute top-4 left-4 text-sm font-semibold z-50 bg-white text-black hover:bg-gray-100 rounded px-4 py-2 border border-gray-300 shadow flex items-center gap-1"
           onClick={() => setFocusedRegion(null)}
         >
           <span className="text-xl">←</span> Back
         </button>
       )}
 
+      {/* Filters panel */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg shadow flex gap-2 overflow-x-auto">
+        {systemOptions.map((sys) => (
+          <span
+            key={sys}
+            className={`text-xs px-2 py-1 border rounded-full flex items-center gap-1 cursor-pointer transition whitespace-nowrap ${
+              selectedSystems.includes(sys)
+                ? 'bg-green-100 text-green-800 border-green-300'
+                : 'bg-gray-100 text-gray-500 border-gray-300 line-through'
+            }`}
+            onClick={() => {
+              setSelectedSystems((prev) =>
+                prev.includes(sys) ? prev.filter((s) => s !== sys) : [...prev, sys]
+              );
+            }}
+          >
+            {sys} <span className="text-xs">✕</span>
+          </span>
+        ))}
+      </div>
+
+      {/* Map container */}
       <svg
         ref={svgRef}
         className="w-full h-full"
