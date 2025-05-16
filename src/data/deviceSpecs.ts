@@ -1,18 +1,56 @@
-export interface DeviceMedia {
-  introVideo?: string;
-  successStories?: string[];
+// New structured data model
+
+export interface SystemMedia {
+  video: string;
+  logo: string;
+  successStoriesPdf: string[];
 }
 
-export const deviceSpecs: Record<
-  string,
-  {
-    specs: Record<string, string>;
-    media?: DeviceMedia;
-    system?: string;
-    subsystem: string;
-    systemIcon: string;
+export interface DeviceMedia {
+  model: string; // GLB path
+  image: string;
+}
+
+export interface DeviceSpec {
+  specs: Record<string, string>;
+  media: DeviceMedia;
+  system: string;
+  subsystem: string;
+}
+
+export const systemMedia: Record<string, SystemMedia> = {
+  'Focus': {
+    video: '/videos/helix.mp4?v=20240517',
+    logo: '/images/focus.png',
+    successStoriesPdf: [
+      '/successstories/focus-success-1.pdf',
+      '/successstories/focus-success-2.pdf'
+    ]
+  },
+  'Wireline Express': {
+    video: '/videos/WirelineExpress.mp4?v=20240517',
+    logo: '/images/wirelineexpress.png',
+    successStoriesPdf: [
+      '/pdf/wireline-success.pdf'
+    ]
+  },
+  'Thor': {
+    video: '/videos/helix.mp4?v=20240517',
+    logo: '/images/thor.png',
+    successStoriesPdf: [
+      '/pdf/thor-success.pdf'
+    ]
+  },
+  'PathFinder': {
+    video: '/videos/Pathfinder_16May_subtitled.mp4?v=20240517',
+    logo: '/images/pathfinder.png',
+    successStoriesPdf: [
+      '/pdf/pathfinder-success.pdf'
+    ]
   }
-> = {
+};
+
+export const deviceSpecs: Record<string, DeviceSpec> = {
   '/models/cp12.glb': {
     specs: {
       Name: 'CP-12 Centraliser',
@@ -29,11 +67,11 @@ export const deviceSpecs: Record<
       'Carry Load': 'Up to 500 lbs',
     },
     media: {
-      introVideo: '/videos/cp12-placeholder.mp4',
+      model: '/models/cp12.glb',
+      image: '/images/cp12.png',
     },
     system: 'Focus',
     subsystem: 'Focus-OH',
-    systemIcon: '/images/focus.png',
   },
   '/models/cp8.glb': {
     specs: {
@@ -51,11 +89,11 @@ export const deviceSpecs: Record<
       'Carry Load': 'Up to 350 lbs',
     },
     media: {
-      introVideo: '/videos/cp8-placeholder.mp4',
+      model: '/models/cp8.glb',
+      image: '/images/cp8.png',
     },
     system: 'Focus',
     subsystem: 'Focus - OH',
-    systemIcon: '/images/focus.png',
   },
   '/models/ttbs75.glb': {
     specs: {
@@ -72,11 +110,11 @@ export const deviceSpecs: Record<
       'Carry Load': 'Up to 12,700 lbs (tool-dependent)',
     },
     media: {
-      introVideo: '/videos/WirelineExpress.mp4',
+      model: '/models/ttbs75.glb',
+      image: '/images/ttbs75.png',
     },
     system: 'Wireline Express',
     subsystem: 'Wireline Express',
-    systemIcon: '/images/wirelineexpress.png',
   },
   '/models/thor.glb': {
     specs: {
@@ -94,11 +132,11 @@ export const deviceSpecs: Record<
       'Tool Compatibility': 'All SLB Logging Tools',
     },
     media: {
-      introVideo: '/videos/helix.mp4',
+      model: '/models/thor.glb',
+      image: '/images/thor.png',
     },
     system: 'Thor',
     subsystem: 'Thor',
-    systemIcon: '/images/thor.png',
   },
   '/models/helix.glb': {
     specs: {
@@ -115,11 +153,11 @@ export const deviceSpecs: Record<
       'Carry Load': '190–225 lbs',
     },
     media: {
-      introVideo: '/videos/helix.mp4',
+      model: '/models/helix.glb',
+      image: '/images/helix.png',
     },
     system: 'Focus',
     subsystem: 'Focus - CH',
-    systemIcon: '/images/focus.png',
   },
   '/models/pathfinderht.glb': {
     specs: {
@@ -135,10 +173,10 @@ export const deviceSpecs: Record<
       'Tool Compatibility': 'HAL J-Latch, Baker WTS, SLB Threaded ring',
     },
     media: {
-      introVideo: '/videos/Pathfinder_16May_subtitled.mp4',
+      model: '/models/pathfinderht.glb',
+      image: '/images/pathfinder.png',
     },
     system: 'PathFinder',
     subsystem: 'Pathfinder HT',
-    systemIcon: '/images/pathfinder.png',
-  },
+  }
 };

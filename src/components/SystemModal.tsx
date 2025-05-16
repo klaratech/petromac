@@ -1,9 +1,11 @@
-// SystemModal.tsx
 'use client';
 
-import { deviceSpecs } from '@/data/deviceSpecs';
-import { useEffect, useRef } from 'react';
+import { deviceSpecs, systemMedia } from '@/data/deviceSpecs';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import CircularGallery from '@/components/CircularGallery';
+import DrilldownMap from '@/components/DrilldownMap';
+import type { JobRecord } from '@/types/JobRecord';
 
 interface Props {
   system: string;
@@ -12,19 +14,44 @@ interface Props {
 
 export default function SystemModal({ system, onClose }: Props) {
   const ref = useRef<HTMLVideoElement | null>(null);
+  const [showDrilldown, setShowDrilldown] = useState(false);
+  const [showGallery, setShowGallery] = useState(false);
+  const [jobData, setJobData] = useState<JobRecord[] | null>(null);
 
-  // Get the first video for this system from deviceSpecs
-  const videoSrc = Object.values(deviceSpecs).find(
-    (d) => d.system === system && d.media?.introVideo
-  )?.media?.introVideo;
+  const media = systemMedia[system];
+  const videoSrc = media?.video;
 
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        // Escape always closes the modal entirely
+        onClose();
+      }
     };
     window.addEventListener('keydown', listener);
     return () => window.removeEventListener('keydown', listener);
   }, [onClose]);
+
+  useEffect(() => {
+    if (!showDrilldown || jobData) return;
+    fetch('/data/operations_data.json', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data: JobRecord[]) => setJobData(data))
+      .catch((err) => console.error('❌ Failed to load job data:', err));
+  }, [showDrilldown, jobData]);
+
+  const models = Object.entries(deviceSpecs)
+    .filter(([, d]) => d.system === system)
+    .map(([file, d]) => ({ name: d.specs.Name, file }));
+
+  const renderCloseButton = () => (
+    <button
+      onClick={onClose}
+      className="absolute top-4 right-4 text-white text-xl font-bold z-50"
+    >
+      ✕
+    </button>
+  );
 
   return (
     <AnimatePresence>
@@ -32,36 +59,57 @@ export default function SystemModal({ system, onClose }: Props) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center"
+        className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center"
       >
-        <div className="relative w-[90vw] h-[70vh] bg-black shadow-2xl rounded-xl overflow-hidden">
-          {videoSrc ? (
-            <video
-              ref={ref}
-              controls
-              autoPlay
-              className="w-full h-full object-contain"
-              src={videoSrc}
-            />
+        <div className="relative w-full h-full bg-black">
+          {showDrilldown && jobData ? (
+            <>
+              <DrilldownMap
+                data={jobData}
+                initialSystem={system}
+                onClose={() => setShowDrilldown(false)}
+              />
+            </>
+          ) : showGallery ? (
+            <>
+              <CircularGallery
+                models={models}
+                onClose={() => setShowGallery(false)}
+                forceSingleModel={models.length === 1}
+              />
+            </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-white text-xl">
-              No intro video available for {system}
-            </div>
+            <>
+              {videoSrc ? (
+                <video
+                  ref={ref}
+                  controls
+                  autoPlay
+                  className="w-full h-full object-contain"
+                  src={videoSrc}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-white text-xl">
+                  No intro video available for {system}
+                </div>
+              )}
+              {renderCloseButton()}
+              <div className="absolute bottom-6 right-6 flex gap-4 z-40">
+                <button
+                  onClick={() => setShowDrilldown(true)}
+                  className="bg-white text-black px-4 py-2 rounded-md shadow-md hover:bg-gray-200"
+                >
+                  Track Record
+                </button>
+                <button
+                  onClick={() => setShowGallery(true)}
+                  className="bg-white text-black px-4 py-2 rounded-md shadow-md hover:bg-gray-200"
+                >
+                  More Info
+                </button>
+              </div>
+            </>
           )}
-          <button
-            onClick={() => onClose()}
-            className="absolute top-4 right-4 text-white text-xl font-bold"
-          >
-            ✕
-          </button>
-          <button
-            onClick={() =>
-              window.location.href = `/success?system=${encodeURIComponent(system)}`
-            }
-            className="absolute bottom-6 right-6 bg-white text-black px-4 py-2 rounded-md shadow-md hover:bg-gray-200"
-          >
-            Success Stories
-          </button>
         </div>
       </motion.div>
     </AnimatePresence>

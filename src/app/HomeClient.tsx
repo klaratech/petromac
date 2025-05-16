@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -13,15 +13,20 @@ export default function HomeClient() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
   const [typedText, setTypedText] = useState('');
   const [showButton, setShowButton] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
   const [videoIndex, setVideoIndex] = useState(0);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const fullText = 'Disruptive Conveyance Solutions';
   const lastInteractionRef = useRef(Date.now());
-  const overlayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Start typing on intro
+  useEffect(() => {
+    const urlMode = searchParams.get('mode');
+    if (urlMode === 'video') {
+      setMode('video');
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (mode !== 'intro') return;
 
@@ -41,7 +46,6 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, [mode]);
 
-  // Reset inactivity
   useEffect(() => {
     const updateInteraction = () => {
       lastInteractionRef.current = Date.now();
@@ -58,7 +62,6 @@ export default function HomeClient() {
     };
   }, []);
 
-  // Timeout: switch to video mode after 2 mins idle
   useEffect(() => {
     const interval = setInterval(() => {
       if (Date.now() - lastInteractionRef.current > 120_000) {
@@ -67,23 +70,6 @@ export default function HomeClient() {
     }, 10000);
     return () => clearInterval(interval);
   }, []);
-
-  // If overlay is visible and not clicked, go to next video after 10s
-  useEffect(() => {
-    if (showOverlay) {
-      overlayTimeoutRef.current = setTimeout(() => {
-        setShowOverlay(false);
-        setVideoIndex((prev) => (prev + 1) % videos.length);
-      }, 10000);
-    }
-    return () => {
-      if (overlayTimeoutRef.current) clearTimeout(overlayTimeoutRef.current);
-    };
-  }, [showOverlay]);
-
-  const handleStartVideo = () => {
-    setMode('video');
-  };
 
   const handleExplore = () => {
     router.push('/productlines');
@@ -106,7 +92,7 @@ export default function HomeClient() {
 
             {showButton && (
               <button
-                onClick={handleStartVideo}
+                onClick={() => setMode('video')}
                 className="mt-12 px-8 py-3 text-lg font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-1000"
               >
                 Touch to Begin
@@ -123,6 +109,8 @@ export default function HomeClient() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
             className="absolute inset-0 z-10"
+            onClick={handleExplore}
+            onTouchStart={handleExplore}
           >
             <ReactPlayer
               url={videos[videoIndex]}
@@ -132,29 +120,8 @@ export default function HomeClient() {
               width="100%"
               height="100%"
               className="absolute top-0 left-0"
-              onEnded={() => setShowOverlay(true)}
+              onEnded={() => setVideoIndex((prev) => (prev + 1) % videos.length)}
             />
-
-            {/* Overlay to catch click only when overlay is NOT showing */}
-            {!showOverlay && (
-              <button
-                onClick={handleExplore}
-                className="absolute inset-0 z-20 w-full h-full bg-transparent"
-                aria-label="Tap to explore"
-              />
-            )}
-
-            {/* "Tap to Explore" button */}
-            {showOverlay && (
-              <div className="absolute inset-0 z-30 flex items-end justify-center pb-16">
-                <button
-                  onClick={handleExplore}
-                  className="px-8 py-3 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-500"
-                >
-                  Tap to Explore
-                </button>
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
