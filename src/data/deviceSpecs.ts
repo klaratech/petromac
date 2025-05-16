@@ -9,6 +9,8 @@ export const deviceSpecs: Record<
     specs: Record<string, string>;
     media?: DeviceMedia;
     system?: string;
+    subsystem: string;
+    systemIcon: string;
   }
 > = {
   '/models/cp12.glb': {
@@ -29,7 +31,9 @@ export const deviceSpecs: Record<
     media: {
       introVideo: '/videos/cp12-placeholder.mp4',
     },
-    system: 'Focus-OH', // <-- example system tag
+    system: 'Focus',
+    subsystem: 'Focus-OH',
+    systemIcon: '/images/focus.png',
   },
   '/models/cp8.glb': {
     specs: {
@@ -49,7 +53,9 @@ export const deviceSpecs: Record<
     media: {
       introVideo: '/videos/cp8-placeholder.mp4',
     },
-    system: 'Focus - OH',
+    system: 'Focus',
+    subsystem: 'Focus - OH',
+    systemIcon: '/images/focus.png',
   },
   '/models/ttbs75.glb': {
     specs: {
@@ -69,6 +75,8 @@ export const deviceSpecs: Record<
       introVideo: '/videos/WirelineExpress.mp4',
     },
     system: 'Wireline Express',
+    subsystem: 'Wireline Express',
+    systemIcon: '/images/wirelineexpress.png',
   },
   '/models/thor.glb': {
     specs: {
@@ -89,6 +97,8 @@ export const deviceSpecs: Record<
       introVideo: '/videos/helix.mp4',
     },
     system: 'Thor',
+    subsystem: 'Thor',
+    systemIcon: '/images/thor.png',
   },
   '/models/helix.glb': {
     specs: {
@@ -107,7 +117,9 @@ export const deviceSpecs: Record<
     media: {
       introVideo: '/videos/helix.mp4',
     },
-    system: 'Focus - CH',
+    system: 'Focus',
+    subsystem: 'Focus - CH',
+    systemIcon: '/images/focus.png',
   },
   '/models/pathfinderht.glb': {
     specs: {
@@ -126,5 +138,7 @@ export const deviceSpecs: Record<
       introVideo: '/videos/Pathfinder_16May_subtitled.mp4',
     },
     system: 'PathFinder',
+    subsystem: 'Pathfinder HT',
+    systemIcon: '/images/pathfinder.png',
   },
 };

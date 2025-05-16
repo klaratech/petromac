@@ -10,3 +10,5 @@ Rocker
 THOR
 
 Fix idle timeouts...
+
+Intro-video timeouts
