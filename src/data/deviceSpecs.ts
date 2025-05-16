@@ -66,7 +66,7 @@ export const deviceSpecs: Record<
       'Carry Load': 'Up to 12,700 lbs (tool-dependent)',
     },
     media: {
-      introVideo: '/videos/ttbs75-placeholder.mp4',
+      introVideo: '/videos/WirelineExpress.mp4',
     },
     system: 'Wireline Express',
   },
@@ -123,7 +123,7 @@ export const deviceSpecs: Record<
       'Tool Compatibility': 'HAL J-Latch, Baker WTS, SLB Threaded ring',
     },
     media: {
-      introVideo: '/videos/helix.mp4',
+      introVideo: '/videos/Pathfinder_16May_subtitled.mp4',
     },
     system: 'PathFinder',
   },
