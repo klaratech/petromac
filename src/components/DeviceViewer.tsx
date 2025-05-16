@@ -4,7 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import { Suspense, useState, useRef, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
-import { deviceSpecs } from '@/data/deviceSpecs';
+import { deviceSpecs, systemMedia } from '@/data/deviceSpecs';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMap from '@/components/DrilldownMap';
@@ -30,8 +30,8 @@ export default function DeviceViewer({
   const cleanModel = model.split('?')[0];
   const entry = deviceSpecs[cleanModel] || {};
   const specs = entry.specs;
-  const media = entry.media;
   const system = entry.system;
+  const video = system ? systemMedia[system]?.video : undefined;
 
   const handleClose = useCallback(() => {
     setFadingOut(true);
@@ -131,9 +131,9 @@ export default function DeviceViewer({
             ✕ Close
           </button>
 
-          {(media?.introVideo || specs) && (
+          {(video || specs) && (
             <div className="absolute top-14 right-4 z-50 w-[260px] bg-white/90 backdrop-blur-md rounded-xl shadow-xl border border-gray-300 p-4 overflow-hidden">
-              {media?.introVideo && (
+              {video && (
                 <button
                   onClick={() => setShowVideo(true)}
                   className="w-full py-2 mb-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition"
@@ -162,10 +162,10 @@ export default function DeviceViewer({
             </div>
           )}
 
-          {showVideo && media?.introVideo && (
+          {showVideo && video && (
             <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
               <video
-                src={media.introVideo}
+                src={video}
                 controls
                 autoPlay
                 className="w-full h-full object-contain bg-black"
