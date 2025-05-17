@@ -4,14 +4,19 @@
 COUNTRY_NORMALIZATION = {
     "UAE": "United Arab Emirates",
     "USA": "United States of America",
-    "UK": "United Kingdom",
-    "KSA": "Saudi Arabia",
-    # Add more as needed
+    "Equatorial Guinea": "Eq. Guinea",
+    "Ivory Coast": "Côte d'Ivoire", 
+          # D3 uses the French name
 }
 
 # Region corrections
 REGION_NORMALIZATION = {
     "MEA": "MENA"
+    # Add more if needed
+}
+
+LOCATION_NORMALIZATION = {
+    "Yangoon": "Yangon"
     # Add more if needed
 }
 
