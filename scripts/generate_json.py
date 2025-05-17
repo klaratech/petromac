@@ -131,6 +131,8 @@ def load_clean_data():
     df = df.iloc[:, :remarks_index + 1]
     print("✂️ Dropping final row (assumed marker)...")
     df = df.iloc[:-1]
+    print("🔻 Dropping first 4 columns...")
+    df = df.iloc[:, 4:]
     if "Month" in df.columns:
         print("🧮 Normalizing 'Month' column...")
         df["Month"] = df["Month"].apply(normalize_month)
