@@ -57,7 +57,7 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
   const sortedCountries = [...countryStats].sort((a, b) => d3.descending(a[1], b[1]));
   const chartCountries = sortedCountries;
 
-  const totalDeployments = filteredData.length;
+  const totalDeployments = d3.sum(filteredData, (d) => +d.Successful);
   const countryCount = countryStats.filter(([, count]) => count > 0).length;
 
   const yearlyStats = useMemo(() => {
@@ -116,7 +116,8 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
       .style('stroke-width', (d) => d.properties?.name === tappedCountry ? 2 : 1)
       .style('filter', (d) => d.properties?.name === tappedCountry ? 'drop-shadow(0 0 4px #22c55e)' : 'none')
       .on('click', (event, d) => {
-        setTappedCountry(d.properties?.name || null);
+        const name = d.properties?.name || null;
+        setTappedCountry(name === tappedCountry ? null : name);
       })
       .append('title')
       .text((d) => {
@@ -146,7 +147,7 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
             viewBox={`0 0 ${chartCountries.length * 60} 180`}
           >
             {chartCountries.map(([country, count], i) => (
-              <g key={country} transform={`translate(${i * 60},0)`} onClick={() => setTappedCountry(country)}>
+              <g key={country} transform={`translate(${i * 60},0)`} onClick={() => setTappedCountry(tappedCountry === country ? null : country)}>
                 <rect
                   y={120 - (count / chartCountries[0][1]) * 100}
                   width={25}
