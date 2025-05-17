@@ -3,10 +3,8 @@
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { successStories, type SuccessStory } from '@/data/successStories';
 import type { Topology } from 'topojson-specification';
 import type { FeatureCollection, Geometry, Feature } from 'geojson';
-import { motion, AnimatePresence } from 'framer-motion';
 import type { JobRecord } from '@/types/JobRecord';
 
 interface Props {
@@ -20,7 +18,7 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
   const gRef = useRef<SVGGElement | null>(null);
   const [worldData, setWorldData] = useState<FeatureCollection<Geometry, { name?: string }> | null>(null);
   const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
-  const [storyModal, setStoryModal] = useState<SuccessStory | null>(null);
+  const [tappedCountry, setTappedCountry] = useState<string | null>(null);
 
   const systemOptions = useMemo(() => {
     return Array.from(new Set(data.map((job) => job.System).filter(Boolean))).sort();
@@ -40,10 +38,6 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
     return selectedSystems.length > 0 ? data.filter((job) => selectedSystems.includes(job.System)) : [];
   }, [data, selectedSystems]);
 
-  const filteredStories: SuccessStory[] = useMemo(() => {
-    return successStories.filter((s) => selectedSystems.includes(s.system));
-  }, [selectedSystems]);
-
   const countryStats = useMemo(() => {
     return d3.rollups(
       filteredData,
@@ -53,12 +47,11 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
   }, [filteredData]);
 
   const countryMap = useMemo(() => new Map(countryStats), [countryStats]);
+  const sortedCountries = [...countryStats].sort((a, b) => d3.descending(a[1], b[1]));
+  const chartCountries = sortedCountries;
 
-  const topCountries = [...countryStats]
-    .sort((a, b) => d3.descending(a[1], b[1]))
-    .slice(0, 25);
-
-  const totalJobs = filteredData.length;
+  const totalDeployments = filteredData.length;
+  const countryCount = countryStats.filter(([, count]) => count > 0).length;
 
   useEffect(() => {
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
@@ -110,25 +103,7 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         const count = countryMap.get(name) || 0;
         return `${name}: ${count} successful job${count !== 1 ? 's' : ''}`;
       });
-
-    filteredStories.forEach((story) => {
-      const [lon, lat] = [story.countryLon, story.countryLat];
-      const projected = projection([lon, lat]);
-      if (!projected) return;
-      const [x, y] = projected;
-
-      gSel.append('text')
-        .attr('x', x)
-        .attr('y', y)
-        .text('★')
-        .attr('font-size', 18)
-        .attr('fill', '#facc15')
-        .attr('text-anchor', 'middle')
-        .attr('alignment-baseline', 'middle')
-        .style('cursor', 'pointer')
-        .on('click', () => setStoryModal(story));
-    });
-  }, [worldData, countryMap, filteredStories]);
+  }, [worldData, countryMap]);
 
   return (
     <div className="relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white">
@@ -139,18 +114,41 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         ✕
       </button>
 
-      <div className="absolute bottom-4 left-4 z-50 bg-white text-black border border-gray-200 rounded-lg shadow px-4 py-4 w-[320px] h-[300px]">
-        <div className="text-sm font-medium mb-1">Global Jobs</div>
-        <div className="text-2xl font-bold mb-3">{totalJobs}</div>
-        <svg viewBox={`0 0 320 ${topCountries.length * 16}`} width="100%" height="240">
-          {topCountries.map(([country, count], i) => (
-            <g key={country} transform={`translate(0,${i * 16})`}>
-              <text x={0} y={12} fontSize="10" fill="#000">{country}</text>
-              <rect x={100} y={4} height={8} width={(count / topCountries[0][1]) * 200} fill="#34d399" />
-              <text x={305} y={12} fontSize="10" textAnchor="end">{count}</text>
-            </g>
-          ))}
-        </svg>
+      <div className="absolute bottom-6 left-4 z-50 bg-white text-black border border-gray-200 rounded-lg shadow px-4 py-4 max-w-[25vw] h-[45vh]">
+        <div className="text-sm font-medium mb-3">
+          <span className="text-green-600 font-bold">{totalDeployments}</span> Total Deployments in <span className="text-blue-600 font-bold">{countryCount}</span> Countries
+        </div>
+        <div className="overflow-x-auto overflow-y-hidden w-full h-[85%]">
+          <svg
+            width={chartCountries.length * 80}
+            height={120}
+            viewBox={`0 0 ${chartCountries.length * 80} 120`}
+          >
+            {chartCountries.map(([country, count], i) => (
+              <g key={country} transform={`translate(${i * 80},0)`} onClick={() => setTappedCountry(country)}>
+                <rect
+                  y={100 - (count / chartCountries[0][1]) * 80}
+                  width={30}
+                  height={(count / chartCountries[0][1]) * 80}
+                  fill="#34d399"
+                />
+                {tappedCountry === country && (
+                  <text
+                    x={15}
+                    y={80 - (count / chartCountries[0][1]) * 80 - 5}
+                    fontSize="10"
+                    textAnchor="middle"
+                  >
+                    {count}
+                  </text>
+                )}
+                <text x={15} y={110} fontSize="10" textAnchor="middle">
+                  {country}
+                </text>
+              </g>
+            ))}
+          </svg>
+        </div>
       </div>
 
       {systemOptions.length > 0 && (
@@ -194,29 +192,6 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         viewBox="0 0 960 540"
         preserveAspectRatio="xMidYMid meet"
       />
-
-      <AnimatePresence>
-        {storyModal && (
-          <motion.div
-            key="story-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-black/70 flex items-center justify-center"
-            onClick={() => setStoryModal(null)}
-          >
-            <div className="bg-white rounded-lg p-4 w-[80vw] h-[80vh] shadow-xl overflow-hidden relative" onClick={(e) => e.stopPropagation()}>
-              <iframe src={storyModal.link} className="w-full h-full" />
-              <button
-                className="absolute top-2 right-2 px-3 py-1 bg-black text-white rounded"
-                onClick={() => setStoryModal(null)}
-              >
-                ✕
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
