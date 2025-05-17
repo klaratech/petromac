@@ -21,15 +21,15 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
   const [tappedCountry, setTappedCountry] = useState<string | null>(null);
   const [countryLabels, setCountryLabels] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    fetch('/data/country_labels.json')
-      .then((res) => res.json())
-      .then((labels) => setCountryLabels(labels));
-  }, []);
-
   const systemOptions = useMemo(() => {
     return Array.from(new Set(data.map((job) => job.System).filter(Boolean))).sort();
   }, [data]);
+
+  useEffect(() => {
+    fetch('/data/country_labels.json')
+      .then(res => res.json())
+      .then(setCountryLabels);
+  }, []);
 
   useEffect(() => {
     if (selectedSystems.length > 0 || systemOptions.length === 0) return;
@@ -59,6 +59,15 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
 
   const totalDeployments = filteredData.length;
   const countryCount = countryStats.filter(([, count]) => count > 0).length;
+
+  const yearlyStats = useMemo(() => {
+    if (!tappedCountry) return [];
+    return d3.rollups(
+      filteredData.filter((d) => d.Country === tappedCountry),
+      (entries) => d3.sum(entries, (d) => +d.Successful),
+      (d) => d.Year
+    ).sort((a, b) => d3.ascending(+a[0], +b[0]));
+  }, [filteredData, tappedCountry]);
 
   useEffect(() => {
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
@@ -101,17 +110,13 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
       .attr('d', (d) => path(d as Feature<Geometry>) || '')
       .attr('fill', (d) => {
         const name = d.properties?.name || '';
-        return countryMap.has(name) ? '#34d399' : '#f3f4f6';
+        return name === tappedCountry ? '#4ade80' : (countryMap.has(name) ? '#34d399' : '#f3f4f6');
       })
       .attr('stroke', '#ccc')
-      .attr('stroke-width', 1)
-      .attr('class', (d) => {
-        const name = d.properties?.name || '';
-        return `country-shape ${name === tappedCountry ? 'highlight' : ''}`;
-      })
+      .style('stroke-width', (d) => d.properties?.name === tappedCountry ? 2 : 1)
+      .style('filter', (d) => d.properties?.name === tappedCountry ? 'drop-shadow(0 0 4px #22c55e)' : 'none')
       .on('click', (event, d) => {
-        const name = d.properties?.name;
-        if (name) setTappedCountry(name);
+        setTappedCountry(d.properties?.name || null);
       })
       .append('title')
       .text((d) => {
@@ -130,40 +135,37 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         ✕
       </button>
 
-      <div className="absolute bottom-6 left-4 z-50 bg-white text-black border border-gray-200 rounded-lg shadow px-4 py-4 max-w-[25vw] h-[55vh]">
+      <div className="absolute bottom-6 left-4 z-50 bg-white text-black border border-gray-200 rounded-lg shadow px-4 py-4 max-w-[25vw] h-[60vh]">
         <div className="text-sm font-medium mb-3">
           <span className="text-green-600 font-bold">{totalDeployments}</span> Total Deployments in <span className="text-blue-600 font-bold">{countryCount}</span> Countries
         </div>
-        <div className="overflow-x-auto overflow-y-hidden w-full h-[90%]">
+        <div className="overflow-x-auto overflow-y-hidden w-full h-[85%]">
           <svg
             width={chartCountries.length * 60}
-            height={160}
-            viewBox={`0 0 ${chartCountries.length * 60} 160`}
+            height={180}
+            viewBox={`0 0 ${chartCountries.length * 60} 180`}
           >
             {chartCountries.map(([country, count], i) => (
-              <g
-                key={country}
-                transform={`translate(${i * 60},0)`}
-                onClick={() => setTappedCountry(country)}
-              >
+              <g key={country} transform={`translate(${i * 60},0)`} onClick={() => setTappedCountry(country)}>
                 <rect
                   y={120 - (count / chartCountries[0][1]) * 100}
-                  width={tappedCountry === country ? 35 : 25}
+                  width={25}
                   height={(count / chartCountries[0][1]) * 100}
                   fill="#34d399"
-                  className="transition-all duration-300"
+                  transform={tappedCountry === country ? 'scale(1.1)' : ''}
                 />
                 {tappedCountry === country && (
                   <text
-                    x={17}
+                    x={12.5}
                     y={100 - (count / chartCountries[0][1]) * 100 - 5}
                     fontSize="10"
                     textAnchor="middle"
+                    fill="#000"
                   >
                     {count}
                   </text>
                 )}
-                <text x={17} y={140} fontSize="10" textAnchor="middle">
+                <text x={12.5} y={140} fontSize="10" textAnchor="middle">
                   {countryLabels[country] || country}
                 </text>
               </g>
@@ -171,6 +173,23 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
           </svg>
         </div>
       </div>
+
+      {tappedCountry && yearlyStats.length > 0 && (
+        <div className="absolute top-6 right-4 z-50 bg-white text-black border border-gray-300 rounded-lg shadow px-4 py-4 w-[320px] h-[45vh]">
+          <div className="text-md font-semibold mb-3">
+            Successful Jobs in {countryLabels[tappedCountry] || tappedCountry} by Year
+          </div>
+          <svg viewBox={`0 0 320 ${yearlyStats.length * 24}`} width="100%" height="100%">
+            {yearlyStats.map(([year, value], i) => (
+              <g key={year} transform={`translate(0,${i * 24})`}>
+                <text x={0} y={12} fontSize="10" fill="#333">{year}</text>
+                <rect x={50} y={4} height={12} width={value} fill="#60a5fa" />
+                <text x={50 + value + 5} y={14} fontSize="10" fill="#111">{value}</text>
+              </g>
+            ))}
+          </svg>
+        </div>
+      )}
 
       {systemOptions.length > 0 && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg shadow flex gap-2 overflow-x-auto">
@@ -213,14 +232,6 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         viewBox="0 0 960 540"
         preserveAspectRatio="xMidYMid meet"
       />
-
-      <style jsx>{`
-        .country-shape.highlight {
-          stroke: #eab308;
-          stroke-width: 2;
-          filter: drop-shadow(0 0 4px #facc15);
-        }
-      `}</style>
     </div>
   );
 }
