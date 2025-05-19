@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
-const videos = ['/videos/intro-loop1.mp4?v=20250517', '/videos/intro-loop2.mp4?v=2-250517'];
+const videos = ['/videos/helix.mp4?v=20250519', '/videos/pf.mp4?v=250519'];
 
 export default function HomeClient() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');

@@ -28,7 +28,7 @@ export const systemMedia: Record<string, SystemMedia> = {
     ]
   },
   'Wireline Express': {
-    video: '/videos/WirelineExpress.mp4?v=20240517',
+    video: '/videos/WirelineExpress.mp4?v=20240519',
     logo: '/images/wirelineexpress.png',
     successStoriesPdf: [
       '/pdf/wireline-success.pdf'
@@ -42,7 +42,7 @@ export const systemMedia: Record<string, SystemMedia> = {
     ]
   },
   'PathFinder': {
-    video: '/videos/Pathfinder_16May_subtitled.mp4?v=20240517',
+    video: '/videos/pf.mp4?v=20240519',
     logo: '/images/pathfinder.png',
     successStoriesPdf: [
       '/pdf/pathfinder-success.pdf'
