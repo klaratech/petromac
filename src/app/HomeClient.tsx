@@ -116,7 +116,7 @@ export default function HomeClient() {
               url={videos[videoIndex]}
               playing
               loop={false}
-              muted
+              muted={false}
               width="100%"
               height="100%"
               className="absolute top-0 left-0"
