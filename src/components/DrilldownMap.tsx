@@ -41,33 +41,64 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
     }
   }, [initialSystem, systemOptions, selectedSystems.length]);
 
+  const isPathfinderOnly = selectedSystems.length === 1 && selectedSystems[0].toLowerCase() === 'pathfinder';
+
   const filteredData = useMemo(() => {
-    return selectedSystems.length > 0 ? data.filter((job) => selectedSystems.includes(job.System)) : [];
+    return selectedSystems.length > 0
+      ? data.filter((job) => selectedSystems.includes(job.System))
+      : [];
   }, [data, selectedSystems]);
 
   const countryStats = useMemo(() => {
+    const source = isPathfinderOnly ? data : filteredData;
+
     return d3.rollups(
-      filteredData,
-      (entries) => d3.sum(entries, (d) => +d.Successful),
+      source,
+      (entries) =>
+        d3.sum(entries, (d) => {
+          if (isPathfinderOnly) {
+            return (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
+          }
+          return +d.Successful || 0;
+        }),
       (d) => d.Country
     );
-  }, [filteredData]);
+  }, [data, filteredData, isPathfinderOnly]);
 
   const countryMap = useMemo(() => new Map(countryStats), [countryStats]);
-  const sortedCountries = [...countryStats].sort((a, b) => d3.descending(a[1], b[1]));
-  const chartCountries = sortedCountries;
 
-  const totalDeployments = d3.sum(filteredData, (d) => +d.Successful);
+
+  const sortedCountries = [...countryStats].sort((a, b) => d3.descending(a[1], b[1]));
+  const chartCountries = sortedCountries.filter(([, count]) => count > 0); // ✅ Hides zero values
+
+
+  const totalDeployments = d3.sum(
+    isPathfinderOnly ? data : filteredData,
+    (d) =>
+      isPathfinderOnly
+        ? (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0
+        : +d.Successful || 0
+  );
+
   const countryCount = countryStats.filter(([, count]) => count > 0).length;
 
   const yearlyStats = useMemo(() => {
     if (!tappedCountry) return [];
+
+    const source = isPathfinderOnly ? data : filteredData;
+
     return d3.rollups(
-      filteredData.filter((d) => d.Country === tappedCountry),
-      (entries) => d3.sum(entries, (d) => +d.Successful),
+      source.filter((d) => d.Country === tappedCountry),
+      (entries) =>
+        d3.sum(entries, (d) => {
+          if (isPathfinderOnly) {
+            return (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
+          }
+          return +d.Successful || 0;
+        }),
       (d) => d.Year
     ).sort((a, b) => d3.ascending(+a[0], +b[0]));
-  }, [filteredData, tappedCountry]);
+  }, [data, filteredData, tappedCountry, isPathfinderOnly]);
 
   useEffect(() => {
     d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
@@ -123,7 +154,7 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
       .text((d) => {
         const name = d.properties?.name || 'Unknown';
         const count = countryMap.get(name) || 0;
-        return `${name}: ${count} successful job${count !== 1 ? 's' : ''}`;
+        return `${name}: ${count} deployment${count !== 1 ? 's' : ''}`;
       });
   }, [worldData, countryMap, tappedCountry]);
 
@@ -178,7 +209,7 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
       {tappedCountry && yearlyStats.length > 0 && (
         <div className="absolute top-6 right-4 z-50 bg-white text-black border border-gray-300 rounded-lg shadow px-4 py-4 w-[320px] h-[45vh]">
           <div className="text-md font-semibold mb-3">
-            Successful Jobs in {countryLabels[tappedCountry] || tappedCountry} by Year
+            Deployments in {countryLabels[tappedCountry] || tappedCountry} by Year
           </div>
           <svg viewBox={`0 0 320 ${yearlyStats.length * 24}`} width="100%" height="100%">
             {yearlyStats.map(([year, value], i) => (

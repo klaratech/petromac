@@ -10,9 +10,16 @@ import type { JobRecord } from '@/types/JobRecord';
 interface Props {
   system: string;
   onClose: () => void;
+  onVideoPlay?: () => void;
+  onVideoPause?: () => void;
 }
 
-export default function SystemModal({ system, onClose }: Props) {
+export default function SystemModal({
+  system,
+  onClose,
+  onVideoPlay,
+  onVideoPause
+}: Props) {
   const ref = useRef<HTMLVideoElement | null>(null);
   const [showDrilldown, setShowDrilldown] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
@@ -24,7 +31,6 @@ export default function SystemModal({ system, onClose }: Props) {
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        // Escape always closes the modal entirely
         onClose();
       }
     };
@@ -63,21 +69,17 @@ export default function SystemModal({ system, onClose }: Props) {
       >
         <div className="relative w-full h-full bg-black">
           {showDrilldown && jobData ? (
-            <>
-              <DrilldownMap
-                data={jobData}
-                initialSystem={system}
-                onClose={() => setShowDrilldown(false)}
-              />
-            </>
+            <DrilldownMap
+              data={jobData}
+              initialSystem={system}
+              onClose={() => setShowDrilldown(false)}
+            />
           ) : showGallery ? (
-            <>
-              <CircularGallery
-                models={models}
-                onClose={() => setShowGallery(false)}
-                forceSingleModel={models.length === 1}
-              />
-            </>
+            <CircularGallery
+              models={models}
+              onClose={() => setShowGallery(false)}
+              forceSingleModel={models.length === 1}
+            />
           ) : (
             <>
               {videoSrc ? (
@@ -87,6 +89,8 @@ export default function SystemModal({ system, onClose }: Props) {
                   autoPlay
                   className="w-full h-full object-contain"
                   src={videoSrc}
+                  onPlay={onVideoPlay}
+                  onPause={onVideoPause}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-white text-xl">

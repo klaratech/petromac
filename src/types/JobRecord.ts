@@ -5,5 +5,6 @@ export interface JobRecord {
   Successful: number;
   System: string;
   Month: number;
-  Year: number; // <-- required for the year-wise chart
+  Year: number;
+  "PathFinder Run (Y/N)": string; // <-- required for the year-wise chart
 }
