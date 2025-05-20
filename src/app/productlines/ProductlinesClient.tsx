@@ -12,7 +12,7 @@ const systemList = featuredSystems
   .filter((system) => systemMedia[system])
   .map((system) => [system, systemMedia[system].logo] as [string, string]);
 
-const IDLE_TIMEOUT = 30000; // 30 seconds
+const IDLE_TIMEOUT = 120000; // 30 seconds
 
 export default function ProductlinesClient() {
   const router = useRouter();
