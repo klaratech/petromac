@@ -167,42 +167,9 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         ✕
       </button>
 
-      <div className="absolute bottom-6 left-4 z-50 bg-white text-black border border-gray-200 rounded-lg shadow px-4 py-4 max-w-[25vw] h-[60vh]">
-        <div className="text-sm font-medium mb-3">
+      <div className="absolute top-6 left-4 z-50 bg-white/90 backdrop-blur-md text-black border border-gray-200 rounded-lg shadow px-4 py-3">
+        <div className="text-sm font-medium">
           <span className="text-green-600 font-bold">{totalDeployments}</span> Total Deployments in <span className="text-blue-600 font-bold">{countryCount}</span> Countries
-        </div>
-        <div className="overflow-x-auto overflow-y-hidden w-full h-[85%]">
-          <svg
-            width={chartCountries.length * 60}
-            height={180}
-            viewBox={`0 0 ${chartCountries.length * 60} 180`}
-          >
-            {chartCountries.map(([country, count], i) => (
-              <g key={country} transform={`translate(${i * 60},0)`} onClick={() => setTappedCountry(tappedCountry === country ? null : country)}>
-                <rect
-                  y={120 - (count / chartCountries[0][1]) * 100}
-                  width={25}
-                  height={(count / chartCountries[0][1]) * 100}
-                  fill="#34d399"
-                  transform={tappedCountry === country ? 'scale(1.1)' : ''}
-                />
-                {tappedCountry === country && (
-                  <text
-                    x={12.5}
-                    y={100 - (count / chartCountries[0][1]) * 100 - 5}
-                    fontSize="10"
-                    textAnchor="middle"
-                    fill="#000"
-                  >
-                    {count}
-                  </text>
-                )}
-                <text x={12.5} y={140} fontSize="10" textAnchor="middle">
-                  {countryLabels[country] || country}
-                </text>
-              </g>
-            ))}
-          </svg>
         </div>
       </div>
 
@@ -222,6 +189,58 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
           </svg>
         </div>
       )}
+
+      {/* Country Chart - Bottom Panel */}
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-40 bg-white/95 backdrop-blur-md text-black border border-gray-200 rounded-lg shadow px-6 py-4 max-w-[90vw] w-fit">
+        <div className="text-sm font-medium mb-4 text-center">
+          Deployments by Country
+        </div>
+        <div className="overflow-x-auto">
+          <div className="flex items-end gap-3 min-w-fit px-2">
+            {chartCountries.slice(0, 15).map(([country, count]) => {
+              const maxCount = chartCountries[0][1];
+              const barHeight = Math.max((count / maxCount) * 80, 8); // Min height of 8px
+              const isSelected = tappedCountry === country;
+              
+              return (
+                <div 
+                  key={country} 
+                  className="flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105"
+                  onClick={() => setTappedCountry(tappedCountry === country ? null : country)}
+                >
+                  <div className="relative">
+                    {isSelected && (
+                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                        {count} deployment{count !== 1 ? 's' : ''}
+                      </div>
+                    )}
+                    <div
+                      className={`w-8 rounded-t transition-all duration-200 ${
+                        isSelected 
+                          ? 'bg-green-500 shadow-lg' 
+                          : 'bg-green-400 group-hover:bg-green-500'
+                      }`}
+                      style={{ height: `${barHeight}px` }}
+                    />
+                  </div>
+                  <div className="mt-2 text-xs text-center max-w-[60px] leading-tight">
+                    <div className="font-medium">{countryLabels[country] || country}</div>
+                    <div className="text-gray-600">{count}</div>
+                  </div>
+                </div>
+              );
+            })}
+            {chartCountries.length > 15 && (
+              <div className="flex flex-col items-center justify-end text-gray-500">
+                <div className="w-8 h-4 bg-gray-200 rounded-t" />
+                <div className="mt-2 text-xs text-center">
+                  +{chartCountries.length - 15} more
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {systemOptions.length > 0 && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg shadow flex gap-2 overflow-x-auto">
