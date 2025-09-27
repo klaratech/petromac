@@ -6,6 +6,9 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import type { Topology } from 'topojson-specification';
 import type { FeatureCollection, Geometry, Feature } from 'geojson';
 import type { JobRecord } from '@/types/JobRecord';
+import { APP_CONSTANTS, EXTERNAL_URLS } from '@/constants/app';
+import { fetchJsonWithValidation, validateCountryLabels } from '@/utils/dataValidation';
+import LoadingSpinner from './LoadingSpinner';
 
 interface Props {
   data: JobRecord[];
@@ -20,15 +23,27 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
   const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
   const [tappedCountry, setTappedCountry] = useState<string | null>(null);
   const [countryLabels, setCountryLabels] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const systemOptions = useMemo(() => {
     return Array.from(new Set(data.map((job) => job.System).filter(Boolean))).sort();
   }, [data]);
 
   useEffect(() => {
-    fetch('/data/country_labels.json')
-      .then(res => res.json())
-      .then(setCountryLabels);
+    const loadCountryLabels = async () => {
+      try {
+        const labels = await fetchJsonWithValidation(
+          EXTERNAL_URLS.COUNTRY_LABELS,
+          validateCountryLabels
+        );
+        setCountryLabels(labels);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load country labels');
+      }
+    };
+
+    loadCountryLabels();
   }, []);
 
   useEffect(() => {
@@ -101,11 +116,17 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
   }, [data, filteredData, tappedCountry, isPathfinderOnly]);
 
   useEffect(() => {
-    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-      .then((topologyData) => {
-        const topology = topologyData as Topology;
-        const geo = topojson.feature(topology, topology.objects.countries);
-        if (!('features' in geo)) throw new Error('Invalid GeoJSON FeatureCollection');
+    const loadWorldData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const topologyData = await d3.json(EXTERNAL_URLS.WORLD_MAP_DATA) as Topology;
+        const geo = topojson.feature(topologyData, topologyData.objects.countries);
+        
+        if (!('features' in geo)) {
+          throw new Error('Invalid GeoJSON FeatureCollection');
+        }
 
         const countries = geo as FeatureCollection<Geometry, { name?: string }>;
         const filtered = countries.features.filter((f) => {
@@ -114,8 +135,14 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         });
 
         setWorldData({ ...countries, features: filtered });
-      })
-      .catch((err) => console.error('❌ Failed to load world map:', err));
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load world map data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadWorldData();
   }, []);
 
   useEffect(() => {
@@ -124,8 +151,8 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const width = 960;
-    const height = 540;
+    const width = APP_CONSTANTS.MAP_WIDTH;
+    const height = APP_CONSTANTS.MAP_HEIGHT;
     const projection = d3.geoNaturalEarth1().fitSize([width, height], worldData);
     const path = d3.geoPath(projection);
 
@@ -197,9 +224,12 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         </div>
         <div className="overflow-x-auto">
           <div className="flex items-end gap-3 min-w-fit px-2">
-            {chartCountries.slice(0, 15).map(([country, count]) => {
-              const maxCount = chartCountries[0][1];
-              const barHeight = Math.max((count / maxCount) * 80, 8); // Min height of 8px
+          {chartCountries.slice(0, APP_CONSTANTS.MAX_CHART_COUNTRIES).map(([country, count]) => {
+            const maxCount = chartCountries[0][1];
+            const barHeight = Math.max(
+              (count / maxCount) * APP_CONSTANTS.MAX_BAR_HEIGHT, 
+              APP_CONSTANTS.MIN_BAR_HEIGHT
+            );
               const isSelected = tappedCountry === country;
               
               return (
@@ -230,11 +260,11 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
                 </div>
               );
             })}
-            {chartCountries.length > 15 && (
+            {chartCountries.length > APP_CONSTANTS.MAX_CHART_COUNTRIES && (
               <div className="flex flex-col items-center justify-end text-gray-500">
                 <div className="w-8 h-4 bg-gray-200 rounded-t" />
                 <div className="mt-2 text-xs text-center">
-                  +{chartCountries.length - 15} more
+                  +{chartCountries.length - APP_CONSTANTS.MAX_CHART_COUNTRIES} more
                 </div>
               </div>
             )}
@@ -277,10 +307,31 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
         </div>
       )}
 
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-50">
+          <LoadingSpinner size="lg" message="Loading map data..." />
+        </div>
+      )}
+
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
+          <div className="text-center p-6">
+            <h3 className="text-lg font-semibold text-red-600 mb-2">Error Loading Map</h3>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
+
       <svg
         ref={svgRef}
         className="w-full h-full"
-        viewBox="0 0 960 540"
+        viewBox={`0 0 ${APP_CONSTANTS.MAP_WIDTH} ${APP_CONSTANTS.MAP_HEIGHT}`}
         preserveAspectRatio="xMidYMid meet"
       />
     </div>

@@ -11,6 +11,6 @@ declare module 'next-pwa' {
     buildExcludes?: string[];
   };
 
-  function withPWA(options: PWAOptions): (config: NextConfig) => NextConfig;
+  function withPWA(options: PWAOptions): (config?: NextConfig) => NextConfig;
   export default withPWA;
 }

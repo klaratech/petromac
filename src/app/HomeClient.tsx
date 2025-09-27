@@ -4,10 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
+import { APP_CONSTANTS, VIDEO_SOURCES } from '@/constants/app';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
-
-const videos = ['/videos/dice.mp4?v=20250520','/videos/WirelineExpress.mp4?v=20250519','/videos/helix.mp4?v=20250519', '/videos/pf.mp4?v=250519'];
 
 export default function HomeClient() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
@@ -39,9 +38,9 @@ export default function HomeClient() {
       i++;
       if (i >= fullText.length) {
         clearInterval(interval);
-        setTimeout(() => setShowButton(true), 500);
+        setTimeout(() => setShowButton(true), APP_CONSTANTS.BUTTON_SHOW_DELAY);
       }
-    }, 50);
+    }, APP_CONSTANTS.TYPING_SPEED);
 
     return () => clearInterval(interval);
   }, [mode]);
@@ -64,10 +63,10 @@ export default function HomeClient() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (Date.now() - lastInteractionRef.current > 30_000) {
+      if (Date.now() - lastInteractionRef.current > APP_CONSTANTS.IDLE_TIMEOUT) {
         setMode('video');
       }
-    }, 10000);
+    }, APP_CONSTANTS.IDLE_CHECK_INTERVAL);
     return () => clearInterval(interval);
   }, []);
 
@@ -113,14 +112,14 @@ export default function HomeClient() {
             onTouchStart={handleExplore}
           >
             <ReactPlayer
-              url={videos[videoIndex]}
+              url={VIDEO_SOURCES[videoIndex]}
               playing
               loop={false}
               muted={false}
               width="100%"
               height="100%"
               className="absolute top-0 left-0"
-              onEnded={() => setVideoIndex((prev) => (prev + 1) % videos.length)}
+              onEnded={() => setVideoIndex((prev) => (prev + 1) % VIDEO_SOURCES.length)}
             />
           </motion.div>
         )}

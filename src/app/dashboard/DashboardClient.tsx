@@ -23,7 +23,11 @@ export default function DashboardClient() {
         setData(json);
       })
       .catch((err) => {
-        console.error('❌ Failed to load operations data:', err);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('❌ Failed to load operations data:', err);
+        }
+        // In production, you might want to show a user-friendly error message
+        // or retry the request
       });
   }, []);
 

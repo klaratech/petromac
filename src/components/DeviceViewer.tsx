@@ -14,11 +14,9 @@ import type { JobRecord } from '@/types/JobRecord';
 export default function DeviceViewer({
   model,
   onClose,
-  directView = false,
 }: {
   model: string;
-  onClose: (reason: 'exit' | 'back') => void;
-  directView?: boolean;
+  onClose: () => void;
 }) {
   const [showSpecs, setShowSpecs] = useState(false);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
@@ -36,9 +34,9 @@ export default function DeviceViewer({
   const handleClose = useCallback(() => {
     setFadingOut(true);
     setTimeout(() => {
-      onClose(directView ? 'exit' : 'back');
+      onClose();
     }, 400);
-  }, [onClose, directView]);
+  }, [onClose]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -58,7 +56,13 @@ export default function DeviceViewer({
       .then((res) => res.json())
       .then((json) => {
         setDrilldownData(json);
-        console.log('📦 operations_data.json loaded');
+        // Data loaded successfully - only log in development
+        if (process.env.NODE_ENV === 'development') {
+          console.log('📦 operations_data.json loaded');
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load operations data:', error);
       });
   }, []);
 
