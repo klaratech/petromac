@@ -173,9 +173,8 @@ export default function CircularGallery({
           >
             <DeviceViewer
               model={selectedModel}
-              directView={forceSingleModel}
-              onClose={(reason) => {
-                if (reason === 'exit') {
+              onClose={() => {
+                if (forceSingleModel) {
                   onClose(); // Return to productlines
                 } else {
                   setSelectedModel(null); // Back to gallery
