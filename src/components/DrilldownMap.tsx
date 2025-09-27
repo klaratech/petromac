@@ -173,7 +173,7 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
       .attr('stroke', '#ccc')
       .style('stroke-width', (d) => d.properties?.name === tappedCountry ? 2 : 1)
       .style('filter', (d) => d.properties?.name === tappedCountry ? 'drop-shadow(0 0 4px #22c55e)' : 'none')
-      .on('click', (event, d) => {
+      .on('click', (_, d) => {
         const name = d.properties?.name || null;
         setTappedCountry(name === tappedCountry ? null : name);
       })
