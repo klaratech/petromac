@@ -464,7 +464,11 @@ export default function PdfBuilderModal({ onClose }: Props) {
         
         if (validSelections.length !== selectedValues.length) {
           clearedKeys.push(field);
-          updatedFilters[field] = validSelections.length > 0 ? validSelections : undefined;
+          if (validSelections.length > 0) {
+            updatedFilters[field] = validSelections;
+          } else {
+            delete updatedFilters[field];
+          }
         }
       }
     }
@@ -487,7 +491,11 @@ export default function PdfBuilderModal({ onClose }: Props) {
           const currentValues = prev[field];
           if (currentValues && Array.isArray(currentValues)) {
             const validValues = currentValues.filter(val => availableValues.includes(val));
-            updated[field] = validValues.length > 0 ? validValues : undefined;
+            if (validValues.length > 0) {
+              updated[field] = validValues;
+            } else {
+              delete updated[field];
+            }
           }
         });
         return updated;
