@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import type { FilterPayload, OptionsResponse, PreviewResponse } from '@/types/pdf';
+import type { FilterPayload, PreviewResponse } from '@/types/pdf';
 import { useDebounce } from '@/hooks/useDebounce';
 
 interface Props {
@@ -485,7 +485,7 @@ export default function PdfBuilderModal({ onClose }: Props) {
           const field = key as keyof FilterPayload;
           const availableValues = availableOptions[field].map(opt => opt.value);
           const currentValues = prev[field];
-          if (currentValues) {
+          if (currentValues && Array.isArray(currentValues)) {
             const validValues = currentValues.filter(val => availableValues.includes(val));
             updated[field] = validValues.length > 0 ? validValues : undefined;
           }
