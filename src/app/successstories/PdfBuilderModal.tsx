@@ -145,7 +145,7 @@ export default function PdfBuilderModal({ onClose }: Props) {
     const loadOptions = async () => {
       try {
         setIsLoadingOptions(true);
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/options`);
+        const response = await fetch('/api/successstories');
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(errorData.error || 'Failed to load filter options');
@@ -208,7 +208,7 @@ export default function PdfBuilderModal({ onClose }: Props) {
       formData.append('case_insensitive', 'true');
       formData.append('preview', 'true');
 
-      const response = await fetch('/api/generate', {
+      const response = await fetch('/api/successstories', {
         method: 'POST',
         body: formData,
       });
@@ -238,7 +238,7 @@ export default function PdfBuilderModal({ onClose }: Props) {
       formData.append('filters_json', JSON.stringify(filters));
       formData.append('case_insensitive', 'true');
 
-      const response = await fetch('/api/generate', {
+      const response = await fetch('/api/successstories', {
         method: 'POST',
         body: formData,
       });
@@ -284,15 +284,15 @@ export default function PdfBuilderModal({ onClose }: Props) {
       setIsEmailing(true);
       setError(null);
       
-      const response = await fetch('/api/email', {
+      const formData = new FormData();
+      formData.append('action', 'email');
+      formData.append('name', 'Kiosk User');
+      formData.append('email', email.trim());
+      formData.append('message', `PDF request with filters: ${JSON.stringify(filters)}`);
+
+      const response = await fetch('/api/successstories', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email.trim(),
-          filters
-        }),
+        body: formData,
       });
 
       if (!response.ok) {
