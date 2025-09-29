@@ -1,15 +1,31 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { FilterPayload, OptionsResponse, PreviewResponse } from '@/types/pdf';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface Props {
   onClose: () => void;
 }
 
+interface CsvRow {
+  area: string;
+  country: string;
+  wlco: string;
+  category1: string;
+  category2: string;
+  device: string;
+  page: number;
+}
+
+interface OptionWithCount {
+  value: string;
+  count: number;
+}
+
 interface MultiSelectProps {
   label: string;
-  options: string[];
+  options: OptionWithCount[];
   selected: string[];
   onChange: (_value: string[]) => void;
   placeholder?: string;
@@ -17,7 +33,16 @@ interface MultiSelectProps {
 
 const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Filter options based on search term
+  const filteredOptions = options.filter(option =>
+    option.value.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const toggleOption = (option: string) => {
     if (selected.includes(option)) {
@@ -27,18 +52,58 @@ const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiS
     }
   };
 
+  const removeOption = (option: string) => {
+    onChange(selected.filter(item => item !== option));
+  };
+
   const clearAll = () => {
     onChange([]);
   };
 
   const selectAll = () => {
-    onChange([...options]);
+    onChange(filteredOptions.map(opt => opt.value));
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (!isOpen) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        setIsOpen(true);
+        setTimeout(() => searchInputRef.current?.focus(), 100);
+      }
+      return;
+    }
+
+    switch (event.key) {
+      case 'Escape':
+        event.preventDefault();
+        setIsOpen(false);
+        inputRef.current?.focus();
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        setFocusedIndex(prev => Math.min(prev + 1, filteredOptions.length - 1));
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        setFocusedIndex(prev => Math.max(prev - 1, 0));
+        break;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        if (focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
+          toggleOption(filteredOptions[focusedIndex].value);
+        }
+        break;
+    }
   };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setSearchTerm('');
+        setFocusedIndex(-1);
       }
     };
 
@@ -46,71 +111,182 @@ const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiS
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isOpen]);
+
+  // Reset focused index when search term changes
+  useEffect(() => {
+    setFocusedIndex(-1);
+  }, [searchTerm]);
+
+  const renderSelectedDisplay = () => {
+    if (selected.length === 0) {
+      return (
+        <span className="text-gray-500">
+          {placeholder || `Select ${label.toLowerCase()}...`}
+        </span>
+      );
+    }
+
+    if (selected.length === 1) {
+      return (
+        <div className="flex items-center">
+          <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm mr-1">
+            {selected[0]}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                removeOption(selected[0]);
+              }}
+              className="ml-1 text-blue-600 hover:text-blue-800"
+            >
+              ×
+            </button>
+          </span>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex items-center flex-wrap gap-1">
+        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
+          {selected[0]}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              removeOption(selected[0]);
+            }}
+            className="ml-1 text-blue-600 hover:text-blue-800"
+          >
+            ×
+          </button>
+        </span>
+        {selected.length > 1 && (
+          <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-sm">
+            +{selected.length - 1}
+          </span>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       <label className="block text-sm font-medium text-gray-700 mb-1">
         {label}
       </label>
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-        aria-haspopup="listbox"
+      <div
+        ref={inputRef}
+        role="combobox"
         aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-label={`${label} multiselect`}
+        tabIndex={0}
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[38px] flex items-center"
       >
-        <span className="block truncate">
-          {selected.length === 0 
-            ? placeholder || `Select ${label.toLowerCase()}...`
-            : selected.length <= 3
-            ? selected.join(', ')
-            : `${selected.length} selected`
-          }
-        </span>
-        <span className="absolute inset-y-0 right-0 flex items-center pr-2">
+        <div className="flex-1 min-w-0">
+          {renderSelectedDisplay()}
+        </div>
+        <div className="flex-shrink-0 ml-2">
           <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-        </span>
-      </button>
+        </div>
+      </div>
 
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md border border-gray-300 overflow-auto">
+        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-80 rounded-md border border-gray-300 overflow-hidden">
+          {/* Search box for long lists */}
+          {options.length > 10 && (
+            <div className="p-3 border-b border-gray-200">
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder={`Search ${label.toLowerCase()}...`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+          )}
+          
+          {/* Action buttons */}
           <div className="sticky top-0 bg-gray-50 px-3 py-2 border-b border-gray-200 flex justify-between">
             <button
               type="button"
               onClick={selectAll}
-              className="text-xs text-blue-600 hover:text-blue-800"
-              disabled={selected.length === options.length}
+              className="text-xs text-blue-600 hover:text-blue-800 disabled:text-gray-400"
+              disabled={filteredOptions.every(opt => selected.includes(opt.value))}
             >
               Select All
             </button>
             <button
               type="button"
               onClick={clearAll}
-              className="text-xs text-red-600 hover:text-red-800"
+              className="text-xs text-red-600 hover:text-red-800 disabled:text-gray-400"
               disabled={selected.length === 0}
             >
               Clear All
             </button>
           </div>
           
-          {options.map((option) => (
-            <div
-              key={option}
-              className="relative cursor-pointer hover:bg-gray-50 px-3 py-2"
-              onClick={() => toggleOption(option)}
-            >
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={selected.includes(option)}
-                  onChange={() => toggleOption(option)}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-3"
-                />
-                <span className="text-sm text-gray-900">{option}</span>
+          {/* Options list */}
+          <div 
+            role="listbox" 
+            aria-multiselectable="true"
+            className="max-h-48 overflow-y-auto"
+          >
+            {filteredOptions.length === 0 ? (
+              <div className="px-3 py-2 text-sm text-gray-500">
+                No options found
               </div>
-            </div>
-          ))}
+            ) : (
+              filteredOptions.map((option, index) => (
+                <div
+                  key={option.value}
+                  role="option"
+                  aria-selected={selected.includes(option.value)}
+                  className={`relative cursor-pointer px-3 py-2 ${
+                    index === focusedIndex 
+                      ? 'bg-blue-50' 
+                      : 'hover:bg-gray-50'
+                  }`}
+                  onClick={() => toggleOption(option.value)}
+                >
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(option.value)}
+                      onChange={() => {}} // Controlled by parent click
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-3"
+                      tabIndex={-1}
+                    />
+                    <span className="text-sm text-gray-900 flex-1">{option.value}</span>
+                    <span className="text-xs text-gray-500 ml-2">({option.count})</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Mobile Done button */}
+          <div className="md:hidden sticky bottom-0 bg-white border-t border-gray-200 p-3">
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Done
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -118,20 +294,14 @@ const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiS
 };
 
 export default function PdfBuilderModal({ onClose }: Props) {
-  const [options, setOptions] = useState<OptionsResponse>({
-    area: [],
-    country: [],
-    wlco: [],
-    category1: [],
-    category2: [],
-    device: []
-  });
-  
+  // State for cached data and filters
+  const [csvData, setCsvData] = useState<CsvRow[]>([]);
   const [filters, setFilters] = useState<FilterPayload>({});
   const [email, setEmail] = useState('');
   const [previewData, setPreviewData] = useState<PreviewResponse | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   
-  const [isLoadingOptions, setIsLoadingOptions] = useState(true);
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEmailing, setIsEmailing] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
@@ -141,27 +311,192 @@ export default function PdfBuilderModal({ onClose }: Props) {
 
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Load filter options on mount
+  // Debounce filters to avoid excessive recomputation
+  const debouncedFilters = useDebounce(filters, 200);
+
+  // Load and cache CSV data on mount
   useEffect(() => {
-    const loadOptions = async () => {
+    const loadCsvData = async () => {
       try {
-        setIsLoadingOptions(true);
-        const response = await fetch('/api/successstories');
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || 'Failed to load filter options');
+        setIsLoadingData(true);
+        
+        // Try to load from localStorage first
+        const cached = localStorage.getItem('success-stories-data');
+        if (cached) {
+          const parsedData = JSON.parse(cached) as CsvRow[];
+          setCsvData(parsedData);
+          setIsLoadingData(false);
+          return;
         }
-        const data: OptionsResponse = await response.json();
-        setOptions(data);
+
+        // Fetch CSV data from public folder
+        const response = await fetch('/successstories-summary.csv');
+        if (!response.ok) {
+          throw new Error('Failed to load CSV data');
+        }
+        
+        const csvText = await response.text();
+        const lines = csvText.trim().split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+        
+        const data: CsvRow[] = lines.slice(1).map(line => {
+          const values = line.split(',').map(v => v.trim());
+          return {
+            area: values[headers.indexOf('Area')] || '',
+            country: values[headers.indexOf('Country')] || '',
+            wlco: values[headers.indexOf('WL Co')] || '',
+            category1: values[headers.indexOf('Category 1')] || '',
+            category2: values[headers.indexOf('Category 2')] || '',
+            device: values[headers.indexOf('Device')] || '',
+            page: parseInt(values[headers.indexOf('Page')]) || 0
+          };
+        }).filter(row => row.page > 0); // Filter out invalid rows
+
+        // Cache the data
+        localStorage.setItem('success-stories-data', JSON.stringify(data));
+        setCsvData(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load options');
+        setError(err instanceof Error ? err.message : 'Failed to load data');
       } finally {
-        setIsLoadingOptions(false);
+        setIsLoadingData(false);
       }
     };
 
-    loadOptions();
+    loadCsvData();
   }, []);
+
+  // Load filters from localStorage
+  useEffect(() => {
+    const savedFilters = localStorage.getItem('success-stories-filters');
+    if (savedFilters) {
+      try {
+        setFilters(JSON.parse(savedFilters));
+      } catch {
+        // Ignore invalid saved filters
+      }
+    }
+  }, []);
+
+  // Save filters to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('success-stories-filters', JSON.stringify(filters));
+  }, [filters]);
+
+  // Compute filtered data and available options with cascading
+  const { availableOptions, clearedSelections } = useMemo(() => {
+    if (csvData.length === 0) {
+      return { 
+        filteredData: [], 
+        availableOptions: {
+          area: [],
+          country: [],
+          wlco: [],
+          category1: [],
+          category2: [],
+          device: []
+        },
+        clearedSelections: []
+      };
+    }
+
+    // Apply current filters to data
+    let filtered = csvData;
+    const clearedKeys: string[] = [];
+
+    // Helper function to match values (including substring search with ~)
+    const matchesFilter = (value: string, filterValues: string[], caseInsensitive = true) => {
+      if (!filterValues || filterValues.length === 0) return true;
+      
+      return filterValues.some(filterValue => {
+        const needle = caseInsensitive ? filterValue.toLowerCase() : filterValue;
+        const haystack = caseInsensitive ? value.toLowerCase() : value;
+        
+        if (needle.startsWith('~')) {
+          return haystack.includes(needle.slice(1));
+        }
+        return haystack === needle;
+      });
+    };
+
+    // Apply each filter
+    const fields: (keyof FilterPayload)[] = ['area', 'country', 'wlco', 'category1', 'category2', 'device'];
+    
+    for (const field of fields) {
+      const selectedValues = debouncedFilters[field];
+      if (selectedValues && selectedValues.length > 0) {
+        filtered = filtered.filter(row => matchesFilter(row[field], selectedValues));
+      }
+    }
+
+    // Compute available options from filtered data
+    const computeOptions = (field: keyof CsvRow): OptionWithCount[] => {
+      const counts = new Map<string, number>();
+      
+      filtered.forEach(row => {
+        const value = row[field]?.toString().trim();
+        if (value) {
+          counts.set(value, (counts.get(value) || 0) + 1);
+        }
+      });
+
+      return Array.from(counts.entries())
+        .map(([value, count]) => ({ value, count }))
+        .sort((a, b) => a.value.localeCompare(b.value));
+    };
+
+    const newOptions = {
+      area: computeOptions('area'),
+      country: computeOptions('country'),
+      wlco: computeOptions('wlco'),
+      category1: computeOptions('category1'),
+      category2: computeOptions('category2'),
+      device: computeOptions('device')
+    };
+
+    // Check for invalid selections and mark them for clearing
+    const updatedFilters = { ...debouncedFilters };
+    
+    for (const field of fields) {
+      const selectedValues = updatedFilters[field];
+      if (selectedValues && selectedValues.length > 0) {
+        const availableValues = newOptions[field].map(opt => opt.value);
+        const validSelections = selectedValues.filter(val => availableValues.includes(val));
+        
+        if (validSelections.length !== selectedValues.length) {
+          clearedKeys.push(field);
+          updatedFilters[field] = validSelections.length > 0 ? validSelections : undefined;
+        }
+      }
+    }
+
+    return {
+      filteredData: filtered,
+      availableOptions: newOptions,
+      clearedSelections: clearedKeys
+    };
+  }, [csvData, debouncedFilters]);
+
+  // Auto-clear invalid selections and show notice
+  useEffect(() => {
+    if (clearedSelections.length > 0) {
+      setFilters(prev => {
+        const updated = { ...prev };
+        clearedSelections.forEach(key => {
+          const field = key as keyof FilterPayload;
+          const availableValues = availableOptions[field].map(opt => opt.value);
+          const currentValues = prev[field];
+          if (currentValues) {
+            const validValues = currentValues.filter(val => availableValues.includes(val));
+            updated[field] = validValues.length > 0 ? validValues : undefined;
+          }
+        });
+        return updated;
+      });
+
+      setNotice('Some selections were cleared because no results remained.');
+      setTimeout(() => setNotice(null), 3000);
+    }
+  }, [clearedSelections, availableOptions]);
 
   // Handle escape key and focus trap
   useEffect(() => {
@@ -311,7 +646,7 @@ export default function PdfBuilderModal({ onClose }: Props) {
     }
   };
 
-  if (isLoadingOptions) {
+  if (isLoadingData) {
     return (
       <div 
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -363,42 +698,42 @@ export default function PdfBuilderModal({ onClose }: Props) {
             <div className="grid grid-cols-2 gap-3">
               <MultiSelect
                 label="Area"
-                options={options.area}
+                options={availableOptions.area}
                 selected={filters.area || []}
                 onChange={(value) => updateFilter('area', value)}
               />
               
               <MultiSelect
                 label="Country"
-                options={options.country}
+                options={availableOptions.country}
                 selected={filters.country || []}
                 onChange={(value) => updateFilter('country', value)}
               />
               
               <MultiSelect
                 label="WL Co"
-                options={options.wlco}
+                options={availableOptions.wlco}
                 selected={filters.wlco || []}
                 onChange={(value) => updateFilter('wlco', value)}
               />
               
               <MultiSelect
                 label="Category 1"
-                options={options.category1}
+                options={availableOptions.category1}
                 selected={filters.category1 || []}
                 onChange={(value) => updateFilter('category1', value)}
               />
               
               <MultiSelect
                 label="Category 2"
-                options={options.category2}
+                options={availableOptions.category2}
                 selected={filters.category2 || []}
                 onChange={(value) => updateFilter('category2', value)}
               />
               
               <MultiSelect
                 label="Device"
-                options={options.device}
+                options={availableOptions.device}
                 selected={filters.device || []}
                 onChange={(value) => updateFilter('device', value)}
               />
@@ -450,17 +785,11 @@ export default function PdfBuilderModal({ onClose }: Props) {
               )}
             </div>
 
-            {/* Data Source Info */}
-            {options._metadata && (
-              <div className="border-t border-gray-200 pt-4">
-                <div className="text-xs text-gray-500 flex items-center justify-between">
-                  <span>
-                    Data last updated on {options._metadata.last_updated}
-                    {options._metadata.source_version && ` (${options._metadata.source_version})`}
-                  </span>
-                  <span className="px-2 py-1 bg-gray-100 rounded text-xs">
-                    {options._metadata.mode}
-                  </span>
+            {/* Notice for auto-cleared selections */}
+            {notice && (
+              <div className="border-t border-gray-200 pt-4" role="status" aria-live="polite">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+                  <p className="text-sm text-yellow-800">{notice}</p>
                 </div>
               </div>
             )}
