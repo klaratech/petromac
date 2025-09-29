@@ -11,7 +11,7 @@ interface MultiSelectProps {
   label: string;
   options: string[];
   selected: string[];
-  onChange: (selected: string[]) => void;
+  onChange: (_value: string[]) => void;
   placeholder?: string;
 }
 
