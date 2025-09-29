@@ -329,18 +329,12 @@ export default function PdfBuilderModal({ onClose }: Props) {
     >
       <div 
         ref={modalRef}
-        className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto"
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
       >
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-          <div>
-            <h2 id="modal-title" className="text-xl font-semibold text-gray-900">
-              Create Success Stories PDF
-            </h2>
-          </div>
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-3 flex justify-end">
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1"
@@ -453,7 +447,7 @@ export default function PdfBuilderModal({ onClose }: Props) {
           </div>
 
           {/* Right side - Preview */}
-          <div className="w-80 border-l border-gray-200 bg-gray-50">
+          <div className="w-[600px] border-l border-gray-200 bg-gray-50">
             <div className="p-4 h-full flex flex-col">
               <h3 className="text-sm font-medium text-gray-900 mb-3">Preview</h3>
               
@@ -461,7 +455,7 @@ export default function PdfBuilderModal({ onClose }: Props) {
               <div className="flex-1 bg-white border border-gray-200 rounded-md overflow-hidden mb-3">
                 <iframe
                   src="/successstories.pdf"
-                  className="w-full h-full min-h-[400px]"
+                  className="w-full h-full min-h-[600px]"
                   title="Success Stories PDF Preview"
                 />
               </div>
