@@ -3,8 +3,8 @@
 // Last updated: 2024-12-29
 // Source: Manual extraction from CSV data
 
-export const LAST_UPDATED = "2024-12-29";
-export const SOURCE_VERSION = "manual-v1.0";
+export const LAST_UPDATED = "2025-09-29";
+export const SOURCE_VERSION = "manual-v2.0";
 
 export const SUCCESS_STORIES_OPTIONS = {
   area: [

@@ -61,6 +61,8 @@ const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiS
         <span className="block truncate">
           {selected.length === 0 
             ? placeholder || `Select ${label.toLowerCase()}...`
+            : selected.length <= 3
+            ? selected.join(', ')
             : `${selected.length} selected`
           }
         </span>
