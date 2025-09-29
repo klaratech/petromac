@@ -147,7 +147,8 @@ export default function PdfBuilderModal({ onClose }: Props) {
         setIsLoadingOptions(true);
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/options`);
         if (!response.ok) {
-          throw new Error('Failed to load filter options');
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to load filter options');
         }
         const data: OptionsResponse = await response.json();
         setOptions(data);
@@ -213,7 +214,8 @@ export default function PdfBuilderModal({ onClose }: Props) {
       });
 
       if (!response.ok) {
-        throw new Error('Preview failed');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Preview failed');
       }
 
       const data: PreviewResponse = await response.json();
@@ -242,7 +244,8 @@ export default function PdfBuilderModal({ onClose }: Props) {
       });
 
       if (!response.ok) {
-        throw new Error('PDF generation failed');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'PDF generation failed');
       }
 
       // Download the PDF
@@ -293,7 +296,8 @@ export default function PdfBuilderModal({ onClose }: Props) {
       });
 
       if (!response.ok) {
-        throw new Error('Email sending failed');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Email sending failed');
       }
 
       // Show success message

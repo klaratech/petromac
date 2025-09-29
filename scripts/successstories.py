@@ -1,7 +1,7 @@
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, Form
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
+from typing import Optional, Dict, List
 from pypdf import PdfReader, PdfWriter
 import pandas as pd
 import io
@@ -10,19 +10,30 @@ import os
 
 app = FastAPI()
 
-# --- CORS (restrict in production) ---
+# ---------------------------
+# CORS
+# ---------------------------
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "*")
+if allowed_origins == "*":
+    allowed_origins = ["*"]
+else:
+    allowed_origins = [o.strip() for o in allowed_origins.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("ALLOWED_ORIGINS", "*").split(","),
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Constants ---
-INDEX_CSV_PATH = os.getenv("INDEX_CSV_PATH", "successstories-summary.csv")
+# ---------------------------
+# Constants / Globals
+# ---------------------------
+INDEX_CSV_PATH = os.getenv("INDEX_CSV_PATH", "public/successstories-summary.csv")
+CATALOG_PDF_PATH = os.getenv("CATALOG_PDF_PATH", "public/successstories.pdf")
 
-FILTER_COLUMNS = {
+FILTER_COLUMNS: Dict[str, str] = {
     "year": "Year",
     "area": "Area",
     "country": "Country",
@@ -32,13 +43,36 @@ FILTER_COLUMNS = {
     "device": "Device",
 }
 
-PAGE_COL_CANDIDATES = [
+PAGE_COL_CANDIDATES: List[str] = [
     "page", "Page", "PAGE", "page_number", "Page Number",
     "PageNumber", "pageNo", "PageNo"
 ]
 
+df_index: Optional[pd.DataFrame] = None
 
-# --- Helpers ---
+
+# ---------------------------
+# Startup
+# ---------------------------
+@app.on_event("startup")
+async def startup_event():
+    """Load CSV and validate PDF presence."""
+    global df_index
+
+    if not os.path.exists(INDEX_CSV_PATH):
+        raise FileNotFoundError(f"CSV index not found at {INDEX_CSV_PATH}")
+    df_index = pd.read_csv(INDEX_CSV_PATH, dtype=str, keep_default_na=False)
+    df_index = df_index.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    print(f"[startup] Loaded CSV with {len(df_index)} rows from {INDEX_CSV_PATH}")
+
+    if not os.path.exists(CATALOG_PDF_PATH):
+        raise FileNotFoundError(f"Catalog PDF not found at {CATALOG_PDF_PATH}")
+    print(f"[startup] Validated PDF exists at {CATALOG_PDF_PATH}")
+
+
+# ---------------------------
+# Helpers
+# ---------------------------
 def detect_page_col(df: pd.DataFrame, user_col: Optional[str]) -> str:
     if user_col and user_col in df.columns:
         return user_col
@@ -47,16 +81,14 @@ def detect_page_col(df: pd.DataFrame, user_col: Optional[str]) -> str:
             return c
     raise ValueError(f"Could not find page column; available: {list(df.columns)}")
 
-
 def normalize_multi(vals):
     if vals is None:
         return None
     if isinstance(vals, list):
-        out = [str(v).strip() for v in vals if str(v).strip() != ""]
+        out = [str(v).strip() for v in vals if str(v).strip()]
     else:
-        out = [v.strip() for v in str(vals).split(",") if v.strip() != ""]
+        out = [v.strip() for v in str(vals).split(",") if v.strip()]
     return out or None
-
 
 def apply_text_filters(df: pd.DataFrame, filters: dict, case_insensitive: bool) -> pd.DataFrame:
     work = df.copy()
@@ -73,51 +105,50 @@ def apply_text_filters(df: pd.DataFrame, filters: dict, case_insensitive: bool) 
             checks = [v.lower() for v in values]
         mask = False
         for v in checks:
-            if v.startswith("~"):  # substring search
-                term = v[1:]
-                mask = mask | series.str.contains(term, na=False)
-            else:  # exact match
+            if v.startswith("~"):   # substring
+                mask = mask | series.str.contains(v[1:], na=False)
+            else:                   # exact
                 mask = mask | (series == v)
         work = work[mask]
     return work
 
+def coerce_page_numbers(series: pd.Series) -> List[int]:
+    return pd.to_numeric(series, errors="coerce").dropna().astype(int).tolist()
 
-def coerce_page_numbers(series: pd.Series) -> pd.Series:
-    return pd.to_numeric(series, errors="coerce").astype("Int64")
 
+# ---------------------------
+# Endpoints
+# ---------------------------
+@app.get("/options")
+async def get_options():
+    """Return unique sorted lists for UI dropdowns."""
+    if df_index is None:
+        return JSONResponse({"error": "CSV not loaded"}, status_code=500)
 
-# --- API ---
+    options = {}
+    for key, col in FILTER_COLUMNS.items():
+        if col in df_index.columns:
+            vals = df_index[col].astype(str)
+            options[key] = sorted({v.strip() for v in vals if v and v.strip() and v.strip().lower() != "nan"})
+        else:
+            options[key] = []
+    return JSONResponse(options)
+
 @app.post("/extract")
 async def extract(
-    pdf_file: UploadFile = File(..., description="Upload the catalog PDF"),
     filters_json: str = Form(default="{}"),
-    page_col: Optional[str] = Form(default=None),
     case_insensitive: bool = Form(default=True),
     preview: bool = Form(default=False),
+    page_col: Optional[str] = Form(default=None),
 ):
     """
-    Filters example:
-    {
-      "year": ["2024"],
-      "area": ["Europe & Eurasia"],
-      "country": ["Italy"],
-      "wlco": ["SLB"],
-      "category1": ["Well Access"],
-      "category2": ["CMR"],
-      "device": ["Helix"]
-    }
-    Use "~text" for substring search.
+    Extract and stitch PDF pages based on filters.
+    Use "~text" for substring search in any filter list value.
     """
+    if df_index is None:
+        return JSONResponse({"error": "CSV not loaded"}, status_code=500)
 
-    # --- Load PDF ---
-    pdf_bytes = await pdf_file.read()
-
-    # --- Load CSV index ---
-    if not os.path.exists(INDEX_CSV_PATH):
-        return JSONResponse({"error": f"CSV index not found at {INDEX_CSV_PATH}"}, status_code=500)
-    df = pd.read_csv(INDEX_CSV_PATH)
-
-    # --- Parse filters ---
+    # Parse filters
     try:
         raw_filters = json.loads(filters_json or "{}")
     except Exception as e:
@@ -125,74 +156,85 @@ async def extract(
 
     filters = {k: normalize_multi(raw_filters.get(k)) for k in FILTER_COLUMNS.keys()}
 
-    # --- Apply filters ---
+    # Apply filters
     try:
-        filtered = apply_text_filters(df, filters, case_insensitive)
+        filtered = apply_text_filters(df_index, filters, case_insensitive)
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=400)
 
-    # --- Detect page column ---
+    # Detect page column
     try:
-        page_col_name = detect_page_col(filtered if not filtered.empty else df, page_col)
+        page_col_name = detect_page_col(filtered if not filtered.empty else df_index, page_col)
     except ValueError as e:
         return JSONResponse({"error": str(e)}, status_code=400)
 
-    # --- Collect pages ---
-    pages_1b = []
+    # Collect filtered pages (1-based, preserve CSV order)
+    filtered_pages_1b: List[int] = []
     if not filtered.empty and page_col_name in filtered.columns:
-        pages_1b = coerce_page_numbers(filtered[page_col_name]).dropna().astype(int).tolist()
+        filtered_pages_1b = coerce_page_numbers(filtered[page_col_name])
 
-    # de-dup preserve order
-    seen = set()
-    ordered_unique = []
-    for p in pages_1b:
-        if p not in seen:
-            seen.add(p)
-            ordered_unique.append(p)
-
-    # --- Build PDF ---
+    # Load PDF lazily
     try:
-        reader = PdfReader(io.BytesIO(pdf_bytes))
+        # Using context manager avoids file locking issues on some platforms
+        with open(CATALOG_PDF_PATH, "rb") as f:
+            reader = PdfReader(f)
+            total_pages = len(reader.pages)
+            if total_pages == 0:
+                return JSONResponse({"error": "PDF has 0 pages"}, status_code=400)
+
+            # Clamp weird values
+            filtered_pages_1b = [p for p in filtered_pages_1b if 1 <= p <= total_pages]
+
+            # Build final page list: cover (1-3) + filtered + last
+            cover_count = min(3, total_pages)
+            final_pages_1b: List[int] = list(range(1, cover_count + 1))
+
+            seen = set(final_pages_1b)
+            for p in filtered_pages_1b:
+                if p not in seen:
+                    final_pages_1b.append(p)
+                    seen.add(p)
+
+            if total_pages not in seen:
+                final_pages_1b.append(total_pages)
+
+            if preview:
+                return JSONResponse({
+                    "match_count": len(filtered),
+                    "pages_1based": final_pages_1b,
+                    "total_pages": total_pages
+                })
+
+            if not final_pages_1b:
+                return JSONResponse({"error": "No valid pages to extract."}, status_code=400)
+
+            # Write output
+            writer = PdfWriter()
+            for p in final_pages_1b:
+                writer.add_page(reader.pages[p - 1])  # convert to 0-based
+
+            out_buf = io.BytesIO()
+            writer.write(out_buf)
+            out_buf.seek(0)
+
+            return StreamingResponse(
+                out_buf,
+                media_type="application/pdf",
+                headers={"Content-Disposition": 'attachment; filename="extracted.pdf"'}
+            )
     except Exception as e:
-        return JSONResponse({"error": f"Failed to read PDF: {e}"}, status_code=400)
+        return JSONResponse({"error": f"Failed to read or process PDF: {e}"}, status_code=400)
 
-    total = len(reader.pages)
-    if total == 0:
-        return JSONResponse({"error": "PDF has 0 pages"}, status_code=400)
+@app.get("/")
+async def root():
+    return {"message": "FastAPI Success Stories PDF Generator", "status": "ready"}
 
-    # Always include first 3 pages as cover
-    cover_pages = [0, 1, 2] if total >= 3 else list(range(total))
-    for p in cover_pages[::-1]:
-        if p + 1 not in ordered_unique:
-            ordered_unique.insert(0, p + 1)
+@app.get("/healthz")
+def healthz():
+    return {"ok": True, "rows": 0 if df_index is None else len(df_index)}
 
-    # Always include last page
-    if total not in ordered_unique:
-        ordered_unique.append(total)
 
-    # Range check & convert to 0-based
-    valid_zero = [p - 1 for p in ordered_unique if 1 <= p <= total]
-
-    if preview:
-        return JSONResponse({
-            "match_count": len(filtered),
-            "pages_1based": [i + 1 for i in valid_zero],
-            "total_pages": total
-        })
-
-    if not valid_zero:
-        return JSONResponse({"error": "No valid pages after filtering."}, status_code=400)
-
-    writer = PdfWriter()
-    for idx in valid_zero:
-        writer.add_page(reader.pages[idx])
-
-    out_buf = io.BytesIO()
-    writer.write(out_buf)
-    out_buf.seek(0)
-
-    return StreamingResponse(
-        out_buf,
-        media_type="application/pdf",
-        headers={"Content-Disposition": 'attachment; filename="extracted.pdf"'}
-    )
+# Local dev
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
