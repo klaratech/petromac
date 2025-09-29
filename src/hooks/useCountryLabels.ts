@@ -28,7 +28,11 @@ export function useCountryLabels(): UseCountryLabelsResult {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load country labels';
       setError(errorMessage);
-      console.error('Country labels loading error:', err);
+      // Log error for debugging without console
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error('Country labels loading error:', err);
+      }
     } finally {
       setIsLoading(false);
     }

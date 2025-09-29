@@ -36,14 +36,15 @@ const MapRenderer = memo(function MapRenderer({
     
     const gSel = d3.select(g);
 
-    // Add countries
+    // Add countries  
     const countries = gSel.selectAll('path')
       .data(worldData.features)
       .enter()
       .append('path')
-      .attr('d', (d: any) => path(d as Feature<Geometry>) || '')
-      .attr('fill', (d: any) => {
-        const name = d.properties?.name || '';
+      .attr('d', (d) => path(d as Feature<Geometry>) || '')
+      .attr('fill', (d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || '';
         const hasData = countryMap.has(name);
         const isSelected = name === selectedCountry;
         
@@ -52,50 +53,58 @@ const MapRenderer = memo(function MapRenderer({
         return MAP_CONSTANTS.COLORS.COUNTRY_DEFAULT;
       })
       .attr('stroke', '#ccc')
-      .style('stroke-width', (d: any) => {
-        const name = d.properties?.name || '';
+      .style('stroke-width', (d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || '';
         return name === selectedCountry ? MAP_CONSTANTS.STROKE_WIDTH_SELECTED : MAP_CONSTANTS.STROKE_WIDTH_DEFAULT;
       })
-      .style('filter', (d: any) => {
-        const name = d.properties?.name || '';
+      .style('filter', (d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || '';
         return name === selectedCountry 
           ? `drop-shadow(0 0 4px ${MAP_CONSTANTS.COLORS.SELECTED_GLOW})` 
           : 'none';
       })
-      .style('cursor', (d: any) => {
-        const name = d.properties?.name || '';
+      .style('cursor', (d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || '';
         return countryMap.has(name) ? 'pointer' : 'default';
       })
-      .attr('tabindex', (d: any) => {
-        const name = d.properties?.name || '';
+      .attr('tabindex', (d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || '';
         return countryMap.has(name) ? 0 : -1;
       })
       .attr('role', 'button')
-      .attr('aria-label', (d: any) => {
-        const name = d.properties?.name || 'Unknown';
+      .attr('aria-label', (d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || 'Unknown';
         const count = countryMap.get(name) || 0;
         const isSelected = name === selectedCountry;
         
         if (count === 0) return `${name}: No deployments`;
         return `${name}: ${formatDeploymentCount(count)}. ${isSelected ? 'Selected. Press Enter to deselect.' : 'Press Enter to select.'}`;
       })
-      .on('click', (_event: any, d: any) => {
-        const name = d.properties?.name || null;
+      .on('click', (_, d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || null;
         if (countryMap.has(name || '')) {
           onCountryClick(name === selectedCountry ? null : name);
         }
       })
-      .on('keydown', (event: any, d: any) => {
+      .on('keydown', (event, d) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
-          const name = d.properties?.name || null;
+          const feature = d as Feature<Geometry>;
+          const name = feature.properties?.name || null;
           if (countryMap.has(name || '')) {
             onCountryClick(name === selectedCountry ? null : name);
           }
         }
       })
-      .on('mouseover', function(_event: any, d: any) {
-        const name = d.properties?.name || '';
+      .on('mouseover', function(_, d) {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || '';
         if (countryMap.has(name)) {
           d3.select(this)
             .transition()
@@ -103,8 +112,9 @@ const MapRenderer = memo(function MapRenderer({
             .style('filter', `drop-shadow(0 0 2px ${MAP_CONSTANTS.COLORS.SELECTED_GLOW})`);
         }
       })
-      .on('mouseout', function(_event: any, d: any) {
-        const name = d.properties?.name || '';
+      .on('mouseout', function(_, d) {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || '';
         const isSelected = name === selectedCountry;
         
         d3.select(this)
@@ -118,8 +128,9 @@ const MapRenderer = memo(function MapRenderer({
 
     // Add tooltip functionality using title elements for better accessibility
     countries.append('title')
-      .text((d: any) => {
-        const name = d.properties?.name || 'Unknown';
+      .text((d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || 'Unknown';
         const count = countryMap.get(name) || 0;
         return `${name}: ${formatDeploymentCount(count)}`;
       });

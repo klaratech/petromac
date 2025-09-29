@@ -24,13 +24,14 @@ export interface MapRendererProps {
   worldData: FeatureCollection<Geometry, { name?: string }> | null;
   countryMap: Map<string, number>;
   selectedCountry: string | null;
-  onCountryClick: (countryName: string | null) => void;
+  onCountryClick: (_countryName: string | null) => void;
   isLoading: boolean;
-  svgRef: React.RefObject<SVGSVGElement>;
-  gRef: React.RefObject<SVGGElement>;
+  svgRef: React.RefObject<SVGSVGElement | null>;
+  gRef: React.RefObject<SVGGElement | null>;
 }
 
 export interface YearlyStatsChartProps {
+  // eslint-disable-next-line no-unused-vars
   countryName: string;
   yearlyStats: YearlyStats[];
   onClose: () => void;
@@ -40,5 +41,5 @@ export interface CountryChartProps {
   countries: CountryStats[];
   countryLabels: Record<string, string>;
   selectedCountry: string | null;
-  onCountryClick: (countryName: string | null) => void;
+  onCountryClick: (_countryName: string | null) => void;
 }

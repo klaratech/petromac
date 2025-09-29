@@ -46,7 +46,11 @@ export function useMapData(): UseMapDataResult {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load world map data';
       setError(errorMessage);
-      console.error('Map data loading error:', err);
+      // Log error for debugging without console
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error('Map data loading error:', err);
+      }
     } finally {
       setIsLoading(false);
     }
