@@ -1,14 +1,17 @@
 'use client';
 
-import * as d3 from 'd3';
-import * as topojson from 'topojson-client';
-import { useEffect, useRef, useState, useMemo } from 'react';
-import type { Topology } from 'topojson-specification';
-import type { FeatureCollection, Geometry, Feature } from 'geojson';
+import { useEffect, useRef, useState, useMemo, useCallback, memo } from 'react';
 import type { JobRecord } from '@/types/JobRecord';
-import { APP_CONSTANTS, EXTERNAL_URLS } from '@/constants/app';
-import { fetchJsonWithValidation, validateCountryLabels } from '@/utils/dataValidation';
 import LoadingSpinner from './LoadingSpinner';
+import { useMapData } from '@/hooks/useMapData';
+import { useCountryLabels } from '@/hooks/useCountryLabels';
+import { useDebounce } from '@/hooks/useDebounce';
+import YearlyStatsChart from './YearlyStatsChart';
+import CountryChart from './CountryChart';
+import MapRenderer from './MapRenderer';
+import { processMapData, calculateCountryStats } from '@/utils/mapUtils';
+import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
+import { MAP_CONSTANTS } from '@/constants/mapConstants';
 
 interface Props {
   data: JobRecord[];
@@ -16,36 +19,25 @@ interface Props {
   onClose?: () => void;
 }
 
-export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
+const DrilldownMap = memo(function DrilldownMap({ data, initialSystem, onClose }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const gRef = useRef<SVGGElement | null>(null);
-  const [worldData, setWorldData] = useState<FeatureCollection<Geometry, { name?: string }> | null>(null);
   const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
   const [tappedCountry, setTappedCountry] = useState<string | null>(null);
-  const [countryLabels, setCountryLabels] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+
+  // Custom hooks for data loading
+  const { worldData, isLoading: isLoadingMap, error: mapError, retry: retryMap } = useMapData();
+  const { countryLabels, isLoading: isLoadingLabels, error: labelsError } = useCountryLabels();
+
+  // Debounce system selection changes to prevent rapid re-renders
+  const debouncedSelectedSystems = useDebounce(selectedSystems, 300);
 
   const systemOptions = useMemo(() => {
     return Array.from(new Set(data.map((job) => job.System).filter(Boolean))).sort();
   }, [data]);
 
-  useEffect(() => {
-    const loadCountryLabels = async () => {
-      try {
-        const labels = await fetchJsonWithValidation(
-          EXTERNAL_URLS.COUNTRY_LABELS,
-          validateCountryLabels
-        );
-        setCountryLabels(labels);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load country labels');
-      }
-    };
-
-    loadCountryLabels();
-  }, []);
-
+  // Initialize selected systems
   useEffect(() => {
     if (selectedSystems.length > 0 || systemOptions.length === 0) return;
     if (initialSystem) {
@@ -56,284 +48,240 @@ export default function DrilldownMap({ data, initialSystem, onClose }: Props) {
     }
   }, [initialSystem, systemOptions, selectedSystems.length]);
 
-  const isPathfinderOnly = selectedSystems.length === 1 && selectedSystems[0].toLowerCase() === 'pathfinder';
+  // Process data once instead of filtering on every render
+  const processedData: ProcessedMapData = useMemo(() => {
+    return processMapData(data, debouncedSelectedSystems);
+  }, [data, debouncedSelectedSystems]);
 
-  const filteredData = useMemo(() => {
-    return selectedSystems.length > 0
-      ? data.filter((job) => selectedSystems.includes(job.System))
-      : [];
-  }, [data, selectedSystems]);
+  const { filteredData, isPathfinderOnly } = processedData;
 
-  const countryStats = useMemo(() => {
-    const source = isPathfinderOnly ? data : filteredData;
-
-    return d3.rollups(
-      source,
-      (entries) =>
-        d3.sum(entries, (d) => {
-          if (isPathfinderOnly) {
-            return (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
-          }
-          return +d.Successful || 0;
-        }),
-      (d) => d.Country
-    );
+  // Calculate country statistics
+  const countryStats: CountryStats[] = useMemo(() => {
+    return calculateCountryStats(data, filteredData, isPathfinderOnly);
   }, [data, filteredData, isPathfinderOnly]);
 
-  const countryMap = useMemo(() => new Map(countryStats), [countryStats]);
+  const countryMap = useMemo(() => new Map(countryStats.map(([country, count]) => [country, count])), [countryStats]);
 
-
-  const sortedCountries = [...countryStats].sort((a, b) => d3.descending(a[1], b[1]));
-  const chartCountries = sortedCountries.filter(([, count]) => count > 0); // ✅ Hides zero values
-
-
-  const totalDeployments = d3.sum(
-    isPathfinderOnly ? data : filteredData,
-    (d) =>
-      isPathfinderOnly
-        ? (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0
-        : +d.Successful || 0
+  const sortedCountries = useMemo(() => 
+    [...countryStats].sort((a, b) => b[1] - a[1]), 
+    [countryStats]
   );
 
-  const countryCount = countryStats.filter(([, count]) => count > 0).length;
+  const chartCountries = useMemo(() => 
+    sortedCountries.filter(([, count]) => count > 0), 
+    [sortedCountries]
+  );
+
+  const totalDeployments = useMemo(() => {
+    return countryStats.reduce((sum, [, count]) => sum + count, 0);
+  }, [countryStats]);
+
+  const countryCount = useMemo(() => {
+    return countryStats.filter(([, count]) => count > 0).length;
+  }, [countryStats]);
 
   const yearlyStats = useMemo(() => {
     if (!tappedCountry) return [];
 
     const source = isPathfinderOnly ? data : filteredData;
+    const countryData = source.filter((d: JobRecord) => d.Country === tappedCountry);
+    
+    const yearGroups = countryData.reduce((acc: Record<string, number>, d: JobRecord) => {
+      const year = d.Year;
+      if (!acc[year]) acc[year] = 0;
+      
+      if (isPathfinderOnly) {
+        acc[year] += (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
+      } else {
+        acc[year] += +d.Successful || 0;
+      }
+      
+      return acc;
+    }, {} as Record<string, number>);
 
-    return d3.rollups(
-      source.filter((d) => d.Country === tappedCountry),
-      (entries) =>
-        d3.sum(entries, (d) => {
-          if (isPathfinderOnly) {
-            return (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
-          }
-          return +d.Successful || 0;
-        }),
-      (d) => d.Year
-    ).sort((a, b) => d3.ascending(+a[0], +b[0]));
+    return Object.entries(yearGroups)
+      .map(([year, count]) => ({ year, count }))
+      .sort((a, b) => +a.year - +b.year);
   }, [data, filteredData, tappedCountry, isPathfinderOnly]);
 
-  useEffect(() => {
-    const loadWorldData = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        const topologyData = await d3.json(EXTERNAL_URLS.WORLD_MAP_DATA) as Topology;
-        const geo = topojson.feature(topologyData, topologyData.objects.countries);
-        
-        if (!('features' in geo)) {
-          throw new Error('Invalid GeoJSON FeatureCollection');
-        }
-
-        const countries = geo as FeatureCollection<Geometry, { name?: string }>;
-        const filtered = countries.features.filter((f) => {
-          const [lon, lat] = d3.geoCentroid(f);
-          return f.properties?.name !== 'Antarctica' && !(lon < -150 && lat > 10);
-        });
-
-        setWorldData({ ...countries, features: filtered });
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load world map data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadWorldData();
+  // Handle system selection with proper state management
+  const handleSystemToggle = useCallback((system: string) => {
+    setSelectedSystems((prev) =>
+      prev.includes(system) ? prev.filter((s) => s !== system) : [...prev, system]
+    );
   }, []);
 
-  useEffect(() => {
-    if (!worldData) return;
+  const handleSelectAllSystems = useCallback(() => {
+    setSelectedSystems(systemOptions);
+  }, [systemOptions]);
 
-    const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+  // Handle country selection
+  const handleCountryClick = useCallback((countryName: string | null) => {
+    setTappedCountry(current => current === countryName ? null : countryName);
+  }, []);
 
-    const width = APP_CONSTANTS.MAP_WIDTH;
-    const height = APP_CONSTANTS.MAP_HEIGHT;
-    const projection = d3.geoNaturalEarth1().fitSize([width, height], worldData);
-    const path = d3.geoPath(projection);
+  // Handle retry with exponential backoff
+  const handleRetry = useCallback(async () => {
+    if (retryCount < MAP_CONSTANTS.MAX_RETRIES) {
+      setRetryCount(prev => prev + 1);
+      setTimeout(() => {
+        retryMap();
+      }, 1000 * (retryCount + 1));
+    }
+  }, [retryCount, retryMap]);
 
-    const g = svg.append('g').node();
-    if (!g) return;
-    gRef.current = g as SVGGElement;
-    const gSel = d3.select(g);
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setTappedCountry(null);
+    }
+  }, []);
 
-    gSel.selectAll('path')
-      .data(worldData.features)
-      .enter()
-      .append('path')
-      .attr('d', (d) => path(d as Feature<Geometry>) || '')
-      .attr('fill', (d) => {
-        const name = d.properties?.name || '';
-        return name === tappedCountry ? '#4ade80' : (countryMap.has(name) ? '#34d399' : '#f3f4f6');
-      })
-      .attr('stroke', '#ccc')
-      .style('stroke-width', (d) => d.properties?.name === tappedCountry ? 2 : 1)
-      .style('filter', (d) => d.properties?.name === tappedCountry ? 'drop-shadow(0 0 4px #22c55e)' : 'none')
-      .on('click', (_, d) => {
-        const name = d.properties?.name || null;
-        setTappedCountry(name === tappedCountry ? null : name);
-      })
-      .append('title')
-      .text((d) => {
-        const name = d.properties?.name || 'Unknown';
-        const count = countryMap.get(name) || 0;
-        return `${name}: ${count} deployment${count !== 1 ? 's' : ''}`;
-      });
-  }, [worldData, countryMap, tappedCountry]);
+  const isLoading = isLoadingMap || isLoadingLabels;
+  const error = mapError || labelsError;
+
+  if (error && retryCount >= MAP_CONSTANTS.MAX_RETRIES) {
+    return (
+      <div className="relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-4 text-xl font-semibold z-50 bg-white text-black hover:bg-gray-100 rounded-full px-2 py-1 shadow"
+          aria-label="Close map"
+        >
+          ✕
+        </button>
+        
+        <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
+          <div className="text-center p-6">
+            <h3 className="text-lg font-semibold text-red-600 mb-2">Error Loading Map</h3>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <div className="space-y-2">
+              <button
+                onClick={handleRetry}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mr-2"
+                disabled={retryCount >= MAP_CONSTANTS.MAX_RETRIES}
+              >
+                Retry ({MAP_CONSTANTS.MAX_RETRIES - retryCount} attempts left)
+              </button>
+              <div className="text-sm text-gray-500">
+                Showing simplified view as fallback
+              </div>
+              {/* Fallback: Simple list view */}
+              <div className="mt-4 max-w-md mx-auto">
+                <h4 className="font-semibold mb-2">Deployment Summary</h4>
+                <div className="space-y-1 text-left">
+                  {chartCountries.slice(0, 10).map(([country, count]) => (
+                    <div key={country} className="flex justify-between py-1 border-b">
+                      <span>{countryLabels[country] || country}</span>
+                      <span className="font-medium">{count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white">
+    <div 
+      className="relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white"
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="application"
+      aria-label="Interactive deployment map"
+    >
       <button
         onClick={onClose}
-        className="absolute top-3 right-4 text-xl font-semibold z-50 bg-white text-black hover:bg-gray-100 rounded-full px-2 py-1 shadow"
+        className="absolute top-3 right-4 text-xl font-semibold z-50 bg-white text-black hover:bg-gray-100 rounded-full px-2 py-1 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
+        aria-label="Close map"
       >
         ✕
       </button>
 
+      {/* Stats Summary */}
       <div className="absolute top-6 left-4 z-50 bg-white/90 backdrop-blur-md text-black border border-gray-200 rounded-lg shadow px-4 py-3">
-        <div className="text-sm font-medium">
-          <span className="text-green-600 font-bold">{totalDeployments}</span> Total Deployments in <span className="text-blue-600 font-bold">{countryCount}</span> Countries
+        <div className="text-sm font-medium" role="status" aria-live="polite">
+          <span className="text-green-600 font-bold">{totalDeployments}</span> Total Deployments in{' '}
+          <span className="text-blue-600 font-bold">{countryCount}</span> Countries
         </div>
       </div>
 
+      {/* Yearly Stats Chart */}
       {tappedCountry && yearlyStats.length > 0 && (
-        <div className="absolute top-6 right-4 z-50 bg-white text-black border border-gray-300 rounded-lg shadow px-4 py-4 w-[320px] h-[45vh]">
-          <div className="text-md font-semibold mb-3">
-            Deployments in {countryLabels[tappedCountry] || tappedCountry} by Year
-          </div>
-          <svg viewBox={`0 0 320 ${yearlyStats.length * 24}`} width="100%" height="100%">
-            {yearlyStats.map(([year, value], i) => (
-              <g key={year} transform={`translate(0,${i * 24})`}>
-                <text x={0} y={12} fontSize="10" fill="#333">{year}</text>
-                <rect x={50} y={4} height={12} width={value} fill="#60a5fa" />
-                <text x={50 + value + 5} y={14} fontSize="10" fill="#111">{value}</text>
-              </g>
-            ))}
-          </svg>
-        </div>
+        <YearlyStatsChart
+          countryName={countryLabels[tappedCountry] || tappedCountry}
+          yearlyStats={yearlyStats}
+          onClose={() => setTappedCountry(null)}
+        />
       )}
 
-      {/* Country Chart - Bottom Panel */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-40 bg-white/95 backdrop-blur-md text-black border border-gray-200 rounded-lg shadow px-6 py-4 max-w-[90vw] w-fit">
-        <div className="text-sm font-medium mb-4 text-center">
-          Deployments by Country
-        </div>
-        <div className="overflow-x-auto">
-          <div className="flex items-end gap-3 min-w-fit px-2">
-          {chartCountries.slice(0, APP_CONSTANTS.MAX_CHART_COUNTRIES).map(([country, count]) => {
-            const maxCount = chartCountries[0][1];
-            const barHeight = Math.max(
-              (count / maxCount) * APP_CONSTANTS.MAX_BAR_HEIGHT, 
-              APP_CONSTANTS.MIN_BAR_HEIGHT
-            );
-              const isSelected = tappedCountry === country;
-              
-              return (
-                <div 
-                  key={country} 
-                  className="flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105"
-                  onClick={() => setTappedCountry(tappedCountry === country ? null : country)}
-                >
-                  <div className="relative">
-                    {isSelected && (
-                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                        {count} deployment{count !== 1 ? 's' : ''}
-                      </div>
-                    )}
-                    <div
-                      className={`w-8 rounded-t transition-all duration-200 ${
-                        isSelected 
-                          ? 'bg-green-500 shadow-lg' 
-                          : 'bg-green-400 group-hover:bg-green-500'
-                      }`}
-                      style={{ height: `${barHeight}px` }}
-                    />
-                  </div>
-                  <div className="mt-2 text-xs text-center max-w-[60px] leading-tight">
-                    <div className="font-medium">{countryLabels[country] || country}</div>
-                    <div className="text-gray-600">{count}</div>
-                  </div>
-                </div>
-              );
-            })}
-            {chartCountries.length > APP_CONSTANTS.MAX_CHART_COUNTRIES && (
-              <div className="flex flex-col items-center justify-end text-gray-500">
-                <div className="w-8 h-4 bg-gray-200 rounded-t" />
-                <div className="mt-2 text-xs text-center">
-                  +{chartCountries.length - APP_CONSTANTS.MAX_CHART_COUNTRIES} more
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Country Chart */}
+      <CountryChart
+        countries={chartCountries}
+        countryLabels={countryLabels}
+        selectedCountry={tappedCountry}
+        onCountryClick={handleCountryClick}
+      />
 
+      {/* System Selection */}
       {systemOptions.length > 0 && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg shadow flex gap-2 overflow-x-auto">
           {selectedSystems.length < systemOptions.length && (
             <button
-              onClick={() => setSelectedSystems(systemOptions)}
-              className="text-xs px-2 py-1 border border-blue-300 rounded-full bg-blue-50 text-blue-700"
+              onClick={handleSelectAllSystems}
+              className="text-xs px-2 py-1 border border-blue-300 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Select all systems"
             >
               Select All
             </button>
           )}
 
           {selectedSystems.length === 0 && (
-            <span className="text-xs text-gray-500 italic">No systems selected</span>
+            <span className="text-xs text-gray-500 italic" role="status">
+              No systems selected
+            </span>
           )}
 
           {systemOptions.map((sys) => (
-            <span
+            <button
               key={sys}
-              className={`text-xs px-2 py-1 border rounded-full flex items-center gap-1 cursor-pointer transition whitespace-nowrap ${
+              className={`text-xs px-2 py-1 border rounded-full flex items-center gap-1 transition whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 selectedSystems.includes(sys)
                   ? 'bg-green-100 text-green-800 border-green-300'
                   : 'bg-gray-100 text-gray-500 border-gray-300 line-through'
               }`}
-              onClick={() => {
-                setSelectedSystems((prev) =>
-                  prev.includes(sys) ? prev.filter((s) => s !== sys) : [...prev, sys]
-                );
-              }}
+              onClick={() => handleSystemToggle(sys)}
+              aria-pressed={selectedSystems.includes(sys)}
+              aria-label={`${selectedSystems.includes(sys) ? 'Deselect' : 'Select'} ${sys} system`}
             >
               {sys} <span className="text-xs">✕</span>
-            </span>
+            </button>
           ))}
         </div>
       )}
 
+      {/* Loading State */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-50">
           <LoadingSpinner size="lg" message="Loading map data..." />
         </div>
       )}
 
-      {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
-          <div className="text-center p-6">
-            <h3 className="text-lg font-semibold text-red-600 mb-2">Error Loading Map</h3>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      )}
-
-      <svg
-        ref={svgRef}
-        className="w-full h-full"
-        viewBox={`0 0 ${APP_CONSTANTS.MAP_WIDTH} ${APP_CONSTANTS.MAP_HEIGHT}`}
-        preserveAspectRatio="xMidYMid meet"
+      {/* Map Renderer */}
+      <MapRenderer
+        worldData={worldData}
+        countryMap={countryMap}
+        selectedCountry={tappedCountry}
+        onCountryClick={handleCountryClick}
+        isLoading={isLoading}
+        svgRef={svgRef}
+        gRef={gRef}
       />
     </div>
   );
-}
+});
+
+export default DrilldownMap;
