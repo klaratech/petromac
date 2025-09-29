@@ -31,7 +31,6 @@ export interface MapRendererProps {
 }
 
 export interface YearlyStatsChartProps {
-  // eslint-disable-next-line no-unused-vars
   countryName: string;
   yearlyStats: YearlyStats[];
   onClose: () => void;

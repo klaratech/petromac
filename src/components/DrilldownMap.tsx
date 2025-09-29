@@ -12,6 +12,7 @@ import MapRenderer from './MapRenderer';
 import { processMapData, calculateCountryStats } from '@/utils/mapUtils';
 import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
+import PdfBuilderModal from './PdfBuilderModal';
 
 interface Props {
   data: JobRecord[];
@@ -25,6 +26,7 @@ const DrilldownMap = memo(function DrilldownMap({ data, initialSystem, onClose }
   const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
   const [tappedCountry, setTappedCountry] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
 
   // Custom hooks for data loading
   const { worldData, isLoading: isLoadingMap, error: mapError, retry: retryMap } = useMapData();
@@ -207,6 +209,13 @@ const DrilldownMap = memo(function DrilldownMap({ data, initialSystem, onClose }
           <span className="text-green-600 font-bold">{totalDeployments}</span> Total Deployments in{' '}
           <span className="text-blue-600 font-bold">{countryCount}</span> Countries
         </div>
+        <button
+          onClick={() => setIsPdfModalOpen(true)}
+          className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          aria-label="Success Stories"
+        >
+          Success Stories
+        </button>
       </div>
 
       {/* Yearly Stats Chart */}
@@ -280,6 +289,11 @@ const DrilldownMap = memo(function DrilldownMap({ data, initialSystem, onClose }
         svgRef={svgRef}
         gRef={gRef}
       />
+
+      {/* PDF Builder Modal */}
+      {isPdfModalOpen && (
+        <PdfBuilderModal onClose={() => setIsPdfModalOpen(false)} />
+      )}
     </div>
   );
 });
