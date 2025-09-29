@@ -1,5 +1,4 @@
 export type FilterPayload = {
-  year?: string[];
   area?: string[];
   country?: string[];
   wlco?: string[];
@@ -9,13 +8,17 @@ export type FilterPayload = {
 };
 
 export type OptionsResponse = {
-  year: string[];
   area: string[];
   country: string[];
   wlco: string[];
   category1: string[];
   category2: string[];
   device: string[];
+  _metadata?: {
+    last_updated: string;
+    source_version: string;
+    mode: string;
+  };
 };
 
 export type PreviewResponse = {

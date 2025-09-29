@@ -117,7 +117,6 @@ const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiS
 
 export default function PdfBuilderModal({ onClose }: Props) {
   const [options, setOptions] = useState<OptionsResponse>({
-    year: [],
     area: [],
     country: [],
     wlco: [],
@@ -448,6 +447,21 @@ export default function PdfBuilderModal({ onClose }: Props) {
                 <p className="mt-1 text-sm text-red-600">{emailError}</p>
               )}
             </div>
+
+            {/* Data Source Info */}
+            {options._metadata && (
+              <div className="border-t border-gray-200 pt-4">
+                <div className="text-xs text-gray-500 flex items-center justify-between">
+                  <span>
+                    Data last updated on {options._metadata.last_updated}
+                    {options._metadata.source_version && ` (${options._metadata.source_version})`}
+                  </span>
+                  <span className="px-2 py-1 bg-gray-100 rounded text-xs">
+                    {options._metadata.mode}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right side - Preview */}

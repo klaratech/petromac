@@ -4,12 +4,18 @@ import path from "node:path";
 import { PDFDocument } from "pdf-lib";
 import Papa from "papaparse";
 import nodemailer from "nodemailer";
+import { 
+  SUCCESS_STORIES_OPTIONS, 
+  LAST_UPDATED, 
+  SOURCE_VERSION, 
+  validateOptions, 
+  getOptionsSummary 
+} from "@/constants/successStoriesOptions";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type Filters = {
-  year?: string[];
   area?: string[];
   country?: string[];
   wlco?: string[];
@@ -19,7 +25,6 @@ type Filters = {
 };
 
 const FILTER_COLUMNS: Record<string, string> = {
-  year: "Year",
   area: "Area",
   country: "Country",
   wlco: "WL Co",
@@ -50,21 +55,50 @@ function pdfPath() {
 
 function loadCsvOnce() {
   if (CSV_ROWS) return;
-  const csv = fs.readFileSync(csvPath(), "utf8");
-  const parsed = Papa.parse<Record<string, string>>(csv, {
-    header: true,
-    skipEmptyLines: true,
-    transformHeader: (h: string) => h.trim(),
-    transform: (v: string) => (typeof v === "string" ? v.trim() : v),
-  });
-  if (parsed.errors?.length) {
-    throw new Error("CSV parse error: " + parsed.errors[0].message);
+  
+  const csvFilePath = csvPath();
+  console.log('Attempting to read CSV from:', csvFilePath);
+  
+  try {
+    // Check if file exists
+    if (!fs.existsSync(csvFilePath)) {
+      throw new Error(`CSV file not found at: ${csvFilePath}`);
+    }
+    
+    const csv = fs.readFileSync(csvFilePath, "utf8");
+    console.log('CSV file read successfully, length:', csv.length);
+    
+    const parsed = Papa.parse<Record<string, string>>(csv, {
+      header: true,
+      skipEmptyLines: true,
+      transformHeader: (h: string) => h.trim(),
+      transform: (v: string) => (typeof v === "string" ? v.trim() : v),
+    });
+    
+    if (parsed.errors?.length) {
+      console.error('CSV parse errors:', parsed.errors);
+      throw new Error("CSV parse error: " + parsed.errors[0].message);
+    }
+    
+    CSV_ROWS = parsed.data;
+    console.log('CSV rows loaded:', CSV_ROWS.length);
+    
+    // detect page col
+    const cols = new Set(Object.keys(CSV_ROWS[0] || {}).map((c) => c.trim()));
+    console.log('Available columns:', Array.from(cols));
+    
+    PAGE_COL = PAGE_COL_CANDIDATES.find((c) => cols.has(c)) || null;
+    if (!PAGE_COL) {
+      console.error('Available columns:', Array.from(cols));
+      console.error('Looking for page columns:', PAGE_COL_CANDIDATES);
+      throw new Error("Could not find a page column in CSV");
+    }
+    
+    console.log('Found page column:', PAGE_COL);
+  } catch (error) {
+    console.error('Error loading CSV:', error);
+    throw error;
   }
-  CSV_ROWS = parsed.data;
-  // detect page col
-  const cols = new Set(Object.keys(CSV_ROWS[0] || {}).map((c) => c.trim()));
-  PAGE_COL = PAGE_COL_CANDIDATES.find((c) => cols.has(c)) || null;
-  if (!PAGE_COL) throw new Error("Could not find a page column in CSV");
 }
 
 function loadPdfOnce() {
@@ -73,12 +107,28 @@ function loadPdfOnce() {
 }
 
 function buildOptionsOnce() {
-  if (OPTIONS_CACHE) return;
-  if (!CSV_ROWS) loadCsvOnce();
+  if (OPTIONS_CACHE) {
+    console.log('Options cache already exists, returning cached data');
+    return;
+  }
+  
+  console.log('Building options cache...');
+  
+  if (!CSV_ROWS) {
+    console.log('CSV_ROWS not loaded, loading now...');
+    loadCsvOnce();
+  }
+  
+  if (!CSV_ROWS || CSV_ROWS.length === 0) {
+    throw new Error('CSV_ROWS is empty or not loaded');
+  }
+  
+  console.log('Processing', CSV_ROWS.length, 'rows for options');
   
   OPTIONS_CACHE = {};
   
   for (const [filterKey, columnName] of Object.entries(FILTER_COLUMNS)) {
+    console.log(`Processing filter: ${filterKey} -> column: ${columnName}`);
     const uniqueValues = new Set<string>();
     
     for (const row of CSV_ROWS!) {
@@ -92,14 +142,14 @@ function buildOptionsOnce() {
     
     // Convert to sorted array
     OPTIONS_CACHE[filterKey] = Array.from(uniqueValues).sort((a, b) => {
-      // For year, sort numerically in descending order
-      if (filterKey === "year") {
-        return parseInt(b) - parseInt(a);
-      }
-      // For others, sort alphabetically
+      // Sort alphabetically
       return a.localeCompare(b);
     });
+    
+    console.log(`Filter ${filterKey} has ${OPTIONS_CACHE[filterKey].length} unique values:`, OPTIONS_CACHE[filterKey].slice(0, 5));
   }
+  
+  console.log('Options cache built successfully');
 }
 
 function normalizeMulti(v: unknown): string[] | undefined {
@@ -142,26 +192,72 @@ function coercePages1b(rows: Record<string,string>[], pageCol: string): number[]
   return out;
 }
 
+// Startup validation - called on module load
+(function validateOnStartup() {
+  const validation = validateOptions();
+  if (!validation.isValid) {
+    console.error('❌ Static options validation failed:', validation.errors);
+    throw new Error(`Invalid static options: ${validation.errors.join(', ')}`);
+  }
+  
+  // Verify FILTER_COLUMNS keys exist in constants
+  const constantKeys = Object.keys(SUCCESS_STORIES_OPTIONS);
+  const filterKeys = Object.keys(FILTER_COLUMNS);
+  const missingKeys = filterKeys.filter(key => !constantKeys.includes(key));
+  
+  if (missingKeys.length > 0) {
+    console.error('❌ Missing keys in static options:', missingKeys);
+    throw new Error(`Missing keys in static options: ${missingKeys.join(', ')}`);
+  }
+  
+  console.log(`✅ options: ${getOptionsSummary()} — last_updated=${LAST_UPDATED}, source=${SOURCE_VERSION}`);
+})();
+
 // GET /api/successstories - Returns filter options
 export async function GET(_req: NextRequest) {
   try {
-    buildOptionsOnce();
+    const optionsMode = process.env.OPTIONS_MODE || 'static';
     
-    if (!OPTIONS_CACHE) {
-      return new Response(JSON.stringify({ error: "Options not initialized" }), { 
-        status: 500,
-        headers: { "Content-Type": "application/json" }
+    if (optionsMode === 'dynamic') {
+      // Fallback to dynamic CSV-derived options for debugging
+      console.log('Using dynamic options mode (from CSV)');
+      buildOptionsOnce();
+      
+      if (!OPTIONS_CACHE) {
+        return new Response(JSON.stringify({ error: "Options not initialized" }), { 
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+
+      return new Response(JSON.stringify(OPTIONS_CACHE), {
+        headers: { 
+          "Content-Type": "application/json",
+          "Cache-Control": "public, max-age=3600"
+        }
       });
     }
+    
+    // Default: Static mode
+    console.log('Using static options mode');
+    const responseData = {
+      ...SUCCESS_STORIES_OPTIONS,
+      _metadata: {
+        last_updated: LAST_UPDATED,
+        source_version: SOURCE_VERSION,
+        mode: 'static'
+      }
+    };
 
-    return new Response(JSON.stringify(OPTIONS_CACHE), {
+    return new Response(JSON.stringify(responseData), {
       headers: { 
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=3600"
+        "Cache-Control": "public, max-age=86400" // 24 hours for static data
       }
     });
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : String(e);
+    console.error('GET /api/successstories error:', errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
