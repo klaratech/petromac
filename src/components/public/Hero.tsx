@@ -10,12 +10,15 @@ export default function Hero() {
         <p className="max-w-2xl mb-6 text-lg md:text-xl">
           Solutions for differential sticking, high deviation, orientation, and sample quality
         </p>
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap justify-center">
           <Link href="/catalog" className="px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand/90 transition-colors">
             View Catalog
           </Link>
-          <Link href="/case-studies" className="px-6 py-3 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors">
+          <Link href="/case-studies" className="px-6 py-3 bg-brand/80 text-white rounded-lg hover:bg-brand/70 transition-colors">
             Case Studies
+          </Link>
+          <Link href="/intranet" className="px-6 py-3 bg-white text-brand rounded-lg hover:bg-gray-100 transition-colors font-semibold">
+            Intranet Access
           </Link>
         </div>
       </div>
