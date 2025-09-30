@@ -74,7 +74,9 @@ docs/              # Architecture, theme, prompts, how-tos
 /about               → About
 /catalog             → Catalog
 /case-studies        → Case studies
-/contact             → Contact
+/contact             → Contact (with contact form)
+/privacy-policy      → Privacy Policy
+/terms-of-use        → Terms of Use
 ```
 
 ### Intranet (🔒 Basic Auth)

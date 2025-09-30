@@ -62,6 +62,24 @@ Private Excel (gitignored) → scripts/python/generate_json.py → public/data/o
 
 ---
 
+## Global Components
+
+### Footer
+
+A global footer component (`src/components/shared/Footer.tsx`) is rendered on all pages (public, intranet, and legal pages) via the root layout and intranet layout. The footer includes:
+- Petromac branding and description
+- Links to Privacy Policy and Terms of Use
+- Copyright notice with auto-updating year
+
+### Contact Form
+
+The contact page (`/contact`) features a full contact form with:
+- Input fields: Full Name, Email, Message
+- Anti-spam protection using honeypot technique and timing checks
+- Server-side validation using Zod
+- Email delivery via Resend API
+- Success/error state handling
+
 ## Environments
 
 - **Prod** on Vercel (custom domain)
@@ -70,6 +88,8 @@ Private Excel (gitignored) → scripts/python/generate_json.py → public/data/o
 **Env vars**:
 - `INTRANET_USER`, `INTRANET_PASS` (Edge middleware)
 - `NEXT_PUBLIC_ATHENA_TEST_URL` (optional tile link)
+- `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL` (contact form)
+- Optional: `NEXT_PUBLIC_HCAPTCHA_SITE_KEY`, `HCAPTCHA_SECRET` (if using hCaptcha)
 
 ---
 

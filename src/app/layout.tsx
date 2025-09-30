@@ -3,6 +3,7 @@ import { Inter, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Analytics } from "@vercel/analytics/next";
+import Footer from "@/components/shared/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -42,11 +43,12 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body
-        className={`${inter.variable} ${ibmPlexSans.variable} font-sans antialiased`}
+        className={`${inter.variable} ${ibmPlexSans.variable} font-sans antialiased min-h-dvh flex flex-col`}
       >
         <ErrorBoundary>
-          {children}
+          <main className="flex-1">{children}</main>
         </ErrorBoundary>
+        <Footer />
         <Analytics />
       </body>
     </html>
