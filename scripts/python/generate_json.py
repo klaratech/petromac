@@ -27,11 +27,12 @@ logging.basicConfig(
 # === CONFIGURATION CLASS ===
 class Config:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    REPO_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
     
     # File paths
-    EXCEL_PATH = os.getenv('EXCEL_PATH', os.path.join(BASE_DIR, "jobhistory.xlsx"))
+    EXCEL_PATH = os.getenv('EXCEL_PATH', os.path.join(REPO_ROOT, "data", "private", "raw", "jobhistory.xlsx"))
     OUTPUT_CSV = os.path.join(BASE_DIR, "runs-summary.csv")
-    OUTPUT_FULL_JSON = os.path.join(BASE_DIR, "operations_data.json")
+    OUTPUT_FULL_JSON = os.path.join(REPO_ROOT, "public", "data", "operations_data.json")
     MASTER_COUNTRIES_JSON = os.path.join(BASE_DIR, "master_country_list.json")
     KNOWN_CITIES_JSON = os.path.join(BASE_DIR, "known_cities.json")
     

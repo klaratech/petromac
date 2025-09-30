@@ -1,0 +1,17 @@
+# Web Framework (for successstories API)
+fastapi==0.118.0
+uvicorn==0.34.0
+python-multipart==0.0.20
+
+# Data Processing
+pandas==2.2.3
+openpyxl==3.1.5
+
+# PDF Processing
+pypdf==5.1.0
+
+# GitHub Integration
+PyGithub==2.8.1
+
+# HTTP Requests
+requests==2.32.3

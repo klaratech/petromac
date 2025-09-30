@@ -9,10 +9,10 @@ import { useDebounce } from '@/hooks/useDebounce';
 import YearlyStatsChart from './YearlyStatsChart';
 import CountryChart from './CountryChart';
 import MapRenderer from './MapRenderer';
-import { processMapData, calculateCountryStats } from '@/utils/mapUtils';
+import { processMapData, calculateCountryStats } from '@/lib/mapUtils';
 import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
-import PdfBuilderModal from '../app/successstories/PdfBuilderModal';
+import PdfBuilderModal from '../app/intranet/kiosk/successstories/PdfBuilderModal';
 
 interface Props {
   data: JobRecord[];

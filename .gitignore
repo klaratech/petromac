@@ -107,13 +107,17 @@ jspm_packages/
 /public/models/Step Files/
 /public/videos/WIP/
 
-# Python scripts (for Render)
-/scripts/.venv
-/scripts/__pycache__
-/scripts/*.pyc
-/scripts/.env
-/scripts/venv/
-/scripts/env/
+# Private data (DO NOT COMMIT)
+/data/private/
+
+# Python scripts
+/scripts/python/.venv
+/scripts/python/__pycache__
+/scripts/python/*.pyc
+/scripts/python/.env
+/scripts/python/venv/
+/scripts/python/env/
+/scripts/node/node_modules/
 
 # Temporary files
 *.tmp

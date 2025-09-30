@@ -4,7 +4,7 @@ import type { Feature, Geometry } from 'geojson';
 import type { MapRendererProps } from '@/types/MapTypes';
 import { APP_CONSTANTS } from '@/constants/app';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
-import { formatDeploymentCount } from '@/utils/mapUtils';
+import { formatDeploymentCount } from '@/lib/mapUtils';
 
 const MapRenderer = memo(function MapRenderer({ 
   worldData, 

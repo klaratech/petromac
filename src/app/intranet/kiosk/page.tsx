@@ -71,7 +71,7 @@ export default function HomeClient() {
   }, []);
 
   const handleExplore = () => {
-    router.push('/productlines');
+    router.push('/intranet/kiosk/productlines');
   };
 
   return (

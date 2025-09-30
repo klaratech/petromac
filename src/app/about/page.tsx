@@ -1,7 +1,7 @@
 import Footer from "@/components/public/Footer";
 import Link from "next/link";
 
-export default function CatalogPage() {
+export default function AboutPage() {
   return (
     <main>
       <div className="min-h-screen py-16 px-6">
@@ -9,7 +9,7 @@ export default function CatalogPage() {
           <Link href="/" className="text-blue-600 hover:underline mb-8 inline-block">
             ← Back to Home
           </Link>
-          <h1 className="text-4xl font-bold mb-6">Product Catalog</h1>
+          <h1 className="text-4xl font-bold mb-6">About Petromac</h1>
           <p className="text-lg mb-4">
             This page is under construction. Please check back later.
           </p>
