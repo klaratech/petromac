@@ -10,7 +10,9 @@
 │   └── schemas
 ├── dev_prompt.md
 ├── docs
+│   ├── ARCHITECTURE.md
 │   ├── BrandBook.pdf
+│   ├── DEVELOPMENT.md
 │   ├── INTRANET_MODULES_REORG.md
 │   ├── Petromac Trade Show Kiosk Storyboard.groovy.md
 │   ├── README-successstories.md
@@ -18,9 +20,6 @@
 │   ├── TODO.md
 │   └── dev_prompt.md
 ├── eslint.config.mjs
-├── lib
-│   ├── dataValidation.ts
-│   └── mapUtils.ts
 ├── middleware.ts
 ├── next-env.d.ts
 ├── next.config.ts
@@ -192,6 +191,8 @@
 │   │   ├── useDebounce.ts
 │   │   └── useMapData.ts
 │   ├── lib
+│   │   ├── dataValidation.ts
+│   │   ├── mapUtils.ts
 │   │   └── pdf
 │   ├── modules
 │   │   ├── catalog
@@ -222,4 +223,4 @@
 ├── tailwind.config.ts
 └── tsconfig.json
 
-61 directories, 162 files
+60 directories, 164 files

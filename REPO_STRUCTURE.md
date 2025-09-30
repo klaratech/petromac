@@ -73,7 +73,7 @@ modules/                               # 🔒 Feature modules (intranet)
 
 hooks/                                 # Custom React hooks
 types/                                 # TypeScript type definitions
-lib/                                   # Shared utility functions
+lib/                                   # Shared utility functions (moved to src/lib)
 data/
 ├── private/                           # 🚫 Gitignored (never public)
 │   ├── raw/                           # Raw Excel files
@@ -94,7 +94,9 @@ scripts/
 └── node/                              # Node.js utilities
 
 docs/                                  # Documentation
-├── DEV_PROMPT.md                      # Agent development instructions
+├── ARCHITECTURE.md                    # System architecture overview
+├── DEVELOPMENT.md                     # Local development guide
+├── dev_prompt.md                      # Agent development instructions
 ├── README-successstories.md           # Success stories guide
 ├── TAILWIND_THEME.md                  # Brand theme specs
 └── TODO.md                            # Backlog / follow-ups
