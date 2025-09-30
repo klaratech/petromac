@@ -36,10 +36,20 @@ Docs:
 - **Contact** (`/contact`) – simple contact entry (stub)
 
 ### Intranet (`/intranet/*`) — **protected**
-- **Intranet Home** (`/intranet`) – tiles:
-  - **Athena** – external portal link
+- **Intranet Home** (`/intranet`) – 5 tiles:
+  - **Athena (Prod)** – production portal link (`https://athena.petromac.co.nz/`)
+  - **Athena (Test)** – test environment portal link
   - **Kiosk** – internal kiosk app routes
-- **Kiosk** (`/intranet/kiosk/*`) – ops dashboard, product lines, success stories, data check, etc.
+  - **Success Stories** – filterable success stories with custom PDF builder
+  - **Catalog** – product catalog with 3D models and custom PDF builder
+- **Success Stories** (`/intranet/success-stories`) – full-page success stories module with advanced filtering and PDF generation
+- **Catalog** (`/intranet/catalog`) – product catalog with filters and 3D model gallery
+- **Kiosk** (`/intranet/kiosk/*`) – ops dashboard, product lines, success stories embed, data check, etc.
+
+**PDF Builder:**
+- The intranet uses a **PDF Builder Modal** (not a viewer) that generates custom PDFs based on selected filters
+- Built PDFs are downloadable or can be opened in a new tab
+- Success Stories and Catalog modules both use the shared PDF builder component
 
 **Security & SEO**
 - `/intranet/*` protected by **Basic Auth** (Edge Middleware)
@@ -190,10 +200,24 @@ app/
   page.tsx                   # public home
   about/  catalog/  case-studies/  contact/
   intranet/
-    page.tsx                 # intranet home (Athena + Kiosk)
+    page.tsx                 # intranet home (5 tiles)
+    success-stories/         # success stories module page
+    catalog/                 # catalog module page
     kiosk/                   # all kiosk routes & APIs
 components/
   public/                    # public-facing UI components
+  shared/
+    pdf/                     # shared PDF builder modal
+    panels/                  # reusable panels (SuccessStories, Catalog)
+modules/
+  success-stories/           # success stories module
+    containers/              # page & widget containers
+    hooks/                   # custom hooks
+    services/                # data services
+    types/                   # TypeScript types
+  catalog/                   # catalog module
+    containers/              # page containers
+    types/                   # TypeScript types
 public/
   data/                      # sanitized JSON (CDN)
   images/                    # assets
@@ -203,6 +227,7 @@ docs/
   DEV_PROMPT.md
   TAILWIND_THEME.md
   TODO.md
+  INTRANET_MODULES_REORG.md  # reorg documentation
 middleware.ts                # basic auth + noindex for intranet
 ```
 

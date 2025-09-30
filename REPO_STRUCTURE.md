@@ -39,7 +39,35 @@ components/
 │   ├── ProblemSection.tsx             # Problem areas grid
 │   ├── ProductTeaser.tsx              # Product teaser section
 │   └── Footer.tsx                     # Footer
-└── *.tsx                              # 🔒 Shared kiosk/intranet components
+├── shared/                            # 🔒 Shared intranet components
+│   ├── pdf/                           # PDF Builder Modal (shared)
+│   │   ├── PDFBuilderModal.tsx        # Reusable PDF builder
+│   │   └── index.ts                   # Barrel export
+│   └── panels/                        # Reusable filter panels
+│       ├── MultiSelect.tsx            # Multi-select dropdown
+│       ├── SuccessStoriesPanel.tsx    # Success stories filters
+│       ├── CatalogPanel.tsx           # Catalog filters
+│       └── index.ts                   # Barrel export
+└── *.tsx                              # Other shared components
+
+modules/                               # 🔒 Feature modules (intranet)
+├── success-stories/                   # Success Stories module
+│   ├── containers/                    # Page & widget containers
+│   │   ├── SuccessStoriesPage.tsx     # Full page with filters + PDF builder
+│   │   └── SuccessStoriesWidget.tsx   # Embeddable widget (kiosk)
+│   ├── hooks/                         # Custom hooks
+│   │   └── useSuccessStoriesFilters.ts
+│   ├── services/                      # Data services
+│   │   └── successStories.service.ts
+│   ├── types/                         # TypeScript types
+│   │   └── successStories.types.ts
+│   └── index.ts                       # Module exports
+└── catalog/                           # Catalog module
+    ├── containers/                    # Page containers
+    │   └── CatalogPage.tsx            # Full page with filters + 3D gallery
+    ├── types/                         # TypeScript types
+    │   └── catalog.types.ts
+    └── index.ts                       # Module exports
 
 hooks/                                 # Custom React hooks
 types/                                 # TypeScript type definitions
@@ -98,15 +126,24 @@ REPO_STRUCTURE.md                      # This file
 
 ### Intranet (🔒 Basic Auth)
 ```
-/intranet            → Intranet homepage
-  ├── Athena tile    → External Athena link
-  └── Kiosk tile     → /intranet/kiosk
+/intranet                            → Intranet homepage (5 tiles)
+  ├── Athena (Prod)                  → External Athena production link
+  ├── Athena (Test)                  → External Athena test link
+  ├── Kiosk                          → /intranet/kiosk
+  ├── Success Stories                → /intranet/success-stories
+  └── Catalog                        → /intranet/catalog
+
+/intranet/success-stories            → Success stories module
+                                       (filters + PDF builder)
+
+/intranet/catalog                    → Catalog module
+                                       (filters + 3D gallery + PDF builder)
 
 /intranet/kiosk                      → Kiosk entry
 /intranet/kiosk/dashboard            → Ops dashboard
 /intranet/kiosk/productlines         → Product lines
-/intranet/kiosk/catalog              → 3D catalog
-/intranet/kiosk/successstories       → Success stories
+/intranet/kiosk/catalog              → 3D catalog (kiosk version)
+/intranet/kiosk/successstories       → Success stories (kiosk version)
 /intranet/kiosk/datacheck            → Data tools
 /intranet/kiosk/api/successstories   → API endpoint
 ```
