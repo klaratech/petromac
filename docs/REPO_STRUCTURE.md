@@ -29,6 +29,8 @@ src/
   components/
   ├─ public/                             # 🌐 Public site UI
   ├─ shared/
+  │  ├─ Header.tsx                       # Global header with navigation
+  │  ├─ Footer.tsx                       # Global footer
   │  ├─ inputs/                          # Reusable inputs
   │  │  ├─ MultiSelect.tsx
   │  │  └─ index.ts
@@ -78,13 +80,24 @@ docs/              # Architecture, theme, prompts, how-tos
 ### Public (unrestricted)
 ```
 /                    → Public homepage
-/about               → About
-/catalog             → Catalog
-/case-studies        → Case studies
-/contact             → Contact (with contact form)
+/about               → About page
+/catalog             → Product catalog (displays petromac-catalog.pdf)
+/case-studies        → Track Record / Case studies
+/contact             → Contact/Team page (with contact form)
 /privacy-policy      → Privacy Policy
 /terms-of-use        → Terms of Use
 ```
+
+### Global Header Navigation
+The site includes a global header component (`src/components/shared/Header.tsx`) that appears on all pages with:
+- **Petromac Logo** (left) — Always links to homepage
+- **Navigation Links** (right):
+  - About
+  - Catalog
+  - Track Record
+  - Contacts
+  - | (separator)
+  - Intranet
 
 ### Intranet (🔒 Basic Auth)
 ```

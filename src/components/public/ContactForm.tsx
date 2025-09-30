@@ -47,12 +47,9 @@ export default function ContactForm() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left: Contact Form */}
           <div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-8">
               Get in Touch
             </h2>
-            <p className="text-slate-400 mb-8">
-              Have questions about our solutions? We'd love to hear from you.
-            </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Honeypot field - hidden from users */}
@@ -120,9 +117,9 @@ export default function ContactForm() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full md:w-auto bg-brand text-white hover:bg-brand/90 disabled:bg-brand/50 disabled:cursor-not-allowed rounded-full px-8 py-3 font-medium transition-colors"
+                className="w-full bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg px-8 py-3 font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
               >
-                {isSubmitting ? "Sending..." : "Send Message"}
+                {isSubmitting ? "Sending..." : "Send"}
               </button>
 
               {/* Status Messages */}

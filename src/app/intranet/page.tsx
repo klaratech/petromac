@@ -66,17 +66,6 @@ export default function IntranetHome() {
           </div>
           <h2 className="text-2xl font-bold">Success Stories</h2>
         </Link>
-
-        {/* Catalog */}
-        <Link
-          href="/intranet/catalog"
-          className="border rounded-xl p-10 shadow hover:shadow-lg transition flex flex-col items-center gap-4"
-        >
-          <div className="w-[120px] h-[120px] flex items-center justify-center text-6xl">
-            📚
-          </div>
-          <h2 className="text-2xl font-bold">Catalog</h2>
-        </Link>
       </div>
     </main>
   );

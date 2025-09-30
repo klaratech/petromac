@@ -1,30 +1,24 @@
 import Link from "next/link";
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="border-t border-slate-800 bg-slate-900 text-slate-300 py-8 px-6">
+    <footer className="border-t border-slate-800 bg-slate-900 text-slate-300 py-4 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          {/* Left: Petromac brand section */}
-          <div className="flex flex-col items-center md:items-start">
-            <h3 className="text-xl font-heading font-semibold text-white mb-2">
-              Petromac
-            </h3>
-            <p className="text-sm text-slate-400 max-w-xs text-center md:text-left">
-              Advanced wireline solutions for the oil and gas industry
-            </p>
+        <div className="flex justify-between items-center mb-3">
+          {/* Left: Petromac */}
+          <div className="text-lg font-heading font-semibold text-white">
+            Petromac
           </div>
 
-          {/* Center/Right: Links */}
-          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+          {/* Right: Links with separator */}
+          <div className="flex items-center gap-4">
             <Link
               href="/privacy-policy"
               className="text-slate-300 hover:text-white transition-colors text-sm"
             >
               Privacy Policy
             </Link>
+            <div className="h-4 w-px bg-slate-600" />
             <Link
               href="/terms-of-use"
               className="text-slate-300 hover:text-white transition-colors text-sm"
@@ -34,9 +28,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom row: Copyright */}
-        <div className="mt-6 pt-6 border-t border-slate-800 text-center text-sm text-slate-400">
-          <p>© {currentYear} Petromac. All rights reserved.</p>
+        {/* Copyright */}
+        <div className="text-center text-sm text-slate-400">
+          <p>© 2025 Petromac. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -4,6 +4,7 @@ import "./globals.css";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Analytics } from "@vercel/analytics/next";
 import Footer from "@/components/shared/Footer";
+import Header from "@/components/shared/Header";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -45,6 +46,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${ibmPlexSans.variable} font-sans antialiased min-h-dvh flex flex-col`}
       >
+        <Header />
         <ErrorBoundary>
           <main className="flex-1">{children}</main>
         </ErrorBoundary>
