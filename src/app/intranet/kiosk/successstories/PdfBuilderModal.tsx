@@ -175,6 +175,8 @@ const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiS
     );
   };
 
+  const listboxId = `${label.toLowerCase().replace(/\s+/g, '-')}-listbox`;
+
   return (
     <div className="relative" ref={dropdownRef}>
       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -184,6 +186,7 @@ const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiS
         ref={inputRef}
         role="combobox"
         aria-expanded={isOpen}
+        aria-controls={listboxId}
         aria-haspopup="listbox"
         aria-label={`${label} multiselect`}
         tabIndex={0}
@@ -240,6 +243,7 @@ const MultiSelect = ({ label, options, selected, onChange, placeholder }: MultiS
           
           {/* Options list */}
           <div 
+            id={listboxId}
             role="listbox" 
             aria-multiselectable="true"
             className="max-h-48 overflow-y-auto"

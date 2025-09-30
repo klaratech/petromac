@@ -1,6 +1,6 @@
-# Petromac Website & Internal Kiosk
+# Petromac Website & Intranet Site
 
-A Next.js-based application featuring a public-facing website for Petromac and a protected internal kiosk application for showcasing operations data, success stories, and product catalog.
+A Next.js-based application featuring a public-facing website for Petromac and a protected intranet site, including a kiosk showcase.
 
 ## 🏗️ Architecture
 
