@@ -11,7 +11,7 @@ export default function Header() {
     { name: "About", href: "/about" },
     { name: "Catalog", href: "/catalog" },
     { name: "Track Record", href: "/case-studies" },
-    { name: "Contacts", href: "/contact" },
+    { name: "Team", href: "/team" },
   ];
 
   const isActive = (href: string) => {
