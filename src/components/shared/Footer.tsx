@@ -31,27 +31,12 @@ export default function Footer() {
             >
               Terms of Use
             </Link>
-            <Link
-              href="/contact"
-              className="text-slate-300 hover:text-white transition-colors text-sm"
-            >
-              Contact
-            </Link>
           </div>
         </div>
 
         {/* Bottom row: Copyright */}
         <div className="mt-6 pt-6 border-t border-slate-800 text-center text-sm text-slate-400">
-          <p>
-            © {currentYear} Petromac. All rights reserved.{" "}
-            <Link href="/privacy-policy" className="hover:text-slate-300 transition-colors">
-              Privacy Policy
-            </Link>
-            {" / "}
-            <Link href="/terms-of-use" className="hover:text-slate-300 transition-colors">
-              Terms of Use
-            </Link>
-          </p>
+          <p>© {currentYear} Petromac. All rights reserved.</p>
         </div>
       </div>
     </footer>
