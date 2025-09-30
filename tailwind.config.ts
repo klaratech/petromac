@@ -13,19 +13,10 @@ const config: Config = {
     },
     extend: {
       colors: {
-        brand: {
-          DEFAULT: "#1E4A9A", // Brand Blue (Primary)
-        },
-        brandblack: {
-          DEFAULT: "#1D1D1B",
-        },
-        brandgray: {
-          DEFAULT: "#575756",
-        },
-        // Keep Tailwind neutrals; prefer slate for body text/backgrounds
-        accent: {
-          DEFAULT: "#F59E0B",
-        },
+        brand: "#1E4A9A",
+        brandblack: "#1D1D1B",
+        brandgray: "#575756",
+        accent: "#F59E0B",
       },
       fontFamily: {
         // Map Next Font CSS variables → Tailwind
