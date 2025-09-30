@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 
 export default function IntranetHome() {
@@ -22,8 +21,7 @@ export default function IntranetHome() {
             height={120}
             className="object-contain"
           />
-          <h2 className="text-2xl font-bold mb-2">Athena</h2>
-          <p className="text-gray-600 text-center">Production portal</p>
+          <h2 className="text-2xl font-bold">Athena</h2>
         </a>
         <a
           href={athenaTestUrl}
@@ -38,19 +36,19 @@ export default function IntranetHome() {
             height={120}
             className="object-contain"
           />
-          <h2 className="text-2xl font-bold mb-2">Athena Beta</h2>
-          <p className="text-gray-600 text-center">Testing environment</p>
+          <h2 className="text-2xl font-bold">Athena Beta</h2>
         </a>
-        <Link
+        <a
           href="/intranet/kiosk"
+          target="_blank"
+          rel="noopener noreferrer"
           className="border rounded-xl p-10 shadow hover:shadow-lg transition flex flex-col items-center gap-4"
         >
           <div className="w-[120px] h-[120px] flex items-center justify-center text-6xl">
             🖥️
           </div>
-          <h2 className="text-2xl font-bold mb-2">Kiosk</h2>
-          <p className="text-gray-600 text-center">Internal kiosk application</p>
-        </Link>
+          <h2 className="text-2xl font-bold">Kiosk</h2>
+        </a>
       </div>
     </main>
   );
