@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
-import MultiSelect from './MultiSelect';
+import { MultiSelect } from '../inputs';
 import type { SuccessStoriesFilters, CsvRow, OptionWithCount } from '@/modules/success-stories/types/successStories.types';
 import { SuccessStoriesService } from '@/modules/success-stories/services/successStories.service';
 

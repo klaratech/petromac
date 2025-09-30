@@ -43,10 +43,12 @@ components/
 │   ├── pdf/                           # PDF Builder Modal (shared)
 │   │   ├── PDFBuilderModal.tsx        # Reusable PDF builder
 │   │   └── index.ts                   # Barrel export
-│   └── panels/                        # Reusable filter panels
+│   ├── panels/                        # Reusable filter panels
+│   │   ├── SuccessStoriesPanel.tsx    # Success stories filters
+│   │   ├── CatalogPanel.tsx           # Catalog filters
+│   │   └── index.ts                   # Barrel export (re-exports from inputs)
+│   └── inputs/                        # Reusable input components
 │       ├── MultiSelect.tsx            # Multi-select dropdown
-│       ├── SuccessStoriesPanel.tsx    # Success stories filters
-│       ├── CatalogPanel.tsx           # Catalog filters
 │       └── index.ts                   # Barrel export
 └── *.tsx                              # Other shared components
 

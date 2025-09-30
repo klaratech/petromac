@@ -157,7 +157,6 @@
 │   │   ├── IdleRedirect.tsx
 │   │   ├── LoadingSpinner.tsx
 │   │   ├── MapRenderer.tsx
-│   │   ├── PdfBuilderModal.tsx
 │   │   ├── SplashLoop.tsx
 │   │   ├── SystemModal.tsx
 │   │   ├── YearlyStatsChart.tsx
@@ -167,9 +166,11 @@
 │   │   │   ├── ProblemSection.tsx
 │   │   │   └── ProductTeaser.tsx
 │   │   └── shared
+│   │       ├── inputs
+│   │       │   ├── MultiSelect.tsx
+│   │       │   └── index.ts
 │   │       ├── panels
 │   │       │   ├── CatalogPanel.tsx
-│   │       │   ├── MultiSelect.tsx
 │   │       │   ├── SuccessStoriesPanel.tsx
 │   │       │   └── index.ts
 │   │       └── pdf
@@ -221,4 +222,4 @@
 ├── tailwind.config.ts
 └── tsconfig.json
 
-60 directories, 162 files
+61 directories, 162 files
