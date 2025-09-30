@@ -47,10 +47,10 @@ Private Excel (gitignored) → scripts/python/generate_json.py → public/data/o
 ```
 
 **Success Stories & Catalog PDFs**:
-- Built via the shared **PDFBuilderModal** and server-side logic (API or scripts).
-- The modal returns a **public URL** for the generated PDF (e.g., under `public/` or a CDN path).
-
-> There is **no PDF viewer modal** in this repo. We only build and download/open PDFs.
+- Success Stories uses a **widget/modal** with filters, PDF viewer, and action buttons
+- PDF generation handled by Vercel serverless functions (`/api/pdf/success-stories`)
+- Email delivery via Nodemailer (`/api/email/send`)
+- Filters map to specific pages using `public/successstories-summary.csv`
 
 ---
 
@@ -87,9 +87,77 @@ The contact page (`/contact`) features a full contact form with:
 
 **Env vars**:
 - `INTRANET_USER`, `INTRANET_PASS` (Edge middleware)
+- `NEXT_PUBLIC_BASE_URL` (base URL for API calls)
 - `NEXT_PUBLIC_ATHENA_TEST_URL` (optional tile link)
 - `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL` (contact form)
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (Success Stories email)
 - Optional: `NEXT_PUBLIC_HCAPTCHA_SITE_KEY`, `HCAPTCHA_SECRET` (if using hCaptcha)
+
+---
+
+## Success Stories Module Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ User Interface (SuccessStoriesWidget)                       │
+│ ┌─────────────────────┐  ┌───────────────────────────────┐ │
+│ │ Filters Panel       │  │ PDF Viewer Pane               │ │
+│ │ - Area              │  │ - Base PDF or Preview         │ │
+│ │ - Country           │  │ - Embedded viewer             │ │
+│ │ - WL Co             │  │ - Loading states              │ │
+│ │ - Categories        │  └───────────────────────────────┘ │
+│ │ - Device            │                                      │
+│ │                     │  ┌───────────────────────────────┐ │
+│ │ [Preview Button]    │  │ Action Buttons                │ │
+│ │ [Download Button]   │  │ - Preview: Generate preview   │ │
+│ │ [Email Button]      │  │ - Download: Get filtered PDF  │ │
+│ └─────────────────────┘  │ - Email: Send PDF via email   │ │
+│                          └───────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│ Client-Side Services                                        │
+│ SuccessStoriesService.loadData() → Parse CSV                │
+│ SuccessStoriesService.filterData() → Apply filters          │
+│ SuccessStoriesService.getAvailableOptions() → Compute       │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│ Serverless API Routes (Vercel Functions)                    │
+│                                                              │
+│ POST /api/pdf/success-stories                               │
+│ 1. Load CSV data (server-side)                              │
+│ 2. Filter data based on filters                             │
+│ 3. Extract page numbers                                     │
+│ 4. Load base PDF with pdf-lib                               │
+│ 5. Create new PDF with filtered pages                       │
+│ 6. Return as inline (preview) or attachment (download)      │
+│                                                              │
+│ POST /api/email/send                                        │
+│ 1. Generate filtered PDF via internal API call              │
+│ 2. Create Nodemailer transport                              │
+│ 3. Build email with PDF attachment                          │
+│ 4. Send via SMTP                                            │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│ Data Sources                                                │
+│ - public/successstories-summary.csv (filters → pages)       │
+│ - public/successstories.pdf (base PDF document)             │
+│ - src/constants/successStoriesOptions.ts (static options)   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Key Design Decisions
+
+1. **Modular Components**: Filters, viewer, and actions are separate components for reusability
+2. **Server-Side PDF Generation**: Uses `pdf-lib` in serverless functions to avoid client bundle bloat
+3. **CSV-Driven Filtering**: Page mappings stored in CSV for easy updates without code changes
+4. **Dual Data Loading**: Client uses fetch(), server uses fs for same CSV file
+5. **Email Integration**: Nodemailer with SMTP for flexible email provider support
 
 ---
 

@@ -4,7 +4,26 @@ export class SuccessStoriesService {
   private static cachedData: CsvRow[] | null = null;
 
   /**
-   * Load and cache CSV data from public folder
+   * Load and cache CSV data from public folder (server-side)
+   */
+  static async loadDataServer(): Promise<CsvRow[]> {
+    // On server, read from file system
+    if (typeof window === 'undefined') {
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      
+      const csvPath = path.join(process.cwd(), 'public', 'successstories-summary.csv');
+      const csvText = await fs.readFile(csvPath, 'utf-8');
+      
+      return this.parseCSV(csvText);
+    }
+    
+    // Fall back to client method
+    return this.loadData();
+  }
+
+  /**
+   * Load and cache CSV data from public folder (client-side)
    */
   static async loadData(): Promise<CsvRow[]> {
     // Return cached data if available
@@ -31,6 +50,13 @@ export class SuccessStoriesService {
     }
 
     const csvText = await response.text();
+    return this.parseCSV(csvText);
+  }
+
+  /**
+   * Parse CSV text into CsvRow array
+   */
+  private static parseCSV(csvText: string): CsvRow[] {
     const lines = csvText.trim().split('\n');
     const headers = lines[0].split(',').map(h => h.trim());
 
@@ -50,8 +76,10 @@ export class SuccessStoriesService {
       })
       .filter(row => row.page > 0); // Filter out invalid rows
 
-    // Cache the data
-    localStorage.setItem('success-stories-data', JSON.stringify(data));
+    // Cache the data (only on client)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('success-stories-data', JSON.stringify(data));
+    }
     this.cachedData = data;
     return data;
   }

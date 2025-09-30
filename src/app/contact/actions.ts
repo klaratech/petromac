@@ -7,7 +7,7 @@ const contactSchema = z.object({
   email: z.string().email("Invalid email address"),
   message: z.string().min(10, "Message must be at least 10 characters"),
   company: z.string().optional(), // honeypot field
-  _timing: z.string().optional(), // timing check
+  _timing: z.string().default("0"), // timing check
 });
 
 export async function submitContact(formData: FormData) {

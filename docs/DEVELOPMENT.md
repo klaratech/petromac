@@ -22,10 +22,23 @@ cp .env.example .env.local
 
 Edit `.env.local`:
 ```env
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# Intranet credentials
 INTRANET_USER=your-username
 INTRANET_PASS=your-password
+
 # Optional Athena test link for intranet tile
 NEXT_PUBLIC_ATHENA_TEST_URL=https://test.athena.example.com/
+
+# SMTP Configuration for Success Stories email feature
+# Use App Password for Gmail/Outlook (not regular password)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password-here
+CONTACT_FROM_EMAIL=your-email@gmail.com
+CONTACT_TO_EMAIL=recipient@example.com
 ```
 
 (Optional) Python virtualenv:
@@ -59,13 +72,60 @@ See `REPO_STRUCTURE.md` for the live snapshot.
 
 ---
 
-## PDF Builder (no viewer)
+## Success Stories Module
 
-- Use `src/components/shared/pdf/PDFBuilderModal.tsx` to **build** PDFs.  
-- Pass an async `onBuild(options)` that returns a **public URL** to the generated PDF.  
-- On success, provide a **Download** / **Open in new tab** link.
+The Success Stories module provides filtering, PDF preview, download, and email functionality.
 
-> There is **no PDF viewer modal** in this repo.
+### Features
+
+- **Filters Panel**: Multi-select filters for area, country, WL Co, categories, and devices
+- **PDF Viewer**: Live preview of base or filtered PDF
+- **Preview**: Generate filtered PDF and view inline
+- **Download**: Download filtered PDF to local machine
+- **Email**: Send filtered PDF as email attachment
+
+### Routes
+
+- `/intranet/success-stories` — Full page with filters and viewer
+- `/intranet/kiosk/successstories-embed` — Embedded widget for kiosk displays
+
+### Testing Locally
+
+1. Ensure `.env.local` has SMTP credentials configured
+2. Start dev server: `npm run dev`
+3. Navigate to `/intranet/success-stories`
+4. Apply filters and test:
+   - **Preview** — Generates filtered PDF and displays inline
+   - **Download** — Downloads filtered PDF
+   - **Email** — Sends PDF to specified email (requires valid SMTP config)
+
+### API Endpoints
+
+- `POST /api/pdf/success-stories` — Generate filtered PDF
+  - Body: `{ filters, mode: 'preview' | 'download' }`
+  - Returns: PDF blob or inline response
+  
+- `POST /api/email/send` — Send email with PDF attachment
+  - Body: `{ to, subject, filters }`
+  - Requires SMTP configuration in environment variables
+
+### Data Source
+
+- Filter options: `src/constants/successStoriesOptions.ts` (static, generated)
+- Page mappings: `public/successstories-summary.csv` (CSV with filters → page numbers)
+- Base PDF: `public/successstories.pdf`
+
+### SMTP Setup
+
+For Gmail:
+1. Enable 2-factor authentication
+2. Generate App Password: https://myaccount.google.com/apppasswords
+3. Use App Password in `SMTP_PASS` (not your regular password)
+
+For Outlook:
+1. Enable 2-factor authentication
+2. Generate App Password in account settings
+3. Use `smtp-mail.outlook.com` with port 587
 
 ---
 

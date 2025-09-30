@@ -1,206 +1,120 @@
-# Petromac – Website & Intranet
+# Petromac Website & Intranet
 
-A Next.js application with a **public website** and a **protected intranet** for tools and internal links (Athena, Kiosk, Success Stories, Catalog).  
-Deployed on **Vercel**, with **Vercel Analytics** enabled on the public site.
+Welcome to the Petromac repository. This monorepo contains the public marketing website, internal intranet portal, and trade show kiosk application.
 
-> This repo used to be `petromac-kiosk`.
+## Quick Start
 
----
-
-## 🏗 Tech Stack
-
-- **Framework:** Next.js 15 (App Router), React 19, TypeScript
-- **Styling:** Tailwind CSS (brand theme in `tailwind.config.ts`)
-- **Typography:** Inter (body), IBM Plex Sans (headings)
-- **Data Viz:** D3.js
-- **3D:** Three.js, React Three Fiber
-- **Python scripts:** pandas, openpyxl (in `scripts/python`)
-- **Deployment:** Vercel
-- **Analytics:** Vercel Analytics (public pages only)
-- **CI/CD:** GitHub Actions
-
-Docs:
-- **Theme:** `docs/TAILWIND_THEME.md`
-- **Structure:** `REPO_STRUCTURE.md`
-- **Architecture:** `docs/ARCHITECTURE.md`
-- **Development:** `docs/DEVELOPMENT.md`
-- **Intranet reorg plan:** `docs/INTRANET_MODULES_REORG.md`
-- **Prompt for maintainers:** `dev_prompt.md`
-
----
-
-## 🌐 App Structure
-
-### Public site (`/`)
-- **Home** – hero, problem areas, product teaser
-- **About** (`/about`)
-- **Catalog** (`/catalog`)
-- **Case Studies** (`/case-studies`)
-- **Contact** (`/contact`)
-
-### Intranet (`/intranet/*`) — **protected by Basic Auth**
-Tiles on the intranet homepage:
-- **Athena (Prod)** → `https://athena.petromac.co.nz/`
-- **Athena (Test)** → `NEXT_PUBLIC_ATHENA_TEST_URL` (optional)
-- **Kiosk** → `/intranet/kiosk`
-- **Success Stories** → `/intranet/success-stories`
-- **Catalog** → `/intranet/catalog`
-
-> Kiosk focuses on dashboard & drilldowns. Success Stories & Catalog are **standalone intranet pages** and can also be embedded inside Kiosk via widgets.
-
-**Security & SEO**
-- `/intranet/*` protected by **Basic Auth** (Edge Middleware)
-- `X-Robots-Tag: noindex, nofollow` on intranet routes
-
----
-
-## 📈 Analytics
-
-Public pages integrate **Vercel Analytics**.  
-Place `<Analytics />` **once** in `app/layout.tsx`.  
-If you want to exclude intranet routes, create an `app/intranet/layout.tsx` **without** `<Analytics />`.
-
----
-
-## 🚀 Getting Started
-
-### Requirements
-- Node.js 20+
-- Python 3.11+
-- Git
-
-### 1) Clone
 ```bash
+# Clone and install
 git clone https://github.com/Klaratech/petromac.git
 cd petromac
-```
-
-### 2) Install dependencies
-```bash
 npm install
-```
 
-### 3) Env vars
-```bash
+# Configure environment
 cp .env.example .env.local
+# Edit .env.local with your credentials
+
+# Run development server
+npm run dev
+# Open http://localhost:3000
 ```
-Edit `.env.local`:
+
+## What's Inside
+
+### Public Website (/)
+Marketing site with product information, case studies, and contact form.
+
+### Intranet (/intranet)
+Protected portal with:
+- **Athena Links** — Production and test environment access
+- **Success Stories** — Filterable PDF library with preview, download, and email
+- **Catalog** — Product catalog
+- **Kiosk** — Trade show dashboard application
+
+### Key Features
+
+#### Success Stories Module
+- Multi-select filters (area, country, WL Co, categories, devices)
+- Live PDF preview with filtered results
+- Download filtered PDFs
+- Email PDFs via SMTP
+- Routes:
+  - `/intranet/success-stories` — Full page
+  - `/intranet/kiosk/successstories-embed` — Kiosk embed
+
+#### Technologies
+- **Next.js 15** with App Router
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS**
+- **pdf-lib** for PDF manipulation
+- **Nodemailer** for email delivery
+- **D3.js** for data visualizations
+- **Three.js** for 3D product models
+
+## Documentation
+
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** — Setup, workflows, testing
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** — System design, data flow
+- **[REPO_STRUCTURE.md](./REPO_STRUCTURE.md)** — Directory layout, conventions
+- **[TAILWIND_THEME.md](./TAILWIND_THEME.md)** — Design system, colors, tokens
+
+## Environment Variables
+
+Required for production:
 ```env
-# Intranet auth (required for /intranet/*)
-INTRANET_USER=your-username
-INTRANET_PASS=your-password
+# Base URL
+NEXT_PUBLIC_BASE_URL=https://yourdomain.com
 
-# Athena test link for intranet tile (optional)
-NEXT_PUBLIC_ATHENA_TEST_URL=https://test.athena.example.com/
+# Intranet Auth
+INTRANET_USER=username
+INTRANET_PASS=password
+
+# SMTP (Success Stories email)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+CONTACT_FROM_EMAIL=your-email@gmail.com
+CONTACT_TO_EMAIL=recipient@example.com
+
+# Contact Form (Resend)
+RESEND_API_KEY=your-resend-key
 ```
 
-### 4) (Optional) Python venv for data scripts
+See `.env.example` for complete list.
+
+## Deployment
+
+The app is designed for Vercel:
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy automatically on push to main
+
+## Data Pipeline
+
+Convert Excel data to JSON:
 ```bash
 cd scripts/python
 python -m venv venv
-source venv/bin/activate         # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cd ../..
-```
-
-### 5) Local dev
-```bash
-npm run dev
-# open http://localhost:3000
-```
-
----
-
-## 📊 Data Pipeline
-
-Convert private Excel into sanitized JSON in `/public/data` for the app to consume.
-
-```
-data/private/raw/jobhistory.xlsx  (gitignored)
-         │
-         ▼
-scripts/python/generate_json.py   (local or CI)
-         │
-         ▼
-public/data/operations_data.json  (served via Vercel CDN)
-```
-
-Run locally:
-```bash
-cd scripts/python
 source venv/bin/activate
+pip install -r requirements.txt
 python generate_json.py
 ```
 
----
+Outputs: `public/data/operations_data.json`
 
-## ♻️ Reuse & Modules
+## Contributing
 
-- **Shared Panels:** `src/components/shared/panels/`
-  - `SuccessStoriesPanel.tsx`
-  - `CatalogPanel.tsx`
-- **Shared Inputs:** `src/components/shared/inputs/`
-  - `MultiSelect.tsx`
-- **Shared PDF:** `src/components/shared/pdf/PDFBuilderModal.tsx` (builder-only; **no viewer modal**)
-- **Feature modules:** `src/modules/success-stories/*`, `src/modules/catalog/*`
+1. Use conventional commits: `feat:`, `fix:`, `docs:`, `chore:`
+2. React components use PascalCase filenames
+3. No raw hex colors — use Tailwind tokens
+4. Keep secrets in `.env.local` (gitignored)
 
-Success Stories & Catalog:
-- Expose a **Page** (full screen) and a **Widget** (embeddable in Kiosk).
-- Panels raise `onRequestBuildPdf` and pages call the shared **PDFBuilderModal**.
+## Support
+
+For questions or issues, contact the development team or open an issue on GitHub.
 
 ---
 
-## 🔐 Environment Variables
-
-- `INTRANET_USER`, `INTRANET_PASS` – Basic Auth for intranet
-- `NEXT_PUBLIC_ATHENA_TEST_URL` – Test Athena URL for the intranet tile (client-visible)
-
-Set in Vercel Project → **Settings → Environment Variables**.  
-Use `NEXT_PUBLIC_` prefix for values needed in client code.
-
----
-
-## 🧰 Scripts
-
-```bash
-npm run dev       # local dev
-npm run build     # production build
-npm run start     # run production build
-npm run lint      # eslint
-```
-
----
-
-## 🧭 Repo Layout (high level)
-
-See `REPO_STRUCTURE.md` for a live snapshot. Highlights:
-
-```
-src/
-  app/ (routes: public + intranet + kiosk)
-  components/
-    public/ ...
-    shared/
-      inputs/ panels/ pdf/
-  lib/ (helpers)
-  modules/
-    catalog/ success-stories/
-  data/ constants/ config/ hooks/ types/
-scripts/
-  python/ (data pipeline tools)
-public/  (assets, data, models, videos)
-docs/    (architecture, theme, prompts, etc.)
-```
-
----
-
-## 🤝 Contributing
-
-1. `git checkout -b feat/your-change`
-2. Make changes + tests
-3. Conventional commit message
-4. PR to `main`
-
-**License:** Proprietary – Petromac / Klaratech  
-**Maintainers:** Klaratech Development Team  
-**Last Updated:** 2025-09
+**Built with ❤️ by Klaratech for Petromac**
