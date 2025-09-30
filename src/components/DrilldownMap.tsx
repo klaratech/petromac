@@ -12,7 +12,7 @@ import MapRenderer from './MapRenderer';
 import { processMapData, calculateCountryStats } from '@/lib/mapUtils';
 import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
-import PdfBuilderModal from '../app/intranet/kiosk/successstories/PdfBuilderModal';
+import PdfBuilderModal from '@/components/PdfBuilderModal';
 
 interface Props {
   data: JobRecord[];

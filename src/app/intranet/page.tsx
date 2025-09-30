@@ -1,6 +1,12 @@
+'use client';
+
+import { useState } from 'react';
 import Image from "next/image";
+import PdfViewerModal from "@/components/PdfViewerModal";
 
 export default function IntranetHome() {
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+  
   const athenaProdUrl = process.env.NEXT_PUBLIC_ATHENA_PROD_URL || "https://athena.example.com";
   const athenaTestUrl = process.env.NEXT_PUBLIC_ATHENA_TEST_URL || "https://athena-beta.example.com";
   
@@ -49,7 +55,25 @@ export default function IntranetHome() {
           </div>
           <h2 className="text-2xl font-bold">Kiosk</h2>
         </a>
+        <div
+          onClick={() => setIsPdfModalOpen(true)}
+          className="border rounded-xl p-10 shadow hover:shadow-lg transition flex flex-col items-center gap-4 cursor-pointer"
+        >
+          <div className="w-[120px] h-[120px] flex items-center justify-center text-6xl">
+            📄
+          </div>
+          <h2 className="text-2xl font-bold">Success Stories</h2>
+        </div>
       </div>
+
+      {/* PDF Viewer Modal */}
+      {isPdfModalOpen && (
+        <PdfViewerModal
+          pdfUrl="/successstories.pdf"
+          title="Success Stories"
+          onClose={() => setIsPdfModalOpen(false)}
+        />
+      )}
     </main>
   );
 }

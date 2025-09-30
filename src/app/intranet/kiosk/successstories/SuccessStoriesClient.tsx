@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import PdfBuilderModal from './PdfBuilderModal';
+import PdfBuilderModal from '@/components/PdfBuilderModal';
 
 export default function SuccessStoriesClient() {
   const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
