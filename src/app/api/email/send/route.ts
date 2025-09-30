@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
 
     // Check for SMTP configuration
     if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.error('SMTP configuration missing');
       return NextResponse.json(
         { error: 'Email service not configured. Please contact support.' },
         { status: 500 }
@@ -101,7 +100,6 @@ Petromac Team`,
 
     return NextResponse.json({ success: true, message: 'Email sent successfully' });
   } catch (error) {
-    console.error('Email sending error:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to send email' },
       { status: 500 }

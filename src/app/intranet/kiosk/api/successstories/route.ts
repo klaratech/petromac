@@ -8,8 +8,7 @@ import {
   SUCCESS_STORIES_OPTIONS, 
   LAST_UPDATED, 
   SOURCE_VERSION, 
-  validateOptions, 
-  getOptionsSummary 
+  validateOptions 
 } from "@/constants/successStoriesOptions";
 
 export const runtime = "nodejs";
@@ -57,7 +56,6 @@ function loadCsvOnce() {
   if (CSV_ROWS) return;
   
   const csvFilePath = csvPath();
-  console.log('Attempting to read CSV from:', csvFilePath);
   
   try {
     // Check if file exists
@@ -66,7 +64,6 @@ function loadCsvOnce() {
     }
     
     const csv = fs.readFileSync(csvFilePath, "utf8");
-    console.log('CSV file read successfully, length:', csv.length);
     
     const parsed = Papa.parse<Record<string, string>>(csv, {
       header: true,
@@ -76,27 +73,19 @@ function loadCsvOnce() {
     });
     
     if (parsed.errors?.length) {
-      console.error('CSV parse errors:', parsed.errors);
       throw new Error("CSV parse error: " + parsed.errors[0].message);
     }
     
     CSV_ROWS = parsed.data;
-    console.log('CSV rows loaded:', CSV_ROWS.length);
     
     // detect page col
     const cols = new Set(Object.keys(CSV_ROWS[0] || {}).map((c) => c.trim()));
-    console.log('Available columns:', Array.from(cols));
     
     PAGE_COL = PAGE_COL_CANDIDATES.find((c) => cols.has(c)) || null;
     if (!PAGE_COL) {
-      console.error('Available columns:', Array.from(cols));
-      console.error('Looking for page columns:', PAGE_COL_CANDIDATES);
       throw new Error("Could not find a page column in CSV");
     }
-    
-    console.log('Found page column:', PAGE_COL);
   } catch (error) {
-    console.error('Error loading CSV:', error);
     throw error;
   }
 }
@@ -108,14 +97,10 @@ function loadPdfOnce() {
 
 function buildOptionsOnce() {
   if (OPTIONS_CACHE) {
-    console.log('Options cache already exists, returning cached data');
     return;
   }
   
-  console.log('Building options cache...');
-  
   if (!CSV_ROWS) {
-    console.log('CSV_ROWS not loaded, loading now...');
     loadCsvOnce();
   }
   
@@ -123,12 +108,9 @@ function buildOptionsOnce() {
     throw new Error('CSV_ROWS is empty or not loaded');
   }
   
-  console.log('Processing', CSV_ROWS.length, 'rows for options');
-  
   OPTIONS_CACHE = {};
   
   for (const [filterKey, columnName] of Object.entries(FILTER_COLUMNS)) {
-    console.log(`Processing filter: ${filterKey} -> column: ${columnName}`);
     const uniqueValues = new Set<string>();
     
     for (const row of CSV_ROWS!) {
@@ -145,11 +127,7 @@ function buildOptionsOnce() {
       // Sort alphabetically
       return a.localeCompare(b);
     });
-    
-    console.log(`Filter ${filterKey} has ${OPTIONS_CACHE[filterKey].length} unique values:`, OPTIONS_CACHE[filterKey].slice(0, 5));
   }
-  
-  console.log('Options cache built successfully');
 }
 
 function normalizeMulti(v: unknown): string[] | undefined {
@@ -196,7 +174,6 @@ function coercePages1b(rows: Record<string,string>[], pageCol: string): number[]
 (function validateOnStartup() {
   const validation = validateOptions();
   if (!validation.isValid) {
-    console.error('❌ Static options validation failed:', validation.errors);
     throw new Error(`Invalid static options: ${validation.errors.join(', ')}`);
   }
   
@@ -206,11 +183,8 @@ function coercePages1b(rows: Record<string,string>[], pageCol: string): number[]
   const missingKeys = filterKeys.filter(key => !constantKeys.includes(key));
   
   if (missingKeys.length > 0) {
-    console.error('❌ Missing keys in static options:', missingKeys);
     throw new Error(`Missing keys in static options: ${missingKeys.join(', ')}`);
   }
-  
-  console.log(`✅ options: ${getOptionsSummary()} — last_updated=${LAST_UPDATED}, source=${SOURCE_VERSION}`);
 })();
 
 // GET /api/successstories - Returns filter options
@@ -220,7 +194,6 @@ export async function GET(_req: NextRequest) {
     
     if (optionsMode === 'dynamic') {
       // Fallback to dynamic CSV-derived options for debugging
-      console.log('Using dynamic options mode (from CSV)');
       buildOptionsOnce();
       
       if (!OPTIONS_CACHE) {
@@ -239,7 +212,6 @@ export async function GET(_req: NextRequest) {
     }
     
     // Default: Static mode
-    console.log('Using static options mode');
     const responseData = {
       ...SUCCESS_STORIES_OPTIONS,
       _metadata: {
@@ -257,7 +229,6 @@ export async function GET(_req: NextRequest) {
     });
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : String(e);
-    console.error('GET /api/successstories error:', errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

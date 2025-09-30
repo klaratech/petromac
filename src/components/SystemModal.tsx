@@ -43,11 +43,8 @@ export default function SystemModal({
     fetch('/data/operations_data.json', { cache: 'no-store' })
       .then((res) => res.json())
       .then((data: JobRecord[]) => setJobData(data))
-      .catch((err) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('❌ Failed to load job data:', err);
-        }
-        // In production, you might want to show a user-friendly error message
+      .catch(() => {
+        // Error handled silently
       });
   }, [showDrilldown, jobData]);
 

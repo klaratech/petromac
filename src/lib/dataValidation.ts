@@ -28,11 +28,6 @@ export function validateJobRecords(data: unknown): JobRecord[] {
     throw new Error('No valid job records found');
   }
 
-  if (validRecords.length !== data.length && process.env.NODE_ENV === 'development') {
-    // Only log in development mode
-    console.warn(`Filtered out ${data.length - validRecords.length} invalid records`);
-  }
-
   return validRecords;
 }
 

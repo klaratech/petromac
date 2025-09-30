@@ -56,13 +56,9 @@ export default function DeviceViewer({
       .then((res) => res.json())
       .then((json) => {
         setDrilldownData(json);
-        // Data loaded successfully - only log in development
-        if (process.env.NODE_ENV === 'development') {
-          console.log('📦 operations_data.json loaded');
-        }
       })
-      .catch((error) => {
-        console.error('Failed to load operations data:', error);
+      .catch(() => {
+        // Error handled silently
       });
   }, []);
 

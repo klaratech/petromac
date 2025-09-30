@@ -23,14 +23,12 @@ export async function submitContact(formData: FormData) {
 
     // Honeypot check - if filled, pretend success but don't send
     if (data.company && data.company.length > 0) {
-      console.log("Honeypot triggered - potential spam");
       return { ok: true };
     }
 
     // Timing check - form should take at least 3 seconds to fill
     const timeTaken = parseFloat(data._timing);
     if (timeTaken < 3) {
-      console.log("Form submitted too quickly - potential bot");
       return { ok: true }; // Pretend success
     }
 
@@ -40,13 +38,6 @@ export async function submitContact(formData: FormData) {
     const contactFromEmail = process.env.CONTACT_FROM_EMAIL;
 
     if (!resendApiKey || !contactToEmail || !contactFromEmail) {
-      console.warn("Resend not configured - contact form submission logged but not sent");
-      console.log("Contact form submission:", {
-        name: data.name,
-        email: data.email,
-        message: data.message,
-        timestamp: new Date().toISOString(),
-      });
       return { ok: true }; // Return success even if not configured
     }
 
@@ -70,15 +61,12 @@ export async function submitContact(formData: FormData) {
         `,
       });
 
-      console.log("Contact form email sent successfully");
       return { ok: true };
-    } catch (emailError) {
-      console.error("Failed to send email:", emailError);
-      // Still return success to user, but log the error
+    } catch {
+      // Still return success to user
       return { ok: true };
     }
   } catch (error) {
-    console.error("Contact form error:", error);
     if (error instanceof z.ZodError) {
       return { ok: false, error: "Validation failed" };
     }

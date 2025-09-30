@@ -13,14 +13,14 @@ export default function Footer() {
           {/* Right: Links with separator */}
           <div className="flex items-center gap-4">
             <Link
-              href="/privacy-policy"
+              href="/privacy"
               className="text-slate-300 hover:text-white transition-colors text-sm"
             >
               Privacy Policy
             </Link>
             <div className="h-4 w-px bg-slate-600" />
             <Link
-              href="/terms-of-use"
+              href="/terms"
               className="text-slate-300 hover:text-white transition-colors text-sm"
             >
               Terms of Use

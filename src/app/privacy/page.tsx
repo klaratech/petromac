@@ -29,7 +29,7 @@ export default function PrivacyPage() {
           <h3 className="text-xl font-semibold text-brand mt-6 mb-3">Information You Provide to Us</h3>
           
           <p>
-            We collect your personal information when you register with us ("User"), when you express an interest in obtaining information about us or our products and services, when you participate in activities on our Website Site (such as responding to a survey) or otherwise contacting us.
+            We collect your personal information when you register with us (&quot;User&quot;), when you express an interest in obtaining information about us or our products and services, when you participate in activities on our Website Site (such as responding to a survey) or otherwise contacting us.
           </p>
 
           <p>
@@ -50,13 +50,13 @@ export default function PrivacyPage() {
           <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Cookies</h4>
           
           <p>
-            Our Website uses "Cookies" to identify the areas of our Website that you have visited. A Cookie is a small piece of data stored on your computer or mobile device by your web browser. We may use Cookies to personalize the Content that you see on our Website. Most web browsers can be set to disable the use of Cookies. However, if you disable Cookies, you may not be able to access functionality on our Website correctly or at all. We never place Personally Identifiable Information in Cookies.
+            Our Website uses &quot;Cookies&quot; to identify the areas of our Website that you have visited. A Cookie is a small piece of data stored on your computer or mobile device by your web browser. We may use Cookies to personalize the Content that you see on our Website. Most web browsers can be set to disable the use of Cookies. However, if you disable Cookies, you may not be able to access functionality on our Website correctly or at all. We never place Personally Identifiable Information in Cookies.
           </p>
 
           <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Log Information</h4>
           
           <p>
-            We automatically receive information from your web browser or mobile device. This information includes the name of the website from which you entered our Website, if any, as well as the name of the website to which you're headed when you leave our website. This information also includes the IP address of your computer/proxy server that you use to access the Internet, your Internet Website provider name, web browser type, type of mobile device, and computer operating system. We may use all of this information to analyze trends among our Users to help improve our Website.
+            We automatically receive information from your web browser or mobile device. This information includes the name of the website from which you entered our Website, if any, as well as the name of the website to which you&apos;re headed when you leave our website. This information also includes the IP address of your computer/proxy server that you use to access the Internet, your Internet Website provider name, web browser type, type of mobile device, and computer operating system. We may use all of this information to analyze trends among our Users to help improve our Website.
           </p>
 
           <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Information Regarding Your Data Protection Rights Under General Data Protection Regulation (GDPR)</h2>
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
           <ul className="list-disc pl-6 space-y-2">
             <li>We need to perform a contract with you, such as when you use our services</li>
             <li>You have given us permission to do so</li>
-            <li>The processing is in our legitimate interests and it's not overridden by your rights</li>
+            <li>The processing is in our legitimate interests and it&apos;s not overridden by your rights</li>
             <li>To comply with the law</li>
           </ul>
 
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
           <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Service Providers</h2>
           
           <p>
-            We employ third party companies and individuals to facilitate our Website ("Service Providers"), to provide our Website on our behalf, to perform Website-related services or to assist us in analyzing how our Website is used. These third-parties have access to your personal information only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.
+            We employ third party companies and individuals to facilitate our Website (&quot;Service Providers&quot;), to provide our Website on our behalf, to perform Website-related services or to assist us in analyzing how our Website is used. These third-parties have access to your personal information only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.
           </p>
 
           <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Analytics</h2>
@@ -125,7 +125,7 @@ export default function PrivacyPage() {
           </p>
 
           <p>
-            For more information on Vercel's privacy practices, please visit:{" "}
+            For more information on Vercel&apos;s privacy practices, please visit:{" "}
             <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">
               https://vercel.com/legal/privacy-policy
             </a>

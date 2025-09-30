@@ -33,8 +33,7 @@ export default function ContactForm() {
       } else {
         setSubmitStatus("error");
       }
-    } catch (error) {
-      console.error("Form submission error:", error);
+    } catch {
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -125,7 +124,7 @@ export default function ContactForm() {
               {/* Status Messages */}
               {submitStatus === "success" && (
                 <div className="p-4 rounded-md bg-green-900/20 border border-green-700 text-green-300">
-                  Thank you for your message! We'll get back to you soon.
+                  Thank you for your message! We&apos;ll get back to you soon.
                 </div>
               )}
               {submitStatus === "error" && (

@@ -22,10 +22,8 @@ export default function DashboardClient() {
         // setData(successfulOnly);
         setData(json);
       })
-      .catch((err) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('❌ Failed to load operations data:', err);
-        }
+      .catch(() => {
+        // Error handled silently - user sees "Loading..." indefinitely
         // In production, you might want to show a user-friendly error message
         // or retry the request
       });
