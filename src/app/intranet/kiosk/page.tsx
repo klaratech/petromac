@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,7 +8,7 @@ import { APP_CONSTANTS, VIDEO_SOURCES } from '@/constants/app';
 
 const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
-export default function HomeClient() {
+function KioskContent() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
   const [typedText, setTypedText] = useState('');
   const [showButton, setShowButton] = useState(false);
@@ -125,5 +125,13 @@ export default function HomeClient() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function HomeClient() {
+  return (
+    <Suspense fallback={null}>
+      <KioskContent />
+    </Suspense>
   );
 }

@@ -7,7 +7,8 @@ A Next.js-based application featuring a public-facing website for Petromac and a
 ### Tech Stack
 
 - **Frontend**: Next.js 15.5+ (App Router), React 19, TypeScript
-- **Styling**: Tailwind CSS 4
+- **Styling**: Tailwind CSS 4 with Petromac brand theme
+- **Typography**: Inter (body), IBM Plex Sans (headings)
 - **3D Visualization**: Three.js, React Three Fiber
 - **Data Visualization**: D3.js
 - **Data Processing**: Python 3.11+ (pandas, openpyxl)
@@ -15,72 +16,9 @@ A Next.js-based application featuring a public-facing website for Petromac and a
 - **Deployment**: Vercel
 - **CI/CD**: GitHub Actions
 
-### Project Structure
-
-```
-petromac-kiosk/
-├── .github/
-│   └── workflows/
-│       └── data-build.yaml          # GitHub Actions: data processing pipeline
-├── src/
-│   ├── app/                         # Next.js App Router
-│   │   ├── page.tsx                 # PUBLIC: Homepage (replica of petromac.co.nz)
-│   │   ├── about/                   # PUBLIC: About page (stub)
-│   │   ├── catalog/                 # PUBLIC: Catalog page (stub)
-│   │   ├── case-studies/            # PUBLIC: Case studies page (stub)
-│   │   ├── contact/                 # PUBLIC: Contact page (stub)
-│   │   ├── intranet/                # PROTECTED: Intranet section
-│   │   │   ├── page.tsx             # Intranet homepage (Athena + Kiosk tiles)
-│   │   │   └── kiosk/               # Internal kiosk application
-│   │   │       ├── page.tsx         # Kiosk entry point
-│   │   │       ├── api/             # API routes
-│   │   │       ├── catalog/         # Product catalog page
-│   │   │       ├── dashboard/       # Operations dashboard
-│   │   │       ├── productlines/    # Product lines page
-│   │   │       └── successstories/  # Success stories page
-│   │   └── layout.tsx               # Root layout
-│   ├── components/
-│   │   ├── public/                  # Public website components
-│   │   │   ├── Hero.tsx
-│   │   │   ├── ProblemSection.tsx
-│   │   │   ├── ProductTeaser.tsx
-│   │   │   └── Footer.tsx
-│   │   └── ...                      # Kiosk components
-│   ├── hooks/                       # Custom React hooks
-│   ├── types/                       # TypeScript type definitions
-│   ├── data/                        # Static data modules
-│   ├── config/                      # App configuration
-│   └── constants/                   # Constants and enums
-├── lib/                             # Shared utilities
-├── middleware.ts                    # Basic Auth for /intranet/* routes
-├── public/                          # Static assets served by Vercel CDN
-│   ├── data/                        # Sanitized JSON data
-│   ├── images/                      # Images and icons
-│   ├── videos/                      # Video files
-│   └── models/                      # 3D models (.glb)
-├── data/                            # Data management
-│   ├── private/                     # GITIGNORED - not publicly accessible
-│   │   ├── raw/                     # Raw Excel files
-│   │   └── intermediate/            # Temp processing outputs
-│   └── schemas/                     # JSON schemas (optional)
-├── scripts/
-│   ├── python/                      # Python data processing scripts
-│   │   ├── generate_json.py         # Main data processor
-│   │   ├── successstories.py        # PDF generation API
-│   │   ├── requirements.txt         # Python dependencies
-│   │   └── README.md                # Python scripts documentation
-│   └── node/                        # Node.js utility scripts
-├── .env.example                     # Environment variables template
-├── .editorconfig                    # Editor configuration
-├── .gitignore                       # Git ignore rules
-├── next.config.ts                   # Next.js configuration
-├── middleware.ts                    # Basic Auth middleware
-├── tailwind.config.mjs              # Tailwind CSS configuration
-├── tsconfig.json                    # TypeScript configuration
-├── package.json                     # Node.js dependencies
-├── README.md                        # This file
-└── TODO.md                          # Project backlog
-```
+> **📁 For detailed repository structure, see [REPO_STRUCTURE.md](REPO_STRUCTURE.md)**  
+> **🎨 For brand theme specifications, see [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md)**  
+> **📝 For success stories management, see [docs/README-successstories.md](docs/README-successstories.md)**
 
 ## 🌐 Application Structure
 
@@ -381,11 +319,22 @@ import { useHook } from '@/hooks/useHook'
 import { util } from '@/lib/util'
 ```
 
+### Brand Theme
+
+The public website uses Petromac's brand identity:
+
+- **Colors**: Brand Blue (#1E4A9A), Slate neutrals
+- **Typography**: IBM Plex Sans (headings), Inter (body)
+- **Buttons**: Primary (brand), Secondary (slate-800)
+- **Defined in**: `tailwind.config.ts`
+
+See `docs/TAILWIND_THEME.md` for complete specifications and usage guidelines.
+
 ### Adding New Pages
 
 #### Public Pages
 ```bash
-# Create new public page
+# Create new public page (will use brand theme)
 src/app/newpage/page.tsx
 ```
 
