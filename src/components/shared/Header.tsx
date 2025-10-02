@@ -20,15 +20,15 @@ export default function Header() {
 
   return (
     <header className="bg-black text-white border-b border-gray-800">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-5 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
           <Image
             src="/images/Petromac-Logo.png.webp"
             alt="Petromac Logo"
-            width={150}
-            height={45}
-            className="h-auto w-36"
+            width={180}
+            height={54}
+            className="h-auto w-44"
             priority
           />
         </Link>
@@ -39,7 +39,7 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm font-medium transition-colors hover:text-blue-400 ${
+              className={`text-base font-medium transition-colors hover:text-blue-400 ${
                 isActive(item.href)
                   ? "text-blue-400 border-b-2 border-blue-400 pb-1"
                   : "text-gray-300"
@@ -53,7 +53,7 @@ export default function Header() {
           <div className="h-6 w-px bg-gray-600" />
           <Link
             href="/intranet"
-            className={`text-sm font-medium transition-colors hover:text-blue-400 ${
+            className={`text-base font-medium transition-colors hover:text-blue-400 ${
               isActive("/intranet")
                 ? "text-blue-400 border-b-2 border-blue-400 pb-1"
                 : "text-gray-300"
