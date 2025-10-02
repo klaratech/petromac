@@ -1,39 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { SuccessStoriesPanel } from '@/components/shared/panels';
-import { PDFBuilderModal } from '@/components/shared/pdf';
 import type { SuccessStoriesFilters } from '../types/successStories.types';
 
 export default function SuccessStoriesPage() {
   const [filters, setFilters] = useState<SuccessStoriesFilters>({});
-  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
 
-  const handleRequestBuildPdf = (currentFilters: SuccessStoriesFilters) => {
-    setFilters(currentFilters);
-    setIsPdfModalOpen(true);
-  };
-
-  const handleBuildPdf = async (_options: Record<string, unknown>) => {
-    // Build the PDF with the current filters
-    const formData = new FormData();
-    formData.append('filters_json', JSON.stringify(filters));
-    formData.append('case_insensitive', 'true');
-
-    const response = await fetch('/api/successstories', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || 'PDF generation failed');
-    }
-
-    // Create a blob URL for the PDF
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    return url;
+  const handleRequestBuildPdf = (_currentFilters: SuccessStoriesFilters) => {
+    // Redirect to flipbook page
+    window.location.href = '/success-stories/flipbook';
   };
 
   return (
@@ -72,13 +49,19 @@ export default function SuccessStoriesPage() {
               View the complete success stories document or use the filters to create a customized PDF.
             </p>
 
-            {/* PDF Embed */}
-            <div className="w-full h-[600px] border border-gray-200 rounded-lg overflow-hidden">
-              <iframe
-                src="/successstories.pdf"
-                className="w-full h-full"
-                title="Success Stories PDF"
-              />
+            {/* View Flipbook Button */}
+            <div className="w-full h-[600px] border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center bg-gray-50">
+              <div className="text-center">
+                <svg className="w-24 h-24 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <Link
+                  href="/success-stories/flipbook"
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                >
+                  Open Interactive Flipbook
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -117,20 +100,6 @@ export default function SuccessStoriesPage() {
         </div>
       </div>
 
-      {/* PDF Builder Modal */}
-      <PDFBuilderModal
-        isOpen={isPdfModalOpen}
-        onClose={() => setIsPdfModalOpen(false)}
-        title="Build Custom Success Stories PDF"
-        onBuild={handleBuildPdf}
-        defaultOptions={filters as Record<string, unknown>}
-      >
-        <div className="mb-4">
-          <p className="text-sm text-gray-600">
-            Your custom PDF will include success stories matching the selected filters.
-          </p>
-        </div>
-      </PDFBuilderModal>
     </div>
   );
 }

@@ -12,7 +12,7 @@ import MapRenderer from './MapRenderer';
 import { processMapData, calculateCountryStats } from '@/lib/maps';
 import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
-import { SuccessStoriesPanel } from '@/components/shared/panels';
+import Link from 'next/link';
 
 interface Props {
   data: JobRecord[];
@@ -26,7 +26,6 @@ const DrilldownMap = memo(function DrilldownMap({ data, initialSystem, onClose }
   const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
   const [tappedCountry, setTappedCountry] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
-  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
 
   // Custom hooks for data loading
   const { worldData, isLoading: isLoadingMap, error: mapError, retry: retryMap } = useMapData();
@@ -209,13 +208,13 @@ const DrilldownMap = memo(function DrilldownMap({ data, initialSystem, onClose }
           <span className="text-green-600 font-bold">{totalDeployments}</span> Total Deployments in{' '}
           <span className="text-blue-600 font-bold">{countryCount}</span> Countries
         </div>
-        <button
-          onClick={() => setIsPdfModalOpen(true)}
-          className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <Link
+          href="/success-stories/flipbook"
+          className="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           aria-label="Success Stories"
         >
           Success Stories
-        </button>
+        </Link>
       </div>
 
       {/* Yearly Stats Chart */}
@@ -290,28 +289,6 @@ const DrilldownMap = memo(function DrilldownMap({ data, initialSystem, onClose }
         gRef={gRef}
       />
 
-      {/* Success Stories Modal */}
-      {isPdfModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">Success Stories</h2>
-              <button
-                onClick={() => setIsPdfModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1"
-                aria-label="Close modal"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="px-6 py-4">
-              <SuccessStoriesPanel dense={false} />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 });

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Link from 'next/link';
 import { SuccessStoriesPanel } from '@/components/shared/panels';
-import { PDFViewerPane } from '@/components/shared/pdf';
 import type { SuccessStoriesFilters } from '../types/successStories.types';
 
 export interface SuccessStoriesWidgetProps {
@@ -22,7 +22,6 @@ export default function SuccessStoriesWidget({
   initialFilters = {},
 }: SuccessStoriesWidgetProps) {
   const [filters, setFilters] = useState<SuccessStoriesFilters>(initialFilters);
-  const [pdfUrl, setPdfUrl] = useState<string>('/successstories.pdf');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showEmailForm, setShowEmailForm] = useState(false);
@@ -30,34 +29,10 @@ export default function SuccessStoriesWidget({
   const [emailSubject, setEmailSubject] = useState('Petromac Success Stories');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
 
-  const handlePreview = useCallback(async () => {
-    try {
-      setIsGenerating(true);
-      setError(null);
-
-      const response = await fetch('/api/pdf/success-stories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filters, mode: 'preview' }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to generate preview');
-      }
-
-      const data = await response.json();
-      if (data.url) {
-        setPdfUrl(data.url);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Preview generation failed');
-      // Keep the base PDF on error
-      setPdfUrl('/successstories.pdf');
-    } finally {
-      setIsGenerating(false);
-    }
-  }, [filters]);
+  const handlePreview = useCallback(() => {
+    // Redirect to flipbook page
+    window.location.href = '/success-stories/flipbook';
+  }, []);
 
   const handleDownload = useCallback(async () => {
     try {
@@ -266,14 +241,23 @@ export default function SuccessStoriesWidget({
           </div>
         </div>
 
-        {/* Right Panel: PDF Viewer */}
-        <div className="flex-1 bg-gray-100 p-6">
-          <PDFViewerPane
-            url={pdfUrl}
-            className="w-full h-full"
-            isLoading={isGenerating}
-            error={null}
-          />
+        {/* Right Panel: Flipbook Link */}
+        <div className="flex-1 bg-gray-100 p-6 flex items-center justify-center">
+          <div className="text-center">
+            <svg className="w-32 h-32 mx-auto text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Interactive Flipbook</h3>
+            <p className="text-gray-600 mb-6 max-w-md">
+              View success stories in an interactive flipbook format with smooth page-turning animations.
+            </p>
+            <Link
+              href="/success-stories/flipbook"
+              className="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors text-lg"
+            >
+              Open Flipbook
+            </Link>
+          </div>
         </div>
       </div>
     </div>

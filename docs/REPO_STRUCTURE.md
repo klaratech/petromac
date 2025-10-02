@@ -1,176 +1,119 @@
 # Repository Structure
 
-This document explains the organization and structure of the **Petromac website** and **internal intranet (including kiosk application)**.
+This document explains the organization and structure of the Petromac website and internal kiosk application.
 
 ## Overview
 
 The repository contains:
-1. **Public Website** – Public-facing marketing site at `/`
-2. **Intranet Portal** – Protected internal portal at `/intranet` (Athena links, Success Stories, Catalog, Kiosk)
-3. **Kiosk Application** – Dashboard & drilldowns at `/intranet/kiosk` (can embed modules/widgets)
+1. **Public Website** - Public-facing marketing site at `/`
+2. **Intranet Portal** - Protected internal portal at `/intranet`
+3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
+4. **Flipbook Module** - Interactive PDF flipbooks for product catalog and success stories
 
-## Directory Structure (high level)
+## Directory Structure
 
 ```
-src/
-  app/                                   # Next.js App Router
-  ├─ page.tsx                            # 🌐 Public homepage
-  ├─ about/  catalog/  case-studies/  contact/
-  ├─ intranet/                           # 🔒 Protected intranet
-  │  ├─ page.tsx                         # Intranet home (tiles)
-  │  ├─ success-stories/                 # Full page (uses shared panel + builder)
-  │  ├─ catalog/                         # Full page (uses shared panel + builder)
-  │  └─ kiosk/                           # Kiosk application
-  │     ├─ page.tsx                      # Kiosk entry
-  │     ├─ dashboard/  productlines/  catalog/  datacheck/  successstories/
-  │     └─ api/
-  ├─ layout.tsx  globals.css  favicon.ico
-
-  components/
-  ├─ public/                             # 🌐 Public site UI
-  ├─ shared/
-  │  ├─ Header.tsx                       # Global header with navigation
-  │  ├─ Footer.tsx                       # Global footer
-  │  ├─ inputs/                          # Reusable inputs
-  │  │  ├─ MultiSelect.tsx
-  │  │  └─ index.ts
-  │  ├─ panels/                          # Reusable panels (embed into pages/kiosk)
-  │  │  ├─ SuccessStoriesPanel.tsx       # Filters panel for Success Stories
-  │  │  ├─ CatalogPanel.tsx
-  │  │  └─ index.ts
-  │  └─ pdf/
-  │     ├─ PDFBuilderModal.tsx           # Shared builder modal
-  │     ├─ PDFViewerPane.tsx             # PDF embed viewer component
-  │     └─ index.ts
-
-  config/                                # App config (e.g., featured systems)
-  constants/                             # Enums, option lists, thresholds
-  data/                                  # Domain datasets (no secrets)
-  hooks/                                 # Custom hooks
-  lib/                                   # Helpers (map utils, validation, pdf helpers)
-  modules/
-  ├─ success-stories/
-  │  ├─ containers/                      # Page + Widget
-  │  │  ├─ SuccessStoriesPage.tsx        # Full page wrapper
-  │  │  └─ SuccessStoriesWidget.tsx      # Modal/widget with filters + viewer
-  │  ├─ hooks/
-  │  │  └─ useSuccessStoriesFilters.ts   # Filter state management (planned)
-  │  ├─ services/
-  │  │  └─ successStories.service.ts     # CSV parsing, filtering, options
-  │  ├─ types/
-  │  │  └─ successStories.types.ts       # TypeScript interfaces
-  │  └─ index.ts
-  └─ catalog/
-     ├─ containers/
-     │  └─ CatalogPage.tsx
-     ├─ hooks/  services/  types/  index.ts
+website/
+├── src/
+│   ├── app/                              # Next.js App Router
+│   │   ├── page.tsx                      # 🌐 Public homepage
+│   │   ├── about/                        # 🌐 About page
+│   │   ├── catalog/                      # 🌐 Product catalog page
+│   │   │   └── flipbook/                 # 🌐 Product catalog flipbook page
+│   │   ├── case-studies/                 # 🌐 Case studies page
+│   │   ├── contact/                      # 🌐 Contact page
+│   │   ├── success-stories/              # 🌐 Success stories page
+│   │   │   └── flipbook/                 # 🌐 Success stories flipbook page
+│   │   ├── layout.tsx                    # Root layout (global)
+│   │   ├── globals.css                   # Global styles
+│   │   └── intranet/                     # 🔒 Protected section
+│   │       ├── page.tsx                  # Intranet homepage (Athena + Kiosk tiles)
+│   │       └── kiosk/                    # 🔒 Kiosk application
+│   │           ├── page.tsx              # Kiosk entry (video intro)
+│   │           ├── api/                  # API routes
+│   │           │   └── successstories/   # Success stories API
+│   │           ├── catalog/              # Product catalog with 3D models
+│   │           ├── dashboard/            # Operations dashboard (map)
+│   │           ├── datacheck/            # Data validation tools
+│   │           ├── productlines/         # Product lines viewer
+│   │           └── successstories/       # Success stories manager
+│   ├── components/
+│   │   ├── public/                       # 🌐 Public website components
+│   │   ├── shared/                       # Shared components
+│   │   │   └── pdf/                      # Shared PDF components (flipbook)
+│   │   └── *.tsx                         # 🔒 Kiosk components (shared)
+│   ├── hooks/                            # Custom React hooks
+│   ├── types/                            # TypeScript type definitions
+│   ├── data/                             # Static data modules
+│   ├── config/                           # App configuration
+│   └── constants/                        # Constants and enums
+├── lib/                                  # Shared utility functions
+├── middleware.ts                         # 🔒 Basic Auth for /intranet/*
+├── public/                               # Static assets (Vercel CDN)
+│   ├── data/                             # Source PDFs (product-catalog.pdf, successstories.pdf)
+│   ├── flipbooks/                        # Generated images for flipbooks
+│   │   ├── productcatalog/
+│   │   └── successstories/
+│   ├── images/                           # Images and icons
+│   ├── videos/                           # Video files
+│   └── models/                           # 3D models (.glb files)
+├── data/                                 # Data management
+│   ├── private/                          # 🚫 GITIGNORED - not public
+│   │   ├── raw/                          # Raw Excel files
+│   │   └── intermediate/                 # Processing outputs
+│   └── schemas/                          # JSON schemas
+├── scripts/
+│   ├── python/                           # Python data processing
+│   │   ├── generate_json.py              # Excel → JSON processor
+│   │   ├── pdf_to_images.py              # PDF → images processor (flipbooks)
+│   │   ├── successstories.py             # PDF generation
+│   │   └── requirements.txt              # Python dependencies
+│   └── node/                             # Node.js utilities
+├── .github/
+│   └── workflows/
+│       ├── data-build.yaml               # Automated data processing
+│       └── pdf-flipbook-build.yml        # Automated flipbook generation
+├── .env.example                          # Environment variables template
+├── package.json                          # Node.js dependencies
+├── tsconfig.json                         # TypeScript configuration
+├── tailwind.config.mjs                   # Tailwind CSS config
+├── next.config.ts                        # Next.js configuration
+├── tailwind.config.ts                    # Tailwind CSS brand theme
+├── README.md                             # Main documentation
+├── TODO.md                               # Project backlog
+├── REPO_STRUCTURE.md                     # This file
+└── docs/
+    ├── README-successstories.md          # Success stories guide
+    ├── TAILWIND_THEME.md                 # Brand theme specifications
+    ├── ARCHITECTURE.md                   # Architecture overview
+    └── DEVELOPMENT.md                    # Development workflow
 ```
 
-Other top-level dirs:
-```
-public/            # CDN assets (images, models, videos, data)
-scripts/python/    # Data pipeline tools (generate_json.py, validate_data.py, successstories.py)
-docs/              # Architecture, theme, prompts, how-tos
-```
+## 📖 Flipbook Module
 
----
+### Overview
+The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. These are generated from PDFs in `public/data/`.
 
-## Route Structure
+### File Locations
+- **Source PDFs**:  
+  - `public/data/product-catalog.pdf`  
+  - `public/data/successstories.pdf`
 
-### Public (unrestricted)
-```
-/                    → Public homepage
-/about               → About page
-/catalog             → Product catalog (displays petromac-catalog.pdf)
-/case-studies        → Track Record / Case studies
-/contact             → Contact/Team page (with contact form)
-/privacy-policy      → Privacy Policy
-/terms-of-use        → Terms of Use
-```
+- **Generated Images**:  
+  - `public/flipbooks/productcatalog/`  
+  - `public/flipbooks/successstories/`
 
-### Global Header Navigation
-The site includes a global header component (`src/components/shared/Header.tsx`) that appears on all pages with:
-- **Petromac Logo** (left) — Always links to homepage
-- **Navigation Links** (right):
-  - About
-  - Catalog
-  - Track Record
-  - Contacts
-  - | (separator)
-  - Intranet
+- **Component**:  
+  - `src/components/shared/pdf/Flipbook.tsx`
 
-### Intranet (🔒 Basic Auth)
-```
-/intranet            → Intranet homepage (tiles)
-  ├── Athena (Prod)  → External link
-  ├── Athena (Test)  → NEXT_PUBLIC_ATHENA_TEST_URL (optional)
-  ├── Kiosk          → /intranet/kiosk
-  ├── Success Stories→ /intranet/success-stories
-  └── Catalog        → /intranet/catalog
+- **Routes**:  
+  - `/catalog/flipbook` → Product Catalog flipbook  
+  - `/success-stories/flipbook` → Success Stories flipbook  
 
-/intranet/kiosk                      → Kiosk entry
-/intranet/kiosk/dashboard            → Ops dashboard
-/intranet/kiosk/productlines         → Product lines
-/intranet/kiosk/catalog              → 3D catalog
-/intranet/kiosk/successstories       → Legacy kiosk success stories
-/intranet/kiosk/successstories-embed → Success Stories widget embed
-/intranet/kiosk/datacheck            → Data tools
-```
+### Update Workflow
+- Replace the PDF in `public/data/` **with the same filename**.  
+- Push changes to `main`.  
+- GitHub Actions workflow `.github/workflows/pdf-flipbook-build.yml` regenerates JPGs and commits them automatically.
 
-### API Routes (Serverless)
-```
-/api/pdf/success-stories             → POST: Generate filtered Success Stories PDF
-/api/email/send                      → POST: Send email with PDF attachment
-```
+> ⚠️ Keep filenames stable. Archive old PDFs in `data/archive/` if versioning is needed.
 
----
-
-## Authentication & SEO
-
-- **Basic Auth**: All `/intranet/*` routes (`INTRANET_USER`/`INTRANET_PASS`), implemented in `middleware.ts`
-- **Robots**: `X-Robots-Tag: noindex, nofollow` on intranet
-- **Data privacy**: `data/private/` is gitignored. Sanitized JSON lives in `public/data/`
-
----
-
-## Shared Modules (Reuse)
-
-- **Panels**: `src/components/shared/panels/*` are embeddable in pages and kiosk
-  - `SuccessStoriesPanel.tsx` — Filters UI with cascading options
-  - `CatalogPanel.tsx` — Catalog filters
-- **Inputs**: `src/components/shared/inputs/*` provides reusable controls (e.g., MultiSelect)
-- **PDF Components**: `src/components/shared/pdf/*`
-  - `PDFBuilderModal.tsx` — Modal for building PDFs
-  - `PDFViewerPane.tsx` — Embedded PDF viewer component
-
-## Success Stories Implementation
-
-The Success Stories module provides a complete solution for filtering, previewing, downloading, and emailing PDF documents:
-
-### Components
-- **SuccessStoriesWidget** — Main widget with filters (left) + PDF viewer (right) + action buttons
-- **SuccessStoriesPanel** — Reusable filters panel with multi-select dropdowns
-- **PDFViewerPane** — Embedded PDF viewer using native `<embed>` tag
-
-### Data Flow
-1. Client loads CSV from `public/successstories-summary.csv` (page mappings)
-2. User applies filters → Service computes matching pages
-3. Actions call serverless endpoints:
-   - **Preview**: Generates filtered PDF, returns inline for viewer
-   - **Download**: Generates filtered PDF, triggers browser download
-   - **Email**: Generates PDF, sends via Nodemailer with SMTP
-
-### Serverless Endpoints
-- `POST /api/pdf/success-stories` — Uses `pdf-lib` to extract filtered pages from base PDF
-- `POST /api/email/send` — Uses Nodemailer to send PDF as email attachment
-
----
-
-## Notes & Conventions
-
-- Use **PascalCase** for React component filenames
-- Keep feature logic inside `src/modules/*`, UI/UX in `src/components/*`
-- Keep raw data and secrets out of the repo (`data/private/*` is gitignored)
-- Use `NEXT_PUBLIC_` prefix for variables needed in client code
-
----

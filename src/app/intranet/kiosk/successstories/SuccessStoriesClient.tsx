@@ -1,10 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { SuccessStoriesPanel } from '@/components/shared/panels';
+import Link from 'next/link';
 
 export default function SuccessStoriesClient() {
-  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -18,12 +16,12 @@ export default function SuccessStoriesClient() {
                 Browse and filter Petromac success stories by region, technology, and application
               </p>
             </div>
-            <button
-              onClick={() => setIsPdfModalOpen(true)}
-              className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            <Link
+              href="/success-stories/flipbook"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
             >
-              Build Custom PDF
-            </button>
+              View Flipbook
+            </Link>
           </div>
         </div>
       </div>
@@ -38,13 +36,23 @@ export default function SuccessStoriesClient() {
             a filtered version based on your specific interests.
           </p>
           
-          {/* PDF Embed */}
-          <div className="w-full h-[800px] border border-gray-200 rounded-lg overflow-hidden">
-            <iframe
-              src="/successstories.pdf"
-              className="w-full h-full"
-              title="Success Stories PDF"
-            />
+          {/* Flipbook Link */}
+          <div className="w-full h-[800px] border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center bg-gray-50">
+            <div className="text-center">
+              <svg className="w-32 h-32 mx-auto text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Interactive Flipbook</h3>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                View success stories in an interactive flipbook format with smooth page-turning animations.
+              </p>
+              <Link
+                href="/success-stories/flipbook"
+                className="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors text-lg"
+              >
+                Open Flipbook
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -82,28 +90,6 @@ export default function SuccessStoriesClient() {
         </div>
       </div>
 
-      {/* PDF Builder Modal */}
-      {isPdfModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">Build Custom PDF</h2>
-              <button
-                onClick={() => setIsPdfModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1"
-                aria-label="Close modal"
-              >
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="px-6 py-4">
-              <SuccessStoriesPanel dense={false} />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

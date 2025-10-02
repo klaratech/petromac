@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { CatalogPanel } from '@/components/shared/panels';
-import { PDFBuilderModal } from '@/components/shared/pdf';
 import type { CatalogFilters } from '../types/catalog.types';
 import CircularGallery from '@/components/kiosk/CircularGallery';
 
@@ -15,17 +15,10 @@ const models = [
 
 export default function CatalogPage() {
   const [filters, setFilters] = useState<CatalogFilters>({});
-  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
 
-  const handleRequestBuildPdf = (currentFilters: CatalogFilters) => {
-    setFilters(currentFilters);
-    setIsPdfModalOpen(true);
-  };
-
-  const handleBuildPdf = async (_options: Record<string, unknown>) => {
-    // Placeholder - actual catalog PDF build logic will be implemented
-    // For now, return a static catalog URL
-    return '/catalog.pdf';
+  const handleRequestBuildPdf = (_currentFilters: CatalogFilters) => {
+    // Redirect to flipbook page
+    window.location.href = '/catalog/flipbook';
   };
 
   return (
@@ -63,20 +56,15 @@ export default function CatalogPage() {
         </div>
       </div>
 
-      {/* PDF Builder Modal */}
-      <PDFBuilderModal
-        isOpen={isPdfModalOpen}
-        onClose={() => setIsPdfModalOpen(false)}
-        title="Build Custom Catalog PDF"
-        onBuild={handleBuildPdf}
-        defaultOptions={filters as Record<string, unknown>}
-      >
-        <div className="mb-4">
-          <p className="text-sm text-gray-600">
-            Your custom catalog will include products matching the selected filters.
-          </p>
-        </div>
-      </PDFBuilderModal>
+      {/* View Catalog Link */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <Link
+          href="/catalog/flipbook"
+          className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        >
+          View Full Catalog
+        </Link>
+      </div>
     </div>
   );
 }
