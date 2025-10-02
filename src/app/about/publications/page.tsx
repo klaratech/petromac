@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function PublicationsPage() {
   const publications = [
     {
@@ -37,10 +35,6 @@ export default function PublicationsPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-16">
-        <Link href="/about" className="text-blue-600 hover:underline mb-8 inline-block">
-          ← Back to About
-        </Link>
-        
         <h1 className="text-4xl font-bold mb-8 text-gray-900">Publications</h1>
         
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
