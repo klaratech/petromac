@@ -150,7 +150,7 @@ export const hqTeam: TeamContact[] = [
     name: "Michael Bird",
     role: "Head of Maintenance",
     location: "New Zealand",
-    imageSrc: "/images/team/michael-bird.png",
+    imageSrc: "/images/team/mike-bird.png",
     emailUser: "mike",
     emailDomain: "petromac.co.nz",
     bio: "With 20+ years of engineering experience, Mike joined Petromac in 2021. From equipment build to maintenance leadership, he now drives reliability, process efficiency, and training as Head of Maintenance.",
