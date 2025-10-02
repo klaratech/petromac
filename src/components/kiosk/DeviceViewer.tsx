@@ -52,7 +52,7 @@ export default function DeviceViewer({
   }, [showVideo, showSuccessMap, showSpecs, handleClose]);
 
   useEffect(() => {
-    fetch('/data/operations_data.json')
+    fetch('/data/operations_data.json', { cache: 'force-cache' })
       .then((res) => res.json())
       .then((json) => {
         setDrilldownData(json);

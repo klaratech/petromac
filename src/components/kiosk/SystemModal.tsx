@@ -40,7 +40,7 @@ export default function SystemModal({
 
   useEffect(() => {
     if (!showDrilldown || jobData) return;
-    fetch('/data/operations_data.json', { cache: 'no-store' })
+    fetch('/data/operations_data.json', { cache: 'force-cache' })
       .then((res) => res.json())
       .then((data: JobRecord[]) => setJobData(data))
       .catch(() => {

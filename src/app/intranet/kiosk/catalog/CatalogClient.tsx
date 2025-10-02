@@ -2,7 +2,12 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import CircularGallery from '@/components/kiosk/CircularGallery';
+import dynamic from 'next/dynamic';
+
+const CircularGallery = dynamic(() => import('@/components/kiosk/CircularGallery'), {
+  ssr: false,
+  loading: () => <div className="min-h-screen flex items-center justify-center bg-black text-white" aria-hidden="true">Loading 3D viewer...</div>,
+});
 
 const models = [
   { name: 'TTB-S75', file: '/models/ttbs75.glb' },

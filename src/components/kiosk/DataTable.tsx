@@ -20,7 +20,7 @@ export default function DataTableFull() {
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    fetch('/data/operations_data.json')
+    fetch('/data/operations_data.json', { cache: 'force-cache' })
       .then((res) => res.json())
       .then((json: Operation[]) => {
         const withMonthNames = json.map((row) => ({

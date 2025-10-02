@@ -1,4 +1,11 @@
-import Flipbook from "@/components/shared/pdf/Flipbook";
+"use client";
+
+import dynamic from "next/dynamic";
+
+const Flipbook = dynamic(() => import("@/components/shared/pdf/Flipbook"), {
+  ssr: false,
+  loading: () => <div className="min-h-[700px] flex items-center justify-center" aria-hidden="true">Loading flipbook...</div>,
+});
 
 export default function CatalogPage() {
   const pages = Array.from({ length: 62 }, (_, i) =>

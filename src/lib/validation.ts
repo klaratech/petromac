@@ -86,7 +86,7 @@ export async function fetchJsonWithValidation<T>(
   maxRetries = 3
 ): Promise<T> {
   try {
-    const response = await fetchWithRetry(url, {}, maxRetries);
+    const response = await fetchWithRetry(url, { cache: 'force-cache' }, maxRetries);
     const jsonData = await response.json();
     return validator(jsonData);
   } catch (error) {
