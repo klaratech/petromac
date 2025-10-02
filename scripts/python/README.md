@@ -14,6 +14,8 @@ This directory contains Python utility scripts for data processing and API servi
 - Python 3.11 or higher
 - pip (Python package manager)
 
+**Note:** These scripts use [Polars](https://pola.rs/) for data processing, which provides faster performance compared to pandas.
+
 ## Local Setup
 
 ### 1. Create Virtual Environment
@@ -37,6 +39,12 @@ venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
+
+**Key Dependencies:**
+- `polars` - High-performance DataFrame library (replaces pandas)
+- `fastapi` - Web framework for successstories API
+- `pypdf` - PDF manipulation
+- `openpyxl` - Excel file reading
 
 ## Scripts
 

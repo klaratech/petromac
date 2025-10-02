@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-import pandas as pd
+import polars as pl
 from difflib import get_close_matches
 from normalization_config import COUNTRY_NORMALIZATION, LOCATION_NORMALIZATION
 
@@ -78,12 +78,12 @@ def generate_master_country_list() -> set:
     return merged
 
 
-def extract_country_and_city_lists(df: pd.DataFrame, master_countries: set):
+def extract_country_and_city_lists(df: pl.DataFrame, master_countries: set):
     print("🔍 Extracting and normalizing countries and locations...")
 
     # --- Countries ---
     unmatched_countries = []
-    raw_countries = df["Country"].dropna().astype(str).str.strip()
+    raw_countries = df["Country"].drop_nulls().cast(pl.Utf8).str.strip_chars().to_list()
 
     normalized_set = set()
     for raw in sorted(set(raw_countries)):
@@ -107,7 +107,7 @@ def extract_country_and_city_lists(df: pd.DataFrame, master_countries: set):
 
     # --- Locations ---
     if "Location" in df.columns:
-        locations = df["Location"].dropna().astype(str).str.strip()
+        locations = df["Location"].drop_nulls().cast(pl.Utf8).str.strip_chars().to_list()
         unmatched_locations = []
 
         city_dict = {}
@@ -134,8 +134,8 @@ def extract_country_and_city_lists(df: pd.DataFrame, master_countries: set):
 
 def main():
     print("📥 Loading Excel sheet...")
-    df = pd.read_excel(EXCEL_PATH, sheet_name="MasterData_Operations", dtype=str)
-    df.columns = df.columns.str.strip()
+    df = pl.read_excel(EXCEL_PATH, sheet_name="MasterData_Operations")
+    df = df.select([pl.col(c).alias(c.strip()) for c in df.columns])
 
     if "Country" not in df.columns:
         raise ValueError("❌ 'Country' column not found in Excel")

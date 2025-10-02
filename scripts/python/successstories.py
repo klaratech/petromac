@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, Dict, List
 from pypdf import PdfReader, PdfWriter
-import pandas as pd
+import polars as pl
 import io
 import json
 import os
@@ -48,7 +48,7 @@ PAGE_COL_CANDIDATES: List[str] = [
     "PageNumber", "pageNo", "PageNo"
 ]
 
-df_index: Optional[pd.DataFrame] = None
+df_index: Optional[pl.DataFrame] = None
 
 
 # ---------------------------
@@ -61,8 +61,10 @@ async def startup_event():
 
     if not os.path.exists(INDEX_CSV_PATH):
         raise FileNotFoundError(f"CSV index not found at {INDEX_CSV_PATH}")
-    df_index = pd.read_csv(INDEX_CSV_PATH, dtype=str, keep_default_na=False)
-    df_index = df_index.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+    df_index = pl.read_csv(INDEX_CSV_PATH, infer_schema_length=0)
+    # Strip whitespace from all string columns
+    string_cols = [col for col in df_index.columns if df_index[col].dtype == pl.Utf8]
+    df_index = df_index.with_columns([pl.col(col).str.strip_chars() for col in string_cols])
     print(f"[startup] Loaded CSV with {len(df_index)} rows from {INDEX_CSV_PATH}")
 
     if not os.path.exists(CATALOG_PDF_PATH):
@@ -73,7 +75,7 @@ async def startup_event():
 # ---------------------------
 # Helpers
 # ---------------------------
-def detect_page_col(df: pd.DataFrame, user_col: Optional[str]) -> str:
+def detect_page_col(df: pl.DataFrame, user_col: Optional[str]) -> str:
     if user_col and user_col in df.columns:
         return user_col
     for c in PAGE_COL_CANDIDATES:
@@ -90,30 +92,30 @@ def normalize_multi(vals):
         out = [v.strip() for v in str(vals).split(",") if v.strip()]
     return out or None
 
-def apply_text_filters(df: pd.DataFrame, filters: dict, case_insensitive: bool) -> pd.DataFrame:
-    work = df.copy()
+def apply_text_filters(df: pl.DataFrame, filters: dict, case_insensitive: bool) -> pl.DataFrame:
+    work = df.clone()
     for key, values in filters.items():
         if not values:
             continue
         col = FILTER_COLUMNS[key]
         if col not in work.columns:
             raise ValueError(f"Index missing required column '{col}'. Available: {list(work.columns)}")
-        series = work[col].astype(str)
+        series = work[col].cast(pl.Utf8)
         checks = values
         if case_insensitive:
-            series = series.str.lower()
+            series = series.str.to_lowercase()
             checks = [v.lower() for v in values]
-        mask = False
+        mask = pl.lit(False)
         for v in checks:
             if v.startswith("~"):   # substring
-                mask = mask | series.str.contains(v[1:], na=False)
+                mask = mask | series.str.contains(v[1:])
             else:                   # exact
                 mask = mask | (series == v)
-        work = work[mask]
+        work = work.filter(mask)
     return work
 
-def coerce_page_numbers(series: pd.Series) -> List[int]:
-    return pd.to_numeric(series, errors="coerce").dropna().astype(int).tolist()
+def coerce_page_numbers(series: pl.Series) -> List[int]:
+    return series.cast(pl.Int64, strict=False).drop_nulls().to_list()
 
 
 # ---------------------------
@@ -128,7 +130,7 @@ async def get_options():
     options = {}
     for key, col in FILTER_COLUMNS.items():
         if col in df_index.columns:
-            vals = df_index[col].astype(str)
+            vals = df_index[col].cast(pl.Utf8).to_list()
             options[key] = sorted({v.strip() for v in vals if v and v.strip() and v.strip().lower() != "nan"})
         else:
             options[key] = []

@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-import pandas as pd
+import polars as pl
 from normalization_config import COUNTRY_NORMALIZATION, REGION_NORMALIZATION
 import topojson as tp
 
@@ -52,12 +52,12 @@ def load_known_cities():
     return known_city_set
 
 
-def validate_countries(df: pd.DataFrame):
+def validate_countries(df: pl.DataFrame):
     print("🔍 Validating countries...")
 
-    df["Country"] = df["Country"].astype(str).str.strip()
+    df = df.with_columns(pl.col("Country").cast(pl.Utf8).str.strip_chars())
     known_normalized = set(COUNTRY_NORMALIZATION.values())
-    all_countries = set(df["Country"].dropna())
+    all_countries = set(df["Country"].drop_nulls())
 
     unknown = sorted(c for c in all_countries if c not in known_normalized)
 
@@ -87,10 +87,10 @@ def validate_d3_matches(all_countries):
         print("✅ All countries match D3 topojson naming")
 
 
-def validate_locations(df: pd.DataFrame, known_cities: set):
+def validate_locations(df: pl.DataFrame, known_cities: set):
     print("🔍 Validating location field against city list...")
-    df["Location"] = df["Location"].astype(str).str.strip()
-    all_locations = set(df["Location"].dropna())
+    df = df.with_columns(pl.col("Location").cast(pl.Utf8).str.strip_chars())
+    all_locations = set(df["Location"].drop_nulls())
     unknown = sorted(loc for loc in all_locations if loc not in known_cities)
 
     if unknown:
@@ -104,7 +104,7 @@ def validate_locations(df: pd.DataFrame, known_cities: set):
 
 
 import os
-import pandas as pd
+import polars as pl
 import json
 
 def generate_city_normalization_template(
@@ -114,15 +114,15 @@ def generate_city_normalization_template(
     location_column: str = "Location"
 ):
     print("📥 Reading Excel file...")
-    df = pd.read_excel(excel_path, sheet_name=sheet_name, dtype=str)
-    df.columns = df.columns.str.strip()
+    df = pl.read_excel(excel_path, sheet_name=sheet_name)
+    df = df.select([pl.col(c).alias(c.strip()) for c in df.columns])
 
     if location_column not in df.columns:
         raise ValueError(f"❌ Column '{location_column}' not found in sheet '{sheet_name}'")
 
     print("🧽 Extracting and cleaning unique city names...")
-    cities = df[location_column].dropna().astype(str).str.strip()
-    unique_cities = sorted(set(cities))
+    cities = df[location_column].drop_nulls().cast(pl.Utf8).str.strip_chars()
+    unique_cities = sorted(set(cities.to_list()))
 
     # Map each raw city name to itself (template for manual correction)
     normalization_dict = {city: city for city in unique_cities}
@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
 def main():
     records = load_operations_data()
-    df = pd.DataFrame(records)
+    df = pl.DataFrame(records)
 
     countries = validate_countries(df)
     validate_d3_matches(countries)
