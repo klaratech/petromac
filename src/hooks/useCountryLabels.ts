@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { EXTERNAL_URLS } from '@/constants/app';
-import { fetchJsonWithValidation, validateCountryLabels } from '@/lib/dataValidation';
+import { fetchJsonWithValidation, validateCountryLabels } from '@/lib/validation';
 
 interface UseCountryLabelsResult {
   countryLabels: Record<string, string>;

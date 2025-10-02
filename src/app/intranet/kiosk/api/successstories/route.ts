@@ -9,7 +9,7 @@ import {
   LAST_UPDATED, 
   SOURCE_VERSION, 
   validateOptions 
-} from "@/constants/successStoriesOptions";
+} from "@modules/success-stories/constants/options";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

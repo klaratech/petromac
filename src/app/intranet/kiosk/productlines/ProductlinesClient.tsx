@@ -4,9 +4,9 @@ import Image from 'next/image';
 import Head from 'next/head';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import SystemModal from '@/components/SystemModal';
-import { featuredSystems } from '@/config/featuredSystems';
-import { systemMedia } from '@/data/deviceSpecs';
+import SystemModal from '@/components/kiosk/SystemModal';
+import { featuredSystems } from '@modules/catalog/config/featuredSystems';
+import { systemMedia } from '@modules/catalog/data/deviceSpecs';
 
 const systemList = featuredSystems
   .filter((system) => systemMedia[system])

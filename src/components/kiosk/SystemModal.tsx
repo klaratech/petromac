@@ -1,10 +1,10 @@
 'use client';
 
-import { deviceSpecs, systemMedia } from '@/data/deviceSpecs';
+import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import CircularGallery from '@/components/CircularGallery';
-import DrilldownMap from '@/components/DrilldownMap';
+import CircularGallery from '@/components/kiosk/CircularGallery';
+import DrilldownMap from '@/components/kiosk/DrilldownMap';
 import type { JobRecord } from '@/types/JobRecord';
 
 interface Props {

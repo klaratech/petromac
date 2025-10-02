@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import DrilldownMap from '@/components/DrilldownMap';
+import DrilldownMap from '@/components/kiosk/DrilldownMap';
 import type { JobRecord } from '@/types/JobRecord';
 
 export default function DashboardClient() {

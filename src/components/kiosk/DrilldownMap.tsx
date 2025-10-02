@@ -9,7 +9,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import YearlyStatsChart from './YearlyStatsChart';
 import CountryChart from './CountryChart';
 import MapRenderer from './MapRenderer';
-import { processMapData, calculateCountryStats } from '@/lib/mapUtils';
+import { processMapData, calculateCountryStats } from '@/lib/maps';
 import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
 import { SuccessStoriesPanel } from '@/components/shared/panels';

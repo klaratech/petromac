@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import ErrorBoundary from "@/components/kiosk/ErrorBoundary";
 import { Analytics } from "@vercel/analytics/next";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { CatalogPanel } from '@/components/shared/panels';
 import { PDFBuilderModal } from '@/components/shared/pdf';
 import type { CatalogFilters } from '../types/catalog.types';
-import CircularGallery from '@/components/CircularGallery';
+import CircularGallery from '@/components/kiosk/CircularGallery';
 
 const models = [
   { name: 'TTB-S75', file: '/models/ttbs75.glb' },

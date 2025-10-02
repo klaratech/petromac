@@ -4,10 +4,10 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import { Suspense, useState, useRef, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
-import { deviceSpecs, systemMedia } from '@/data/deviceSpecs';
+import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import DrilldownMap from '@/components/DrilldownMap';
+import DrilldownMap from '@/components/kiosk/DrilldownMap';
 
 import type { JobRecord } from '@/types/JobRecord';
 
