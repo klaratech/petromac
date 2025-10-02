@@ -17,3 +17,6 @@ PyGithub==2.8.1
 
 # HTTP Requests
 requests==2.32.3
+
+# Geospatial Data
+topojson==1.9

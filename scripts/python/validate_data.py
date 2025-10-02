@@ -163,7 +163,7 @@ def main():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     EXCEL_PATH = os.path.join(BASE_DIR, "jobhistory.xlsx")
     OUTPUT_PATH = os.path.join(BASE_DIR, "known_cities.json")
-    generate_known_cities_json(EXCEL_PATH, OUTPUT_PATH)
+    generate_city_normalization_template(EXCEL_PATH, OUTPUT_PATH)
 
 
 if __name__ == "__main__":
