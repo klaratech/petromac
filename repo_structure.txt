@@ -6,10 +6,8 @@
 ├── docs
 │   ├── ARCHITECTURE.md
 │   ├── BrandBook.pdf
-│   ├── CONTACT_NODEMAILER_FIX.md
 │   ├── DEVELOPMENT.md
-│   ├── PWA_BACKGROUND_SYNC.md
-│   ├── PWA_BACKGROUND_SYNC_COMPLETED.md
+│   ├── NOTES.md
 │   ├── Petromac Trade Show Kiosk Storyboard.groovy.md
 │   ├── README.md
 │   ├── REPO_STRUCTURE.md
@@ -20,8 +18,9 @@
 │   │   ├── Product_and_Device_Line_Growth.csv
 │   │   ├── country_labels.json
 │   │   ├── operations_data.json
-│   │   ├── petromac-catalog.pdf
-│   │   └── region_coords.json
+│   │   ├── product-catalog.pdf
+│   │   ├── region_coords.json
+│   │   └── successstories.pdf
 │   ├── images
 │   │   ├── Petromac-Logo.png.webp
 │   │   ├── athena_logo.png
@@ -57,7 +56,6 @@
 │   │   └── pf.mp4
 │   ├── manifest.json
 │   ├── successstories-summary.csv
-│   ├── successstories.pdf
 │   └── sw.js
 ├── scripts
 │   ├── __pycache__
@@ -95,42 +93,24 @@
 │   │   ├── favicon.ico
 │   │   ├── globals.css
 │   │   ├── layout.tsx
-│   │   ├── notes.txt
 │   │   └── page.tsx
 │   ├── components
+│   │   ├── kiosk
 │   │   ├── public
-│   │   ├── shared
-│   │   ├── CarouselView.tsx
-│   │   ├── CircularGallery.tsx
-│   │   ├── CountryChart.tsx
-│   │   ├── DataTable.tsx
-│   │   ├── DeviceViewer.tsx
-│   │   ├── DrilldownMap.tsx
-│   │   ├── ErrorBoundary.tsx
-│   │   ├── IdleRedirect.tsx
-│   │   ├── LoadingSpinner.tsx
-│   │   ├── MapRenderer.tsx
-│   │   ├── SplashLoop.tsx
-│   │   ├── SystemModal.tsx
-│   │   └── YearlyStatsChart.tsx
-│   ├── config
-│   │   └── featuredSystems.ts
+│   │   └── shared
 │   ├── constants
 │   │   ├── app.ts
-│   │   ├── mapConstants.ts
-│   │   └── successStoriesOptions.ts
+│   │   └── mapConstants.ts
 │   ├── data
-│   │   ├── deviceSpecs.ts
-│   │   ├── modelMap.ts
-│   │   ├── region_data.json
-│   │   └── successStories.ts
+│   │   └── region_data.json
 │   ├── hooks
 │   │   ├── useCountryLabels.ts
 │   │   ├── useDebounce.ts
 │   │   └── useMapData.ts
 │   ├── lib
-│   │   ├── dataValidation.ts
-│   │   └── mapUtils.ts
+│   │   ├── index.ts
+│   │   ├── maps.ts
+│   │   └── validation.ts
 │   ├── modules
 │   │   ├── catalog
 │   │   └── success-stories
@@ -140,9 +120,6 @@
 │       ├── next-pwa-cache.d.ts
 │       ├── next-pwa.d.ts
 │       └── pdf.ts
-├── CONTACT_NODEMAILER_FIX.md
-├── PWA_BACKGROUND_SYNC.md
-├── PWA_BACKGROUND_SYNC_COMPLETED.md
 ├── VERCEL_EMAIL_SETUP.md
 ├── build.log
 ├── eslint-report.txt
@@ -159,4 +136,4 @@
 ├── tsconfig.json
 └── tsconfig.tsbuildinfo
 
-39 directories, 121 files
+39 directories, 98 files
