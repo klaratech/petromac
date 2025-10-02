@@ -50,7 +50,7 @@ export default function Header() {
           ))}
           
           {/* Visually separated Intranet link */}
-          <div className="h-6 w-px bg-gray-600 mx-2" />
+          <div className="h-6 w-px bg-gray-600" />
           <Link
             href="/intranet"
             className={`text-sm font-medium transition-colors hover:text-blue-400 ${
@@ -67,7 +67,7 @@ export default function Header() {
             href="https://www.linkedin.com/company/petromac-ltd/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-300 hover:text-blue-400 transition-colors ml-2"
+            className="text-gray-300 hover:text-blue-400 transition-colors"
             aria-label="Visit Petromac on LinkedIn"
           >
             <svg
