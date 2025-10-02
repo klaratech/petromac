@@ -20,6 +20,7 @@ website/
 │   │   ├── about/                        # 🌐 About page
 │   │   ├── catalog/                      # 🌐 Product catalog page
 │   │   │   └── flipbook/                 # 🌐 Product catalog flipbook page
+│   │   ├── track-record/                 # 🌐 Track record page (global deployment map)
 │   │   ├── case-studies/                 # 🌐 Case studies page
 │   │   ├── contact/                      # 🌐 Contact page
 │   │   ├── success-stories/              # 🌐 Success stories page
@@ -41,13 +42,28 @@ website/
 │   │   ├── public/                       # 🌐 Public website components
 │   │   ├── shared/                       # Shared components
 │   │   │   └── pdf/                      # Shared PDF components (flipbook)
-│   │   └── *.tsx                         # 🔒 Kiosk components (shared)
+│   │   ├── geo/                          # 🗺️ Geospatial map components (shared)
+│   │   │   ├── DrilldownMapCore.tsx      # Core map logic (reusable)
+│   │   │   ├── DrilldownMapPublic.tsx    # Public wrapper for /track-record
+│   │   │   └── DrilldownMapKiosk.tsx     # Kiosk wrapper for dashboard
+│   │   └── kiosk/                        # 🔒 Kiosk-specific components
+│   ├── components/
+│   │   ├── public/                       # 🌐 Public website components
+│   │   ├── shared/                       # Shared components
+│   │   │   └── pdf/                      # Shared PDF components (flipbook)
+│   │   ├── geo/                          # �️ Geospatial map components (shared)
+│   │   │   ├── DrilldownMapCore.tsx      # Core map logic (reusable)
+│   │   │   ├── DrilldownMapPublic.tsx    # Public wrapper for /track-record
+│   │   │   └── DrilldownMapKiosk.tsx     # Kiosk wrapper for dashboard
+│   │   └── kiosk/                        # 🔒 Kiosk-specific components
 │   ├── hooks/                            # Custom React hooks
+│   ├── lib/                              # Utility functions
+│   │   └── map/                          # Map-specific utilities
+│   │       └── data.ts                   # Data fetchers for /data/*.json
 │   ├── types/                            # TypeScript type definitions
 │   ├── data/                             # Static data modules
 │   ├── config/                           # App configuration
 │   └── constants/                        # Constants and enums
-├── lib/                                  # Shared utility functions
 ├── middleware.ts                         # 🔒 Basic Auth for /intranet/*
 ├── public/                               # Static assets (Vercel CDN)
 │   ├── data/                             # Source PDFs (product-catalog.pdf, successstories.pdf)

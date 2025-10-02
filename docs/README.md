@@ -29,6 +29,7 @@ A Next.js-based application featuring:
 - **Homepage** (`/`)
 - **About** (`/about`)
 - **Catalog** (`/catalog`) + `/catalog/flipbook` (interactive flipbook)
+- **Track Record** (`/track-record`) - Interactive global deployment map (shared DrilldownMapCore)
 - **Case Studies** (`/case-studies`)
 - **Success Stories** (`/success-stories`) + `/success-stories/flipbook` (interactive flipbook)
 - **Contact** (`/contact`)

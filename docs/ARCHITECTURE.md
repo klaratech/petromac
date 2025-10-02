@@ -7,7 +7,8 @@ The Petromac platform combines a **public-facing website**, a **protected intran
 ### Public Website
 - Built with **Next.js 15.5+** (App Router) and **React 19**
 - Styled with **Tailwind CSS 4** using Petromac brand theme
-- Pages: Home, About, Catalog, Case Studies, Success Stories, Contact
+- Pages: Home, About, Catalog, Track Record, Case Studies, Success Stories, Contact
+- **Track Record** (`/track-record`) - Interactive global deployment map using shared DrilldownMapCore
 - Flipbooks for **Catalog** and **Success Stories** provide interactive PDF viewing
 
 ### Intranet Portal
@@ -18,9 +19,17 @@ The Petromac platform combines a **public-facing website**, a **protected intran
   - Catalog (flipbook)
   - Success Stories (flipbook + filters, reusing shared components)
 - Kiosk app includes:
-  - Operations dashboard with map visualization (D3.js)
+  - Operations dashboard with map visualization (shared DrilldownMapCore)
   - Product lines explorer
   - Data validation tools
+
+### Shared Map Components
+- **DrilldownMapCore** (`src/components/geo/DrilldownMapCore.tsx`) - Reusable map logic for both public and kiosk
+- **DrilldownMapPublic** (`src/components/geo/DrilldownMapPublic.tsx`) - Public wrapper for `/track-record`
+- **DrilldownMapKiosk** (`src/components/geo/DrilldownMapKiosk.tsx`) - Kiosk wrapper for dashboard
+- **Map Data Utilities** (`src/lib/map/data.ts`) - Typed fetchers for `/data/*.json` files
+  - `fetchOperationsData()` - Fetches operations data
+  - Handles data loading with proper error handling and caching hints
 
 ### Flipbook Module
 - Replaces the old PDF viewer/builder modals

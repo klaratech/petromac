@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import DrilldownMap from '@/components/kiosk/DrilldownMap';
+import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 
 import type { JobRecord } from '@/types/JobRecord';
 
@@ -182,18 +182,18 @@ export default function DeviceViewer({
           {showSuccessMap && (
             <div className="absolute inset-0 z-50 bg-white">
               {drilldownData ? (
-                <DrilldownMap data={drilldownData} initialSystem={system} />
+                <DrilldownMapCore
+                  data={drilldownData}
+                  initialSystem={system}
+                  showCloseButton={true}
+                  onClose={() => setShowSuccessMap(false)}
+                  showSuccessStoriesLink={true}
+                />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <p className="text-lg text-gray-600">Loading map data...</p>
                 </div>
               )}
-              <button
-                onClick={() => setShowSuccessMap(false)}
-                className="absolute top-4 right-4 z-50 px-4 py-2 text-white text-sm font-semibold bg-black/60 border border-white/30 rounded-lg shadow-lg backdrop-blur hover:bg-black/80"
-              >
-                ✕ Close
-              </button>
             </div>
           )}
 

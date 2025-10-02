@@ -4,7 +4,7 @@ import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CircularGallery from '@/components/kiosk/CircularGallery';
-import DrilldownMap from '@/components/kiosk/DrilldownMap';
+import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import type { JobRecord } from '@/types/JobRecord';
 
 interface Props {
@@ -71,10 +71,12 @@ export default function SystemModal({
       >
         <div className="relative w-full h-full bg-black">
           {showDrilldown && jobData ? (
-            <DrilldownMap
+            <DrilldownMapCore
               data={jobData}
               initialSystem={system}
+              showCloseButton={true}
               onClose={() => setShowDrilldown(false)}
+              showSuccessStoriesLink={true}
             />
           ) : showGallery ? (
             <CircularGallery

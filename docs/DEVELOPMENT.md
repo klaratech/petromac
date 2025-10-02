@@ -18,6 +18,7 @@ npm run dev
 ### Running Locally
 - Public site: http://localhost:3000
 - Intranet: http://localhost:3000/intranet (requires Basic Auth)
+- Track Record (map): http://localhost:3000/track-record
 
 ### Flipbooks
 - PDFs in `public/data/` (`product-catalog.pdf`, `successstories.pdf`)
@@ -36,6 +37,11 @@ npm run dev
 - `src/app/` → Next.js App Router pages
 - `src/components/public/` → Public site components
 - `src/components/shared/pdf/Flipbook.tsx` → Shared flipbook component
+- `src/components/geo/` → Shared map components
+  - `DrilldownMapCore.tsx` → Core map logic (reusable)
+  - `DrilldownMapPublic.tsx` → Public wrapper for `/track-record`
+  - `DrilldownMapKiosk.tsx` → Kiosk wrapper for dashboard
+- `src/lib/map/data.ts` → Map data fetchers for `/data/*.json`
 - `src/app/intranet/` → Intranet pages
 - `src/app/intranet/kiosk/` → Kiosk app
 
@@ -130,7 +136,8 @@ npm run dev
 ```
 
 Check these pages:
-- Dashboard (map data): http://localhost:3000/intranet/kiosk/dashboard
+- Public Track Record (map): http://localhost:3000/track-record
+- Kiosk Dashboard (map): http://localhost:3000/intranet/kiosk/dashboard
 - Product lines: http://localhost:3000/intranet/kiosk/productlines
 - Data validation: http://localhost:3000/intranet/kiosk/datacheck
 
