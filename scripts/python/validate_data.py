@@ -6,7 +6,8 @@ from normalization_config import COUNTRY_NORMALIZATION, REGION_NORMALIZATION
 import topojson as tp
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, "operations_data.json")
+REPO_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
+DATA_PATH = os.path.join(REPO_ROOT, "public", "data", "operations_data.json")
 
 UNKNOWN_COUNTRIES_PATH = os.path.join(BASE_DIR, "unknown_countries.txt")
 D3_MISMATCH_PATH = os.path.join(BASE_DIR, "d3_mismatched_countries.txt")
@@ -170,4 +171,3 @@ if __name__ == "__main__":
 
 # Sample code to extract D3-compatible country names from TopoJSON
   # Or handle as raw TopoJSON
-

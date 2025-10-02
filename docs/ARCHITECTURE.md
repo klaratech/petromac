@@ -35,7 +35,9 @@ The Petromac platform combines a **public-facing website**, a **protected intran
 
 ### Data Pipeline
 - Python scripts process Excel data into JSON
-- Stored in `public/data/operations_data.json` for visualization in kiosk
+- Private sources stored in `data/private/` (gitignored, never deployed)
+- Published data artifacts stored in `public/data/` and served via Vercel CDN
+- Operations data, map data, and other static JSON files accessible at `/data/*` URLs
 
 ### Deployment
 - Hosted on **Vercel**
@@ -43,3 +45,51 @@ The Petromac platform combines a **public-facing website**, a **protected intran
 - Flipbooks generated automatically by **GitHub Actions** workflow `.github/workflows/pdf-flipbook-build.yml`
 - Operations data pipeline also automated via GitHub Actions
 
+## Data Architecture
+
+### Three-Tier Data Organization
+
+#### Private Sources (`data/private/`)
+- **Never deployed or committed** (fully gitignored)
+- Contains raw Excel files (`jobhistory.xlsx`) and processing intermediates
+- Used by Python scripts during data generation
+- Diagnostics and temporary files stored in `data/private/intermediate/`
+
+#### Published Artifacts (`public/data/`)
+- **Deployed to Vercel CDN** and publicly accessible
+- Contains all data files consumed by the application
+- Files accessible at `/data/*` URLs (e.g., `/data/operations_data.json`)
+- Includes:
+  - Large JSON datasets (operations_data.json ~3MB)
+  - Map data (country_labels.json, region_coords.json, region_data.json)
+  - CSV files (Product_and_Device_Line_Growth.csv)
+  - Source PDFs for flipbooks (product-catalog.pdf, successstories.pdf)
+
+#### TypeScript Modules (`src/data/`)
+- **Small, typed data modules** imported directly by components
+- Contains TypeScript files with interfaces and typed data
+- Example: `team.ts` with team member information
+- **Do not store large JSON files here** - use `public/data/` instead
+
+### Data Access Patterns
+
+#### For Published Data (public/data/)
+Components should fetch data at runtime rather than importing:
+
+```tsx
+// Client component
+const response = await fetch("/data/operations_data.json");
+const data = await response.json();
+
+// Server component with caching
+const res = await fetch("https://domain.com/data/operations_data.json", {
+  next: { revalidate: 3600 }
+});
+```
+
+#### For TypeScript Modules (src/data/)
+Import directly for small, typed datasets:
+
+```tsx
+import { regionalManagers, hqTeam } from "@/data/team";
+```

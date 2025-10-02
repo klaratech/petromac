@@ -57,11 +57,10 @@ website/
 │   ├── images/                           # Images and icons
 │   ├── videos/                           # Video files
 │   └── models/                           # 3D models (.glb files)
-├── data/                                 # Data management
-│   ├── private/                          # 🚫 GITIGNORED - not public
-│   │   ├── raw/                          # Raw Excel files
-│   │   └── intermediate/                 # Processing outputs
-│   └── schemas/                          # JSON schemas
+├── data/                                 # Data management (private sources only)
+│   └── private/                          # 🚫 GITIGNORED - not deployed
+│       ├── raw/                          # Raw Excel uploads (e.g., jobhistory.xlsx)
+│       └── intermediate/                 # Python processing intermediates & diagnostics
 ├── scripts/
 │   ├── python/                           # Python data processing
 │   │   ├── generate_json.py              # Excel → JSON processor
@@ -117,3 +116,79 @@ The repository supports interactive flipbooks for **Product Catalog** and **Succ
 
 > ⚠️ Keep filenames stable. Archive old PDFs in `data/archive/` if versioning is needed.
 
+## 📁 Data Organization
+
+### Three-Tier Data Structure
+
+The repository uses a three-tier data organization to separate private sources, published artifacts, and TypeScript modules:
+
+#### 1. `data/` - Private Sources & Intermediates (NEVER DEPLOYED)
+- **Purpose**: Private data sources and processing intermediates
+- **Git Status**: Entire directory is gitignored (except .gitkeep files)
+- **Contents**:
+  - `data/private/raw/` - Raw Excel uploads (e.g., `jobhistory.xlsx`)
+  - `data/private/intermediate/` - Python processing outputs, diagnostics, and temporary files
+
+#### 2. `public/data/` - Published Artifacts (VERCEL CDN)
+- **Purpose**: Static data files served to clients
+- **Git Status**: Tracked and deployed
+- **URL Access**: Files are accessible at `/data/*` (e.g., `/data/operations_data.json`)
+- **Contents**:
+  - `operations_data.json` - Processed operations data (3MB+)
+  - `country_labels.json` - Country name mappings for map
+  - `region_coords.json` - Region coordinate data for map
+  - `region_data.json` - Additional region metadata
+  - `Product_and_Device_Line_Growth.csv` - Product growth metrics
+  - `product-catalog.pdf` - Source PDF for product catalog flipbook
+  - `successstories.pdf` - Source PDF for success stories flipbook
+
+#### 3. `src/data/` - TypeScript Data Modules
+- **Purpose**: Small, typed data consumed directly by UI components
+- **Git Status**: Tracked
+- **Usage**: Direct TypeScript imports (not fetched)
+- **Contents**:
+  - `team.ts` - Team member data with TypeScript interfaces
+  - Other small, typed datasets
+
+### Fetching Data in Components
+
+For data in `public/data/`, use fetch calls instead of imports:
+
+**Client Component Example:**
+```tsx
+"use client";
+import { useEffect, useState } from "react";
+
+export function useOperationsData() {
+  const [data, setData] = useState(null);
+  
+  useEffect(() => {
+    fetch("/data/operations_data.json")
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => setData(d))
+      .catch(e => console.error("Failed to load data:", e));
+  }, []);
+  
+  return data;
+}
+```
+
+**Server Component Example:**
+```tsx
+export default async function ServerPage() {
+  const res = await fetch("https://yourdomain.com/data/operations_data.json", {
+    next: { revalidate: 3600 } // Cache for 1 hour
+  });
+  const data = await res.json();
+  
+  return <div>{/* use data */}</div>;
+}
+```
+
+### Python Pipeline Output Targets
+
+All Python scripts in `scripts/python/` follow these output conventions:
+- **Final published JSON** → `public/data/operations_data.json`
+- **Flipbook images** → `public/flipbooks/{productcatalog|successstories}/page-XXX.jpg`
+- **Diagnostics & intermediates** → `data/private/intermediate/`
+- **Never output to** `scripts/python/` directory (avoid duplication)
