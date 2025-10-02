@@ -53,11 +53,11 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
       if (!bookRef.current) return;
 
       try {
-        // Initialize PageFlip
+        // Initialize PageFlip with two-page spread like an open book
         flipRef.current = new PageFlip(bookRef.current, {
           width,
           height,
-          size: "stretch",
+          size: "fixed",
           minWidth: 315,
           maxWidth: 2000,
           minHeight: 400,
@@ -67,9 +67,9 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
           mobileScrollSupport: true,
           drawShadow: true,
           flippingTime: 1000,
-          usePortrait: true,
+          usePortrait: false,
           startZIndex: 0,
-          autoSize: true,
+          autoSize: false,
         });
 
         flipRef.current.loadFromHTML(pageElements);
