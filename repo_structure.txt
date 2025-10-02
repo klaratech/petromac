@@ -1,0 +1,162 @@
+.
+├── data
+│   └── private
+│       ├── intermediate
+│       └── raw
+├── docs
+│   ├── ARCHITECTURE.md
+│   ├── BrandBook.pdf
+│   ├── CONTACT_NODEMAILER_FIX.md
+│   ├── DEVELOPMENT.md
+│   ├── PWA_BACKGROUND_SYNC.md
+│   ├── PWA_BACKGROUND_SYNC_COMPLETED.md
+│   ├── Petromac Trade Show Kiosk Storyboard.groovy.md
+│   ├── README.md
+│   ├── REPO_STRUCTURE.md
+│   ├── TAILWIND_THEME.md
+│   └── VERCEL_EMAIL_SETUP.md
+├── public
+│   ├── data
+│   │   ├── Product_and_Device_Line_Growth.csv
+│   │   ├── country_labels.json
+│   │   ├── operations_data.json
+│   │   ├── petromac-catalog.pdf
+│   │   └── region_coords.json
+│   ├── images
+│   │   ├── Petromac-Logo.png.webp
+│   │   ├── athena_logo.png
+│   │   ├── athena_logo_beta.png
+│   │   ├── catalog.png
+│   │   ├── clients.jpg
+│   │   ├── conveyance.jpg
+│   │   ├── focus.png
+│   │   ├── ledges.jpg
+│   │   ├── orientation.jpg
+│   │   ├── pathfinder.png
+│   │   ├── sampling.jpg
+│   │   ├── sticking.jpg
+│   │   ├── thor.png
+│   │   ├── trackrecord.png
+│   │   ├── tv-bg.png
+│   │   └── wirelineexpress.png
+│   ├── models
+│   │   ├── Step Files
+│   │   ├── cp12.glb
+│   │   ├── cp8.glb
+│   │   ├── helix.glb
+│   │   ├── pathfinderht.glb
+│   │   ├── thor.glb
+│   │   └── ttbs75.glb
+│   ├── videos
+│   │   ├── WirelineExpress.mp4
+│   │   ├── cp12-placeholder.mp4
+│   │   ├── cp8-placeholder.mp4
+│   │   ├── dice.mp4
+│   │   ├── helix.mp4
+│   │   ├── intro-loop2.mp4
+│   │   └── pf.mp4
+│   ├── manifest.json
+│   ├── successstories-summary.csv
+│   ├── successstories.pdf
+│   └── sw.js
+├── scripts
+│   ├── __pycache__
+│   │   ├── normalization_config.cpython-313.pyc
+│   │   └── successstories.cpython-313.pyc
+│   ├── node
+│   │   └── generate-options.js
+│   ├── python
+│   │   ├── README.md
+│   │   ├── fuzzy_matched_countries.txt
+│   │   ├── generate_json.py
+│   │   ├── generate_normalization_assets.py
+│   │   ├── known_cities.json
+│   │   ├── master_country_list.json
+│   │   ├── normalization_config.py
+│   │   ├── operations_data.json
+│   │   ├── requirements.txt
+│   │   ├── successstories.py
+│   │   ├── unknown_locations.txt
+│   │   ├── unmatched_countries.txt
+│   │   ├── unmatched_locations.txt
+│   │   └── validate_data.py
+│   └── generate_json.log
+├── src
+│   ├── app
+│   │   ├── about
+│   │   ├── api
+│   │   ├── case-studies
+│   │   ├── catalog
+│   │   ├── contact
+│   │   ├── intranet
+│   │   ├── privacy
+│   │   ├── team
+│   │   ├── terms
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── notes.txt
+│   │   └── page.tsx
+│   ├── components
+│   │   ├── public
+│   │   ├── shared
+│   │   ├── CarouselView.tsx
+│   │   ├── CircularGallery.tsx
+│   │   ├── CountryChart.tsx
+│   │   ├── DataTable.tsx
+│   │   ├── DeviceViewer.tsx
+│   │   ├── DrilldownMap.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── IdleRedirect.tsx
+│   │   ├── LoadingSpinner.tsx
+│   │   ├── MapRenderer.tsx
+│   │   ├── SplashLoop.tsx
+│   │   ├── SystemModal.tsx
+│   │   └── YearlyStatsChart.tsx
+│   ├── config
+│   │   └── featuredSystems.ts
+│   ├── constants
+│   │   ├── app.ts
+│   │   ├── mapConstants.ts
+│   │   └── successStoriesOptions.ts
+│   ├── data
+│   │   ├── deviceSpecs.ts
+│   │   ├── modelMap.ts
+│   │   ├── region_data.json
+│   │   └── successStories.ts
+│   ├── hooks
+│   │   ├── useCountryLabels.ts
+│   │   ├── useDebounce.ts
+│   │   └── useMapData.ts
+│   ├── lib
+│   │   ├── dataValidation.ts
+│   │   └── mapUtils.ts
+│   ├── modules
+│   │   ├── catalog
+│   │   └── success-stories
+│   └── types
+│       ├── JobRecord.ts
+│       ├── MapTypes.ts
+│       ├── next-pwa-cache.d.ts
+│       ├── next-pwa.d.ts
+│       └── pdf.ts
+├── CONTACT_NODEMAILER_FIX.md
+├── PWA_BACKGROUND_SYNC.md
+├── PWA_BACKGROUND_SYNC_COMPLETED.md
+├── VERCEL_EMAIL_SETUP.md
+├── build.log
+├── eslint-report.txt
+├── eslint.config.mjs
+├── middleware.ts
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── repo_structure.txt
+├── service-worker.js
+├── tailwind.config.ts
+├── tsconfig.json
+└── tsconfig.tsbuildinfo
+
+39 directories, 121 files

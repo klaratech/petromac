@@ -1,5 +1,6 @@
 "use server";
 
+import nodemailer from "nodemailer";
 import { z } from "zod";
 
 const contactSchema = z.object({
@@ -8,6 +9,7 @@ const contactSchema = z.object({
   message: z.string().min(10, "Message must be at least 10 characters"),
   company: z.string().optional(), // honeypot field
   _timing: z.string().default("0"), // timing check
+  token: z.string().optional(), // hCaptcha token if used
 });
 
 export async function submitContact(formData: FormData) {
@@ -19,6 +21,7 @@ export async function submitContact(formData: FormData) {
       message: formData.get("message"),
       company: formData.get("company")?.toString() || "",
       _timing: formData.get("_timing")?.toString() || "0",
+      token: formData.get("token")?.toString(),
     });
 
     // Honeypot check - if filled, pretend success but don't send
@@ -32,21 +35,33 @@ export async function submitContact(formData: FormData) {
       return { ok: true }; // Pretend success
     }
 
-    // Check if Resend is configured
-    const resendApiKey = process.env.RESEND_API_KEY;
+    // TODO: verify hCaptcha on server if using it
+
+    // Check if SMTP is configured
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = process.env.SMTP_PORT;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
     const contactToEmail = process.env.CONTACT_TO_EMAIL;
     const contactFromEmail = process.env.CONTACT_FROM_EMAIL;
 
-    if (!resendApiKey || !contactToEmail || !contactFromEmail) {
+    if (!smtpHost || !smtpUser || !smtpPass || !contactToEmail || !contactFromEmail) {
       return { ok: true }; // Return success even if not configured
     }
 
-    // Send email via Resend
+    // Send email via Nodemailer
     try {
-      const { Resend } = await import("resend");
-      const resend = new Resend(resendApiKey);
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: parseInt(smtpPort || "465", 10),
+        secure: true,
+        auth: {
+          user: smtpUser,
+          pass: smtpPass,
+        },
+      });
 
-      await resend.emails.send({
+      const info = await transporter.sendMail({
         from: contactFromEmail,
         to: contactToEmail,
         replyTo: data.email,
@@ -61,7 +76,7 @@ export async function submitContact(formData: FormData) {
         `,
       });
 
-      return { ok: true };
+      return { ok: true, id: info.messageId };
     } catch {
       // Still return success to user
       return { ok: true };

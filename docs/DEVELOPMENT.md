@@ -149,6 +149,92 @@ Troubleshooting:
 
 ---
 
+## Contact Form
+
+The contact form (`/contact`) uses Nodemailer with SMTP for email delivery.
+
+### Setup
+
+Configure in `.env.local`:
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password-here
+CONTACT_FROM_EMAIL=your-email@gmail.com
+CONTACT_TO_EMAIL=recipient@example.com
+```
+
+### Features
+
+- Input validation with Zod
+- Anti-spam protection (honeypot + timing checks)
+- Offline support via Background Sync
+- Server action (`submitContact`) handles email sending
+
+### Testing
+
+1. Fill out contact form at `/contact`
+2. Check email inbox at `CONTACT_TO_EMAIL`
+3. For offline testing, see PWA Background Sync section below
+
+---
+
+## PWA Background Sync
+
+The application uses Workbox Background Sync to queue email and PDF requests when offline.
+
+### How It Works
+
+When offline or network fails:
+1. POST requests to `/api/email/send` and `/api/pdf/success-stories` are intercepted
+2. Service worker queues the request in IndexedDB
+3. When connectivity returns, requests are automatically replayed in order
+4. Queued requests expire after 24 hours
+
+### Testing Offline Queue
+
+1. Build production version:
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+2. Open browser DevTools:
+   - **Application** tab → **Service Workers** → Confirm "activated and running"
+   - **Network** tab → Set to **Offline** mode
+
+3. Test queueing:
+   - Try sending email from contact form → Should show "queued" message
+   - Try emailing PDF from Success Stories → Should queue request
+   - Try downloading PDF → Should queue request
+
+4. Check IndexedDB:
+   - **Application** tab → **IndexedDB** → Look for `workbox-background-sync`
+   - Should see `queue-email` and `queue-pdf` stores with pending requests
+
+5. Test replay:
+   - **Network** tab → Set to **Online**
+   - Watch **Console** for sync events
+   - Check IndexedDB → Queues should drain to zero
+   - Verify emails/PDFs were sent/generated
+
+### Important Notes
+
+- Background Sync only works in **production builds** (`NODE_ENV=production`)
+- Service worker is disabled in development mode
+- To disable PWA entirely, set `PWA=off` environment variable
+- Only non-sensitive payloads should be queued (no credentials/PII)
+
+### Troubleshooting
+
+- **SW not activating?** Hard refresh (Cmd+Shift+R / Ctrl+Shift+F5) or clear site data
+- **Queue not replaying?** Check browser console for errors
+- **IndexedDB issues?** Clear application storage and rebuild
+- **Build errors?** Ensure `service-worker.js` is in project root
+
+---
+
 ## Vercel & Analytics
 
 - Deploy via Vercel (Next.js preset).  

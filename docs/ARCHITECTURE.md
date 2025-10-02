@@ -77,8 +77,9 @@ The contact page (`/contact`) features a full contact form with:
 - Input fields: Full Name, Email, Message
 - Anti-spam protection using honeypot technique and timing checks
 - Server-side validation using Zod
-- Email delivery via Resend API
+- Email delivery via Nodemailer with SMTP
 - Success/error state handling
+- Offline support via Background Sync (queues when offline, sends when back online)
 
 ## Environments
 
@@ -89,8 +90,8 @@ The contact page (`/contact`) features a full contact form with:
 - `INTRANET_USER`, `INTRANET_PASS` (Edge middleware)
 - `NEXT_PUBLIC_BASE_URL` (base URL for API calls)
 - `NEXT_PUBLIC_ATHENA_TEST_URL` (optional tile link)
-- `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL` (contact form)
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (Success Stories email)
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (SMTP configuration for email)
+- `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL` (contact form & success stories email)
 - Optional: `NEXT_PUBLIC_HCAPTCHA_SITE_KEY`, `HCAPTCHA_SECRET` (if using hCaptcha)
 
 ---
@@ -158,6 +159,76 @@ The contact page (`/contact`) features a full contact form with:
 3. **CSV-Driven Filtering**: Page mappings stored in CSV for easy updates without code changes
 4. **Dual Data Loading**: Client uses fetch(), server uses fs for same CSV file
 5. **Email Integration**: Nodemailer with SMTP for flexible email provider support
+
+---
+
+## PWA Background Sync
+
+The application implements **Workbox Background Sync** to queue email and PDF requests when offline, automatically replaying them when connectivity returns.
+
+### Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ User Action (Offline)                                   │
+│ - Click Email button                                    │
+│ - Click Build PDF (download)                            │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│ Service Worker (service-worker.js)                      │
+│ - Intercepts POST requests                              │
+│ - Detects network failure                               │
+│ - Queues request in IndexedDB                           │
+│   * queue-email: /api/email/send                        │
+│   * queue-pdf: /api/pdf/success-stories                 │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│ IndexedDB Storage                                       │
+│ - Stores queued requests with 24h retention             │
+│ - Maintains request order                               │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼ (when online)
+┌─────────────────────────────────────────────────────────┐
+│ Background Sync                                         │
+│ - Browser detects connectivity                          │
+│ - Service worker replays queued requests                │
+│ - Removes successful requests from queue                │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Key Features
+
+1. **Automatic Queueing**: POSTs to `/api/email/send` and `/api/pdf/success-stories` are automatically queued when offline
+2. **Transparent Replay**: Requests are replayed in order when connectivity returns
+3. **No Code Changes**: Existing API calls work without modification
+4. **User Feedback**: UI should provide optimistic feedback ("Queued, will send when online")
+5. **24-Hour Retention**: Queued requests expire after 24 hours
+
+### Configuration
+
+The service worker is configured in `next.config.ts`:
+- `swSrc: 'service-worker.js'` - Custom service worker with Background Sync
+- Only enabled in production builds (`NODE_ENV === 'production'` and `PWA !== 'off'`)
+
+### Testing
+
+1. Build production: `npm run build && npm run start`
+2. Open DevTools → Application → Service Workers (confirm active)
+3. Set Network tab to **Offline**
+4. Try Email/PDF actions → UI shows "Queued" message
+5. Toggle back **Online** → Service worker replays requests
+6. Check IndexedDB → Queues should drain to zero
+
+### Security Considerations
+
+- Only queue non-PII payloads
+- For sensitive data, consider server-side outbox pattern instead
+- Email/PDF requests are safe as they don't contain user credentials
 
 ---
 

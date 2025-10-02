@@ -64,6 +64,11 @@ export default function SuccessStoriesWidget({
       setIsGenerating(true);
       setError(null);
 
+      // Check if offline
+      if (!navigator.onLine) {
+        alert('You are offline. The PDF download will be queued and processed when you\'re back online.');
+      }
+
       const response = await fetch('/api/pdf/success-stories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -86,7 +91,12 @@ export default function SuccessStoriesWidget({
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Download failed');
+      // If offline or network error, the service worker will queue it
+      if (!navigator.onLine || (err instanceof TypeError && err.message.includes('fetch'))) {
+        alert('You are offline. Your PDF download request has been queued and will be processed when you\'re back online.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Download failed');
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -101,6 +111,11 @@ export default function SuccessStoriesWidget({
     try {
       setIsSendingEmail(true);
       setError(null);
+
+      // Check if offline
+      if (!navigator.onLine) {
+        alert('You are offline. Your email will be queued and sent when you\'re back online.');
+      }
 
       const response = await fetch('/api/email/send', {
         method: 'POST',
@@ -122,7 +137,14 @@ export default function SuccessStoriesWidget({
       setEmailTo('');
       alert('Email sent successfully!');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Email sending failed');
+      // If offline or network error, the service worker will queue it
+      if (!navigator.onLine || (err instanceof TypeError && err.message.includes('fetch'))) {
+        alert('You are offline. Your email has been queued and will be sent when you\'re back online.');
+        setShowEmailForm(false);
+        setEmailTo('');
+      } else {
+        setError(err instanceof Error ? err.message : 'Email sending failed');
+      }
     } finally {
       setIsSendingEmail(false);
     }
