@@ -29,12 +29,6 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
     }
   };
 
-  const onBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-    const next = e.relatedTarget as Node | null;
-    if (!next || !e.currentTarget.contains(next)) {
-      unflip();
-    }
-  };
 
   const stop = (e: MouseEvent) => e.stopPropagation();
 
@@ -54,7 +48,6 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
       className="group perspective-1000 h-96 cursor-pointer"
       onClick={toggleFlip}
       onKeyDown={onKeyDown}
-      onBlur={onBlur}
       tabIndex={0}
       role="button"
       aria-label={`${member.name}, ${member.role}. Press Enter to flip card.`}
@@ -91,11 +84,6 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
               {displayLocation && (
                 <p className="text-gray-400 text-xs">{displayLocation}</p>
               )}
-            </div>
-
-            {/* Hover hint */}
-            <div className="px-6 pb-4 text-center">
-              <p className="text-xs text-gray-500 italic">Click or press Enter to see more</p>
             </div>
           </div>
         </div>
@@ -171,11 +159,6 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
                 </div>
               </div>
             )}
-
-            {/* Hint */}
-            <div className="pt-4 text-center">
-              <p className="text-xs text-blue-300 italic">Click or press Escape to flip back</p>
-            </div>
           </div>
         </div>
       </div>
