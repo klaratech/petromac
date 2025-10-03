@@ -47,6 +47,19 @@ Protected by Basic Auth. Includes:
 - Component: `src/components/shared/pdf/Flipbook.tsx`
 - Automated regeneration with GitHub Actions workflow `.github/workflows/pdf-flipbook-build.yml`
 
+### Success Stories Filters
+The public Success Stories flipbook (`/success-stories/flipbook`) features three multi-select filters:
+- **Area**: APAC, MENA, EUR, LAM, NAM, AFR
+- **Service Company**: SLB, HAL, BHI, Other
+- **Technology**: Pathfinder, Focus-OH, Focus-CH, Wireline Express, THOR
+
+Filter options are **hard-coded** in `src/data/successStoriesOptions.ts`. To add or modify options:
+1. Edit the option arrays in `src/data/successStoriesOptions.ts`
+2. Update normalization logic if needed
+3. Test and deploy
+
+The CSV file (`public/data/successstories-summary.csv`) is used only for **page mapping** - not for generating filter options.
+
 ## 🚀 Getting Started
 
 ### Prerequisites

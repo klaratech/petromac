@@ -32,6 +32,23 @@ npm run dev
   - http://localhost:3000/catalog/flipbook
   - http://localhost:3000/success-stories/flipbook
 
+### Success Stories Filters
+
+The Success Stories flipbook features three hard-coded multi-select filters:
+- **Area**: Geographic regions (APAC, MENA, EUR, LAM, NAM, AFR)
+- **Service Company**: Service companies (SLB, HAL, BHI, Other)
+- **Technology**: Product technologies (Pathfinder, Focus-OH, Focus-CH, Wireline Express, THOR)
+
+**Modifying Filter Options**:
+1. Edit `src/data/successStoriesOptions.ts`
+2. Update the option arrays (AREA_OPTIONS, SERVICE_COMPANY_OPTIONS, TECHNOLOGY_OPTIONS)
+3. Update normalization functions if needed (normalizeArea, normalizeServiceCompany, normalizeDevice)
+4. Test locally: http://localhost:3000/success-stories/flipbook
+5. Run `npx tsc --noEmit` to verify types
+6. Commit and deploy
+
+**Important**: Options are **hard-coded** and do NOT auto-generate from the CSV. The CSV (`public/data/successstories-summary.csv`) is only used for mapping filters to page numbers.
+
 ## Code Organization
 
 - `src/app/` → Next.js App Router pages

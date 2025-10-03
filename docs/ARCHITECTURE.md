@@ -42,6 +42,23 @@ The Petromac platform combines a **public-facing website**, a **protected intran
   - `/catalog/flipbook`
   - `/success-stories/flipbook`
 
+#### Success Stories Filters Architecture
+The Success Stories flipbook implements a **separation of concerns** between filter options and data mapping:
+
+**Filter Options Source** (`src/data/successStoriesOptions.ts`):
+- Three hard-coded multi-select filters: Area, Service Company, Technology
+- Options are **static TypeScript constants** - NOT auto-generated from CSV
+- Provides normalization functions for matching CSV data to canonical option names
+- Single source of truth for available filter values
+
+**CSV-Driven Page Mapping** (`src/lib/successStoriesFilters.ts`):
+- Loads `public/data/successstories-summary.csv` at runtime
+- Maps filter selections to flipbook page numbers
+- Applies normalization to match CSV values with filter options
+- Returns filtered list of pages to display
+
+**Key Design Decision**: Options are hard-coded to prevent the UI from changing unpredictably when CSV data updates. The CSV is used only for page mapping, maintaining stable, predictable filter behavior.
+
 ### Data Pipeline
 - Python scripts process Excel data into JSON
 - Private sources stored in `data/private/` (gitignored, never deployed)

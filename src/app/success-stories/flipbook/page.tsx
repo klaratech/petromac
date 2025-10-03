@@ -1,7 +1,14 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { EmailPdfButton } from "@/components/shared/EmailPdfButton";
+import { Filters, type FiltersState } from "@/components/successstories/Filters";
+import {
+  loadSuccessStoriesData,
+  filterSuccessStories,
+} from "@/lib/successStoriesFilters";
+import type { SuccessStoryRow } from "@/data/successStoriesOptions";
 
 const Flipbook = dynamic(() => import("@/components/shared/pdf/Flipbook"), {
   ssr: false,
@@ -9,18 +16,55 @@ const Flipbook = dynamic(() => import("@/components/shared/pdf/Flipbook"), {
 });
 
 export default function SuccessStoriesFlipbookPage() {
-  const pages = Array.from({ length: 47 }, (_, i) =>
-    `/flipbooks/successstories/page-${String(i + 1).padStart(3, "0")}.jpg`
-  );
-  
+  const [filters, setFilters] = useState<FiltersState>({
+    areas: [],
+    companies: [],
+    techs: [],
+  });
+  const [csvData, setCsvData] = useState<SuccessStoryRow[]>([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+
+  // Load CSV data on mount
+  useEffect(() => {
+    loadSuccessStoriesData()
+      .then((data) => {
+        setCsvData(data);
+        setIsLoadingData(false);
+      })
+      .catch((error) => {
+        console.error("Failed to load success stories data:", error);
+        setIsLoadingData(false);
+      });
+  }, []);
+
+  // Calculate filtered page numbers
+  const allowedPages = filterSuccessStories(csvData, filters);
+
+  // Generate all page URLs
+  const allPages = Array.from({ length: 47 }, (_, i) => ({
+    pageNumber: i + 1,
+    url: `/flipbooks/successstories/page-${String(i + 1).padStart(3, "0")}.jpg`,
+  }));
+
+  // Filter pages based on selection
+  const pages = allPages
+    .filter((page) => allowedPages.includes(page.pageNumber))
+    .map((page) => page.url);
+
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="container mx-auto px-4 py-8">
+        <Filters value={filters} onChange={setFilters} />
+        
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Success Stories</h1>
             <p className="text-gray-600 mt-1">
-              Browse our success stories from projects worldwide
+              {isLoadingData
+                ? "Loading data..."
+                : allowedPages.length === 0
+                ? "No stories match the selected filters"
+                : `Showing ${allowedPages.length} of 43 success stories`}
             </p>
           </div>
           <div className="flex gap-3">
@@ -37,9 +81,27 @@ export default function SuccessStoriesFlipbookPage() {
             </a>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <Flipbook pages={pages} width={600} height={800} />
-        </div>
+        {isLoadingData ? (
+          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center min-h-[700px]">
+            <p className="text-gray-600">Loading success stories data...</p>
+          </div>
+        ) : allowedPages.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <p className="text-gray-600 text-lg mb-2">No stories match your filters</p>
+              <button
+                onClick={() => setFilters({ areas: [], companies: [], techs: [] })}
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
+                Clear filters to see all stories
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <Flipbook pages={pages} width={600} height={800} />
+          </div>
+        )}
       </div>
     </main>
   );

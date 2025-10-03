@@ -42,26 +42,22 @@ website/
 │   │   ├── public/                       # 🌐 Public website components
 │   │   ├── shared/                       # Shared components
 │   │   │   └── pdf/                      # Shared PDF components (flipbook)
+│   │   ├── successstories/               # Success stories filter components
+│   │   │   └── Filters.tsx               # Multi-select filter UI
 │   │   ├── geo/                          # 🗺️ Geospatial map components (shared)
-│   │   │   ├── DrilldownMapCore.tsx      # Core map logic (reusable)
-│   │   │   ├── DrilldownMapPublic.tsx    # Public wrapper for /track-record
-│   │   │   └── DrilldownMapKiosk.tsx     # Kiosk wrapper for dashboard
-│   │   └── kiosk/                        # 🔒 Kiosk-specific components
-│   ├── components/
-│   │   ├── public/                       # 🌐 Public website components
-│   │   ├── shared/                       # Shared components
-│   │   │   └── pdf/                      # Shared PDF components (flipbook)
-│   │   ├── geo/                          # �️ Geospatial map components (shared)
 │   │   │   ├── DrilldownMapCore.tsx      # Core map logic (reusable)
 │   │   │   ├── DrilldownMapPublic.tsx    # Public wrapper for /track-record
 │   │   │   └── DrilldownMapKiosk.tsx     # Kiosk wrapper for dashboard
 │   │   └── kiosk/                        # 🔒 Kiosk-specific components
 │   ├── hooks/                            # Custom React hooks
 │   ├── lib/                              # Utility functions
+│   │   ├── successStoriesFilters.ts      # Success stories CSV loader and filter logic
 │   │   └── map/                          # Map-specific utilities
 │   │       └── data.ts                   # Data fetchers for /data/*.json
 │   ├── types/                            # TypeScript type definitions
 │   ├── data/                             # Static data modules
+│   │   ├── successStoriesOptions.ts      # Hard-coded filter options (Area, Company, Tech)
+│   │   └── team.ts                       # Team member data
 │   ├── config/                           # App configuration
 │   └── constants/                        # Constants and enums
 ├── middleware.ts                         # 🔒 Basic Auth for /intranet/*

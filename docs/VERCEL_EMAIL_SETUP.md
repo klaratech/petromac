@@ -12,17 +12,9 @@ Before configuring Vercel, you need:
 
 ---
 
-## Step 1: Generate App Password (Gmail/Outlook)
+## Step 1: Generate App Password (Outlook)
 
-### For Gmail:
-1. Go to your Google Account settings
-2. Navigate to Security
-3. Enable 2-Step Verification (if not already enabled)
-4. Go to **App Passwords**: https://myaccount.google.com/apppasswords
-5. Select "Mail" and "Other (Custom name)"
-6. Enter "Petromac Website" as the name
-7. Click **Generate**
-8. Copy the 16-character password (you'll need this for `SMTP_PASS`)
+
 
 ### For Office365/Outlook (Petromac Configuration):
 1. Go to https://account.microsoft.com/security
@@ -36,8 +28,6 @@ Before configuring Vercel, you need:
 - Enable SMTP authentication for the account
 - Generate an app password or provide SMTP credentials
 
-### For Other Providers:
-Check your email provider's documentation for SMTP settings and credentials.
 
 ---
 
