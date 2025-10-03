@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { EmailPdfButton } from "@/components/shared/EmailPdfButton";
 
 const Flipbook = dynamic(() => import("@/components/shared/pdf/Flipbook"), {
   ssr: false,
@@ -22,13 +23,19 @@ export default function CatalogPage() {
               Browse our complete catalog of wireline logging devices and solutions
             </p>
           </div>
-          <a
-            href="/data/product-catalog.pdf"
-            download
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-          >
-            Download PDF
-          </a>
+          <div className="flex gap-3">
+            <EmailPdfButton 
+              pdfUrl="/data/product-catalog.pdf"
+              pdfType="catalog"
+            />
+            <a
+              href="/data/product-catalog.pdf"
+              download
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            >
+              Download PDF
+            </a>
+          </div>
         </div>
         <div className="bg-white rounded-lg shadow-lg p-6">
           <Flipbook pages={pages} width={500} height={700} />

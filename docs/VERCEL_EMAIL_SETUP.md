@@ -1,12 +1,14 @@
 # Vercel Email Configuration Guide
 
-This guide explains how to configure email functionality for the contact form in Vercel.
+This guide explains how to configure email functionality for the Petromac website, including:
+- Contact form submissions
+- PDF email delivery (Product Catalog & Success Stories)
 
 ## Prerequisites
 
 Before configuring Vercel, you need:
-1. An email account that supports SMTP
-2. App-specific password (for Gmail/Outlook) or SMTP credentials
+1. An email account that supports SMTP (using Office365: info@petromac.co.nz)
+2. App-specific password for Office365
 
 ---
 
@@ -22,12 +24,17 @@ Before configuring Vercel, you need:
 7. Click **Generate**
 8. Copy the 16-character password (you'll need this for `SMTP_PASS`)
 
-### For Outlook/Hotmail:
-1. Go to account settings
-2. Navigate to Security
-3. Select **Advanced security options**
-4. Under App passwords, select **Create a new app password**
-5. Copy the generated password
+### For Office365/Outlook (Petromac Configuration):
+1. Go to https://account.microsoft.com/security
+2. Navigate to Security → **Advanced security options**
+3. Enable 2-Step Verification (if not already enabled)
+4. Under **App passwords**, select **Create a new app password**
+5. Enter "Petromac Website" as the name
+6. Copy the generated password (you'll need this for both contact form and PDF email functionality)
+
+**Note:** If your organization uses Office365 Business, you may need to contact your IT administrator to:
+- Enable SMTP authentication for the account
+- Generate an app password or provide SMTP credentials
 
 ### For Other Providers:
 Check your email provider's documentation for SMTP settings and credentials.
@@ -42,30 +49,56 @@ Check your email provider's documentation for SMTP settings and credentials.
 
 ### Required Variables:
 
-| Variable Name | Example Value | Description |
-|--------------|---------------|-------------|
-| `SMTP_HOST` | `smtp.gmail.com` | SMTP server hostname |
-| `SMTP_PORT` | `465` | SMTP server port (465 for SSL, 587 for TLS) |
-| `SMTP_USER` | `your-email@gmail.com` | Your email address |
-| `SMTP_PASS` | `abcd efgh ijkl mnop` | App password (16 chars for Gmail) |
-| `CONTACT_FROM_EMAIL` | `your-email@gmail.com` | Email address to send from (usually same as SMTP_USER) |
-| `CONTACT_TO_EMAIL` | `recipient@example.com` | Where contact form emails should be sent |
+#### For Contact Form:
+| Variable Name | Value | Description |
+|--------------|-------|-------------|
+| `SMTP_HOST` | `smtp-mail.outlook.com` | Office365 SMTP server |
+| `SMTP_PORT` | `587` | SMTP server port (TLS) |
+| `SMTP_USER` | `info@petromac.co.nz` | Petromac email address |
+| `SMTP_PASS` | `[app-password]` | App password from Office365 |
+| `CONTACT_FROM_EMAIL` | `info@petromac.co.nz` | Email address to send from |
+| `CONTACT_TO_EMAIL` | `info@petromac.co.nz` | Where contact form emails should be sent |
 
-### Common SMTP Configurations:
+#### For PDF Email Delivery (New Feature):
+| Variable Name | Value | Description |
+|--------------|-------|-------------|
+| `EMAIL_HOST` | `smtp-mail.outlook.com` | Office365 SMTP server |
+| `EMAIL_PORT` | `587` | SMTP server port (TLS) |
+| `EMAIL_SECURE` | `false` | Use TLS (not SSL) |
+| `EMAIL_USER` | `info@petromac.co.nz` | Petromac email address |
+| `EMAIL_PASSWORD` | `[app-password]` | App password from Office365 |
+| `EMAIL_FROM` | `"Petromac <info@petromac.co.nz>"` | Sender name and email |
+
+### Petromac Office365 Configuration:
+
+**Complete Environment Variables Setup:**
+```env
+# Contact Form Variables
+SMTP_HOST=smtp-mail.outlook.com
+SMTP_PORT=587
+SMTP_USER=info@petromac.co.nz
+SMTP_PASS=[your-office365-app-password]
+CONTACT_FROM_EMAIL=info@petromac.co.nz
+CONTACT_TO_EMAIL=info@petromac.co.nz
+
+# PDF Email Variables (Catalog & Success Stories)
+EMAIL_HOST=smtp-mail.outlook.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=info@petromac.co.nz
+EMAIL_PASSWORD=[your-office365-app-password]
+EMAIL_FROM="Petromac <info@petromac.co.nz>"
+```
+
+**Note:** Use the same app password for both `SMTP_PASS` and `EMAIL_PASSWORD`.
+
+### Other SMTP Configurations (for reference):
 
 **Gmail:**
 ```
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=465
 SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-```
-
-**Outlook/Hotmail:**
-```
-SMTP_HOST=smtp-mail.outlook.com
-SMTP_PORT=587
-SMTP_USER=your-email@outlook.com
 SMTP_PASS=your-app-password
 ```
 
@@ -96,12 +129,20 @@ After adding all environment variables:
 
 ---
 
-## Step 5: Test the Contact Form
+## Step 5: Test Email Functionality
 
+### Test Contact Form:
 1. Visit your production site
 2. Navigate to the Contact page
 3. Fill out and submit the form
-4. Check the recipient email address for the message
+4. Check info@petromac.co.nz for the message
+
+### Test PDF Email Delivery:
+1. Navigate to the Product Catalog page (`/catalog`) or Success Stories page (`/success-stories/flipbook`)
+2. Click the green **"Email PDF"** button
+3. Enter your email address
+4. Click **"Send"**
+5. Check your email inbox for the PDF attachment
 
 ---
 
@@ -154,15 +195,23 @@ If you prefer a dedicated email service:
 
 ---
 
-## Contact Form Features
+## Email Features
 
-The current implementation includes:
+### Contact Form Features:
 - ✅ Honeypot spam protection (invisible company field)
 - ✅ Timing check (minimum 3 seconds to fill form)
 - ✅ Form validation with Zod
 - ✅ Graceful error handling
 - ✅ HTML and plain text email formats
 - ✅ Reply-to header set to user's email
+
+### PDF Email Delivery Features:
+- ✅ Email Product Catalog directly to users
+- ✅ Email Success Stories document directly to users
+- ✅ Professional email template with Petromac branding
+- ✅ PDF attachments included automatically
+- ✅ Modal interface with email validation
+- ✅ Success/error feedback
 
 ---
 
