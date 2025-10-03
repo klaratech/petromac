@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { EmailPdfButton } from "@/components/shared/EmailPdfButton";
 import { Filters, type FiltersState } from "@/components/successstories/Filters";
@@ -37,19 +37,29 @@ export default function SuccessStoriesFlipbookPage() {
       });
   }, []);
 
-  // Calculate filtered page numbers
-  const allowedPages = filterSuccessStories(csvData, filters);
+  // Calculate filtered page numbers (memoized to prevent unnecessary recalculations)
+  const allowedPages = useMemo(
+    () => filterSuccessStories(csvData, filters),
+    [csvData, filters]
+  );
 
-  // Generate all page URLs
-  const allPages = Array.from({ length: 47 }, (_, i) => ({
-    pageNumber: i + 1,
-    url: `/flipbooks/successstories/page-${String(i + 1).padStart(3, "0")}.jpg`,
-  }));
+  // Generate filtered page URLs (memoized to prevent flipbook re-initialization)
+  const pages = useMemo(() => {
+    const allPages = Array.from({ length: 47 }, (_, i) => ({
+      pageNumber: i + 1,
+      url: `/flipbooks/successstories/page-${String(i + 1).padStart(3, "0")}.jpg`,
+    }));
 
-  // Filter pages based on selection
-  const pages = allPages
-    .filter((page) => allowedPages.includes(page.pageNumber))
-    .map((page) => page.url);
+    return allPages
+      .filter((page) => allowedPages.includes(page.pageNumber))
+      .map((page) => page.url);
+  }, [allowedPages]);
+
+  // Create a stable key for the flipbook that only changes when filters change
+  const flipbookKey = useMemo(
+    () => JSON.stringify({ areas: filters.areas, companies: filters.companies, techs: filters.techs }),
+    [filters]
+  );
 
   return (
     <main className="min-h-screen bg-gray-100">
@@ -99,7 +109,7 @@ export default function SuccessStoriesFlipbookPage() {
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <Flipbook pages={pages} width={600} height={800} />
+            <Flipbook key={flipbookKey} pages={pages} width={600} height={800} />
           </div>
         )}
       </div>

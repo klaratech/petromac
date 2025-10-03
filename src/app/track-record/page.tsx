@@ -1,12 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import Link from "next/link";
 import dynamic from "next/dynamic";
-
-const SuccessStoriesModal = dynamic(
-  () => import("@/components/shared/SuccessStoriesModal"),
-  { ssr: false }
-);
 
 const DrilldownMapPublic = dynamic(
   () => import("@/components/geo/DrilldownMapPublic"),
@@ -17,8 +13,6 @@ const DrilldownMapPublic = dynamic(
 );
 
 export default function TrackRecordPage() {
-  const [showSuccessStories, setShowSuccessStories] = useState(false);
-
   useEffect(() => {
     document.title = "Track Record | Petromac";
   }, []);
@@ -32,18 +26,14 @@ export default function TrackRecordPage() {
             Explore our global deployment history and operational track record across the world.
           </p>
         </div>
-        <button
-          onClick={() => setShowSuccessStories(true)}
+        <Link
+          href="/success-stories/flipbook"
           className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md whitespace-nowrap"
         >
           Success Stories
-        </button>
+        </Link>
       </div>
       <DrilldownMapPublic />
-      
-      {showSuccessStories && (
-        <SuccessStoriesModal onClose={() => setShowSuccessStories(false)} />
-      )}
     </main>
   );
 }
