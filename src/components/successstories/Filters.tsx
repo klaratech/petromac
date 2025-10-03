@@ -79,8 +79,13 @@ function MultiSelectDropdown({
 
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
+    
+    return () => {
+      if (isOpen) {
+        document.removeEventListener("mousedown", handleClickOutside);
+      }
+    };
   }, [isOpen]);
 
   const toggleOption = (option: string) => {

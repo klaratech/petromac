@@ -7,7 +7,6 @@ export { default as DeviceViewer } from './DeviceViewer';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as IdleRedirect } from './IdleRedirect';
 export { default as LoadingSpinner } from './LoadingSpinner';
-export { default as MapRenderer } from './MapRenderer';
 export { default as SplashLoop } from './SplashLoop';
 export { default as SystemModal } from './SystemModal';
 export { default as YearlyStatsChart } from './YearlyStatsChart';
