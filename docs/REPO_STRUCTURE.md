@@ -39,16 +39,19 @@ website/
 │   │           ├── productlines/         # Product lines viewer
 │   │           └── successstories/       # Success stories manager
 │   ├── components/
-│   │   ├── public/                       # 🌐 Public website components
-│   │   ├── shared/                       # Shared components
+│   │   ├── public/                       # 🌐 Public website components (Hero, ContactForm, etc.)
+│   │   ├── shared/                       # ⚡ Shared components (used by public & intranet)
+│   │   │   ├── Header.tsx                # Global navigation header
+│   │   │   ├── Footer.tsx                # Global footer
 │   │   │   └── pdf/                      # Shared PDF components (flipbook)
 │   │   ├── successstories/               # Success stories filter components
 │   │   │   └── Filters.tsx               # Multi-select filter UI
 │   │   ├── geo/                          # 🗺️ Geospatial map components (shared)
+│   │   │   ├── MapRenderer.tsx           # D3.js SVG map rendering
 │   │   │   ├── DrilldownMapCore.tsx      # Core map logic (reusable)
 │   │   │   ├── DrilldownMapPublic.tsx    # Public wrapper for /track-record
 │   │   │   └── DrilldownMapKiosk.tsx     # Kiosk wrapper for dashboard
-│   │   └── kiosk/                        # 🔒 Kiosk-specific components
+│   │   └── kiosk/                        # 🔒 Kiosk-specific components (charts, viewers, etc.)
 │   ├── hooks/                            # Custom React hooks
 │   ├── lib/                              # Utility functions
 │   │   ├── successStoriesFilters.ts      # Success stories CSV loader and filter logic
@@ -62,7 +65,12 @@ website/
 │   └── constants/                        # Constants and enums
 ├── middleware.ts                         # 🔒 Basic Auth for /intranet/*
 ├── public/                               # Static assets (Vercel CDN)
-│   ├── data/                             # Source PDFs (product-catalog.pdf, successstories.pdf)
+│   ├── kiosk-sw.js                       # 🔧 Kiosk-only service worker
+│   ├── data/                             # Data files & source PDFs
+│   │   ├── product-catalog.pdf           # Product catalog source PDF
+│   │   ├── successstories.pdf            # Success stories source PDF
+│   │   ├── successstories-summary.csv    # Success stories data (single source)
+│   │   └── *.json                        # Operations and map data
 │   ├── flipbooks/                        # Generated images for flipbooks
 │   │   ├── productcatalog/
 │   │   └── successstories/
@@ -201,6 +209,58 @@ export default async function ServerPage() {
 
 All Python scripts in `scripts/python/` follow these output conventions:
 - **Final published JSON** → `public/data/operations_data.json`
+- **Success Stories CSV** → `public/data/successstories-summary.csv`
 - **Flipbook images** → `public/flipbooks/{productcatalog|successstories}/page-XXX.jpg`
 - **Diagnostics & intermediates** → `data/private/intermediate/`
 - **Never output to** `scripts/python/` directory (avoid duplication)
+
+## 🔧 PWA & Service Worker
+
+### Kiosk-Only PWA
+The application uses a **scoped service worker** that only applies to kiosk routes:
+
+- **Service Worker**: `public/kiosk-sw.js`
+- **Scope**: `/intranet/kiosk/` only
+- **Registration**: Handled by `src/app/intranet/kiosk/layout.tsx`
+- **Public Site**: No service worker registered
+
+### Cache Strategy
+- **Media Files** (videos, 3D models, images, PDFs): Cache-first
+- **Data Files** (JSON, CSV): Network-first with fallback to cache
+
+### Testing Offline
+1. Visit any `/intranet/kiosk/` route
+2. Open DevTools → Application → Service Workers
+3. Verify service worker is registered with scope `/intranet/kiosk/`
+4. Enable "Offline" mode
+5. Navigate kiosk pages - cached assets should load
+
+### Adding Assets to Cache
+To add new asset types to the kiosk cache, edit `public/kiosk-sw.js`:
+```javascript
+// Add to regex pattern for cache-first strategy
+if (/\.(png|jpg|jpeg|webp|mp4|glb|gltf|pdf|YOUR_EXTENSION)$/i.test(url.pathname)) {
+  // ... cache-first logic
+}
+```
+
+## 🎯 Component Architecture
+
+### Shared Components Philosophy
+Components in `src/components/shared/` are used by both public and intranet sections:
+- **Header.tsx**: Navigation header with public and intranet links
+- **Footer.tsx**: Footer with links and copyright
+- **Flipbook.tsx**: Reusable PDF flipbook viewer
+
+### Map Components
+Map components follow a core + wrapper pattern:
+- **MapRenderer.tsx**: D3.js SVG rendering logic
+- **DrilldownMapCore.tsx**: Core map state and interactions
+- **DrilldownMapPublic.tsx**: Public-facing wrapper for `/track-record`
+- **DrilldownMapKiosk.tsx**: Kiosk wrapper with additional features
+
+### Success Stories Data Flow
+1. **Source**: `public/data/successstories-summary.csv` (single source of truth)
+2. **Options**: Hard-coded filters in `src/data/successStoriesOptions.ts`
+3. **API**: `/intranet/kiosk/api/successstories` for dynamic filtering
+4. **UI**: Filters in `src/components/successstories/Filters.tsx`

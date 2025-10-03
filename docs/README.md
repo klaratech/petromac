@@ -18,10 +18,16 @@ A Next.js-based application featuring:
 - **Deployment**: Vercel
 - **CI/CD**: GitHub Actions (including automated flipbook generation)
 - **Analytics**: Vercel Analytics
+- **PWA**: Kiosk-only service worker for offline functionality
 
 > 📁 See [REPO_STRUCTURE.md](REPO_STRUCTURE.md) for structure  
 > 🎨 See [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) for brand theme  
 > 📖 See Flipbook module docs in REPO_STRUCTURE.md
+
+### Shared Components
+- **Header/Footer**: Single implementations in `src/components/shared/` used across public and intranet
+- **Map**: Unified map implementation in `src/components/geo/` with variants for public and kiosk use
+- **Flipbook**: Reusable PDF flipbook component in `src/components/shared/pdf/`
 
 ## 🌐 Application Structure
 
@@ -47,18 +53,30 @@ Protected by Basic Auth. Includes:
 - Component: `src/components/shared/pdf/Flipbook.tsx`
 - Automated regeneration with GitHub Actions workflow `.github/workflows/pdf-flipbook-build.yml`
 
-### Success Stories Filters
-The public Success Stories flipbook (`/success-stories/flipbook`) features three multi-select filters:
-- **Area**: APAC, MENA, EUR, LAM, NAM, AFR
-- **Service Company**: SLB, HAL, BHI, Other
-- **Technology**: Pathfinder, Focus-OH, Focus-CH, Wireline Express, THOR
+### Success Stories
+- **Data Source**: Single CSV file at `public/data/successstories-summary.csv`
+- **Options**: Hard-coded filters in `src/data/successStoriesOptions.ts` (Area, Service Company, Technology)
+- **Flipbook**: Interactive flipbook with filtering at `/success-stories/flipbook`
 
-Filter options are **hard-coded** in `src/data/successStoriesOptions.ts`. To add or modify options:
-1. Edit the option arrays in `src/data/successStoriesOptions.ts`
+To modify filter options:
+1. Edit `src/data/successStoriesOptions.ts`
 2. Update normalization logic if needed
-3. Test and deploy
+3. Deploy
 
-The CSV file (`public/data/successstories-summary.csv`) is used only for **page mapping** - not for generating filter options.
+The CSV is used for page mapping only, not for generating filter options.
+
+### PWA & Offline Functionality
+- **Scope**: PWA functionality is limited to `/intranet/kiosk/*` only
+- **Service Worker**: `public/kiosk-sw.js` registered only within kiosk routes
+- **Cache Strategy**:
+  - Cache-first for media (videos, 3D models, images, PDFs)
+  - Network-first for data files (JSON, CSV)
+- **Public Site**: No service worker registered; remains a standard web application
+
+To test offline functionality:
+1. Visit `/intranet/kiosk/` routes
+2. Open DevTools → Application → Service Workers
+3. Enable "Offline" mode and verify cached assets load
 
 ## 🚀 Getting Started
 

@@ -4,12 +4,6 @@ import path from "node:path";
 import { PDFDocument } from "pdf-lib";
 import Papa from "papaparse";
 import nodemailer from "nodemailer";
-import { 
-  SUCCESS_STORIES_OPTIONS, 
-  LAST_UPDATED, 
-  SOURCE_VERSION, 
-  validateOptions 
-} from "@modules/success-stories/constants/options";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,11 +39,11 @@ let PAGE_COL: string | null = null;
 let OPTIONS_CACHE: Record<string, string[]> | null = null;
 
 function csvPath() {
-  return path.join(process.cwd(), "public", "successstories-summary.csv");
+  return path.join(process.cwd(), "public", "data", "successstories-summary.csv");
 }
 
 function pdfPath() {
-  return path.join(process.cwd(), "public", "successstories.pdf");
+  return path.join(process.cwd(), "public", "data", "successstories.pdf");
 }
 
 function loadCsvOnce() {
@@ -170,61 +164,22 @@ function coercePages1b(rows: Record<string,string>[], pageCol: string): number[]
   return out;
 }
 
-// Startup validation - called on module load
-(function validateOnStartup() {
-  const validation = validateOptions();
-  if (!validation.isValid) {
-    throw new Error(`Invalid static options: ${validation.errors.join(', ')}`);
-  }
-  
-  // Verify FILTER_COLUMNS keys exist in constants
-  const constantKeys = Object.keys(SUCCESS_STORIES_OPTIONS);
-  const filterKeys = Object.keys(FILTER_COLUMNS);
-  const missingKeys = filterKeys.filter(key => !constantKeys.includes(key));
-  
-  if (missingKeys.length > 0) {
-    throw new Error(`Missing keys in static options: ${missingKeys.join(', ')}`);
-  }
-})();
-
-// GET /api/successstories - Returns filter options
+// GET /api/successstories - Returns filter options (dynamically from CSV)
 export async function GET(_req: NextRequest) {
   try {
-    const optionsMode = process.env.OPTIONS_MODE || 'static';
+    buildOptionsOnce();
     
-    if (optionsMode === 'dynamic') {
-      // Fallback to dynamic CSV-derived options for debugging
-      buildOptionsOnce();
-      
-      if (!OPTIONS_CACHE) {
-        return new Response(JSON.stringify({ error: "Options not initialized" }), { 
-          status: 500,
-          headers: { "Content-Type": "application/json" }
-        });
-      }
-
-      return new Response(JSON.stringify(OPTIONS_CACHE), {
-        headers: { 
-          "Content-Type": "application/json",
-          "Cache-Control": "public, max-age=3600"
-        }
+    if (!OPTIONS_CACHE) {
+      return new Response(JSON.stringify({ error: "Options not initialized" }), { 
+        status: 500,
+        headers: { "Content-Type": "application/json" }
       });
     }
-    
-    // Default: Static mode
-    const responseData = {
-      ...SUCCESS_STORIES_OPTIONS,
-      _metadata: {
-        last_updated: LAST_UPDATED,
-        source_version: SOURCE_VERSION,
-        mode: 'static'
-      }
-    };
 
-    return new Response(JSON.stringify(responseData), {
+    return new Response(JSON.stringify(OPTIONS_CACHE), {
       headers: { 
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=86400" // 24 hours for static data
+        "Cache-Control": "public, max-age=3600"
       }
     });
   } catch (e: unknown) {

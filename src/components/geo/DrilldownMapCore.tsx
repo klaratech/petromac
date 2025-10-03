@@ -8,7 +8,7 @@ import { useCountryLabels } from '@/hooks/useCountryLabels';
 import { useDebounce } from '@/hooks/useDebounce';
 import YearlyStatsChart from '@/components/kiosk/YearlyStatsChart';
 import CountryChart from '@/components/kiosk/CountryChart';
-import MapRenderer from '@/components/kiosk/MapRenderer';
+import MapRenderer from '@/components/geo/MapRenderer';
 import { processMapData, calculateCountryStats } from '@/lib/maps';
 import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
