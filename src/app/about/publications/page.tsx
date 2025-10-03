@@ -4,31 +4,37 @@ export default function PublicationsPage() {
       organization: "Society of Petroleum Engineers",
       reference: "Folger, M., McCormick, S., & Sarian, S. (2017, March 21). Innovative Conveyance System Saves $9.4M on a Deep Water, High Angle Well in the Nam Con Son Basin.",
       event: "Presented at SPE/ICOTA Houston, 2017",
+      url: "https://onepetro.org/SPECTWI/proceedings-abstract/17CTWI/2-17CTWI/D021S011R006/194552",
     },
     {
       organization: "Society of Petroleum Engineers",
       reference: "Brindle, F., Rafique, M., Thatha, R., McCormick, S., Escott, S., Bajwa, H., & Cocagne, M. (2018, November 12). Use of New Wireline Conveyance Technologies on an Offshore Abu Dhabi Well Saves Significant Rig Time and Results in Improved Sonic and Nuclear Magnetic Resonance Data Quality.",
       event: "Presented at ADIPEC 2018",
+      url: "https://onepetro.org/SPEADIP/proceedings-abstract/18ADIP/1-18ADIP/D012S130R001/213349",
     },
     {
       organization: "Society of Petrophysicists and Well Log Analysts",
       reference: "Donald, J. A., Wielemaker, E., Schlicht, P., Lei, T., Mishra, A. K., Samantray, A. K., Al Mazrouei, S., Thatha, R., McCormick, S. (2020, June 22). Positive Tool Orientation Significantly Improves Data Quality and Enables Gravity Descents of Wireline Toolstrings to Near-Horizontal Deviations in the Middle East for Array Sonic and Borehole Image Data.",
       event: "Presented at SPWLA Annual Symposium 2020",
+      url: "https://onepetro.org/SPWLAALS/proceedings-abstract/SPWLA20/29-SPWLA20/D293S019R001/445779",
     },
     {
       organization: "Society of Petrophysicists and Well Log Analysts",
       reference: "Mishra, A. K., Samantray, A., Al Mazrouei, S., Al Blooshi, A., Cig, K., Jha, N., Cherian, J., McCormick, S., Thatha, R., Leonard, M. (2020, June 22). Latest Wireline Conveyance Technologies Set a New World Record, Achieving Gravity Descent to 79 Degrees in Open Hole.",
       event: "Presented at SPWLA Annual Symposium 2020",
+      url: "https://www.spwla.org/SPWLA/Publications/Publication_Detail.aspx?iProductCode=SPWLA-5032",
     },
     {
       organization: "Society of Petroleum Engineers",
       reference: "McCormick, S., Thatha, R., Leonard, M., Escott, S., Sedgwick, A., LeCompte, B., Zuliani, P., Naveena-Chandran, R. (2020, Sep 3). Recent Technological Advances Provide Highly Efficient and Reduced Risk Solutions for Conveying Wireline Formation Evaluation Toolstrings in Deepwater Operations. Society of Petroleum Engineers.",
       event: "Presented at SPE Lebanon Symposium 2020",
+      url: "https://doi.org/10.2118/201218-MS",
     },
     {
       organization: "International Petroleum Technology Conference",
       reference: "Zeghlache, M.L., Ida, H.M., Benslimani. A., Thatha, R. (2021, Mar 23). Innovative Deployment Technique to Optimize Logging Conveyance and Improve Data Quality.",
       event: "Presented at IPTC,KL 2021",
+      url: "https://doi.org/10.2523/IPTC-21206-MS",
     },
   ];
 
@@ -60,7 +66,18 @@ export default function PublicationsPage() {
                       {publication.organization}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                      {publication.reference}
+                      {publication.url ? (
+                        <a 
+                          href={publication.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {publication.reference}
+                        </a>
+                      ) : (
+                        publication.reference
+                      )}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
                       {publication.event}
