@@ -3,7 +3,7 @@ import { regionalManagers, hqTeam } from "@/data/team";
 
 export default function TeamPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black">
+    <div className="min-h-screen bg-brandblack">
       {/* Header Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">

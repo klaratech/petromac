@@ -113,13 +113,15 @@ export default function ContactForm() {
               </div>
 
               {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg px-8 py-3 font-semibold transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-              >
-                {isSubmitting ? "Sending..." : "Send"}
-              </button>
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="bg-brand text-white hover:bg-brand/90 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg px-6 py-2 font-semibold transition-all shadow-md hover:shadow-lg"
+                >
+                  {isSubmitting ? "Sending..." : "Send"}
+                </button>
+              </div>
 
               {/* Status Messages */}
               {submitStatus === "success" && (
