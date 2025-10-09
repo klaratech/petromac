@@ -24,7 +24,7 @@ export const regionalManagers: TeamContact[] = [
     imageSrc: "/images/team/gabriel-tschikof.png",
     emailUser: "gabriel",
     emailDomain: "petromac.co.nz",
-    bio: "Gabriel began his career with Schlumberger in 2002, delivering wireline services across UAE, Oman, Yemen, and Thailand. He advanced through roles as Field Engineer, Support Center Engineer, and Instructor, building a solid foundation in wireline operations. Later management and sales roles broadened his client perspective. As North America Regional Manager, Gabriel helps clients solve challenges with Petromac’s technology and proven results.",
+    bio: "Gabriel began his career with Schlumberger in 2002, delivering wireline services across UAE, Oman, Yemen, and Thailand. He advanced through roles as Field Engineer, Support Center Engineer, and Instructor, building a solid foundation in wireline operations. Later management and sales roles broadened his client perspective. As North America Regional Manager, Gabriel helps clients solve challenges with Petromac's technology and proven results.",
     linkedin: "https://www.linkedin.com/in/gabriel-tschikof-8509811a5/",
   },
   {
@@ -76,10 +76,10 @@ export const regionalManagers: TeamContact[] = [
     role: "Regional Manager",
     region: "Europe & CIS",
     location: "",
-    imageSrc: "/images/team/javier-peyriere.png",
+    imageSrc: "/images/team/javier.png",
     emailUser: "javier",
     emailDomain: "petromac.co.nz",
-    bio: "Javier manages Petromac’s activities across Europe and the CIS, supporting operators with tailored solutions and regional expertise.",
+    bio: "Javier manages Petromac's activities across Europe and the CIS, supporting operators with tailored solutions and regional expertise.",
     linkedin: "https://www.linkedin.com/in/javier-peyriere",
   },
 ];
