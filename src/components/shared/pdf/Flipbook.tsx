@@ -24,6 +24,7 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
       try {
         flipRef.current.destroy();
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error("Error destroying flipbook:", e);
       }
       flipRef.current = null;
@@ -85,6 +86,7 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
         setCurrentPage(0);
         setIsLoading(false);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Error initializing flipbook:", error);
         setIsLoading(false);
       }
@@ -95,6 +97,7 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
         try {
           flipRef.current.destroy();
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.error("Error during cleanup:", e);
         }
         flipRef.current = null;

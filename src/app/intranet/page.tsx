@@ -88,7 +88,7 @@ export default function IntranetHome() {
                       <span className="font-medium">Open the link below</span> with Chrome or Edge on your Android tablet
                     </li>
                     <li className="text-gray-800">
-                      <span className="font-medium">Click on the 3 dots</span> (browser menu) and select "Install app" or "Add to Home Screen"
+                      <span className="font-medium">Click on the 3 dots</span> (browser menu) and select &ldquo;Install app&rdquo; or &ldquo;Add to Home Screen&rdquo;
                     </li>
                     <li className="text-gray-800">
                       This enables <span className="font-medium">full-screen and offline functionality</span>
@@ -100,7 +100,7 @@ export default function IntranetHome() {
                       <span className="font-medium">Mirror your tablet</span> to the TV
                     </li>
                     <li className="text-gray-800">
-                      <span className="font-medium">Open the installed application</span> on your tablet and you're done!
+                      <span className="font-medium">Open the installed application</span> on your tablet and you&apos;re done!
                     </li>
                   </ol>
                 </div>
