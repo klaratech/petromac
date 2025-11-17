@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function IntranetHome() {
   const athenaProdUrl = process.env.NEXT_PUBLIC_ATHENA_PROD_URL || "https://athena.petromac.co.nz/";
-  const athenaTestUrl = process.env.NEXT_PUBLIC_ATHENA_TEST_URL || "#";
+  const athenaTestUrl = process.env.NEXT_PUBLIC_ATHENA_TEST_URL || "https://test.athena.digitaltwins.com.bo/#/login";
   const [showKioskInstructions, setShowKioskInstructions] = useState(false);
   
   return (

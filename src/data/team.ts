@@ -76,7 +76,7 @@ export const regionalManagers: TeamContact[] = [
     role: "Regional Manager",
     region: "Europe & CIS",
     location: "",
-    imageSrc: "/images/team/javier.png",
+    imageSrc: "/images/team/javier-peyriere.png",
     emailUser: "javier",
     emailDomain: "petromac.co.nz",
     bio: "Javier manages Petromac's activities across Europe and the CIS, supporting operators with tailored solutions and regional expertise.",
