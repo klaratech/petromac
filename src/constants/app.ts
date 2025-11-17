@@ -1,3 +1,6 @@
+// Kiosk routes
+export const KIOSK_HOME_PATH = '/intranet/kiosk';
+
 // App-wide constants
 export const APP_CONSTANTS = {
   // Timeouts

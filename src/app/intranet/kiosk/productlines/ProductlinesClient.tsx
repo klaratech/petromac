@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import SystemModal from '@/components/kiosk/SystemModal';
 import { featuredSystems } from '@modules/catalog/config/featuredSystems';
 import { systemMedia } from '@modules/catalog/data/deviceSpecs';
+import { KIOSK_HOME_PATH } from '@/constants/app';
 
 const systemList = featuredSystems
   .filter((system) => systemMedia[system])
@@ -33,7 +34,7 @@ export default function ProductlinesClient() {
     idleTimerRef.current = setTimeout(() => {
       setFading(true);
       setTimeout(() => {
-        router.push('/?mode=video');
+        router.push(`${KIOSK_HOME_PATH}?mode=video`);
       }, 1000);
     }, timeout);
   }, [router, selectedSystem, videoPlaying]);

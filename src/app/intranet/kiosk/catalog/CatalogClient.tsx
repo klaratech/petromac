@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { KIOSK_HOME_PATH } from '@/constants/app';
 
 const CircularGallery = dynamic(() => import('@/components/kiosk/CircularGallery'), {
   ssr: false,
@@ -22,7 +23,7 @@ export default function CatalogClient() {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        router.push('/?mode=carousel');
+        router.push(`${KIOSK_HOME_PATH}?mode=carousel`);
       }
     };
 
@@ -33,7 +34,7 @@ export default function CatalogClient() {
   return (
     <CircularGallery
       models={models}
-      onClose={() => router.push('/?mode=carousel')}
+      onClose={() => router.push(`${KIOSK_HOME_PATH}?mode=carousel`)}
     />
   );
 }
