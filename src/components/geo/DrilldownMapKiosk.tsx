@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import DrilldownMapCore from './DrilldownMapCore';
 import type { JobRecord } from '@/types/JobRecord';
 import { fetchOperationsData } from '@/lib/map/data';
@@ -48,7 +49,7 @@ export default function DrilldownMapKiosk() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+      <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <h3 className="text-lg font-semibold text-red-600 mb-2">Error Loading Data</h3>
           <p className="text-gray-600 mb-4">{error}</p>
@@ -65,26 +66,34 @@ export default function DrilldownMapKiosk() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+      <div className="container mx-auto px-4 py-8 text-center">
         <p className="text-gray-500 text-lg">Loading map data...</p>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 p-6 flex flex-col items-center gap-6 relative">
-      <h1 className="text-4xl font-bold text-center font-sans">
-        🌍 Global Operations Dashboard
-      </h1>
-
-      <section className="w-full">
-        <DrilldownMapCore
-          data={data}
-          showCloseButton={true}
-          onClose={() => router.push(redirectTo)}
-          showSuccessStoriesLink={true}
-        />
-      </section>
+    <main className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h1 className="mb-2 text-3xl font-bold">Track Record</h1>
+          <p className="text-gray-600">
+            Explore our global deployment history and operational track record across the world.
+          </p>
+        </div>
+        <Link
+          href="/intranet/kiosk/successstories"
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md whitespace-nowrap"
+        >
+          Success Stories
+        </Link>
+      </div>
+      <DrilldownMapCore
+        data={data}
+        showCloseButton={false}
+        showSuccessStoriesLink={false}
+        className="relative w-full h-[80vh] overflow-hidden bg-white rounded-lg shadow-lg"
+      />
     </main>
   );
 }

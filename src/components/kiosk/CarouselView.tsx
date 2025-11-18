@@ -22,7 +22,7 @@ export default function CarouselView({ onResetToSplash }: CarouselViewProps) {
     { title: 'Conveyance, Solved', image: 'conveyance.jpg', type: 'modal' },
     { title: 'No More Tool Sticking', image: 'sticking.jpg', type: 'modal' },
     { title: 'Engineering Excellence', image: 'catalog.png', type: 'link', href: '/catalog?from=carousel' },
-    { title: 'Global Deployment', image: 'trackrecord.png', type: 'link', href: '/dashboard?from=carousel' },
+    { title: 'Global Deployment', image: 'trackrecord.png', type: 'link', href: '/intranet/kiosk/dashboard?from=carousel' },
     { title: 'Precise Tool Orientation', image: 'orientation.jpg', type: 'modal' },
     { title: 'Enhanced Sampling & Imaging', image: 'sampling.jpg', type: 'modal' },
     { title: 'Navigating Ledges & Washouts', image: 'ledges.jpg', type: 'modal' },
