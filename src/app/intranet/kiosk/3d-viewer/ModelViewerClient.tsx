@@ -17,7 +17,7 @@ const models = [
   { name: 'Helix', file: '/models/helix.glb' },
 ];
 
-export default function CatalogClient() {
+export default function ModelViewerClient() {
   const router = useRouter();
 
   useEffect(() => {
