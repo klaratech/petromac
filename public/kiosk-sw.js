@@ -2,17 +2,57 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const KIOSK_CACHE = "kiosk-cache-v1";
+const KIOSK_CACHE = "kiosk-cache-v2";
 const KIOSK_SCOPE = "/intranet/kiosk/";
 
-self.addEventListener("install", () => {
+// Critical assets to pre-cache on install
+const PRECACHE_ASSETS = [
+  // Videos
+  "/videos/cp8-placeholder.mp4",
+  "/videos/cp12-placeholder.mp4",
+  "/videos/dice.mp4",
+  "/videos/helix.mp4",
+  "/videos/intro-loop2.mp4",
+  "/videos/pf.mp4",
+  "/videos/WirelineExpress.mp4",
+  // Core data files
+  "/data/country_labels.json",
+  "/data/operations_data.json",
+  "/data/region_coords.json",
+  "/data/region_data.json",
+  "/data/successstories-summary.csv",
+];
+
+self.addEventListener("install", (event) => {
   console.log("[Kiosk SW] Installing service worker");
-  self.skipWaiting();
+  event.waitUntil(
+    caches.open(KIOSK_CACHE).then((cache) => {
+      console.log("[Kiosk SW] Pre-caching critical assets...");
+      return cache.addAll(PRECACHE_ASSETS).then(() => {
+        console.log("[Kiosk SW] Pre-cache complete");
+      }).catch((error) => {
+        console.error("[Kiosk SW] Pre-cache failed:", error);
+        // Continue anyway - some assets may have cached successfully
+      });
+    }).then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", (event) => {
   console.log("[Kiosk SW] Activating service worker");
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    // Clean up old caches
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames
+          .filter((name) => name.startsWith("kiosk-cache-") && name !== KIOSK_CACHE)
+          .map((name) => {
+            console.log("[Kiosk SW] Deleting old cache:", name);
+            return caches.delete(name);
+          })
+      );
+    }).then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener("fetch", (event) => {
@@ -69,3 +109,44 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+// Background sync for data updates
+self.addEventListener("sync", (event) => {
+  console.log("[Kiosk SW] Sync event:", event.tag);
+  
+  if (event.tag === "sync-data") {
+    event.waitUntil(
+      syncDataFiles().then(() => {
+        console.log("[Kiosk SW] Data sync completed");
+      }).catch((error) => {
+        console.error("[Kiosk SW] Data sync failed:", error);
+        throw error; // Will retry
+      })
+    );
+  }
+});
+
+// Function to sync data files in background
+async function syncDataFiles() {
+  const dataFiles = [
+    "/data/country_labels.json",
+    "/data/operations_data.json",
+    "/data/region_coords.json",
+    "/data/region_data.json",
+    "/data/successstories-summary.csv",
+  ];
+  
+  const cache = await caches.open(KIOSK_CACHE);
+  
+  for (const file of dataFiles) {
+    try {
+      const response = await fetch(file);
+      if (response.ok) {
+        await cache.put(file, response);
+        console.log("[Kiosk SW] Synced:", file);
+      }
+    } catch (error) {
+      console.error("[Kiosk SW] Failed to sync:", file, error);
+    }
+  }
+}
