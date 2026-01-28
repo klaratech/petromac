@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { submitContact } from "@/app/contact/actions";
+import { submitContact } from "@/app/(public)/contact/actions";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({

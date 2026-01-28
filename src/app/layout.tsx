@@ -1,37 +1,32 @@
-import type { Metadata, Viewport } from "next";
-import { Inter, IBM_Plex_Sans } from "next/font/google";
-import "./globals.css";
-import ErrorBoundary from "@/components/kiosk/ErrorBoundary";
-import { Analytics } from "@vercel/analytics/next";
-import ConditionalLayout from "@/components/shared/ConditionalLayout";
+import type { Metadata, Viewport } from 'next';
+import { Inter, IBM_Plex_Sans } from 'next/font/google';
+import './globals.css';
+import ErrorBoundary from '@/shared/ui/ErrorBoundary';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+  variable: '--font-inter',
+  subsets: ['latin'],
 });
 
 const ibmPlexSans = IBM_Plex_Sans({
-  variable: "--font-plex",
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
+  variable: '--font-plex',
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Petromac",
-  description: "Petromac Kiosk App",
-  manifest: "/manifest.json",
+  title: 'Petromac',
+  description: 'Petromac website and kiosk',
   icons: {
-    icon: "/favicon.ico",
-    apple: "/icons/icon-192x192.png",
+    icon: '/favicon.ico',
+    apple: '/icons/icon-192x192.png',
   },
 };
 
-// ✅ NEW viewport export — replaces themeColor in metadata
 export const viewport: Viewport = {
-  themeColor: "#000000",
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
-  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -45,9 +40,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${ibmPlexSans.variable} font-sans antialiased min-h-dvh flex flex-col`}
       >
-        <ErrorBoundary>
-          <ConditionalLayout>{children}</ConditionalLayout>
-        </ErrorBoundary>
+        <ErrorBoundary>{children}</ErrorBoundary>
         <Analytics />
       </body>
     </html>
