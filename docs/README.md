@@ -83,7 +83,7 @@ To test offline functionality:
 ### Prerequisites
 - Node.js 20+
 - Python 3.11+
-- pnpm/npm/yarn
+- pnpm
 - Git
 
 ### Local Development Setup
@@ -91,9 +91,9 @@ To test offline functionality:
 ```bash
 git clone https://github.com/Klaratech/petromac.git
 cd petromac
-npm install
+pnpm install
 cp .env.example .env.local
-npm run dev
+pnpm run dev
 ```
 
 For Python scripts:

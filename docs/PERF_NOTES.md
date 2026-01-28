@@ -103,7 +103,7 @@ This minimizes CSS scanning time and final CSS bundle size.
 Added `@next/bundle-analyzer` to enable on-demand bundle inspection:
 - Installed as dev dependency
 - Configured in `next.config.ts` with `ANALYZE=true` env flag
-- Run with: `ANALYZE=true npm run build`
+- Run with: `ANALYZE=true pnpm run build`
 - Does not affect production builds when ANALYZE is unset
 
 ---

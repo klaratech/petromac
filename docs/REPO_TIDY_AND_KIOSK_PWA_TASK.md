@@ -163,7 +163,7 @@ git --no-pager grep -n "components/kiosk/MapRenderer" -- src || true
 
 ## Phase 6 — Depcheck & removal of dead files
 ```bash
-npx depcheck || true
+pnpm exec depcheck || true
 git --no-pager grep -n "successStoriesOptions" -- src || true
 git --no-pager grep -n "successstories-summary.csv" -- src || true
 # Remove unused modules/files and update imports accordingly
@@ -186,15 +186,15 @@ Update:
 
 ## QA & Checks
 ```bash
-npm run dev
+pnpm run dev
 # Smoke test public pages (About, Catalog, Track Record, Team)
 # Smoke test intranet → Kiosk pages (map, videos, 3D, flipbook)
 # Verify Header/Footer visible everywhere
 
-npx tsc --noEmit
-npx eslint .
-npm run build
-npm run start
+pnpm exec tsc --noEmit
+pnpm exec eslint .
+pnpm run build
+pnpm run start
 
 # PWA:
 # - Visit /intranet/kiosk/... → SW registered (Application tab)

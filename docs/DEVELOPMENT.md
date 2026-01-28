@@ -8,9 +8,9 @@ This document describes how to develop, test, and deploy features for the Petrom
 ```bash
 git clone https://github.com/Klaratech/petromac.git
 cd petromac
-npm install
+pnpm install
 cp .env.example .env.local
-npm run dev
+pnpm run dev
 ```
 
 - Python scripts: set up virtualenv in `scripts/python`, install from `requirements.txt`
@@ -44,7 +44,7 @@ The Success Stories flipbook features three hard-coded multi-select filters:
 2. Update the option arrays (AREA_OPTIONS, SERVICE_COMPANY_OPTIONS, TECHNOLOGY_OPTIONS)
 3. Update normalization functions if needed (normalizeArea, normalizeServiceCompany, normalizeDevice)
 4. Test locally: http://localhost:3000/success-stories/flipbook
-5. Run `npx tsc --noEmit` to verify types
+5. Run `pnpm exec tsc --noEmit` to verify types
 6. Commit and deploy
 
 **Important**: Options are **hard-coded** and do NOT auto-generate from the CSV. The CSV (`public/data/successstories-summary.csv`) is only used for mapping filters to page numbers.
@@ -69,7 +69,7 @@ The Success Stories flipbook features three hard-coded multi-select filters:
 
 ## Testing
 
-- Run lint/typecheck before commits (`npm run lint`, `npx tsc --noEmit`)
+- Run lint/typecheck before commits (`pnpm run lint`, `pnpm exec tsc --noEmit`)
 - Husky + lint-staged ensure quality at commit
 - Preview builds deployed automatically for PRs
 
@@ -146,7 +146,7 @@ DIAGNOSTICS = "data/private/intermediate/validation.txt"
 After making changes, verify all data fetches work:
 
 ```bash
-npm run dev
+pnpm run dev
 # Open http://localhost:3000
 # Open DevTools → Network tab → Filter by "data/"
 # Verify all /data/*.json requests return 200 OK (no 404s)
