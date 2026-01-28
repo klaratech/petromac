@@ -55,7 +55,7 @@ Protected by Basic Auth. Includes:
 
 ### Success Stories
 - **Data Source**: Single CSV file at `public/data/successstories-summary.csv`
-- **Options**: Hard-coded filters in `src/data/successStoriesOptions.ts` (Area, Service Company, Technology)
+- **Options**: Hard-coded filters in `src/features/success-stories/config/options.ts` (Area, Service Company, Technology)
 - **Flipbook**: Interactive flipbook with filtering at `/success-stories/flipbook`
 
 To modify filter options:
@@ -95,6 +95,12 @@ pnpm install
 cp .env.example .env.local
 pnpm run dev
 ```
+
+### Common Scripts
+- `pnpm run lint`
+- `pnpm run typecheck`
+- `pnpm run validate:successstories`
+- `pnpm run test:e2e` (run with a local server running)
 
 For Python scripts:
 ```bash

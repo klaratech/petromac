@@ -16,50 +16,43 @@ The repository contains:
 website/
 ├── src/
 │   ├── app/                              # Next.js App Router
-│   │   ├── page.tsx                      # 🌐 Public homepage
-│   │   ├── about/                        # 🌐 About page
-│   │   ├── catalog/                      # 🌐 Product catalog page
-│   │   │   └── flipbook/                 # 🌐 Product catalog flipbook page
-│   │   ├── track-record/                 # 🌐 Track record page (global deployment map)
-│   │   ├── case-studies/                 # 🌐 Case studies page
-│   │   ├── contact/                      # 🌐 Contact page
-│   │   ├── success-stories/              # 🌐 Success stories page
-│   │   │   └── flipbook/                 # 🌐 Success stories flipbook page
+│   │   ├── (public)/                     # 🌐 Public shell routes
+│   │   │   ├── page.tsx                  # Homepage
+│   │   │   ├── about/                    # About pages
+│   │   │   ├── catalog/                  # Catalog + flipbook
+│   │   │   ├── track-record/             # Global deployment map
+│   │   │   ├── contact/                  # Contact + server actions
+│   │   │   ├── success-stories/flipbook/ # Success stories flipbook
+│   │   │   └── intranet/                 # 🔒 Intranet homepage
+│   │   ├── (kiosk)/                      # 🔒 Kiosk shell routes
+│   │   │   └── intranet/kiosk/           # Kiosk application
+│   │   │       ├── page.tsx              # Kiosk entry (video intro)
+│   │   │       ├── dashboard/            # Operations dashboard (map)
+│   │   │       ├── productlines/         # Product lines viewer
+│   │   │       ├── datacheck/            # Data validation tools
+│   │   │       └── successstories/       # Success stories flipbook
+│   │   ├── api/                          # API routes
 │   │   ├── layout.tsx                    # Root layout (global)
-│   │   ├── globals.css                   # Global styles
-│   │   └── intranet/                     # 🔒 Protected section
-│   │       ├── page.tsx                  # Intranet homepage (Athena + Kiosk tiles)
-│   │       └── kiosk/                    # 🔒 Kiosk application
-│   │           ├── page.tsx              # Kiosk entry (video intro)
-│   │           ├── api/                  # API routes
-│   │           │   └── successstories/   # Success stories API
-│   │           ├── catalog/              # Product catalog with 3D models
-│   │           ├── dashboard/            # Operations dashboard (map)
-│   │           ├── datacheck/            # Data validation tools
-│   │           ├── productlines/         # Product lines viewer
-│   │           └── successstories/       # Success stories manager
+│   │   └── globals.css                   # Global styles
+│   ├── features/                         # Feature modules (shared)
+│   │   ├── success-stories/              # ✅ Single source of truth
+│   │   │   ├── components/               # Filters + flipbook UI
+│   │   │   ├── config/                   # Options + normalization
+│   │   │   └── services/                 # CSV parsing/filtering
+│   │   └── kiosk/                        # Kiosk shell components
+│   ├── shared/
+│   │   └── ui/                           # Shared UI primitives
 │   ├── components/
-│   │   ├── public/                       # 🌐 Public website components (Hero, ContactForm, etc.)
-│   │   ├── shared/                       # ⚡ Shared components (used by public & intranet)
-│   │   │   ├── Header.tsx                # Global navigation header
-│   │   │   ├── Footer.tsx                # Global footer
-│   │   │   └── pdf/                      # Shared PDF components (flipbook)
-│   │   ├── successstories/               # Success stories filter components
-│   │   │   └── Filters.tsx               # Multi-select filter UI
-│   │   ├── geo/                          # 🗺️ Geospatial map components (shared)
-│   │   │   ├── MapRenderer.tsx           # D3.js SVG map rendering
-│   │   │   ├── DrilldownMapCore.tsx      # Core map logic (reusable)
-│   │   │   ├── DrilldownMapPublic.tsx    # Public wrapper for /track-record
-│   │   │   └── DrilldownMapKiosk.tsx     # Kiosk wrapper for dashboard
-│   │   └── kiosk/                        # 🔒 Kiosk-specific components (charts, viewers, etc.)
+│   │   ├── public/                       # Public website components
+│   │   ├── shared/                       # Shared layout components
+│   │   │   └── pdf/                      # Shared PDF components
+│   │   ├── geo/                          # Shared map components
+│   │   └── kiosk/                        # Kiosk-specific components
 │   ├── hooks/                            # Custom React hooks
 │   ├── lib/                              # Utility functions
-│   │   ├── successStoriesFilters.ts      # Success stories CSV loader and filter logic
 │   │   └── map/                          # Map-specific utilities
-│   │       └── data.ts                   # Data fetchers for /data/*.json
 │   ├── types/                            # TypeScript type definitions
-│   ├── data/                             # Static data modules
-│   │   ├── successStoriesOptions.ts      # Hard-coded filter options (Area, Company, Tech)
+│   ├── data/                             # Static data modules (small)
 │   │   └── team.ts                       # Team member data
 │   ├── config/                           # App configuration
 │   └── constants/                        # Constants and enums
@@ -70,6 +63,7 @@ website/
 │   │   ├── product-catalog.pdf           # Product catalog source PDF
 │   │   ├── successstories.pdf            # Success stories source PDF
 │   │   ├── successstories-summary.csv    # Success stories data (single source)
+│   │   ├── world-110m.json               # Local topojson for offline map
 │   │   └── *.json                        # Operations and map data
 │   ├── flipbooks/                        # Generated images for flipbooks
 │   │   ├── productcatalog/
@@ -83,10 +77,6 @@ website/
 │       └── intermediate/                 # Python processing intermediates & diagnostics
 ├── scripts/
 │   ├── python/                           # Python data processing
-│   │   ├── generate_json.py              # Excel → JSON processor
-│   │   ├── pdf_to_images.py              # PDF → images processor (flipbooks)
-│   │   ├── successstories.py             # PDF generation
-│   │   └── requirements.txt              # Python dependencies
 │   └── node/                             # Node.js utilities
 ├── .github/
 │   └── workflows/
@@ -94,6 +84,7 @@ website/
 │       └── pdf-flipbook-build.yml        # Automated flipbook generation
 ├── .env.example                          # Environment variables template
 ├── package.json                          # Node.js dependencies
+├── pnpm-lock.yaml                        # pnpm lockfile
 ├── tsconfig.json                         # TypeScript configuration
 ├── tailwind.config.mjs                   # Tailwind CSS config
 ├── next.config.ts                        # Next.js configuration
@@ -102,7 +93,6 @@ website/
 ├── TODO.md                               # Project backlog
 ├── REPO_STRUCTURE.md                     # This file
 └── docs/
-    ├── README-successstories.md          # Success stories guide
     ├── TAILWIND_THEME.md                 # Brand theme specifications
     ├── ARCHITECTURE.md                   # Architecture overview
     └── DEVELOPMENT.md                    # Development workflow
@@ -261,6 +251,7 @@ Map components follow a core + wrapper pattern:
 
 ### Success Stories Data Flow
 1. **Source**: `public/data/successstories-summary.csv` (single source of truth)
-2. **Options**: Hard-coded filters in `src/data/successStoriesOptions.ts`
-3. **API**: `/intranet/kiosk/api/successstories` for dynamic filtering
-4. **UI**: Filters in `src/components/successstories/Filters.tsx`
+2. **Options**: Hard-coded filters in `src/features/success-stories/config/options.ts`
+3. **Services**: CSV parsing + filtering in `src/features/success-stories/services/successStories.shared.ts`
+4. **API**: `/api/pdf/success-stories` for PDF generation
+5. **UI**: Filters in `src/features/success-stories/components/SuccessStoriesFilters.tsx`

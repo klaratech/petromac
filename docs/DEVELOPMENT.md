@@ -40,18 +40,20 @@ The Success Stories flipbook features three hard-coded multi-select filters:
 - **Technology**: Product technologies (Pathfinder, Focus-OH, Focus-CH, Wireline Express, THOR)
 
 **Modifying Filter Options**:
-1. Edit `src/data/successStoriesOptions.ts`
+1. Edit `src/features/success-stories/config/options.ts`
 2. Update the option arrays (AREA_OPTIONS, SERVICE_COMPANY_OPTIONS, TECHNOLOGY_OPTIONS)
 3. Update normalization functions if needed (normalizeArea, normalizeServiceCompany, normalizeDevice)
 4. Test locally: http://localhost:3000/success-stories/flipbook
 5. Run `pnpm exec tsc --noEmit` to verify types
-6. Commit and deploy
+6. Run `pnpm run validate:successstories` to check CSV mapping
+7. Commit and deploy
 
 **Important**: Options are **hard-coded** and do NOT auto-generate from the CSV. The CSV (`public/data/successstories-summary.csv`) is only used for mapping filters to page numbers.
 
 ## Code Organization
 
-- `src/app/` → Next.js App Router pages
+- `src/app/(public)` → Public shell routes
+- `src/app/(kiosk)` → Kiosk shell routes
 - `src/components/public/` → Public site components
 - `src/components/shared/pdf/Flipbook.tsx` → Shared flipbook component
 - `src/components/geo/` → Shared map components
@@ -59,8 +61,8 @@ The Success Stories flipbook features three hard-coded multi-select filters:
   - `DrilldownMapPublic.tsx` → Public wrapper for `/track-record`
   - `DrilldownMapKiosk.tsx` → Kiosk wrapper for dashboard
 - `src/lib/map/data.ts` → Map data fetchers for `/data/*.json`
-- `src/app/intranet/` → Intranet pages
-- `src/app/intranet/kiosk/` → Kiosk app
+- `src/features/success-stories/` → Success Stories feature (filters, parsing, services)
+- `src/shared/ui/` → Shared UI primitives
 
 ## GitHub Actions
 
@@ -70,7 +72,8 @@ The Success Stories flipbook features three hard-coded multi-select filters:
 ## Testing
 
 - Run lint/typecheck before commits (`pnpm run lint`, `pnpm exec tsc --noEmit`)
-- Husky + lint-staged ensure quality at commit
+- Run data validation (`pnpm run validate:successstories`)
+- Run smoke tests (`pnpm run test:e2e`) with a local server running
 - Preview builds deployed automatically for PRs
 
 ## Data Conventions

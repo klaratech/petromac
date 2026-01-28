@@ -59,6 +59,13 @@ Before configuring Vercel, you need:
 | `EMAIL_PASSWORD` | `[app-password]` | App password from Office365 |
 | `EMAIL_FROM` | `"Petromac <info@petromac.co.nz>"` | Sender name and email |
 
+#### Security Allowlists (Recommended):
+| Variable Name | Example Value | Description |
+|--------------|---------------|-------------|
+| `ALLOWED_ORIGINS` | `https://www.petromac.com,https://petromac.vercel.app` | Allowed origins/referrers for email endpoints |
+| `ALLOWED_EMAIL_DOMAINS` | `petromac.com,petromac.co.nz` | Domains allowed to receive PDFs |
+| `ALLOWED_EMAIL_RECIPIENTS` | `info@petromac.co.nz,marketing@petromac.co.nz` | Explicit allowlist of recipient emails |
+
 ### Petromac Office365 Configuration:
 
 **Complete Environment Variables Setup:**
@@ -78,6 +85,11 @@ EMAIL_SECURE=false
 EMAIL_USER=info@petromac.co.nz
 EMAIL_PASSWORD=[your-office365-app-password]
 EMAIL_FROM="Petromac <info@petromac.co.nz>"
+
+# Email Endpoint Security
+ALLOWED_ORIGINS=https://www.petromac.com,https://petromac.vercel.app
+ALLOWED_EMAIL_DOMAINS=petromac.com,petromac.co.nz
+ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz
 ```
 
 **Note:** Use the same app password for both `SMTP_PASS` and `EMAIL_PASSWORD`.

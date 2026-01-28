@@ -1,10 +1,10 @@
 # Architecture
 
-The Petromac platform combines a **public-facing website**, a **protected intranet portal**, and supporting **data processing pipelines**.
+The Petromac platform combines a **public-facing website**, a **protected intranet portal**, a **kiosk shell**, and supporting **data processing pipelines**.
 
 ## Components
 
-### Public Website
+### Public Website (Route Group: `(public)`)
 - Built with **Next.js 15.5+** (App Router) and **React 19**
 - Styled with **Tailwind CSS 4** using Petromac brand theme
 - Pages: Home, About, Catalog, Track Record, Case Studies, Success Stories, Contact
@@ -22,6 +22,10 @@ The Petromac platform combines a **public-facing website**, a **protected intran
   - Operations dashboard with map visualization (shared DrilldownMapCore)
   - Product lines explorer
   - Data validation tools
+
+### Kiosk Shell (Route Group: `(kiosk)`)
+- Kiosk-only layout provides fullscreen UX, dedicated service worker registration, and kiosk manifest/viewport metadata
+- All kiosk routes live under `/intranet/kiosk/*` but are isolated by the kiosk route group shell
 
 ### Shared Map Components
 - **DrilldownMapCore** (`src/components/geo/DrilldownMapCore.tsx`) - Reusable map logic for both public and kiosk
@@ -42,20 +46,19 @@ The Petromac platform combines a **public-facing website**, a **protected intran
   - `/catalog/flipbook`
   - `/success-stories/flipbook`
 
-#### Success Stories Filters Architecture
-The Success Stories flipbook implements a **separation of concerns** between filter options and data mapping:
+#### Success Stories Filters Architecture (Single Source of Truth)
+Success Stories are implemented as a **single feature module**:
 
-**Filter Options Source** (`src/data/successStoriesOptions.ts`):
+**Options + Normalization** (`src/features/success-stories/config/options.ts`):
 - Three hard-coded multi-select filters: Area, Service Company, Technology
 - Options are **static TypeScript constants** - NOT auto-generated from CSV
-- Provides normalization functions for matching CSV data to canonical option names
-- Single source of truth for available filter values
+- Normalization functions map CSV values to canonical options
 
-**CSV-Driven Page Mapping** (`src/lib/successStoriesFilters.ts`):
-- Loads `public/data/successstories-summary.csv` at runtime
-- Maps filter selections to flipbook page numbers
-- Applies normalization to match CSV values with filter options
-- Returns filtered list of pages to display
+**CSV Parsing + Filtering** (`src/features/success-stories/services/successStories.shared.ts`):
+- Loads `public/data/successstories-summary.csv`
+- Parses CSV with PapaParse
+- Applies normalization and derives filtered page numbers
+- Produces a validation report for unmapped/invalid values
 
 **Key Design Decision**: Options are hard-coded to prevent the UI from changing unpredictably when CSV data updates. The CSV is used only for page mapping, maintaining stable, predictable filter behavior.
 
@@ -88,6 +91,7 @@ The Success Stories flipbook implements a **separation of concerns** between fil
 - Includes:
   - Large JSON datasets (operations_data.json ~3MB)
   - Map data (country_labels.json, region_coords.json, region_data.json)
+  - World map topojson (`world-110m.json`) for offline map rendering
   - CSV files (Product_and_Device_Line_Growth.csv)
   - Source PDFs for flipbooks (product-catalog.pdf, successstories.pdf)
 
