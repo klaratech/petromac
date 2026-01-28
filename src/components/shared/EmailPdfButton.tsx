@@ -77,8 +77,8 @@ export function EmailPdfButton({
       </button>
 
       {revealed && (
-        <div className="absolute right-0 top-0 z-50">
-          <div className="flex items-center gap-2 bg-white rounded-lg shadow-xl border border-gray-200 px-3 py-2 w-80 transform transition-transform duration-200 translate-x-0">
+        <div className="absolute right-0 top-0 z-50 email-slider">
+          <div className="flex items-center gap-2 bg-white rounded-lg shadow-xl border border-gray-200 px-3 py-2 w-80">
             <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full">
               <input
                 type="email"
@@ -145,6 +145,22 @@ export function EmailPdfButton({
           )}
         </div>
       )}
+      <style jsx>{`
+        .email-slider {
+          animation: emailSlideIn 160ms ease-out;
+        }
+
+        @keyframes emailSlideIn {
+          from {
+            opacity: 0;
+            transform: translateX(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
