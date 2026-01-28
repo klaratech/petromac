@@ -56,7 +56,7 @@ export default function SplashLoop({ onActivate }: SplashLoopProps) {
       className="relative w-screen h-screen bg-black overflow-hidden flex items-center justify-center"
     >
       <video
-        src="/videos/intro-loop.mp4"
+        src="/videos/intro-loop2.mp4"
         autoPlay
         loop
         muted
