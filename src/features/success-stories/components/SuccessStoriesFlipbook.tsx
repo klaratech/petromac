@@ -81,11 +81,6 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
       .map((page) => page.url);
   }, [allowedPages, manifest]);
 
-  const flipbookKey = useMemo(
-    () => JSON.stringify({ areas: filters.areas, companies: filters.companies, techs: filters.techs }),
-    [filters]
-  );
-
   const selectionSummary = useMemo(() => {
     if (selectedPages.length === 0) return 'No pages selected';
     if (selectedPages.length === allowedPages.length) {
@@ -282,7 +277,6 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
         ) : (
           <div className="bg-white rounded-lg shadow-lg p-6">
             <Flipbook
-              key={flipbookKey}
               pages={pages}
               pageNumbers={allowedPages}
               width={600}
