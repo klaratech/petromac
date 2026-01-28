@@ -2,7 +2,8 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v4';
+const VERSION = 'v5';
+
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;
 const RUNTIME_MEDIA = `kiosk-media-${VERSION}`;
@@ -16,11 +17,21 @@ const MAX_DATA_ENTRIES = 40;
 const MAX_MEDIA_AGE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 const MAX_DATA_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
+// If kiosk uses Next/Image, cache its optimized outputs as well.
+const NEXT_IMAGE_PATH = '/_next/image';
+
 const MEDIA_PATHS = ['/videos/', '/models/', '/flipbooks/', '/images/'];
+
+// Kiosk shell routes to precache so first-ever offline load can still boot.
+const KIOSK_SHELL_ROUTES = ['/intranet/kiosk', '/intranet/kiosk/'];
+
+// Adjust if your manifest is kiosk-scoped rather than root-scoped.
+const MANIFEST_URL = '/manifest.json';
 
 // Critical assets to pre-cache on install (small, stable files only)
 const PRECACHE_ASSETS = [
-  '/manifest.json',
+  ...KIOSK_SHELL_ROUTES,
+  MANIFEST_URL,
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
   '/data/country_labels.json',
@@ -66,6 +77,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // For Range requests (common for video), caching can be unreliable.
+  // Keep it simple: let the network handle Range requests when online;
+  // offline playback should still work if the full file was cached earlier.
+  if (request.headers.has('range')) return;
+
   // Cache kiosk navigations (network-first, fallback to cache)
   if (request.mode === 'navigate' && url.pathname.startsWith('/intranet/kiosk')) {
     event.respondWith(networkFirst(request, RUNTIME_STATIC, MAX_STATIC_ENTRIES));
@@ -75,6 +91,12 @@ self.addEventListener('fetch', (event) => {
   // Cache Next.js static assets
   if (url.pathname.startsWith('/_next/static/')) {
     event.respondWith(cacheFirst(request, RUNTIME_STATIC, MAX_STATIC_ENTRIES));
+    return;
+  }
+
+  // Cache Next.js image optimization outputs (if used)
+  if (url.pathname.startsWith(NEXT_IMAGE_PATH)) {
+    event.respondWith(cacheFirst(request, RUNTIME_STATIC, MAX_STATIC_ENTRIES, MAX_DATA_AGE_SECONDS));
     return;
   }
 
@@ -98,23 +120,30 @@ async function cacheFirst(request, cacheName, maxEntries, maxAgeSeconds) {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
 
-  if (cached && !(await isExpired(request, maxAgeSeconds))) {
+  if (cached && !(await isExpired(request.url, maxAgeSeconds))) {
     return cached;
   }
 
+  // If we have cached but it's expired, prefer network; if network fails, fall back to stale cached.
+  const staleCached = cached || null;
+
   if (cached) {
     await cache.delete(request);
-    await deleteMetadata(request);
+    await deleteMetadata(request.url);
   }
 
-  const response = await fetch(request);
-  if (response && response.ok) {
-    await cache.put(request, response.clone());
-    await setMetadata(request);
-    await trimCache(cache, maxEntries);
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) {
+      await cache.put(request, response.clone());
+      await setMetadata(request.url);
+      await trimCache(cache, maxEntries);
+    }
+    return response;
+  } catch (err) {
+    if (staleCached) return staleCached;
+    throw err;
   }
-
-  return response;
 }
 
 async function networkFirst(request, cacheName, maxEntries, maxAgeSeconds) {
@@ -123,34 +152,35 @@ async function networkFirst(request, cacheName, maxEntries, maxAgeSeconds) {
     if (response && response.ok) {
       const cache = await caches.open(cacheName);
       await cache.put(request, response.clone());
-      await setMetadata(request);
+      await setMetadata(request.url);
       await trimCache(cache, maxEntries);
     }
     return response;
   } catch (error) {
     const cache = await caches.open(cacheName);
     const cached = await cache.match(request);
-    if (cached && !(await isExpired(request, maxAgeSeconds))) return cached;
+    if (cached && !(await isExpired(request.url, maxAgeSeconds))) return cached;
     throw error;
   }
 }
 
-async function setMetadata(request) {
+// Store metadata by URL (string key) for deterministic lookup and deletion.
+async function setMetadata(url) {
   const cache = await caches.open(META_CACHE);
   const body = JSON.stringify({ cachedAt: Date.now() });
-  await cache.put(request, new Response(body));
+  await cache.put(url, new Response(body));
 }
 
-async function deleteMetadata(request) {
+async function deleteMetadata(url) {
   const cache = await caches.open(META_CACHE);
-  await cache.delete(request);
+  await cache.delete(url);
 }
 
-async function isExpired(request, maxAgeSeconds) {
+async function isExpired(url, maxAgeSeconds) {
   if (!maxAgeSeconds) return false;
 
   const cache = await caches.open(META_CACHE);
-  const response = await cache.match(request);
+  const response = await cache.match(url);
   if (!response) return false;
 
   try {
@@ -169,6 +199,6 @@ async function trimCache(cache, maxEntries) {
   const deletes = keys.length - maxEntries;
   for (let i = 0; i < deletes; i += 1) {
     await cache.delete(keys[i]);
-    await deleteMetadata(keys[i]);
+    await deleteMetadata(keys[i].url);
   }
 }

@@ -102,6 +102,16 @@ pnpm run dev
 - `pnpm run validate:successstories`
 - `pnpm run test:e2e` (run with a local server running)
 
+## Kiosk
+Kiosk routes live under `/intranet/kiosk`. Offline caching is implemented via a kiosk-scoped Service Worker.
+See `KIOSK.md` for cache versioning and offline validation steps.
+
+### E2E tests
+Install Playwright browsers once:
+`pnpm exec playwright install`
+Then run:
+`pnpm run test:e2e`
+
 For Python scripts:
 ```bash
 cd scripts/python
