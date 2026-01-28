@@ -30,7 +30,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="text-center text-sm text-slate-400">
-          <p>© 2025 Petromac. All rights reserved.</p>
+          <p>© 2026 Petromac. All rights reserved.</p>
         </div>
       </div>
     </footer>

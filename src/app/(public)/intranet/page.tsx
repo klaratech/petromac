@@ -10,54 +10,73 @@ export default function IntranetHome() {
   const [showKioskInstructions, setShowKioskInstructions] = useState(false);
   
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-8 py-16">
-      <h1 className="text-3xl font-bold mb-8">Intranet</h1>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl">
-        {/* Athena Production */}
-        <a
-          href={athenaProdUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="border rounded-xl p-10 shadow hover:shadow-lg transition flex flex-col items-center gap-4"
-        >
-          <Image
-            src="/images/athena_logo.png"
-            alt="Athena Production"
-            width={120}
-            height={120}
-            className="object-contain"
-          />
-          <h2 className="text-2xl font-bold">Athena (Prod)</h2>
-        </a>
+    <main className="min-h-screen flex flex-col items-center justify-center gap-10 py-16">
+      <h1 className="text-3xl font-bold">Intranet</h1>
 
-        {/* Athena Test */}
-        <a
-          href={athenaTestUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="border rounded-xl p-10 shadow hover:shadow-lg transition flex flex-col items-center gap-4"
-        >
-          <Image
-            src="/images/athena_logo_beta.png"
-            alt="Athena Test"
-            width={120}
-            height={120}
-            className="object-contain"
-          />
-          <h2 className="text-2xl font-bold">Athena (Test)</h2>
-        </a>
+      <section className="w-full max-w-5xl">
+        <div className="mb-4 text-center">
+          <h2 className="text-xl font-semibold text-gray-900">Quick Links</h2>
+          <p className="text-sm text-gray-600">
+            Shortcuts to internal tools.
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Athena Production */}
+          <a
+            href={athenaProdUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-3 bg-white"
+          >
+            <Image
+              src="/images/athena_logo.png"
+              alt="Athena Production"
+              width={84}
+              height={84}
+              className="object-contain"
+            />
+            <h3 className="text-lg font-semibold tracking-wide text-gray-900">Athena (Prod)</h3>
+          </a>
 
-        {/* Kiosk */}
-        <button
-          onClick={() => setShowKioskInstructions(true)}
-          className="border rounded-xl p-10 shadow hover:shadow-lg transition flex flex-col items-center gap-4 cursor-pointer bg-white"
-        >
-          <div className="w-[120px] h-[120px] flex items-center justify-center text-6xl">
-            🖥️
-          </div>
-          <h2 className="text-2xl font-bold">Kiosk</h2>
-        </button>
-      </div>
+          {/* Athena Test */}
+          <a
+            href={athenaTestUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-3 bg-white"
+          >
+            <Image
+              src="/images/athena_logo_beta.png"
+              alt="Athena Test"
+              width={84}
+              height={84}
+              className="object-contain"
+            />
+            <h3 className="text-lg font-semibold tracking-wide text-gray-900">Athena (Test)</h3>
+          </a>
+        </div>
+      </section>
+
+      <section className="w-full max-w-5xl">
+        <div className="mb-4 text-center">
+          <h2 className="text-xl font-semibold text-gray-900">Applications</h2>
+          <p className="text-sm text-gray-600">
+            Standalone internal apps.
+          </p>
+        </div>
+        <div className="flex justify-center">
+          {/* Kiosk */}
+          <button
+            onClick={() => setShowKioskInstructions(true)}
+            className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-3 cursor-pointer bg-white w-full max-w-sm"
+          >
+            <div className="w-20 h-20 flex items-center justify-center text-4xl">
+              🖥️
+            </div>
+            <h3 className="text-lg font-semibold tracking-wide text-gray-900">Kiosk</h3>
+          </button>
+        </div>
+      </section>
 
       {/* Kiosk Instructions Modal */}
       {showKioskInstructions && (

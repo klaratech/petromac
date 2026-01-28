@@ -83,7 +83,9 @@ export default function PatentsPage() {
   return (
     <main className="min-h-screen bg-brandblack">
       <div className="max-w-7xl mx-auto px-6 pt-8 pb-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-white text-center">Patents</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-white text-center">
+          Petromac&apos;s intellectual property
+        </h1>
         
         <div className="mb-12 bg-white/5 rounded-lg p-6 border border-white/10">
           <p className="text-white/90 leading-relaxed mb-4">

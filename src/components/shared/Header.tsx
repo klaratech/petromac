@@ -8,6 +8,7 @@ export default function Header() {
   const pathname = usePathname();
 
   const navItems = [
+    { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Catalog", href: "/catalog" },
     { name: "Track Record", href: "/track-record" },
@@ -53,6 +54,7 @@ export default function Header() {
           <div className="h-6 w-px bg-gray-600" />
           <Link
             href="/intranet"
+            prefetch={false}
             className={`text-base font-medium transition-colors hover:text-blue-400 ${
               isActive("/intranet")
                 ? "text-blue-400 border-b-2 border-blue-400 pb-1"
