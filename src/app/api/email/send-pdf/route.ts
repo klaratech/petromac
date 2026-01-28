@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import { getClientIp, rateLimit } from '@/lib/rateLimit';
 import { FLIPBOOK_KEYS } from '@/features/flipbooks/constants';
 import { getFlipbookPdfPath } from '@/features/flipbooks/services/flipbookManifest.server';
+import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 import { generateSuccessStoriesPdf } from '@/features/success-stories/services/successStoriesPdf.server';
 
 const RATE_LIMIT = { limit: 3, windowMs: 60_000 };
@@ -47,6 +48,38 @@ function isRecipientAllowed(email: string) {
   return allowedDomains.map((d) => d.toLowerCase()).includes(domain);
 }
 
+function buildDownloadFilename(filters?: SuccessStoriesFilters): string {
+  const parts: string[] = ['petromac', 'successstories'];
+
+  const appendFilters = (values?: string[]) => {
+    if (!values || values.length === 0) return;
+    const normalized = values
+      .map((value) =>
+        value
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+      )
+      .filter(Boolean)
+      .join('-');
+    if (normalized) parts.push(normalized);
+  };
+
+  appendFilters(filters?.areas);
+  appendFilters(filters?.companies);
+  appendFilters(filters?.techs);
+
+  const date = new Date().toISOString().slice(0, 10);
+  parts.push(date);
+
+  return `${parts.join('_')}.pdf`;
+}
+
+function buildCatalogFilename(): string {
+  const date = new Date().toISOString().slice(0, 10);
+  return `petromac_catalog_${date}.pdf`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     if (!isOriginAllowed(req)) {
@@ -72,7 +105,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email, pdfType, pageNumbers } = await req.json();
+    const { email, pdfType, pageNumbers, filters } = await req.json();
 
     if (!email || !pdfType) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -87,7 +120,7 @@ export async function POST(req: NextRequest) {
 
     if (pdfType === 'catalog') {
       pdfBuffer = await fs.readFile(getFlipbookPdfPath(FLIPBOOK_KEYS.catalog));
-      pdfName = 'Petromac-Product-Catalog.pdf';
+      pdfName = buildCatalogFilename();
     } else if (pdfType === 'success-stories') {
       if (Array.isArray(pageNumbers) && pageNumbers.length > 0) {
         const result = await generateSuccessStoriesPdf({ pageNumbers });
@@ -95,7 +128,7 @@ export async function POST(req: NextRequest) {
       } else {
         pdfBuffer = await fs.readFile(getFlipbookPdfPath(FLIPBOOK_KEYS.successStories));
       }
-      pdfName = 'Petromac-Success-Stories.pdf';
+      pdfName = buildDownloadFilename(filters);
     } else {
       return NextResponse.json({ error: 'Invalid pdfType' }, { status: 400 });
     }

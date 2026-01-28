@@ -111,6 +111,33 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
     setSelectedPages([]);
   };
 
+  const buildDownloadFilename = () => {
+    const parts: string[] = ['petromac', 'successstories'];
+
+    const appendFilters = (values?: string[]) => {
+      if (!values || values.length === 0) return;
+      const normalized = values
+        .map((value) =>
+          value
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+        )
+        .filter(Boolean)
+        .join('-');
+      if (normalized) parts.push(normalized);
+    };
+
+    appendFilters(filters.areas);
+    appendFilters(filters.companies);
+    appendFilters(filters.techs);
+
+    const date = new Date().toISOString().slice(0, 10);
+    parts.push(date);
+
+    return `${parts.join('_')}.pdf`;
+  };
+
   const handleDownload = async () => {
     if (selectedPages.length === 0) return;
     setIsDownloading(true);
@@ -131,7 +158,7 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
       const url = window.URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = 'success-stories-selected.pdf';
+      anchor.download = buildDownloadFilename();
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -197,7 +224,7 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
               pdfType="success-stories"
               pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.successStories)}/source.pdf`}
               endpoint="/api/email/send-pdf"
-              payload={{ pageNumbers: selectedPages }}
+              payload={{ pageNumbers: selectedPages, filters: debouncedFilters }}
               disabled={selectedPages.length === 0}
             />
             <button

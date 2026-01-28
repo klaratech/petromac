@@ -2,6 +2,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 import { generateSuccessStoriesPdf } from '@/features/success-stories/services/successStoriesPdf.server';
 
+function buildDownloadFilename(filters?: SuccessStoriesFilters): string {
+  const parts: string[] = ['petromac', 'successstories'];
+
+  const appendFilters = (values?: string[]) => {
+    if (!values || values.length === 0) return;
+    const normalized = values
+      .map((value) =>
+        value
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+      )
+      .filter(Boolean)
+      .join('-');
+    if (normalized) parts.push(normalized);
+  };
+
+  appendFilters(filters?.areas);
+  appendFilters(filters?.companies);
+  appendFilters(filters?.techs);
+
+  const date = new Date().toISOString().slice(0, 10);
+  parts.push(date);
+
+  return `${parts.join('_')}.pdf`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -31,9 +58,7 @@ export async function POST(request: NextRequest) {
     return new NextResponse(buffer, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': result.isFullDocument
-          ? 'attachment; filename="success-stories.pdf"'
-          : 'attachment; filename="success-stories-filtered.pdf"',
+        'Content-Disposition': `attachment; filename="${buildDownloadFilename(filters)}"`,
       },
     });
   } catch (error) {

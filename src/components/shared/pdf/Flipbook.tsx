@@ -29,19 +29,7 @@ export default function Flipbook({
   useEffect(() => {
     if (!bookRef.current) return;
 
-    // Destroy existing instance if any
-    if (flipRef.current) {
-      try {
-        flipRef.current.destroy();
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error("Error destroying flipbook:", e);
-      }
-      flipRef.current = null;
-    }
-
-    // Clear any existing content
-    bookRef.current.innerHTML = "";
+    setIsLoading(true);
 
     // Create all page elements
     const pageElements: HTMLDivElement[] = [];
@@ -57,7 +45,6 @@ export default function Flipbook({
       img.style.objectFit = "contain";
       
       pageElement.appendChild(img);
-      bookRef.current?.appendChild(pageElement);
       pageElements.push(pageElement);
     });
 
@@ -66,38 +53,46 @@ export default function Flipbook({
       if (!bookRef.current) return;
 
       try {
-        // Initialize PageFlip with single page view
-        flipRef.current = new PageFlip(bookRef.current, {
-          width,
-          height,
-          size: "fixed",
-          minWidth: 315,
-          maxWidth: 2000,
-          minHeight: 400,
-          maxHeight: 1533,
-          maxShadowOpacity: 0.5,
-          showCover: true,
-          mobileScrollSupport: true,
-          drawShadow: true,
-          flippingTime: 1000,
-          usePortrait: true,
-          startZIndex: 0,
-          autoSize: false,
-        });
+        if (!flipRef.current) {
+          // Clear any existing content before first init
+          bookRef.current.innerHTML = "";
+          pageElements.forEach((page) => bookRef.current?.appendChild(page));
 
-        flipRef.current.loadFromHTML(pageElements);
-        
-        // Add event listener for page flip
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (flipRef.current as any).on("flip", (e: any) => {
-          setCurrentPage(e.data);
-        });
+          // Initialize PageFlip with single page view
+          flipRef.current = new PageFlip(bookRef.current, {
+            width,
+            height,
+            size: "fixed",
+            minWidth: 315,
+            maxWidth: 2000,
+            minHeight: 400,
+            maxHeight: 1533,
+            maxShadowOpacity: 0.5,
+            showCover: true,
+            mobileScrollSupport: true,
+            drawShadow: true,
+            flippingTime: 1000,
+            usePortrait: true,
+            startZIndex: 0,
+            autoSize: false,
+          });
+
+          flipRef.current.loadFromHTML(pageElements);
+
+          // Add event listener for page flip
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (flipRef.current as any).on("flip", (e: any) => {
+            setCurrentPage(e.data);
+          });
+        } else {
+          flipRef.current.updateFromHtml(pageElements);
+        }
         
         setCurrentPage(0);
         setIsLoading(false);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error("Error initializing flipbook:", error);
+        console.error("Error updating flipbook:", error);
         setIsLoading(false);
       }
     }, 100);
