@@ -46,24 +46,17 @@ Protected by Basic Auth. Includes:
 - **Kiosk Application** with dashboards, product lines, success stories manager, data check tools
 
 ### Flipbooks
-- Flipbooks generated from PDFs:  
-  - `public/data/product-catalog.pdf`  
-  - `public/data/successstories.pdf`
-- Images stored under `public/flipbooks/*`
+- Flipbooks generated from PDFs stored in `assets/source-pdfs/`
+- Output bundle format under `public/flipbooks/<docKey>/` (manifest, pages, source.pdf, optional tags)
 - Component: `src/components/shared/pdf/Flipbook.tsx`
-- Automated regeneration with GitHub Actions workflow `.github/workflows/pdf-flipbook-build.yml`
+- Automated regeneration with GitHub Actions workflow `.github/workflows/pdf-flipbooks-build.yml`
+- See `FLIPBOOKS.md` for update workflow and validation steps
 
 ### Success Stories
-- **Data Source**: Single CSV file at `public/data/successstories-summary.csv`
-- **Options**: Hard-coded filters in `src/features/success-stories/config/options.ts` (Area, Service Company, Technology)
+- **Data Source**: Tags CSV at `public/flipbooks/success-stories/tags.csv`
+- **Options**: Derived from tags + normalization logic in `src/features/success-stories/services/successStories.shared.ts`
 - **Flipbook**: Interactive flipbook with filtering at `/success-stories/flipbook`
-
-To modify filter options:
-1. Edit `src/data/successStoriesOptions.ts`
-2. Update normalization logic if needed
-3. Deploy
-
-The CSV is used for page mapping only, not for generating filter options.
+- See `FLIPBOOKS.md` for tag format and update workflow
 
 ### PWA & Offline Functionality
 - **Scope**: PWA functionality is limited to `/intranet/kiosk/*` only
@@ -100,6 +93,8 @@ pnpm run dev
 - `pnpm run lint`
 - `pnpm run typecheck`
 - `pnpm run validate:successstories`
+- `pnpm run build:flipbooks`
+- `pnpm run validate:flipbooks`
 - `pnpm run test:e2e` (run with a local server running)
 
 ## Kiosk
@@ -122,11 +117,11 @@ pip install -r requirements.txt
 
 ### Data Processing & Flipbooks
 - Run `python scripts/python/generate_json.py` for operations data
-- Run `python scripts/python/pdf_to_images.py` for flipbooks (optional, normally handled by Actions)
+- Run `pnpm run build:flipbooks` for flipbooks (optional, normally handled by Actions)
 
 ### GitHub Actions
 - `.github/workflows/data-build.yaml` → Operations data
-- `.github/workflows/pdf-flipbook-build.yml` → Flipbooks
+- `.github/workflows/pdf-flipbooks-build.yml` → Flipbooks
 
 ## 🔐 Security
 - Basic Auth for `/intranet/*`

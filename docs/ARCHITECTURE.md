@@ -37,30 +37,24 @@ The Petromac platform combines a **public-facing website**, a **protected intran
 
 ### Flipbook Module
 - Replaces the old PDF viewer/builder modals
-- Source PDFs:
-  - `public/data/product-catalog.pdf`
-  - `public/data/successstories.pdf`
-- Converted into images with Python (`pdf_to_images.py` using pdf2image + pillow)
+- Source PDFs live in `assets/source-pdfs/`
+- Generated bundles in `public/flipbooks/<docKey>/` (manifest, pages, source.pdf, optional tags)
+- Converted into images with Python (`scripts/build_flipbook.py` using pdf2image + pillow)
 - Interactive flipbooks built with **page-flip**
 - Routes:
-  - `/catalog/flipbook`
+  - `/catalog`
   - `/success-stories/flipbook`
 
 #### Success Stories Filters Architecture (Single Source of Truth)
 Success Stories are implemented as a **single feature module**:
 
-**Options + Normalization** (`src/features/success-stories/config/options.ts`):
-- Three hard-coded multi-select filters: Area, Service Company, Technology
-- Options are **static TypeScript constants** - NOT auto-generated from CSV
-- Normalization functions map CSV values to canonical options
-
 **CSV Parsing + Filtering** (`src/features/success-stories/services/successStories.shared.ts`):
-- Loads `public/data/successstories-summary.csv`
+- Loads `public/flipbooks/success-stories/tags.csv`
 - Parses CSV with PapaParse
 - Applies normalization and derives filtered page numbers
 - Produces a validation report for unmapped/invalid values
 
-**Key Design Decision**: Options are hard-coded to prevent the UI from changing unpredictably when CSV data updates. The CSV is used only for page mapping, maintaining stable, predictable filter behavior.
+**Key Design Decision**: Tags CSV is the single source of truth for filtering, with normalization rules applied for stable, predictable filter values.
 
 ### Data Pipeline
 - Python scripts process Excel data into JSON
@@ -71,7 +65,7 @@ Success Stories are implemented as a **single feature module**:
 ### Deployment
 - Hosted on **Vercel**
 - Static assets delivered via Vercel CDN
-- Flipbooks generated automatically by **GitHub Actions** workflow `.github/workflows/pdf-flipbook-build.yml`
+- Flipbooks generated automatically by **GitHub Actions** workflow `.github/workflows/pdf-flipbooks-build.yml`
 - Operations data pipeline also automated via GitHub Actions
 
 ## Data Architecture
@@ -93,7 +87,7 @@ Success Stories are implemented as a **single feature module**:
   - Map data (country_labels.json, region_coords.json, region_data.json)
   - World map topojson (`world-110m.json`) for offline map rendering
   - CSV files (Product_and_Device_Line_Growth.csv)
-  - Source PDFs for flipbooks (product-catalog.pdf, successstories.pdf)
+  - Source PDFs for flipbooks live under `public/flipbooks/`
 
 #### TypeScript Modules (`src/data/`)
 - **Small, typed data modules** imported directly by components

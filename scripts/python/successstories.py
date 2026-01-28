@@ -30,8 +30,8 @@ app.add_middleware(
 # ---------------------------
 # Constants / Globals
 # ---------------------------
-INDEX_CSV_PATH = os.getenv("INDEX_CSV_PATH", "public/successstories-summary.csv")
-CATALOG_PDF_PATH = os.getenv("CATALOG_PDF_PATH", "public/successstories.pdf")
+INDEX_CSV_PATH = os.getenv("INDEX_CSV_PATH", "public/flipbooks/success-stories/tags.csv")
+CATALOG_PDF_PATH = os.getenv("CATALOG_PDF_PATH", "public/flipbooks/success-stories/source.pdf")
 
 FILTER_COLUMNS: Dict[str, str] = {
     "year": "Year",

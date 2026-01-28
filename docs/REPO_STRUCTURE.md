@@ -59,18 +59,18 @@ website/
 ├── middleware.ts                         # 🔒 Basic Auth for /intranet/*
 ├── public/                               # Static assets (Vercel CDN)
 │   ├── kiosk-sw.js                       # 🔧 Kiosk-only service worker
-│   ├── data/                             # Data files & source PDFs
-│   │   ├── product-catalog.pdf           # Product catalog source PDF
-│   │   ├── successstories.pdf            # Success stories source PDF
-│   │   ├── successstories-summary.csv    # Success stories data (single source)
+│   ├── data/                             # Data files (JSON/CSV for maps, ops)
 │   │   ├── world-110m.json               # Local topojson for offline map
 │   │   └── *.json                        # Operations and map data
-│   ├── flipbooks/                        # Generated images for flipbooks
-│   │   ├── productcatalog/
-│   │   └── successstories/
+│   ├── flipbooks/                        # Generated flipbook bundles
+│   │   ├── catalog/
+│   │   └── success-stories/
 │   ├── images/                           # Images and icons
 │   ├── videos/                           # Video files
 │   └── models/                           # 3D models (.glb files)
+├── assets/                               # Source assets for deterministic builds
+│   ├── source-pdfs/                      # Source PDFs for flipbooks
+│   └── tags/                             # Tag CSVs (success stories)
 ├── data/                                 # Data management (private sources only)
 │   └── private/                          # 🚫 GITIGNORED - not deployed
 │       ├── raw/                          # Raw Excel uploads (e.g., jobhistory.xlsx)
@@ -81,7 +81,7 @@ website/
 ├── .github/
 │   └── workflows/
 │       ├── data-build.yaml               # Automated data processing
-│       └── pdf-flipbook-build.yml        # Automated flipbook generation
+│       └── pdf-flipbooks-build.yml       # Automated flipbook generation
 ├── .env.example                          # Environment variables template
 ├── package.json                          # Node.js dependencies
 ├── pnpm-lock.yaml                        # pnpm lockfile
@@ -101,30 +101,30 @@ website/
 ## 📖 Flipbook Module
 
 ### Overview
-The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. These are generated from PDFs in `public/data/`.
+The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. These are generated from PDFs in `assets/source-pdfs/`.
 
 ### File Locations
 - **Source PDFs**:  
-  - `public/data/product-catalog.pdf`  
-  - `public/data/successstories.pdf`
+  - `assets/source-pdfs/catalog.pdf`  
+  - `assets/source-pdfs/success-stories.pdf`
 
-- **Generated Images**:  
-  - `public/flipbooks/productcatalog/`  
-  - `public/flipbooks/successstories/`
+- **Generated Bundles**:  
+  - `public/flipbooks/catalog/`  
+  - `public/flipbooks/success-stories/`
 
 - **Component**:  
   - `src/components/shared/pdf/Flipbook.tsx`
 
 - **Routes**:  
-  - `/catalog/flipbook` → Product Catalog flipbook  
+  - `/catalog` → Product Catalog flipbook  
   - `/success-stories/flipbook` → Success Stories flipbook  
 
 ### Update Workflow
-- Replace the PDF in `public/data/` **with the same filename**.  
-- Push changes to `main`.  
-- GitHub Actions workflow `.github/workflows/pdf-flipbook-build.yml` regenerates JPGs and commits them automatically.
+- Replace the PDFs in `assets/source-pdfs/` and tags in `assets/tags/` (as needed).  
+- Run `pnpm run build:flipbooks` and commit `public/flipbooks/**`.  
+- GitHub Actions workflow `.github/workflows/pdf-flipbooks-build.yml` regenerates outputs on changes.
 
-> ⚠️ Keep filenames stable. Archive old PDFs in `data/archive/` if versioning is needed.
+> ⚠️ Keep filenames stable. Archive old PDFs elsewhere if versioning is needed.
 
 ## 📁 Data Organization
 
@@ -149,8 +149,7 @@ The repository uses a three-tier data organization to separate private sources, 
   - `region_coords.json` - Region coordinate data for map
   - `region_data.json` - Additional region metadata
   - `Product_and_Device_Line_Growth.csv` - Product growth metrics
-  - `product-catalog.pdf` - Source PDF for product catalog flipbook
-  - `successstories.pdf` - Source PDF for success stories flipbook
+  - Flipbook assets live under `public/flipbooks/` (see `FLIPBOOKS.md`)
 
 #### 3. `src/data/` - TypeScript Data Modules
 - **Purpose**: Small, typed data consumed directly by UI components
@@ -199,8 +198,8 @@ export default async function ServerPage() {
 
 All Python scripts in `scripts/python/` follow these output conventions:
 - **Final published JSON** → `public/data/operations_data.json`
-- **Success Stories CSV** → `public/data/successstories-summary.csv`
-- **Flipbook images** → `public/flipbooks/{productcatalog|successstories}/page-XXX.jpg`
+- **Success Stories tags** → `public/flipbooks/success-stories/tags.csv`
+- **Flipbook bundles** → `public/flipbooks/{catalog|success-stories}/`
 - **Diagnostics & intermediates** → `data/private/intermediate/`
 - **Never output to** `scripts/python/` directory (avoid duplication)
 
@@ -250,8 +249,8 @@ Map components follow a core + wrapper pattern:
 - **DrilldownMapKiosk.tsx**: Kiosk wrapper with additional features
 
 ### Success Stories Data Flow
-1. **Source**: `public/data/successstories-summary.csv` (single source of truth)
-2. **Options**: Hard-coded filters in `src/features/success-stories/config/options.ts`
-3. **Services**: CSV parsing + filtering in `src/features/success-stories/services/successStories.shared.ts`
+1. **Source**: `public/flipbooks/success-stories/tags.csv` (single source of truth)
+2. **Normalization**: Filter normalization in `src/features/success-stories/services/successStories.shared.ts`
+3. **Services**: Tags parsing + filtering in `src/features/success-stories/services/successStories.shared.ts`
 4. **API**: `/api/pdf/success-stories` for PDF generation
 5. **UI**: Filters in `src/features/success-stories/components/SuccessStoriesFilters.tsx`

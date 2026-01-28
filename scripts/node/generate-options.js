@@ -24,7 +24,7 @@ const FILTER_COLUMNS = {
 };
 
 function csvPath() {
-  return path.join(process.cwd(), "public", "successstories-summary.csv");
+  return path.join(process.cwd(), "assets", "tags", "success-stories.csv");
 }
 
 function generateOptions() {

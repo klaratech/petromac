@@ -117,8 +117,8 @@ uvicorn successstories:app --reload --host 0.0.0.0 --port 8000
 **Environment Variables:**
 
 - `ALLOWED_ORIGINS` - CORS allowed origins (default: `*`)
-- `INDEX_CSV_PATH` - Path to CSV index (default: `public/successstories-summary.csv`)
-- `CATALOG_PDF_PATH` - Path to catalog PDF (default: `public/successstories.pdf`)
+- `INDEX_CSV_PATH` - Path to CSV index (default: `public/flipbooks/success-stories/tags.csv`)
+- `CATALOG_PDF_PATH` - Path to catalog PDF (default: `public/flipbooks/success-stories/source.pdf`)
 
 ## Data Flow
 

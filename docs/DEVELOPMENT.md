@@ -21,34 +21,28 @@ pnpm run dev
 - Track Record (map): http://localhost:3000/track-record
 
 ### Flipbooks
-- PDFs in `public/data/` (`product-catalog.pdf`, `successstories.pdf`)
-- Generate images manually if needed:
+- Source PDFs live in `assets/source-pdfs/`
+- Generated bundles live in `public/flipbooks/<docKey>/`
+- Regenerate assets:
   ```bash
-  cd scripts/python
-  python pdf_to_images.py
+  pnpm run build:flipbooks
+  pnpm run validate:flipbooks
   ```
-- Images stored in `public/flipbooks/*`
+- Flipbook details and tag format: see `FLIPBOOKS.md`
 - View flipbooks:
-  - http://localhost:3000/catalog/flipbook
+  - http://localhost:3000/catalog
   - http://localhost:3000/success-stories/flipbook
 
 ### Success Stories Filters
 
-The Success Stories flipbook features three hard-coded multi-select filters:
-- **Area**: Geographic regions (APAC, MENA, EUR, LAM, NAM, AFR)
-- **Service Company**: Service companies (SLB, HAL, BHI, Other)
-- **Technology**: Product technologies (Pathfinder, Focus-OH, Focus-CH, Wireline Express, THOR)
+Filters are derived from the tags file at `public/flipbooks/success-stories/tags.csv`.
+Normalization rules live in `src/features/success-stories/services/successStories.shared.ts`.
 
-**Modifying Filter Options**:
-1. Edit `src/features/success-stories/config/options.ts`
-2. Update the option arrays (AREA_OPTIONS, SERVICE_COMPANY_OPTIONS, TECHNOLOGY_OPTIONS)
-3. Update normalization functions if needed (normalizeArea, normalizeServiceCompany, normalizeDevice)
-4. Test locally: http://localhost:3000/success-stories/flipbook
-5. Run `pnpm exec tsc --noEmit` to verify types
-6. Run `pnpm run validate:successstories` to check CSV mapping
-7. Commit and deploy
-
-**Important**: Options are **hard-coded** and do NOT auto-generate from the CSV. The CSV (`public/data/successstories-summary.csv`) is only used for mapping filters to page numbers.
+To update filters:
+1. Update `assets/tags/success-stories.csv`
+2. Run `pnpm run build:flipbooks`
+3. Run `pnpm run validate:successstories`
+4. Commit generated outputs
 
 ## Code Organization
 
@@ -67,7 +61,7 @@ The Success Stories flipbook features three hard-coded multi-select filters:
 ## GitHub Actions
 
 - `.github/workflows/data-build.yaml` → Excel → JSON pipeline
-- `.github/workflows/pdf-flipbook-build.yml` → Flipbook generation
+- `.github/workflows/pdf-flipbooks-build.yml` → Flipbook generation
 
 ## Testing
 
@@ -108,9 +102,10 @@ Follow these conventions when working with data:
 - Use for:
   - Large datasets (operations_data.json ~3MB)
   - Map data (country_labels.json, region_coords.json, region_data.json)
-  - PDFs for flipbooks
-  - CSV files
+- CSV files
 - **Fetch at runtime** - do not import JSON files from here
+
+Flipbook assets (PDFs + images) live under `public/flipbooks/` and are accessed via `/flipbooks/*` URLs.
 
 #### 3. TypeScript Modules (`src/data/`)
 - Small, typed data only (e.g., `team.ts`)
@@ -178,6 +173,6 @@ Check these pages:
 ## Notes
 
 - The old PDF viewer/builder modals are **deprecated** and replaced by the Flipbook module.
-- Always keep PDF filenames stable (`product-catalog.pdf`, `successstories.pdf`).
+- Always keep flipbook source PDF filenames stable (`assets/source-pdfs/catalog.pdf`, `assets/source-pdfs/success-stories.pdf`).
 - Archive older versions if needed, but pipeline depends on stable names.
 - **Data organization is critical** - follow the three-tier structure to avoid deployment issues.

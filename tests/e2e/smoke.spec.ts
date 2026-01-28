@@ -9,14 +9,33 @@ test('public home loads', async ({ page }) => {
   await expect(page.getByRole('banner')).toBeVisible();
 });
 
+test('catalog flipbook loads', async ({ page }) => {
+  await page.goto('/catalog');
+  await expect(page.getByRole('heading', { name: /product catalog/i })).toBeVisible();
+});
+
 test('success stories loads', async ({ page }) => {
   await page.goto('/success-stories/flipbook');
   await expect(page.getByRole('heading', { name: /success stories/i })).toBeVisible();
 });
 
+test('success stories filters update results', async ({ page }) => {
+  await page.goto('/success-stories/flipbook');
+  const countLocator = page.getByText(/Showing \d+ of \d+ success stories/i);
+  await expect(countLocator).toBeVisible();
+  const initialText = await countLocator.textContent();
+
+  await page.getByLabel('Area multiselect').click();
+  const firstOption = page.getByRole('option').first();
+  await firstOption.click();
+  await page.keyboard.press('Escape');
+
+  await expect(countLocator).not.toHaveText(initialText || '');
+});
+
 test('success stories PDF endpoint returns 200', async ({ request }) => {
   const response = await request.post('/api/pdf/success-stories', {
-    data: { filters: {}, mode: 'preview' },
+    data: { pageNumbers: [1, 2], mode: 'preview' },
   });
   expect(response.ok()).toBeTruthy();
   expect(response.headers()['content-type']).toContain('application/pdf');

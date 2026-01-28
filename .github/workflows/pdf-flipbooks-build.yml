@@ -1,13 +1,14 @@
-name: Build Flipbook Images
+name: Build Flipbook Assets
 
 on:
   push:
     branches:
       - main
     paths:
-      - "public/data/product-catalog.pdf"
-      - "public/data/successstories.pdf"
-      - "scripts/python/pdf_to_images.py"
+      - "assets/source-pdfs/**"
+      - "assets/tags/**"
+      - "scripts/build_flipbook.py"
+      - "scripts/node/validate-flipbooks.ts"
 
 jobs:
   flipbook:
@@ -22,6 +23,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
@@ -31,20 +37,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
-      - name: Install Node.js dependencies (with page-flip)
-        run: |
-          npm install
-          npm install page-flip
+      - name: Enable pnpm
+        run: corepack enable
 
-      - name: Convert PDFs to images
-        run: python scripts/python/pdf_to_images.py
+      - name: Install Node.js dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Commit and push generated images
+      - name: Build flipbook assets
+        run: pnpm run build:flipbooks
+
+      - name: Validate flipbook assets
+        run: pnpm run validate:flipbooks
+
+      - name: Commit and push generated assets
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/flipbooks/
-          git diff --quiet && git diff --staged --quiet || git commit -m "chore: update flipbook images"
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: update flipbook assets"
           git push
