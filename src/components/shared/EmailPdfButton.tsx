@@ -78,7 +78,7 @@ export function EmailPdfButton({
 
       {revealed && (
         <div className="absolute right-0 top-0 z-50 email-slider">
-          <div className="flex items-center gap-2 bg-white rounded-lg shadow-xl border border-gray-200 px-3 py-2 w-80">
+          <div className="flex items-center gap-2 bg-white rounded-lg shadow-xl border border-gray-200 px-2 py-1 w-80 h-10">
             <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full">
               <input
                 type="email"
@@ -87,15 +87,15 @@ export function EmailPdfButton({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoFocus
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="you@company.com"
+                className="w-full px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-400"
+                placeholder="name@example.com"
                 aria-label="Recipient"
               />
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="h-9 w-9 flex items-center justify-center bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-green-300"
+                className="h-8 w-8 flex items-center justify-center bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-green-300"
                 title="Send"
                 aria-label="Send"
               >
@@ -122,7 +122,7 @@ export function EmailPdfButton({
                   setEmail("");
                   setMessage(null);
                 }}
-                className="h-9 w-9 flex items-center justify-center text-gray-400 hover:text-gray-600"
+                className="h-8 w-8 flex items-center justify-center text-gray-400 hover:text-gray-600"
                 aria-label="Close"
                 title="Close"
               >
