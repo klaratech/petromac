@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import SuccessStoriesClient from './SuccessStoriesClient';
+import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
 
 export const metadata: Metadata = {
   title: 'Success Stories - Petromac Kiosk',
@@ -7,5 +7,10 @@ export const metadata: Metadata = {
 };
 
 export default function SuccessStoriesPage() {
-  return <SuccessStoriesClient />;
+  return (
+    <SuccessStoriesFlipbook
+      backHref="/intranet/kiosk/dashboard"
+      backLabel="Back to Track Record"
+    />
+  );
 }

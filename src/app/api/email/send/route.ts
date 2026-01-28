@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import type { SuccessStoriesFilters } from '@/modules/success-stories/types/successStories.types';
+import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 
 export async function POST(request: NextRequest) {
   try {

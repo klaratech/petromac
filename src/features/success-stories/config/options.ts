@@ -1,4 +1,3 @@
-// src/data/successStoriesOptions.ts
 // Hard-coded filter options for Success Stories
 // These options are static and do not auto-generate from CSV
 
@@ -11,6 +10,9 @@ export const TECHNOLOGY_OPTIONS = [
   "Wireline Express",
   "THOR"
 ] as const;
+
+// Total flipbook pages (used to build image URLs)
+export const SUCCESS_STORIES_TOTAL_PAGES = 47;
 
 export type Area = typeof AREA_OPTIONS[number];
 export type ServiceCompany = typeof SERVICE_COMPANY_OPTIONS[number];
@@ -38,8 +40,8 @@ export interface SuccessStoryRow {
  * 
  * To update options:
  * 1. Edit the const arrays above
- * 2. Update the normalization logic in successStoriesFilters.ts if needed
- * 3. Run `npm run build` to verify
+ * 2. Update the normalization logic here if needed
+ * 3. Run `pnpm run build` to verify
  * 4. Deploy
  */
 

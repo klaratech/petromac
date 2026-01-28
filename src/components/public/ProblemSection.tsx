@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const problems = [
-  { title: "Deviation", desc: "Operate reliably in high deviation wells.", link: "/success-stories" },
-  { title: "Ledges", desc: "Manage ledges and hole irregularities.", link: "/success-stories" },
-  { title: "Orientation", desc: "Orient probes for better sample quality.", link: "/success-stories" },
-  { title: "Sticking", desc: "Mitigate differential sticking risks.", link: "/success-stories" },
+  { title: "Deviation", desc: "Operate reliably in high deviation wells.", link: "/success-stories/flipbook" },
+  { title: "Ledges", desc: "Manage ledges and hole irregularities.", link: "/success-stories/flipbook" },
+  { title: "Orientation", desc: "Orient probes for better sample quality.", link: "/success-stories/flipbook" },
+  { title: "Sticking", desc: "Mitigate differential sticking risks.", link: "/success-stories/flipbook" },
 ];
 
 export default function ProblemSection() {
