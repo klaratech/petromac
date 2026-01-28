@@ -76,6 +76,20 @@ The Success Stories flipbook features three hard-coded multi-select filters:
 - Run smoke tests (`pnpm run test:e2e`) with a local server running
 - Preview builds deployed automatically for PRs
 
+## Kiosk Offline Refresh (Trade Shows)
+
+To refresh kiosk content before going offline:
+1. Connect the kiosk device to a stable network.
+2. Visit key kiosk routes at least once:
+   - `/intranet/kiosk`
+   - `/intranet/kiosk/dashboard`
+   - `/intranet/kiosk/productlines`
+   - `/intranet/kiosk/successstories`
+3. Wait for videos/models/flipbooks to finish loading (first load caches assets).
+4. If a new release ships, hard refresh once while online to update caches.
+
+If assets appear stale, clear site data for the kiosk domain in the browser settings.
+
 ## Data Conventions
 
 ### Three-Tier Data Organization
