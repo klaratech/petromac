@@ -14,7 +14,7 @@ A Next.js-based application featuring:
 - **3D Visualization**: Three.js, React Three Fiber
 - **Data Visualization**: D3.js
 - **Data Processing**: Python 3.11+ (polars, openpyxl, pdf2image, pillow)
-- **API Services**: Next.js API Routes, FastAPI (Python)
+- **API Services**: Next.js API Routes
 - **Deployment**: Vercel
 - **CI/CD**: GitHub Actions (including automated flipbook generation)
 - **Analytics**: Vercel Analytics

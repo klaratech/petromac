@@ -5,7 +5,6 @@ This directory contains Python utility scripts for data processing and API servi
 ## Overview
 
 - **generate_json.py** - Processes raw Excel data into sanitized JSON for the Next.js app
-- **successstories.py** - FastAPI service for generating filtered PDF catalogs
 - **normalization_config.py** - Configuration for data normalization rules
 - **validate_data.py** - Data validation utilities
 
@@ -90,35 +89,6 @@ cd scripts/python
 source venv/bin/activate
 GITHUB_TOKEN=$YOUR_TOKEN python generate_json.py
 ```
-
-### successstories.py
-
-FastAPI service for generating filtered success stories PDFs.
-
-**Usage:**
-
-```bash
-# Run locally
-cd scripts/python
-source venv/bin/activate
-python successstories.py
-
-# Or with uvicorn directly
-uvicorn successstories:app --reload --host 0.0.0.0 --port 8000
-```
-
-**API Endpoints:**
-
-- `GET /` - Health check
-- `GET /healthz` - Health status with row count
-- `GET /options` - Get available filter options
-- `POST /extract` - Extract and stitch PDF pages based on filters
-
-**Environment Variables:**
-
-- `ALLOWED_ORIGINS` - CORS allowed origins (default: `*`)
-- `INDEX_CSV_PATH` - Path to CSV index (default: `public/flipbooks/success-stories/tags.csv`)
-- `CATALOG_PDF_PATH` - Path to catalog PDF (default: `public/flipbooks/success-stories/source.pdf`)
 
 ## Data Flow
 
