@@ -1,13 +1,11 @@
-import type { Area, ServiceCompany, Technology } from './config/options';
-
 export interface SuccessStoryRow {
   page: number;
-  areaRaw: string;
-  companyRaw: string;
-  techRaw: string;
-  area: Area | null;
-  company: ServiceCompany | null;
-  tech: Technology | null;
+  areaRaw?: string;
+  companyRaw?: string;
+  techRaw?: string;
+  areas: string[];
+  companies: string[];
+  techs: string[];
   year?: number;
   country?: string;
   category1?: string;
@@ -15,9 +13,9 @@ export interface SuccessStoryRow {
 }
 
 export interface SuccessStoriesFilters {
-  areas?: Area[];
-  companies?: ServiceCompany[];
-  techs?: Technology[];
+  areas?: string[];
+  companies?: string[];
+  techs?: string[];
 }
 
 export interface OptionWithCount {

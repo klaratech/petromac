@@ -1,63 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
-import { loadSuccessStoriesDataServer } from '@/features/success-stories/services/successStories.server';
-import { getFilteredPageNumbers } from '@/features/success-stories/services/successStories.shared';
-import { PDFDocument } from 'pdf-lib';
-import fs from 'fs/promises';
-import path from 'path';
+import { generateSuccessStoriesPdf } from '@/features/success-stories/services/successStoriesPdf.server';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { filters, mode = 'download' } = body as {
-      filters: SuccessStoriesFilters;
-      mode: 'preview' | 'download';
+    const { filters, mode = 'download', pageNumbers } = body as {
+      filters?: SuccessStoriesFilters;
+      mode?: 'preview' | 'download';
+      pageNumbers?: number[];
     };
 
-    // Load the base PDF
-    const pdfPath = path.join(process.cwd(), 'public', 'data', 'successstories.pdf');
-    const pdfBytes = await fs.readFile(pdfPath);
-    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const options: { filters?: SuccessStoriesFilters; pageNumbers?: number[] } = {};
+    if (filters) options.filters = filters;
+    if (pageNumbers) options.pageNumbers = pageNumbers;
 
-    // Load CSV data and get page numbers for filters
-    const csvData = await loadSuccessStoriesDataServer();
-    const pageNumbers = getFilteredPageNumbers(csvData, filters);
-
-    // If no filters or all pages match, return the original PDF
-    if (pageNumbers.length === 0 || pageNumbers.length === pdfDoc.getPageCount()) {
-      const originalPdfBytes = await pdfDoc.save();
-      const buffer = Buffer.from(originalPdfBytes);
-
-      if (mode === 'preview') {
-        return new NextResponse(buffer, {
-          headers: {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': 'inline; filename="success-stories-preview.pdf"',
-          },
-        });
-      }
-
-      return new NextResponse(buffer, {
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': 'attachment; filename="success-stories.pdf"',
-        },
-      });
-    }
-
-    // Create a new PDF with only the filtered pages
-    const newPdfDoc = await PDFDocument.create();
-
-    for (const pageNum of pageNumbers) {
-      const pageIndex = pageNum - 1;
-      if (pageIndex >= 0 && pageIndex < pdfDoc.getPageCount()) {
-        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageIndex]);
-        newPdfDoc.addPage(copiedPage);
-      }
-    }
-
-    const newPdfBytes = await newPdfDoc.save();
-    const buffer = Buffer.from(newPdfBytes);
+    const result = await generateSuccessStoriesPdf(options);
+    const buffer = Buffer.from(result.bytes);
 
     if (mode === 'preview') {
       return new NextResponse(buffer, {
@@ -72,13 +31,17 @@ export async function POST(request: NextRequest) {
     return new NextResponse(buffer, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="success-stories-filtered.pdf"',
+        'Content-Disposition': result.isFullDocument
+          ? 'attachment; filename="success-stories.pdf"'
+          : 'attachment; filename="success-stories-filtered.pdf"',
       },
     });
   } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to generate PDF';
+    const status = message.startsWith('Too many pages') ? 400 : 500;
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to generate PDF' },
-      { status: 500 }
+      { error: message },
+      { status }
     );
   }
 }

@@ -1,0 +1,10 @@
+{
+  "docKey": "catalog",
+  "title": "Product Catalog",
+  "pageCount": 62,
+  "pageDigits": 4,
+  "pageExtension": "jpg",
+  "pagesPath": "pages",
+  "sourcePdf": "source.pdf",
+  "updatedAt": "2026-01-28"
+}

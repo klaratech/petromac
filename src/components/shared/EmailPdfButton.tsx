@@ -3,17 +3,29 @@
 import { useState } from "react";
 
 interface EmailPdfButtonProps {
-  pdfUrl: string;
+  pdfUrl?: string;
   pdfType: "catalog" | "success-stories";
+  endpoint?: string;
+  payload?: Record<string, unknown>;
+  disabled?: boolean;
+  buttonLabel?: string;
 }
 
-export function EmailPdfButton({ pdfUrl, pdfType }: EmailPdfButtonProps) {
+export function EmailPdfButton({
+  pdfUrl,
+  pdfType,
+  endpoint = "/api/email/send-pdf",
+  payload,
+  disabled = false,
+  buttonLabel = "Email PDF",
+}: EmailPdfButtonProps) {
   const [revealed, setRevealed] = useState(false);
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleReveal = () => {
+    if (disabled) return;
     setRevealed(true);
     setMessage(null);
   };
@@ -24,7 +36,7 @@ export function EmailPdfButton({ pdfUrl, pdfType }: EmailPdfButtonProps) {
     setMessage(null);
 
     try {
-      const response = await fetch("/api/email/send-pdf", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,6 +45,7 @@ export function EmailPdfButton({ pdfUrl, pdfType }: EmailPdfButtonProps) {
           email,
           pdfUrl,
           pdfType,
+          ...payload,
         }),
       });
 
@@ -57,10 +70,10 @@ export function EmailPdfButton({ pdfUrl, pdfType }: EmailPdfButtonProps) {
     <div className="relative">
       <button
         onClick={handleReveal}
-        disabled={revealed}
-        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm disabled:bg-green-400"
+        disabled={revealed || disabled}
+        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm disabled:bg-green-400 disabled:cursor-not-allowed"
       >
-        Email PDF
+        {buttonLabel}
       </button>
 
       {revealed && (

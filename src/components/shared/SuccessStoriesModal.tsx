@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import { FLIPBOOK_KEYS, buildFlipbookPageUrls } from "@/features/flipbooks";
+import { useFlipbookManifest } from "@/features/flipbooks/hooks/useFlipbookManifest";
 
 const Flipbook = dynamic(() => import("@/components/shared/pdf/Flipbook"), {
   ssr: false,
@@ -14,9 +16,8 @@ interface Props {
 }
 
 export default function SuccessStoriesModal({ onClose }: Props) {
-  const pages = Array.from({ length: 47 }, (_, i) =>
-    `/flipbooks/successstories/page-${String(i + 1).padStart(3, "0")}.jpg`
-  );
+  const { manifest } = useFlipbookManifest(FLIPBOOK_KEYS.successStories);
+  const pages = manifest ? buildFlipbookPageUrls(FLIPBOOK_KEYS.successStories, manifest) : [];
 
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
@@ -61,8 +62,12 @@ export default function SuccessStoriesModal({ onClose }: Props) {
           </div>
 
           {/* Flipbook Content */}
-          <div className="h-[calc(100%-5rem)] overflow-auto bg-gray-100">
-            <Flipbook pages={pages} width={500} height={700} />
+          <div className="h-[calc(100%-5rem)] overflow-auto bg-gray-100 flex items-center justify-center">
+            {manifest ? (
+              <Flipbook pages={pages} width={500} height={700} />
+            ) : (
+              <div className="text-gray-600">Loading flipbook...</div>
+            )}
           </div>
         </motion.div>
       </motion.div>

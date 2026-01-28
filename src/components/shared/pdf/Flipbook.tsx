@@ -7,9 +7,19 @@ type FlipbookProps = {
   pages: string[];
   width?: number;
   height?: number;
+  pageNumbers?: number[];
+  selectedPages?: number[];
+  onToggleSelect?: (_pageNumber: number) => void;
 };
 
-export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookProps) {
+export default function Flipbook({
+  pages,
+  width = 800,
+  height = 600,
+  pageNumbers,
+  selectedPages = [],
+  onToggleSelect,
+}: FlipbookProps) {
   const bookRef = useRef<HTMLDivElement>(null);
   const flipRef = useRef<PageFlip | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -129,6 +139,8 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
 
   const totalPages = pages.length;
   const displayPage = currentPage + 1;
+  const pageNumber = pageNumbers?.[currentPage] ?? displayPage;
+  const isSelected = selectedPages.includes(pageNumber);
 
   return (
     <div className="w-full flex flex-col justify-center items-center py-2">
@@ -153,7 +165,7 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
 
       {/* Controls Bar */}
       {!isLoading && (
-        <div className="flex items-center justify-center gap-4 mt-3 bg-gray-100 px-6 py-3 rounded-lg shadow">
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-3 bg-gray-100 px-6 py-3 rounded-lg shadow">
           {/* Zoom Controls */}
           <div className="flex items-center gap-2 border-r border-gray-300 pr-4">
             <button
@@ -192,6 +204,19 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
             <span className="text-sm font-semibold min-w-[80px] text-center">
               {displayPage} of {totalPages}
             </span>
+            {onToggleSelect && pageNumber != null && (
+              <button
+                onClick={() => onToggleSelect(pageNumber)}
+                className={`px-4 py-2 rounded font-medium transition ${
+                  isSelected
+                    ? "bg-green-600 text-white hover:bg-green-700"
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                }`}
+                title={isSelected ? "Unselect page" : "Select page"}
+              >
+                {isSelected ? "Selected" : "Select"}
+              </button>
+            )}
             <button
               onClick={goToNextPage}
               disabled={currentPage >= totalPages - 1}

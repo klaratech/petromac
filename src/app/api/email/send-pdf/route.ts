@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import path from 'path';
 import fs from 'fs/promises';
 import { getClientIp, rateLimit } from '@/lib/rateLimit';
+import { FLIPBOOK_KEYS } from '@/features/flipbooks/constants';
+import { getFlipbookPdfPath } from '@/features/flipbooks/services/flipbookManifest.server';
+import { generateSuccessStoriesPdf } from '@/features/success-stories/services/successStoriesPdf.server';
 
 const RATE_LIMIT = { limit: 3, windowMs: 60_000 };
 
@@ -70,7 +72,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email, pdfType } = await req.json();
+    const { email, pdfType, pageNumbers } = await req.json();
 
     if (!email || !pdfType) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -80,20 +82,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Recipient not allowed' }, { status: 403 });
     }
 
-    let pdfPath: string;
+    let pdfBuffer: Buffer;
     let pdfName: string;
 
     if (pdfType === 'catalog') {
-      pdfPath = path.join(process.cwd(), 'public', 'data', 'product-catalog.pdf');
+      pdfBuffer = await fs.readFile(getFlipbookPdfPath(FLIPBOOK_KEYS.catalog));
       pdfName = 'Petromac-Product-Catalog.pdf';
     } else if (pdfType === 'success-stories') {
-      pdfPath = path.join(process.cwd(), 'public', 'data', 'successstories.pdf');
+      if (Array.isArray(pageNumbers) && pageNumbers.length > 0) {
+        const result = await generateSuccessStoriesPdf({ pageNumbers });
+        pdfBuffer = Buffer.from(result.bytes);
+      } else {
+        pdfBuffer = await fs.readFile(getFlipbookPdfPath(FLIPBOOK_KEYS.successStories));
+      }
       pdfName = 'Petromac-Success-Stories.pdf';
     } else {
       return NextResponse.json({ error: 'Invalid pdfType' }, { status: 400 });
     }
-
-    const pdfBuffer = await fs.readFile(pdfPath);
 
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,

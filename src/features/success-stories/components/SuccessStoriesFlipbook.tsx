@@ -15,7 +15,8 @@ import {
   getTotalStoryCount,
 } from '../services/successStories.shared';
 import type { SuccessStoriesFilters as FiltersState, SuccessStoryRow } from '../types';
-import { SUCCESS_STORIES_TOTAL_PAGES } from '../config/options';
+import { FLIPBOOK_KEYS, buildFlipbookPageUrls, getFlipbookBasePath } from '@/features/flipbooks';
+import { useFlipbookManifest } from '@/features/flipbooks/hooks/useFlipbookManifest';
 
 const Flipbook = dynamic(() => import('@/components/shared/pdf/Flipbook'), {
   ssr: false,
@@ -35,6 +36,11 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
   const [filters, setFilters] = useState<FiltersState>({});
   const [csvData, setCsvData] = useState<SuccessStoryRow[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [selectedPages, setSelectedPages] = useState<number[]>([]);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const { manifest } = useFlipbookManifest(FLIPBOOK_KEYS.successStories);
 
   const debouncedFilters = useDebounce(filters, 200);
 
@@ -58,21 +64,84 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
 
   const totalStories = useMemo(() => getTotalStoryCount(csvData), [csvData]);
 
+  useEffect(() => {
+    setSelectedPages(allowedPages);
+  }, [allowedPages]);
+
   const pages = useMemo(() => {
-    const allPages = Array.from({ length: SUCCESS_STORIES_TOTAL_PAGES }, (_, i) => ({
-      pageNumber: i + 1,
-      url: `/flipbooks/successstories/page-${String(i + 1).padStart(3, '0')}.jpg`,
+    if (!manifest) return [];
+
+    const allPages = buildFlipbookPageUrls(FLIPBOOK_KEYS.successStories, manifest).map((url, index) => ({
+      pageNumber: index + 1,
+      url,
     }));
 
     return allPages
       .filter((page) => allowedPages.includes(page.pageNumber))
       .map((page) => page.url);
-  }, [allowedPages]);
+  }, [allowedPages, manifest]);
 
   const flipbookKey = useMemo(
     () => JSON.stringify({ areas: filters.areas, companies: filters.companies, techs: filters.techs }),
     [filters]
   );
+
+  const selectionSummary = useMemo(() => {
+    if (selectedPages.length === 0) return 'No pages selected';
+    if (selectedPages.length === allowedPages.length) {
+      return `Selected ${selectedPages.length} pages`;
+    }
+    return `Selected ${selectedPages.length} of ${allowedPages.length} pages`;
+  }, [selectedPages, allowedPages.length]);
+
+  const handleToggleSelection = (pageNumber: number) => {
+    setSelectedPages((prev) => {
+      if (prev.includes(pageNumber)) {
+        return prev.filter((page) => page !== pageNumber);
+      }
+      return [...prev, pageNumber].sort((a, b) => a - b);
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedPages(allowedPages);
+  };
+
+  const handleClearSelection = () => {
+    setSelectedPages([]);
+  };
+
+  const handleDownload = async () => {
+    if (selectedPages.length === 0) return;
+    setIsDownloading(true);
+    setDownloadError(null);
+
+    try {
+      const response = await fetch('/api/pdf/success-stories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pageNumbers: selectedPages, mode: 'download' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'success-stories-selected.pdf';
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      setDownloadError(error instanceof Error ? error.message : 'Failed to download PDF');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-gray-100">
@@ -109,7 +178,7 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
           )}
         </div>
 
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col gap-4 mb-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Success Stories</h1>
             <p className="text-gray-600 mt-1">
@@ -119,20 +188,55 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
                 ? 'No stories match the selected filters'
                 : `Showing ${allowedPages.length} of ${totalStories} success stories`}
             </p>
+            {manifest && (
+              <p className="text-sm text-gray-500 mt-2">{selectionSummary}</p>
+            )}
           </div>
-          <div className="flex gap-3">
-            <EmailPdfButton pdfUrl="/data/successstories.pdf" pdfType="success-stories" />
-            <a
-              href="/data/successstories.pdf"
-              download
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+          <div className="flex flex-wrap gap-3">
+            <EmailPdfButton
+              pdfType="success-stories"
+              pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.successStories)}/source.pdf`}
+              endpoint="/api/email/send-pdf"
+              payload={{ pageNumbers: selectedPages }}
+              disabled={selectedPages.length === 0}
+            />
+            <button
+              onClick={handleDownload}
+              disabled={selectedPages.length === 0 || isDownloading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm disabled:bg-blue-300"
             >
-              Download PDF
-            </a>
+              {isDownloading ? 'Preparing PDF...' : 'Download PDF'}
+            </button>
           </div>
         </div>
 
-        {isLoadingData ? (
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          <button
+            onClick={handleSelectAll}
+            disabled={allowedPages.length === 0}
+            className="px-3 py-1.5 text-xs font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
+          >
+            Select all
+          </button>
+          <button
+            onClick={handleClearSelection}
+            disabled={selectedPages.length === 0}
+            className="px-3 py-1.5 text-xs font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
+          >
+            Clear selection
+          </button>
+          <span className="text-xs text-gray-500">
+            Use the flipbook controls to toggle the current page.
+          </span>
+        </div>
+
+        {downloadError && (
+          <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+            {downloadError}
+          </div>
+        )}
+
+        {isLoadingData || !manifest ? (
           <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center min-h-[700px]">
             <p className="text-gray-600">Loading success stories data...</p>
           </div>
@@ -150,7 +254,15 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <Flipbook key={flipbookKey} pages={pages} width={600} height={800} />
+            <Flipbook
+              key={flipbookKey}
+              pages={pages}
+              pageNumbers={allowedPages}
+              width={600}
+              height={800}
+              selectedPages={selectedPages}
+              onToggleSelect={handleToggleSelection}
+            />
           </div>
         )}
       </div>

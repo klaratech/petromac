@@ -1,7 +1,8 @@
 import type { SuccessStoryRow, SuccessStoriesValidationReport } from '../types';
-import { buildValidationReport, parseSuccessStoriesCsv } from './successStories.shared';
+import { buildValidationReport, parseSuccessStoriesTagsCsv } from './successStories.shared';
+import { FLIPBOOK_KEYS } from '@/features/flipbooks';
 
-const CSV_URL = '/data/successstories-summary.csv';
+const TAGS_URL = `/flipbooks/${FLIPBOOK_KEYS.successStories}/tags.csv`;
 
 let cachedData: SuccessStoryRow[] | null = null;
 let cachedValidation: SuccessStoriesValidationReport | null = null;
@@ -21,19 +22,19 @@ function logValidationIfNeeded(report: SuccessStoriesValidationReport) {
 
   // Warn once per runtime to surface data issues without breaking UX.
   // eslint-disable-next-line no-console
-  console.warn('[SuccessStories] CSV validation issues detected', report);
+  console.warn('[SuccessStories] Tags validation issues detected', report);
 }
 
 export async function loadSuccessStoriesData(): Promise<SuccessStoryRow[]> {
   if (cachedData) return cachedData;
 
-  const response = await fetch(CSV_URL, { cache: 'force-cache' });
+  const response = await fetch(TAGS_URL, { cache: 'force-cache' });
   if (!response.ok) {
-    throw new Error(`Failed to load success stories CSV: ${response.status}`);
+    throw new Error(`Failed to load success stories tags: ${response.status}`);
   }
 
   const csvText = await response.text();
-  const data = parseSuccessStoriesCsv(csvText);
+  const data = parseSuccessStoriesTagsCsv(csvText);
   cachedData = data;
 
   cachedValidation = buildValidationReport(data);
