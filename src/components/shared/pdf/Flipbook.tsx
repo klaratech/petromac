@@ -85,7 +85,11 @@ export default function Flipbook({
             setCurrentPage(e.data);
           });
         } else {
-          flipRef.current.updateFromHtml(pageElements);
+          (
+            flipRef.current as unknown as PageFlip & {
+              updateFromHtml: (items: HTMLElement[]) => void;
+            }
+          ).updateFromHtml(pageElements);
         }
         
         setCurrentPage(0);
