@@ -37,7 +37,7 @@ export const VIDEO_SOURCES = [
 
 // External URLs
 export const EXTERNAL_URLS = {
-  WORLD_MAP_DATA: 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json',
+  WORLD_MAP_DATA: '/data/world-110m.json',
   COUNTRY_LABELS: '/data/country_labels.json',
   OPERATIONS_DATA: '/data/operations_data.json',
 } as const;
