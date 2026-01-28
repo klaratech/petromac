@@ -77,29 +77,9 @@ export function EmailPdfButton({
       </button>
 
       {revealed && (
-        <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-4 z-50 animate-in slide-in-from-top-2 duration-200">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-sm font-semibold text-gray-900">Email PDF</h3>
-            <button
-              onClick={() => {
-                setRevealed(false);
-                setEmail("");
-                setMessage(null);
-              }}
-              className="text-gray-400 hover:text-gray-600"
-              aria-label="Close"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div>
-              <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
+        <div className="absolute right-0 top-0 z-50">
+          <div className="flex items-center gap-2 bg-white rounded-lg shadow-xl border border-gray-200 px-3 py-2 w-80 transform transition-transform duration-200 translate-x-0">
+            <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full">
               <input
                 type="email"
                 id="email"
@@ -107,31 +87,62 @@ export function EmailPdfButton({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoFocus
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="your.email@example.com"
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="you@company.com"
+                aria-label="Recipient"
               />
-            </div>
 
-            {message && (
-              <div
-                className={`p-2 rounded text-xs ${
-                  message.type === "success"
-                    ? "bg-green-50 text-green-800"
-                    : "bg-red-50 text-red-800"
-                }`}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="h-9 w-9 flex items-center justify-center bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-green-300"
+                title="Send"
+                aria-label="Send"
               >
-                {message.text}
-              </div>
-            )}
+                {isLoading ? (
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"
+                    />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-7-7l7 7-7 7" />
+                  </svg>
+                )}
+              </button>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors disabled:bg-green-300"
+              <button
+                type="button"
+                onClick={() => {
+                  setRevealed(false);
+                  setEmail("");
+                  setMessage(null);
+                }}
+                className="h-9 w-9 flex items-center justify-center text-gray-400 hover:text-gray-600"
+                aria-label="Close"
+                title="Close"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </form>
+          </div>
+          {message && (
+            <div
+              className={`mt-2 px-3 py-2 rounded text-xs ${
+                message.type === "success"
+                  ? "bg-green-50 text-green-800 border border-green-200"
+                  : "bg-red-50 text-red-800 border border-red-200"
+              }`}
             >
-              {isLoading ? "Sending..." : "Send PDF"}
-            </button>
-          </form>
+              {message.text}
+            </div>
+          )}
         </div>
       )}
     </div>
