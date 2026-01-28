@@ -14,6 +14,14 @@ test('success stories loads', async ({ page }) => {
   await expect(page.getByRole('heading', { name: /success stories/i })).toBeVisible();
 });
 
+test('success stories PDF endpoint returns 200', async ({ request }) => {
+  const response = await request.post('/api/pdf/success-stories', {
+    data: { filters: {}, mode: 'preview' },
+  });
+  expect(response.ok()).toBeTruthy();
+  expect(response.headers()['content-type']).toContain('application/pdf');
+});
+
 test.describe('kiosk', () => {
   test.skip(!intranetUser || !intranetPass, 'INTRANET_USER/INTRANET_PASS not configured');
 

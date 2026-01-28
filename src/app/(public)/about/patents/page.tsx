@@ -93,7 +93,7 @@ export default function PatentsPage() {
             Petromac Wireline Express™ devices have made a quantum leap in wireline operations, setting world records for deviation and depth achieved during gravity decent in open hole. In doing so, Petromac devices have enabled significant cost and time saving benefits for both the wireline logging companies and the operators we serve.
           </p>
           <p className="text-white/90 leading-relaxed mb-4">
-            In addition, Petromac's Focus™ Precision Centralisers, which include the world's first open hole roller centraliser and cased hole Rocker™ centraliser, are revolutionising centralisation in both open and cased hole logging.
+            In addition, Petromac&apos;s Focus™ Precision Centralisers, which include the world&apos;s first open hole roller centraliser and cased hole Rocker™ centraliser, are revolutionising centralisation in both open and cased hole logging.
           </p>
           <p className="text-white/90 leading-relaxed">
             The technology behind Petromac devices is, of necessity, protected by patents. A list of granted patents is provided below. While we make every effort to keep this list up to date, please note that it may not include all newly granted patents.

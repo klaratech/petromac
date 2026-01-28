@@ -23,6 +23,12 @@ function isOriginAllowed(req: NextRequest) {
   return allowedOrigins.some((allowed) => origin.startsWith(allowed));
 }
 
+function allowlistsConfigured() {
+  const allowedRecipients = parseEnvList(process.env.ALLOWED_EMAIL_RECIPIENTS);
+  const allowedDomains = parseEnvList(process.env.ALLOWED_EMAIL_DOMAINS);
+  return allowedRecipients.length > 0 || allowedDomains.length > 0;
+}
+
 function isRecipientAllowed(email: string) {
   const allowedRecipients = parseEnvList(process.env.ALLOWED_EMAIL_RECIPIENTS);
   const allowedDomains = parseEnvList(process.env.ALLOWED_EMAIL_DOMAINS);
@@ -51,6 +57,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: 'Too many requests. Please try again later.' },
         { status: 429, headers: { 'Retry-After': String(Math.ceil((rate.resetAt - Date.now()) / 1000)) } }
+      );
+    }
+
+    if (!allowlistsConfigured()) {
+      return NextResponse.json(
+        {
+          error:
+            'Email allowlist not configured. Set ALLOWED_EMAIL_DOMAINS or ALLOWED_EMAIL_RECIPIENTS in the environment.',
+        },
+        { status: 500 }
       );
     }
 

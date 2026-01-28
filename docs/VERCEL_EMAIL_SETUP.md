@@ -148,6 +148,15 @@ After adding all environment variables:
 
 ---
 
+## Verification Checklist (Recommended)
+- ✅ `ALLOWED_ORIGINS` is set for your production domain(s)
+- ✅ `ALLOWED_EMAIL_DOMAINS` or `ALLOWED_EMAIL_RECIPIENTS` is set (email allowlist)
+- ✅ `SMTP_*` and `EMAIL_*` variables are set in Vercel
+- ✅ Email endpoints return **clear errors** if allowlists are missing
+- ✅ Success Stories PDF endpoint works: `POST /api/pdf/success-stories`
+
+---
+
 ## Troubleshooting
 
 ### Error: "Authentication failed"

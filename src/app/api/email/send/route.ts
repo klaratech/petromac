@@ -27,6 +27,7 @@ function isRecipientAllowed(email: string, defaultRecipient?: string | null) {
   const allowedDomains = parseEnvList(process.env.ALLOWED_EMAIL_DOMAINS);
 
   if (allowedRecipients.length === 0 && allowedDomains.length === 0) {
+    // Allow only the default recipient when allowlists are unset.
     return defaultRecipient ? email === defaultRecipient : false;
   }
 
@@ -36,6 +37,12 @@ function isRecipientAllowed(email: string, defaultRecipient?: string | null) {
   if (!domain) return false;
 
   return allowedDomains.map((d) => d.toLowerCase()).includes(domain);
+}
+
+function allowlistsConfigured() {
+  const allowedRecipients = parseEnvList(process.env.ALLOWED_EMAIL_RECIPIENTS);
+  const allowedDomains = parseEnvList(process.env.ALLOWED_EMAIL_DOMAINS);
+  return allowedRecipients.length > 0 || allowedDomains.length > 0;
 }
 
 export async function POST(request: NextRequest) {
@@ -67,6 +74,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Recipient email address is required' },
         { status: 400 }
+      );
+    }
+
+    if (to && !allowlistsConfigured()) {
+      return NextResponse.json(
+        {
+          error:
+            'Recipient allowlist not configured. Set ALLOWED_EMAIL_DOMAINS or ALLOWED_EMAIL_RECIPIENTS in the environment.',
+        },
+        { status: 500 }
       );
     }
 
