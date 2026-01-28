@@ -3,7 +3,6 @@
 export interface SystemMedia {
   video: string;
   logo: string;
-  successStoriesPdf: string[];
 }
 
 export interface DeviceMedia {
@@ -22,31 +21,18 @@ export const systemMedia: Record<string, SystemMedia> = {
   'Focus': {
     video: '/videos/helix.mp4?v=20240517',
     logo: '/images/focus.png',
-    successStoriesPdf: [
-      '/successstories/focus-success-1.pdf',
-      '/successstories/focus-success-2.pdf'
-    ]
   },
   'Wireline Express': {
     video: '/videos/WirelineExpress.mp4?v=20240519',
     logo: '/images/wirelineexpress.png',
-    successStoriesPdf: [
-      '/pdf/wireline-success.pdf'
-    ]
   },
   'Thor': {
     video: '/videos/helix.mp4?v=20240517',
     logo: '/images/thor.png',
-    successStoriesPdf: [
-      '/pdf/thor-success.pdf'
-    ]
   },
   'PathFinder': {
     video: '/videos/pf.mp4?v=20240519',
     logo: '/images/pathfinder.png',
-    successStoriesPdf: [
-      '/pdf/pathfinder-success.pdf'
-    ]
   }
 };
 
