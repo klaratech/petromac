@@ -118,6 +118,7 @@ pip install -r requirements.txt
 ### Data Processing & Flipbooks
 - Run `python scripts/python/generate_json.py` for operations data
 - Run `pnpm run build:flipbooks` for flipbooks (optional, normally handled by Actions)
+- Or run `python scripts/update_flipbooks.py` for local updates
 
 ### GitHub Actions
 - `.github/workflows/data-build.yaml` → Operations data

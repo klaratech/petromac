@@ -36,6 +36,12 @@ Current doc keys:
 pnpm run build:flipbooks
 ```
 
+Or use the local helper:
+
+```bash
+python scripts/update_flipbooks.py
+```
+
 4. Validate outputs:
 
 ```bash
@@ -43,7 +49,9 @@ pnpm run validate:flipbooks
 pnpm run validate:successstories
 ```
 
-5. Commit the updated `public/flipbooks/**` outputs.
+5. Commit the updated `public/flipbooks/**` outputs (including `source.pdf`).
+
+> Optional: if you prefer not to commit source PDFs under `assets/source-pdfs/`,\n> you can add that folder to `.gitignore` and rely on `public/flipbooks/**`\n> as the deployed source of truth. Just ensure `public/flipbooks/**` is committed.
 
 ## CI automation
 
