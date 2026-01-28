@@ -5,7 +5,7 @@ The public site and kiosk both read from the same bundle paths.
 
 ## Folder layout
 
-Source inputs (checked in):
+Source inputs (local only, not checked in by default):
 
 - `assets/source-pdfs/`
   - `success-stories.pdf`
@@ -51,14 +51,15 @@ pnpm run validate:successstories
 
 5. Commit the updated `public/flipbooks/**` outputs (including `source.pdf`).
 
-> Optional: if you prefer not to commit source PDFs under `assets/source-pdfs/`,\n> you can add that folder to `.gitignore` and rely on `public/flipbooks/**`\n> as the deployed source of truth. Just ensure `public/flipbooks/**` is committed.
+> Note: `assets/source-pdfs/` is gitignored. The deployable source of truth is
+> `public/flipbooks/**`, which must be committed.
 
 ## CI automation
 
 The GitHub Action `.github/workflows/pdf-flipbooks-build.yml` runs when files in
-`assets/source-pdfs/**` or `assets/tags/**` change. It:
+`assets/tags/**` or flipbook tooling change. It:
 
-- Generates flipbook assets
+- Generates flipbook assets if source PDFs are present
 - Validates manifests/tags
 - Commits updated outputs
 

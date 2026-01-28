@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - "assets/source-pdfs/**"
       - "assets/tags/**"
       - "scripts/build_flipbook.py"
+      - "scripts/update_flipbooks.py"
       - "scripts/node/validate-flipbooks.ts"
 
 jobs:
@@ -44,13 +44,24 @@ jobs:
       - name: Install Node.js dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check for source PDFs
+        id: source_pdfs
+        run: |
+          if [ -f assets/source-pdfs/success-stories.pdf ] && [ -f assets/source-pdfs/catalog.pdf ]; then
+            echo "present=true" >> $GITHUB_OUTPUT
+          else
+            echo "present=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build flipbook assets
+        if: steps.source_pdfs.outputs.present == 'true'
         run: pnpm run build:flipbooks
 
       - name: Validate flipbook assets
         run: pnpm run validate:flipbooks
 
       - name: Commit and push generated assets
+        if: steps.source_pdfs.outputs.present == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
