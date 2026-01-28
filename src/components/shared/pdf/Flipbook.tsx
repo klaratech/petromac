@@ -49,7 +49,7 @@ export default function Flipbook({
     });
 
     // Wait a tick for DOM to update
-    setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       if (!bookRef.current) return;
 
       try {
@@ -102,6 +102,12 @@ export default function Flipbook({
     }, 100);
 
     return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [pages, width, height]);
+
+  useEffect(() => {
+    return () => {
       if (flipRef.current) {
         try {
           flipRef.current.destroy();
@@ -112,7 +118,7 @@ export default function Flipbook({
         flipRef.current = null;
       }
     };
-  }, [pages, width, height]);
+  }, []);
 
   const goToNextPage = () => {
     if (flipRef.current) {
