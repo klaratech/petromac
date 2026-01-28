@@ -1,9 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
-
-const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
 interface SplashLoopProps {
   onActivate: () => void;
@@ -58,20 +55,13 @@ export default function SplashLoop({ onActivate }: SplashLoopProps) {
       ref={containerRef}
       className="relative w-screen h-screen bg-black overflow-hidden flex items-center justify-center"
     >
-      <ReactPlayer
-        url="/videos/intro-loop.mp4"
-        playing
+      <video
+        src="/videos/intro-loop.mp4"
+        autoPlay
         loop
         muted
-        width="100vw"
-        height="100vh"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          objectFit: 'cover',
-          zIndex: -1,
-        }}
+        playsInline
+        className="fixed inset-0 w-full h-full object-cover -z-10"
       />
 
       <button

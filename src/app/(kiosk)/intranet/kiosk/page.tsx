@@ -2,11 +2,8 @@
 
 import { Suspense, useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { APP_CONSTANTS, VIDEO_SOURCES } from '@/constants/app';
-
-const ReactPlayer = dynamic(() => import('react-player/lazy'), { ssr: false });
 
 function KioskContent() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
@@ -35,7 +32,7 @@ function KioskContent() {
 
     const interval = setInterval(() => {
       setTypedText(fullText.slice(0, i + 1));
-      i++;
+      i += 1;
       if (i >= fullText.length) {
         clearInterval(interval);
         setTimeout(() => setShowButton(true), APP_CONSTANTS.BUTTON_SHOW_DELAY);
@@ -111,14 +108,13 @@ function KioskContent() {
             onClick={handleExplore}
             onTouchStart={handleExplore}
           >
-            <ReactPlayer
-              url={VIDEO_SOURCES[videoIndex]}
-              playing
-              loop={false}
+            <video
+              key={VIDEO_SOURCES[videoIndex]}
+              src={VIDEO_SOURCES[videoIndex]}
+              autoPlay
               muted={false}
-              width="100%"
-              height="100%"
-              className="absolute top-0 left-0"
+              playsInline
+              className="absolute top-0 left-0 w-full h-full object-cover"
               onEnded={() => setVideoIndex((prev) => (prev + 1) % VIDEO_SOURCES.length)}
             />
           </motion.div>
