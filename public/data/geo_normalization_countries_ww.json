@@ -1,0 +1,5579 @@
+{
+  "countries": {
+    "ABW": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 12.5,
+          "lon": -69.96666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AW",
+      "iso_alpha3": "ABW",
+      "iso_numeric": "533",
+      "name": "Aruba",
+      "variations": [
+        "533",
+        "abw",
+        "aruba",
+        "aw"
+      ]
+    },
+    "AFG": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 33.0,
+          "lon": 65.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "AF",
+      "iso_alpha3": "AFG",
+      "iso_numeric": "004",
+      "name": "Afghanistan",
+      "variations": [
+        "004",
+        "af",
+        "afg",
+        "afghanistan",
+        "af\u0121\u0101nist\u0101n",
+        "islamic republic of afghanistan"
+      ]
+    },
+    "AGO": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -12.5,
+          "lon": 18.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AO",
+      "iso_alpha3": "AGO",
+      "iso_numeric": "024",
+      "name": "Angola",
+      "variations": [
+        "024",
+        "ago",
+        "angola",
+        "ao",
+        "republic of angola",
+        "rep\u00fablica de angola",
+        "\u0281\u025bpublika de an'\u0261\u0254la"
+      ]
+    },
+    "AIA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.25,
+          "lon": -63.16666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AI",
+      "iso_alpha3": "AIA",
+      "iso_numeric": "660",
+      "name": "Anguilla",
+      "variations": [
+        "660",
+        "ai",
+        "aia",
+        "anguilla"
+      ]
+    },
+    "ALA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 60.116667,
+          "lon": 19.9
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AX",
+      "iso_alpha3": "ALA",
+      "iso_numeric": "248",
+      "name": "\u00c5land Islands",
+      "variations": [
+        "248",
+        "aaland",
+        "ahvenanmaa",
+        "ala",
+        "aland",
+        "ax",
+        "\u00e5land islands"
+      ]
+    },
+    "ALB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 41.0,
+          "lon": 20.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AL",
+      "iso_alpha3": "ALB",
+      "iso_numeric": "008",
+      "name": "Albania",
+      "variations": [
+        "008",
+        "al",
+        "alb",
+        "albania",
+        "republic of albania",
+        "shqipnia",
+        "shqip\u00ebri",
+        "shqip\u00ebria"
+      ]
+    },
+    "AND": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 42.5,
+          "lon": 1.5
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "AD",
+      "iso_alpha3": "AND",
+      "iso_numeric": "020",
+      "name": "Andorra",
+      "variations": [
+        "020",
+        "ad",
+        "and",
+        "andorra",
+        "principality of andorra",
+        "principat d'andorra"
+      ]
+    },
+    "ARE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 24.0,
+          "lon": 54.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AE",
+      "iso_alpha3": "ARE",
+      "iso_numeric": "784",
+      "name": "United Arab Emirates",
+      "variations": [
+        "784",
+        "ae",
+        "are",
+        "emirates",
+        "uae",
+        "united arab emirates"
+      ]
+    },
+    "ARG": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -34.0,
+          "lon": -64.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AR",
+      "iso_alpha3": "ARG",
+      "iso_numeric": "032",
+      "name": "Argentina",
+      "variations": [
+        "032",
+        "ar",
+        "arg",
+        "argentina",
+        "argentine republic",
+        "rep\u00fablica argentina"
+      ]
+    },
+    "ARM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 40.0,
+          "lon": 45.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "AM",
+      "iso_alpha3": "ARM",
+      "iso_numeric": "051",
+      "name": "Armenia",
+      "variations": [
+        "051",
+        "am",
+        "arm",
+        "armenia",
+        "hayastan",
+        "republic of armenia",
+        "\u0570\u0561\u0575\u0561\u057d\u057f\u0561\u0576\u056b \u0570\u0561\u0576\u0580\u0561\u057a\u0565\u057f\u0578\u0582\u0569\u0575\u0578\u0582\u0576"
+      ]
+    },
+    "ASM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -14.33333333,
+          "lon": -170.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AS",
+      "iso_alpha3": "ASM",
+      "iso_numeric": "016",
+      "name": "American Samoa",
+      "variations": [
+        "016",
+        "amelika s\u0101moa",
+        "american samoa",
+        "amerika s\u0101moa",
+        "as",
+        "asm",
+        "s\u0101moa amelika"
+      ]
+    },
+    "ATA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -90.0,
+          "lon": 0.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AQ",
+      "iso_alpha3": "ATA",
+      "iso_numeric": "010",
+      "name": "Antarctica",
+      "variations": [
+        "010",
+        "antarctica",
+        "aq",
+        "ata"
+      ]
+    },
+    "ATF": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -49.25,
+          "lon": 69.167
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TF",
+      "iso_alpha3": "ATF",
+      "iso_numeric": "260",
+      "name": "French Southern and Antarctic Lands",
+      "variations": [
+        "260",
+        "atf",
+        "french southern and antarctic lands",
+        "french southern territories",
+        "territory of the french southern and antarctic lands",
+        "tf"
+      ]
+    },
+    "ATG": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 17.05,
+          "lon": -61.8
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AG",
+      "iso_alpha3": "ATG",
+      "iso_numeric": "028",
+      "name": "Antigua and Barbuda",
+      "variations": [
+        "028",
+        "ag",
+        "antigua and barbuda",
+        "atg"
+      ]
+    },
+    "AUS": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -27.0,
+          "lon": 133.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "AU",
+      "iso_alpha3": "AUS",
+      "iso_numeric": "036",
+      "name": "Australia",
+      "variations": [
+        "036",
+        "au",
+        "aus",
+        "australia",
+        "commonwealth of australia"
+      ]
+    },
+    "AUT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 47.33333333,
+          "lon": 13.33333333
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "AT",
+      "iso_alpha3": "AUT",
+      "iso_numeric": "040",
+      "name": "Austria",
+      "variations": [
+        "040",
+        "at",
+        "austria",
+        "aut",
+        "oesterreich",
+        "osterreich",
+        "republic of austria"
+      ]
+    },
+    "AZE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 40.5,
+          "lon": 47.5
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "AZ",
+      "iso_alpha3": "AZE",
+      "iso_numeric": "031",
+      "name": "Azerbaijan",
+      "variations": [
+        "031",
+        "az",
+        "aze",
+        "azerbaijan",
+        "az\u0259rbaycan respublikas\u0131",
+        "republic of azerbaijan"
+      ]
+    },
+    "BDI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -3.5,
+          "lon": 30.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "BI",
+      "iso_alpha3": "BDI",
+      "iso_numeric": "108",
+      "name": "Burundi",
+      "variations": [
+        "108",
+        "bdi",
+        "bi",
+        "burundi",
+        "republic of burundi",
+        "republika y'uburundi",
+        "r\u00e9publique du burundi"
+      ]
+    },
+    "BEL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 50.83333333,
+          "lon": 4.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BE",
+      "iso_alpha3": "BEL",
+      "iso_numeric": "056",
+      "name": "Belgium",
+      "variations": [
+        "056",
+        "be",
+        "bel",
+        "belgie",
+        "belgien",
+        "belgique",
+        "belgium",
+        "belgi\u00eb",
+        "kingdom of belgium",
+        "koninkrijk belgi\u00eb",
+        "k\u00f6nigreich belgien",
+        "royaume de belgique"
+      ]
+    },
+    "BEN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 9.5,
+          "lon": 2.25
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BJ",
+      "iso_alpha3": "BEN",
+      "iso_numeric": "204",
+      "name": "Benin",
+      "variations": [
+        "204",
+        "ben",
+        "benin",
+        "bj",
+        "republic of benin",
+        "r\u00e9publique du b\u00e9nin"
+      ]
+    },
+    "BES": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 12.18,
+          "lon": -68.25
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BQ",
+      "iso_alpha3": "BES",
+      "iso_numeric": "535",
+      "name": "Caribbean Netherlands",
+      "variations": [
+        "535",
+        "bes",
+        "bes islands",
+        "bonaire sint eustatius and saba",
+        "bonaire, sint eustatius and saba",
+        "bq",
+        "caribbean netherlands"
+      ]
+    },
+    "BFA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.0,
+          "lon": -2.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "BF",
+      "iso_alpha3": "BFA",
+      "iso_numeric": "854",
+      "name": "Burkina Faso",
+      "variations": [
+        "854",
+        "bf",
+        "bfa",
+        "burkina faso"
+      ]
+    },
+    "BGD": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 24.0,
+          "lon": 90.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BD",
+      "iso_alpha3": "BGD",
+      "iso_numeric": "050",
+      "name": "Bangladesh",
+      "variations": [
+        "050",
+        "bangladesh",
+        "bd",
+        "bgd",
+        "g\u00f4n\u00f4pr\u00f4jat\u00f4ntri bangladesh",
+        "people's republic of bangladesh"
+      ]
+    },
+    "BGR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 43.0,
+          "lon": 25.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BG",
+      "iso_alpha3": "BGR",
+      "iso_numeric": "100",
+      "name": "Bulgaria",
+      "variations": [
+        "100",
+        "bg",
+        "bgr",
+        "bulgaria",
+        "republic of bulgaria",
+        "\u0440\u0435\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u0431\u044a\u043b\u0433\u0430\u0440\u0438\u044f"
+      ]
+    },
+    "BHR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 26.0,
+          "lon": 50.55
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BH",
+      "iso_alpha3": "BHR",
+      "iso_numeric": "048",
+      "name": "Bahrain",
+      "variations": [
+        "048",
+        "bahrain",
+        "bh",
+        "bhr",
+        "kingdom of bahrain",
+        "mamlakat al-ba\u1e25rayn"
+      ]
+    },
+    "BHS": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 24.25,
+          "lon": -76.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BS",
+      "iso_alpha3": "BHS",
+      "iso_numeric": "044",
+      "name": "Bahamas",
+      "variations": [
+        "044",
+        "bahamas",
+        "bhs",
+        "bs",
+        "commonwealth of the bahamas"
+      ]
+    },
+    "BIH": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 44.0,
+          "lon": 18.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BA",
+      "iso_alpha3": "BIH",
+      "iso_numeric": "070",
+      "name": "Bosnia and Herzegovina",
+      "variations": [
+        "070",
+        "ba",
+        "bih",
+        "bosnia and herzegovina",
+        "bosnia-herzegovina",
+        "\u0431\u043e\u0441\u043d\u0430 \u0438 \u0445\u0435\u0440\u0446\u0435\u0433\u043e\u0432\u0438\u043d\u0430"
+      ]
+    },
+    "BLM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.5,
+          "lon": -63.41666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BL",
+      "iso_alpha3": "BLM",
+      "iso_numeric": "652",
+      "name": "Saint Barth\u00e9lemy",
+      "variations": [
+        "652",
+        "bl",
+        "blm",
+        "collectivity of saint barth\u00e9lemy",
+        "collectivit\u00e9 de saint-barth\u00e9lemy",
+        "saint barth\u00e9lemy",
+        "st. barthelemy"
+      ]
+    },
+    "BLR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 53.0,
+          "lon": 28.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "BY",
+      "iso_alpha3": "BLR",
+      "iso_numeric": "112",
+      "name": "Belarus",
+      "variations": [
+        "112",
+        "belarus",
+        "bielaru\u015b",
+        "blr",
+        "by",
+        "republic of belarus",
+        "\u0431\u0435\u043b\u043e\u0440\u0443\u0441\u0441\u0438\u044f",
+        "\u0440\u0435\u0441\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u0431\u0435\u043b\u043e\u0440\u0443\u0441\u0441\u0438\u044f"
+      ]
+    },
+    "BLZ": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 17.25,
+          "lon": -88.75
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BZ",
+      "iso_alpha3": "BLZ",
+      "iso_numeric": "084",
+      "name": "Belize",
+      "variations": [
+        "084",
+        "belize",
+        "blz",
+        "bz"
+      ]
+    },
+    "BMU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 32.33333333,
+          "lon": -64.75
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BM",
+      "iso_alpha3": "BMU",
+      "iso_numeric": "060",
+      "name": "Bermuda",
+      "variations": [
+        "060",
+        "bermuda",
+        "bm",
+        "bmu",
+        "somers isles",
+        "the bermudas",
+        "the islands of bermuda"
+      ]
+    },
+    "BOL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -17.0,
+          "lon": -65.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "BO",
+      "iso_alpha3": "BOL",
+      "iso_numeric": "068",
+      "name": "Bolivia",
+      "variations": [
+        "068",
+        "bo",
+        "bol",
+        "bolivia",
+        "bolivia, plurinational state of",
+        "buliwya",
+        "buliwya mamallaqta",
+        "estado plurinacional de bolivia",
+        "plurinational state of bolivia",
+        "tet\u00e3 vol\u00edvia",
+        "wuliwya",
+        "wuliwya suyu"
+      ]
+    },
+    "BRA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -10.0,
+          "lon": -55.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BR",
+      "iso_alpha3": "BRA",
+      "iso_numeric": "076",
+      "name": "Brazil",
+      "variations": [
+        "076",
+        "br",
+        "bra",
+        "brasil",
+        "brazil",
+        "federative republic of brazil",
+        "rep\u00fablica federativa do brasil"
+      ]
+    },
+    "BRB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.16666666,
+          "lon": -59.53333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BB",
+      "iso_alpha3": "BRB",
+      "iso_numeric": "052",
+      "name": "Barbados",
+      "variations": [
+        "052",
+        "barbados",
+        "bb",
+        "brb"
+      ]
+    },
+    "BRN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 4.5,
+          "lon": 114.66666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BN",
+      "iso_alpha3": "BRN",
+      "iso_numeric": "096",
+      "name": "Brunei",
+      "variations": [
+        "096",
+        "bn",
+        "brn",
+        "brunei",
+        "brunei darussalam",
+        "nation of brunei",
+        "nation of brunei, abode of peace",
+        "the abode of peace"
+      ]
+    },
+    "BTN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 27.5,
+          "lon": 90.5
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "BT",
+      "iso_alpha3": "BTN",
+      "iso_numeric": "064",
+      "name": "Bhutan",
+      "variations": [
+        "064",
+        "bhutan",
+        "bt",
+        "btn",
+        "kingdom of bhutan"
+      ]
+    },
+    "BVT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -54.43333333,
+          "lon": 3.4
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "BV",
+      "iso_alpha3": "BVT",
+      "iso_numeric": "074",
+      "name": "Bouvet Island",
+      "variations": [
+        "074",
+        "bouvet island",
+        "bouvet-\u00f8ya",
+        "bouvet\u00f8ya",
+        "bv",
+        "bvt"
+      ]
+    },
+    "BWA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -22.0,
+          "lon": 24.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "BW",
+      "iso_alpha3": "BWA",
+      "iso_numeric": "072",
+      "name": "Botswana",
+      "variations": [
+        "072",
+        "botswana",
+        "bw",
+        "bwa",
+        "lefatshe la botswana",
+        "republic of botswana"
+      ]
+    },
+    "CAF": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 7.0,
+          "lon": 21.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "CF",
+      "iso_alpha3": "CAF",
+      "iso_numeric": "140",
+      "name": "Central African Republic",
+      "variations": [
+        "140",
+        "caf",
+        "central african republic",
+        "cf",
+        "r\u00e9publique centrafricaine"
+      ]
+    },
+    "CAN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 60.0,
+          "lon": -95.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CA",
+      "iso_alpha3": "CAN",
+      "iso_numeric": "124",
+      "name": "Canada",
+      "variations": [
+        "124",
+        "ca",
+        "can",
+        "canada"
+      ]
+    },
+    "CCK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -12.5,
+          "lon": 96.83333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CC",
+      "iso_alpha3": "CCK",
+      "iso_numeric": "166",
+      "name": "Cocos (Keeling) Islands",
+      "variations": [
+        "166",
+        "cc",
+        "cck",
+        "cocos (keeling) islands",
+        "cocos islands",
+        "keeling islands",
+        "territory of the cocos (keeling) islands"
+      ]
+    },
+    "CHE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 47.0,
+          "lon": 8.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "CH",
+      "iso_alpha3": "CHE",
+      "iso_numeric": "756",
+      "name": "Switzerland",
+      "variations": [
+        "756",
+        "ch",
+        "che",
+        "schweiz",
+        "suisse",
+        "svizra",
+        "svizzera",
+        "swiss confederation",
+        "switzerland"
+      ]
+    },
+    "CHL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -30.0,
+          "lon": -71.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CL",
+      "iso_alpha3": "CHL",
+      "iso_numeric": "152",
+      "name": "Chile",
+      "variations": [
+        "152",
+        "chile",
+        "chl",
+        "cl",
+        "republic of chile",
+        "rep\u00fablica de chile"
+      ]
+    },
+    "CHN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 35.0,
+          "lon": 105.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CN",
+      "iso_alpha3": "CHN",
+      "iso_numeric": "156",
+      "name": "China",
+      "variations": [
+        "156",
+        "china",
+        "chn",
+        "cn",
+        "people's republic of china",
+        "zhongguo",
+        "zhonghua",
+        "zh\u014dnggu\u00f3",
+        "zh\u014dnghu\u00e1 r\u00e9nm\u00edn g\u00f2ngh\u00e9gu\u00f3",
+        "\u4e2d\u534e\u4eba\u6c11\u5171\u548c\u56fd"
+      ]
+    },
+    "CIV": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 8.0,
+          "lon": -5.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CI",
+      "iso_alpha3": "CIV",
+      "iso_numeric": "384",
+      "name": "Ivory Coast",
+      "variations": [
+        "384",
+        "ci",
+        "civ",
+        "cote d'ivoire",
+        "c\u00f4te d'ivoire",
+        "ivory coast",
+        "republic of c\u00f4te d'ivoire",
+        "r\u00e9publique de c\u00f4te d'ivoire"
+      ]
+    },
+    "CMR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 6.0,
+          "lon": 12.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CM",
+      "iso_alpha3": "CMR",
+      "iso_numeric": "120",
+      "name": "Cameroon",
+      "variations": [
+        "120",
+        "cameroon",
+        "cm",
+        "cmr",
+        "republic of cameroon",
+        "r\u00e9publique du cameroun"
+      ]
+    },
+    "COD": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 0.0,
+          "lon": 25.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CD",
+      "iso_alpha3": "COD",
+      "iso_numeric": "180",
+      "name": "DR Congo",
+      "variations": [
+        "180",
+        "cd",
+        "cod",
+        "congo, the democratic republic of the",
+        "congo-kinshasa",
+        "democratic republic of congo",
+        "democratic republic of the congo",
+        "dr congo",
+        "drc"
+      ]
+    },
+    "COG": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -1.0,
+          "lon": 15.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CG",
+      "iso_alpha3": "COG",
+      "iso_numeric": "178",
+      "name": "Congo",
+      "variations": [
+        "178",
+        "cg",
+        "cog",
+        "congo",
+        "congo-brazzaville",
+        "republic of the congo"
+      ]
+    },
+    "COK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -21.23333333,
+          "lon": -159.76666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CK",
+      "iso_alpha3": "COK",
+      "iso_numeric": "184",
+      "name": "Cook Islands",
+      "variations": [
+        "184",
+        "ck",
+        "cok",
+        "cook islands",
+        "k\u016bki '\u0101irani"
+      ]
+    },
+    "COL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 4.0,
+          "lon": -72.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CO",
+      "iso_alpha3": "COL",
+      "iso_numeric": "170",
+      "name": "Colombia",
+      "variations": [
+        "170",
+        "co",
+        "col",
+        "colombia",
+        "republic of colombia",
+        "rep\u00fablica de colombia"
+      ]
+    },
+    "COM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -12.16666666,
+          "lon": 44.25
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KM",
+      "iso_alpha3": "COM",
+      "iso_numeric": "174",
+      "name": "Comoros",
+      "variations": [
+        "174",
+        "al-itti\u1e25\u0101d al-qumur\u012b",
+        "com",
+        "comoros",
+        "km",
+        "udzima wa komori",
+        "union des comores",
+        "union of the comoros"
+      ]
+    },
+    "CPV": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 16.0,
+          "lon": -24.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CV",
+      "iso_alpha3": "CPV",
+      "iso_numeric": "132",
+      "name": "Cape Verde",
+      "variations": [
+        "132",
+        "cape verde",
+        "cpv",
+        "cv",
+        "republic of cabo verde",
+        "rep\u00fablica de cabo verde"
+      ]
+    },
+    "CRI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 10.0,
+          "lon": -84.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CR",
+      "iso_alpha3": "CRI",
+      "iso_numeric": "188",
+      "name": "Costa Rica",
+      "variations": [
+        "188",
+        "costa rica",
+        "cr",
+        "cri",
+        "republic of costa rica",
+        "rep\u00fablica de costa rica"
+      ]
+    },
+    "CUB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 21.5,
+          "lon": -80.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CU",
+      "iso_alpha3": "CUB",
+      "iso_numeric": "192",
+      "name": "Cuba",
+      "variations": [
+        "192",
+        "cu",
+        "cub",
+        "cuba",
+        "republic of cuba",
+        "rep\u00fablica de cuba"
+      ]
+    },
+    "CUW": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 12.116667,
+          "lon": -68.933333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CW",
+      "iso_alpha3": "CUW",
+      "iso_numeric": "531",
+      "name": "Cura\u00e7ao",
+      "variations": [
+        "531",
+        "country of cura\u00e7ao",
+        "curacao",
+        "cura\u00e7ao",
+        "cuw",
+        "cw",
+        "k\u00f2rsou",
+        "land cura\u00e7ao",
+        "pais k\u00f2rsou"
+      ]
+    },
+    "CXR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -10.5,
+          "lon": 105.66666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CX",
+      "iso_alpha3": "CXR",
+      "iso_numeric": "162",
+      "name": "Christmas Island",
+      "variations": [
+        "162",
+        "christmas island",
+        "cx",
+        "cxr",
+        "territory of christmas island"
+      ]
+    },
+    "CYM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 19.5,
+          "lon": -80.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KY",
+      "iso_alpha3": "CYM",
+      "iso_numeric": "136",
+      "name": "Cayman Islands",
+      "variations": [
+        "136",
+        "cayman islands",
+        "cym",
+        "ky"
+      ]
+    },
+    "CYP": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 35.0,
+          "lon": 33.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "CY",
+      "iso_alpha3": "CYP",
+      "iso_numeric": "196",
+      "name": "Cyprus",
+      "variations": [
+        "196",
+        "cy",
+        "cyp",
+        "cyprus",
+        "k\u00fdpros",
+        "k\u0131br\u0131s",
+        "k\u0131br\u0131s cumhuriyeti",
+        "republic of cyprus",
+        "\u03ba\u03c5\u03c0\u03c1\u03b9\u03b1\u03ba\u03ae \u03b4\u03b7\u03bc\u03bf\u03ba\u03c1\u03b1\u03c4\u03af\u03b1"
+      ]
+    },
+    "CZE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 49.75,
+          "lon": 15.5
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "CZ",
+      "iso_alpha3": "CZE",
+      "iso_numeric": "203",
+      "name": "Czechia",
+      "variations": [
+        "203",
+        "cz",
+        "cze",
+        "czech republic",
+        "czechia",
+        "\u010desko",
+        "\u010desk\u00e1 republika"
+      ]
+    },
+    "DEU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 51.0,
+          "lon": 9.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "DE",
+      "iso_alpha3": "DEU",
+      "iso_numeric": "276",
+      "name": "Germany",
+      "variations": [
+        "276",
+        "bundesrepublik deutschland",
+        "de",
+        "deu",
+        "federal republic of germany",
+        "germany"
+      ]
+    },
+    "DJI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 11.5,
+          "lon": 43.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "DJ",
+      "iso_alpha3": "DJI",
+      "iso_numeric": "262",
+      "name": "Djibouti",
+      "variations": [
+        "262",
+        "dj",
+        "dji",
+        "djibouti",
+        "gabuuti",
+        "gabuutih ummuuno",
+        "jabuuti",
+        "jamhuuriyadda jabuuti",
+        "republic of djibouti",
+        "r\u00e9publique de djibouti"
+      ]
+    },
+    "DMA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.41666666,
+          "lon": -61.33333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "DM",
+      "iso_alpha3": "DMA",
+      "iso_numeric": "212",
+      "name": "Dominica",
+      "variations": [
+        "212",
+        "commonwealth of dominica",
+        "dm",
+        "dma",
+        "dominica",
+        "dominique",
+        "wai\u2018tu kubuli"
+      ]
+    },
+    "DNK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 56.0,
+          "lon": 10.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "DK",
+      "iso_alpha3": "DNK",
+      "iso_numeric": "208",
+      "name": "Denmark",
+      "variations": [
+        "208",
+        "danmark",
+        "denmark",
+        "dk",
+        "dnk",
+        "kingdom of denmark",
+        "kongeriget danmark"
+      ]
+    },
+    "DOM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 19.0,
+          "lon": -70.66666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "DO",
+      "iso_alpha3": "DOM",
+      "iso_numeric": "214",
+      "name": "Dominican Republic",
+      "variations": [
+        "214",
+        "do",
+        "dom",
+        "dominican republic"
+      ]
+    },
+    "DZA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 28.0,
+          "lon": 3.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "DZ",
+      "iso_alpha3": "DZA",
+      "iso_numeric": "012",
+      "name": "Algeria",
+      "variations": [
+        "012",
+        "algeria",
+        "alg\u00e9rie",
+        "dz",
+        "dza",
+        "dzayer",
+        "people's democratic republic of algeria"
+      ]
+    },
+    "ECU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -2.0,
+          "lon": -77.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "EC",
+      "iso_alpha3": "ECU",
+      "iso_numeric": "218",
+      "name": "Ecuador",
+      "variations": [
+        "218",
+        "ec",
+        "ecu",
+        "ecuador",
+        "republic of ecuador",
+        "rep\u00fablica del ecuador"
+      ]
+    },
+    "EGY": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 27.0,
+          "lon": 30.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "EG",
+      "iso_alpha3": "EGY",
+      "iso_numeric": "818",
+      "name": "Egypt",
+      "variations": [
+        "818",
+        "arab republic of egypt",
+        "eg",
+        "egy",
+        "egypt"
+      ]
+    },
+    "ERI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.0,
+          "lon": 39.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "ER",
+      "iso_alpha3": "ERI",
+      "iso_numeric": "232",
+      "name": "Eritrea",
+      "variations": [
+        "232",
+        "dawlat iritriy\u00e1",
+        "er",
+        "eri",
+        "eritrea",
+        "iritriy\u0101",
+        "state of eritrea",
+        "\u02beertr\u0101",
+        "\u1203\u1308\u1228 \u12a4\u122d\u1275\u122b"
+      ]
+    },
+    "ESH": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 24.5,
+          "lon": -13.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "EH",
+      "iso_alpha3": "ESH",
+      "iso_numeric": "732",
+      "name": "Western Sahara",
+      "variations": [
+        "732",
+        "eh",
+        "esh",
+        "sahrawi arab democratic republic",
+        "tane\u1e93roft tutrimt",
+        "western sahara"
+      ]
+    },
+    "ESP": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 40.0,
+          "lon": -4.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "ES",
+      "iso_alpha3": "ESP",
+      "iso_numeric": "724",
+      "name": "Spain",
+      "variations": [
+        "724",
+        "es",
+        "esp",
+        "kingdom of spain",
+        "reino de espa\u00f1a",
+        "spain"
+      ]
+    },
+    "EST": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 59.0,
+          "lon": 26.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "EE",
+      "iso_alpha3": "EST",
+      "iso_numeric": "233",
+      "name": "Estonia",
+      "variations": [
+        "233",
+        "ee",
+        "eesti",
+        "eesti vabariik",
+        "est",
+        "estonia",
+        "republic of estonia"
+      ]
+    },
+    "ETH": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 8.0,
+          "lon": 38.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "ET",
+      "iso_alpha3": "ETH",
+      "iso_numeric": "231",
+      "name": "Ethiopia",
+      "variations": [
+        "231",
+        "et",
+        "eth",
+        "ethiopia",
+        "federal democratic republic of ethiopia",
+        "\u02be\u012bty\u014d\u1e57\u1e57y\u0101",
+        "\u12e8\u12a2\u1275\u12ee\u1335\u12eb \u134c\u12f4\u122b\u120b\u12ca \u12f2\u121e\u12ad\u122b\u1232\u12eb\u12ca \u122a\u1350\u1265\u120a\u12ad"
+      ]
+    },
+    "FIN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 64.0,
+          "lon": 26.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "FI",
+      "iso_alpha3": "FIN",
+      "iso_numeric": "246",
+      "name": "Finland",
+      "variations": [
+        "246",
+        "fi",
+        "fin",
+        "finland",
+        "republic of finland",
+        "republiken finland",
+        "suomen tasavalta",
+        "suomi"
+      ]
+    },
+    "FJI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -18.0,
+          "lon": 175.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "FJ",
+      "iso_alpha3": "FJI",
+      "iso_numeric": "242",
+      "name": "Fiji",
+      "variations": [
+        "242",
+        "fiji",
+        "fij\u012b ga\u1e47ar\u0101jya",
+        "fj",
+        "fji",
+        "matanitu ko viti",
+        "republic of fiji",
+        "viti"
+      ]
+    },
+    "FLK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -51.75,
+          "lon": -59.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "FK",
+      "iso_alpha3": "FLK",
+      "iso_numeric": "238",
+      "name": "Falkland Islands",
+      "variations": [
+        "238",
+        "falkland islands",
+        "falkland islands (malvinas)",
+        "fk",
+        "flk",
+        "islas malvinas"
+      ]
+    },
+    "FRA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 46.0,
+          "lon": 2.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "FR",
+      "iso_alpha3": "FRA",
+      "iso_numeric": "250",
+      "name": "France",
+      "variations": [
+        "250",
+        "fr",
+        "fra",
+        "france",
+        "french republic",
+        "r\u00e9publique fran\u00e7aise"
+      ]
+    },
+    "FRO": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 62.0,
+          "lon": -7.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "FO",
+      "iso_alpha3": "FRO",
+      "iso_numeric": "234",
+      "name": "Faroe Islands",
+      "variations": [
+        "234",
+        "faeroe islands",
+        "faroe islands",
+        "fo",
+        "fro",
+        "f\u00e6r\u00f8erne",
+        "f\u00f8royar"
+      ]
+    },
+    "FSM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 6.91666666,
+          "lon": 158.25
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "FM",
+      "iso_alpha3": "FSM",
+      "iso_numeric": "583",
+      "name": "Micronesia",
+      "variations": [
+        "583",
+        "federated states of micronesia",
+        "fm",
+        "fsm",
+        "micronesia",
+        "micronesia, federated states of"
+      ]
+    },
+    "GAB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -1.0,
+          "lon": 11.75
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GA",
+      "iso_alpha3": "GAB",
+      "iso_numeric": "266",
+      "name": "Gabon",
+      "variations": [
+        "266",
+        "ga",
+        "gab",
+        "gabon",
+        "gabonese republic",
+        "r\u00e9publique gabonaise"
+      ]
+    },
+    "GBR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 54.0,
+          "lon": -2.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GB",
+      "iso_alpha3": "GBR",
+      "iso_numeric": "826",
+      "name": "United Kingdom",
+      "variations": [
+        "826",
+        "gb",
+        "gbr",
+        "great britain",
+        "uk",
+        "united kingdom",
+        "united kingdom of great britain and northern ireland"
+      ]
+    },
+    "GEO": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 42.0,
+          "lon": 43.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GE",
+      "iso_alpha3": "GEO",
+      "iso_numeric": "268",
+      "name": "Georgia",
+      "variations": [
+        "268",
+        "ge",
+        "geo",
+        "georgia",
+        "sakartvelo"
+      ]
+    },
+    "GGY": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 49.46666666,
+          "lon": -2.58333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GG",
+      "iso_alpha3": "GGY",
+      "iso_numeric": "831",
+      "name": "Guernsey",
+      "variations": [
+        "831",
+        "bailiwick of guernsey",
+        "bailliage de guernesey",
+        "gg",
+        "ggy",
+        "guernsey"
+      ]
+    },
+    "GHA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 8.0,
+          "lon": -2.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GH",
+      "iso_alpha3": "GHA",
+      "iso_numeric": "288",
+      "name": "Ghana",
+      "variations": [
+        "288",
+        "gh",
+        "gha",
+        "ghana",
+        "republic of ghana"
+      ]
+    },
+    "GIB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 36.13333333,
+          "lon": -5.35
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GI",
+      "iso_alpha3": "GIB",
+      "iso_numeric": "292",
+      "name": "Gibraltar",
+      "variations": [
+        "292",
+        "gi",
+        "gib",
+        "gibraltar"
+      ]
+    },
+    "GIN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 11.0,
+          "lon": -10.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GN",
+      "iso_alpha3": "GIN",
+      "iso_numeric": "324",
+      "name": "Guinea",
+      "variations": [
+        "324",
+        "gin",
+        "gn",
+        "guinea",
+        "republic of guinea",
+        "r\u00e9publique de guin\u00e9e"
+      ]
+    },
+    "GLP": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 16.25,
+          "lon": -61.583333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GP",
+      "iso_alpha3": "GLP",
+      "iso_numeric": "312",
+      "name": "Guadeloupe",
+      "variations": [
+        "312",
+        "glp",
+        "gp",
+        "guadeloupe",
+        "gwadloup"
+      ]
+    },
+    "GMB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.46666666,
+          "lon": -16.56666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GM",
+      "iso_alpha3": "GMB",
+      "iso_numeric": "270",
+      "name": "Gambia",
+      "variations": [
+        "270",
+        "gambia",
+        "gm",
+        "gmb",
+        "republic of the gambia"
+      ]
+    },
+    "GNB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 12.0,
+          "lon": -15.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GW",
+      "iso_alpha3": "GNB",
+      "iso_numeric": "624",
+      "name": "Guinea-Bissau",
+      "variations": [
+        "624",
+        "gnb",
+        "guinea-bissau",
+        "gw",
+        "republic of guinea-bissau",
+        "rep\u00fablica da guin\u00e9-bissau"
+      ]
+    },
+    "GNQ": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 2.0,
+          "lon": 10.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GQ",
+      "iso_alpha3": "GNQ",
+      "iso_numeric": "226",
+      "name": "Equatorial Guinea",
+      "variations": [
+        "226",
+        "equatorial guinea",
+        "gnq",
+        "gq",
+        "republic of equatorial guinea",
+        "rep\u00fablica da guin\u00e9 equatorial",
+        "rep\u00fablica de guinea ecuatorial",
+        "r\u00e9publique de guin\u00e9e \u00e9quatoriale"
+      ]
+    },
+    "GRC": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 39.0,
+          "lon": 22.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GR",
+      "iso_alpha3": "GRC",
+      "iso_numeric": "300",
+      "name": "Greece",
+      "variations": [
+        "300",
+        "ell\u00e1da",
+        "gr",
+        "grc",
+        "greece",
+        "hellenic republic",
+        "\u03b5\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ae \u03b4\u03b7\u03bc\u03bf\u03ba\u03c1\u03b1\u03c4\u03af\u03b1"
+      ]
+    },
+    "GRD": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 12.11666666,
+          "lon": -61.66666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GD",
+      "iso_alpha3": "GRD",
+      "iso_numeric": "308",
+      "name": "Grenada",
+      "variations": [
+        "308",
+        "gd",
+        "grd",
+        "grenada"
+      ]
+    },
+    "GRL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 72.0,
+          "lon": -40.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GL",
+      "iso_alpha3": "GRL",
+      "iso_numeric": "304",
+      "name": "Greenland",
+      "variations": [
+        "304",
+        "gl",
+        "greenland",
+        "grl",
+        "gr\u00f8nland"
+      ]
+    },
+    "GTM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.5,
+          "lon": -90.25
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GT",
+      "iso_alpha3": "GTM",
+      "iso_numeric": "320",
+      "name": "Guatemala",
+      "variations": [
+        "320",
+        "gt",
+        "gtm",
+        "guatemala",
+        "republic of guatemala"
+      ]
+    },
+    "GUF": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 4.0,
+          "lon": -53.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GF",
+      "iso_alpha3": "GUF",
+      "iso_numeric": "254",
+      "name": "French Guiana",
+      "variations": [
+        "254",
+        "french guiana",
+        "gf",
+        "guf",
+        "guiana",
+        "guyane"
+      ]
+    },
+    "GUM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.46666666,
+          "lon": 144.78333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GU",
+      "iso_alpha3": "GUM",
+      "iso_numeric": "316",
+      "name": "Guam",
+      "variations": [
+        "316",
+        "gu",
+        "guam",
+        "gum",
+        "gu\u00e5h\u00e5n"
+      ]
+    },
+    "GUY": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 5.0,
+          "lon": -59.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GY",
+      "iso_alpha3": "GUY",
+      "iso_numeric": "328",
+      "name": "Guyana",
+      "variations": [
+        "328",
+        "co-operative republic of guyana",
+        "guy",
+        "guyana",
+        "gy"
+      ]
+    },
+    "HKG": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 22.267,
+          "lon": 114.188
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "HK",
+      "iso_alpha3": "HKG",
+      "iso_numeric": "344",
+      "name": "Hong Kong",
+      "variations": [
+        "344",
+        "hk",
+        "hkg",
+        "hong kong",
+        "hong kong special administrative region of the people's republic of china"
+      ]
+    },
+    "HMD": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -53.1,
+          "lon": 72.51666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "HM",
+      "iso_alpha3": "HMD",
+      "iso_numeric": "334",
+      "name": "Heard Island and McDonald Islands",
+      "variations": [
+        "334",
+        "heard island and mcdonald islands",
+        "hm",
+        "hmd"
+      ]
+    },
+    "HND": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.0,
+          "lon": -86.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "HN",
+      "iso_alpha3": "HND",
+      "iso_numeric": "340",
+      "name": "Honduras",
+      "variations": [
+        "340",
+        "hn",
+        "hnd",
+        "honduras",
+        "republic of honduras",
+        "rep\u00fablica de honduras"
+      ]
+    },
+    "HRV": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 45.16666666,
+          "lon": 15.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "HR",
+      "iso_alpha3": "HRV",
+      "iso_numeric": "191",
+      "name": "Croatia",
+      "variations": [
+        "191",
+        "croatia",
+        "hr",
+        "hrv",
+        "hrvatska",
+        "republic of croatia",
+        "republika hrvatska"
+      ]
+    },
+    "HTI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 19.0,
+          "lon": -72.41666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "HT",
+      "iso_alpha3": "HTI",
+      "iso_numeric": "332",
+      "name": "Haiti",
+      "variations": [
+        "332",
+        "haiti",
+        "ht",
+        "hti",
+        "repiblik ayiti",
+        "republic of haiti",
+        "r\u00e9publique d'ha\u00efti"
+      ]
+    },
+    "HUN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 47.0,
+          "lon": 20.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "HU",
+      "iso_alpha3": "HUN",
+      "iso_numeric": "348",
+      "name": "Hungary",
+      "variations": [
+        "348",
+        "hu",
+        "hun",
+        "hungary"
+      ]
+    },
+    "IDN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -5.0,
+          "lon": 120.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "ID",
+      "iso_alpha3": "IDN",
+      "iso_numeric": "360",
+      "name": "Indonesia",
+      "variations": [
+        "360",
+        "id",
+        "idn",
+        "indonesia",
+        "republic of indonesia",
+        "republik indonesia"
+      ]
+    },
+    "IMN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 54.25,
+          "lon": -4.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IM",
+      "iso_alpha3": "IMN",
+      "iso_numeric": "833",
+      "name": "Isle of Man",
+      "variations": [
+        "833",
+        "ellan vannin",
+        "im",
+        "imn",
+        "isle of man",
+        "mann",
+        "mannin"
+      ]
+    },
+    "IND": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 20.0,
+          "lon": 77.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IN",
+      "iso_alpha3": "IND",
+      "iso_numeric": "356",
+      "name": "India",
+      "variations": [
+        "356",
+        "bharat ganrajya",
+        "bh\u0101rat",
+        "in",
+        "ind",
+        "india",
+        "republic of india",
+        "\u0b87\u0ba8\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
+      ]
+    },
+    "IOT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -6.0,
+          "lon": 71.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IO",
+      "iso_alpha3": "IOT",
+      "iso_numeric": "086",
+      "name": "British Indian Ocean Territory",
+      "variations": [
+        "086",
+        "british indian ocean territory",
+        "io",
+        "iot"
+      ]
+    },
+    "IRL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 53.0,
+          "lon": -8.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IE",
+      "iso_alpha3": "IRL",
+      "iso_numeric": "372",
+      "name": "Ireland",
+      "variations": [
+        "372",
+        "ie",
+        "ireland",
+        "irl",
+        "poblacht na h\u00e9ireann",
+        "republic of ireland",
+        "\u00e9ire"
+      ]
+    },
+    "IRN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 32.0,
+          "lon": 53.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IR",
+      "iso_alpha3": "IRN",
+      "iso_numeric": "364",
+      "name": "Iran",
+      "variations": [
+        "364",
+        "ir",
+        "iran",
+        "iran, islamic republic of",
+        "irn",
+        "islamic republic of iran",
+        "jomhuri-ye esl\u0101mi-ye ir\u0101n"
+      ]
+    },
+    "IRQ": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 33.0,
+          "lon": 44.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IQ",
+      "iso_alpha3": "IRQ",
+      "iso_numeric": "368",
+      "name": "Iraq",
+      "variations": [
+        "368",
+        "iq",
+        "iraq",
+        "irq",
+        "jumh\u016briyyat al-\u2018ir\u0101q",
+        "republic of iraq"
+      ]
+    },
+    "ISL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 65.0,
+          "lon": -18.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IS",
+      "iso_alpha3": "ISL",
+      "iso_numeric": "352",
+      "name": "Iceland",
+      "variations": [
+        "352",
+        "iceland",
+        "is",
+        "isl",
+        "island",
+        "l\u00fd\u00f0veldi\u00f0 \u00edsland",
+        "republic of iceland"
+      ]
+    },
+    "ISR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 31.47,
+          "lon": 35.13
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IL",
+      "iso_alpha3": "ISR",
+      "iso_numeric": "376",
+      "name": "Israel",
+      "variations": [
+        "376",
+        "il",
+        "isr",
+        "israel",
+        "med\u012bnat yisr\u0101'el",
+        "state of israel"
+      ]
+    },
+    "ITA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 42.83333333,
+          "lon": 12.83333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "IT",
+      "iso_alpha3": "ITA",
+      "iso_numeric": "380",
+      "name": "Italy",
+      "variations": [
+        "380",
+        "it",
+        "ita",
+        "italian republic",
+        "italy",
+        "repubblica italiana"
+      ]
+    },
+    "JAM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.25,
+          "lon": -77.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "JM",
+      "iso_alpha3": "JAM",
+      "iso_numeric": "388",
+      "name": "Jamaica",
+      "variations": [
+        "388",
+        "jam",
+        "jamaica",
+        "jm"
+      ]
+    },
+    "JEY": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 49.25,
+          "lon": -2.16666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "JE",
+      "iso_alpha3": "JEY",
+      "iso_numeric": "832",
+      "name": "Jersey",
+      "variations": [
+        "832",
+        "bailiwick of jersey",
+        "bailliage de jersey",
+        "bailliage d\u00e9 j\u00e8rri",
+        "je",
+        "jersey",
+        "jey"
+      ]
+    },
+    "JOR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 31.0,
+          "lon": 36.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "JO",
+      "iso_alpha3": "JOR",
+      "iso_numeric": "400",
+      "name": "Jordan",
+      "variations": [
+        "400",
+        "al-mamlakah al-urdun\u012byah al-h\u0101shim\u012byah",
+        "hashemite kingdom of jordan",
+        "jo",
+        "jor",
+        "jordan"
+      ]
+    },
+    "JPN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 36.0,
+          "lon": 138.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "JP",
+      "iso_alpha3": "JPN",
+      "iso_numeric": "392",
+      "name": "Japan",
+      "variations": [
+        "392",
+        "japan",
+        "jp",
+        "jpn",
+        "nihon",
+        "nippon"
+      ]
+    },
+    "KAZ": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 48.0,
+          "lon": 68.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "KZ",
+      "iso_alpha3": "KAZ",
+      "iso_numeric": "398",
+      "name": "Kazakhstan",
+      "variations": [
+        "398",
+        "kaz",
+        "kazakhstan",
+        "kz",
+        "qazaqstan",
+        "qazaqstan respubl\u00efkas\u0131",
+        "republic of kazakhstan",
+        "respublika kazakhstan",
+        "\u043a\u0430\u0437\u0430\u0445\u0441\u0442\u0430\u043d",
+        "\u0440\u0435\u0441\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u043a\u0430\u0437\u0430\u0445\u0441\u0442\u0430\u043d",
+        "\u049b\u0430\u0437\u0430\u049b\u0441\u0442\u0430\u043d \u0440\u0435\u0441\u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0441\u044b"
+      ]
+    },
+    "KEN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 1.0,
+          "lon": 38.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KE",
+      "iso_alpha3": "KEN",
+      "iso_numeric": "404",
+      "name": "Kenya",
+      "variations": [
+        "404",
+        "jamhuri ya kenya",
+        "ke",
+        "ken",
+        "kenya",
+        "republic of kenya"
+      ]
+    },
+    "KGZ": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 41.0,
+          "lon": 75.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "KG",
+      "iso_alpha3": "KGZ",
+      "iso_numeric": "417",
+      "name": "Kyrgyzstan",
+      "variations": [
+        "417",
+        "kg",
+        "kgz",
+        "kyrgyz republic",
+        "kyrgyz respublikasy",
+        "kyrgyzstan",
+        "\u043a\u0438\u0440\u0433\u0438\u0437\u0438\u044f",
+        "\u043a\u044b\u0440\u0433\u044b\u0437 \u0440\u0435\u0441\u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0441\u044b"
+      ]
+    },
+    "KHM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.0,
+          "lon": 105.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KH",
+      "iso_alpha3": "KHM",
+      "iso_numeric": "116",
+      "name": "Cambodia",
+      "variations": [
+        "116",
+        "cambodia",
+        "kh",
+        "khm",
+        "kingdom of cambodia"
+      ]
+    },
+    "KIR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 1.41666666,
+          "lon": 173.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KI",
+      "iso_alpha3": "KIR",
+      "iso_numeric": "296",
+      "name": "Kiribati",
+      "variations": [
+        "296",
+        "independent and sovereign republic of kiribati",
+        "ki",
+        "kir",
+        "kiribati",
+        "republic of kiribati",
+        "ribaberiki kiribati"
+      ]
+    },
+    "KNA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 17.33333333,
+          "lon": -62.75
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KN",
+      "iso_alpha3": "KNA",
+      "iso_numeric": "659",
+      "name": "Saint Kitts and Nevis",
+      "variations": [
+        "659",
+        "federation of saint christopher and nevis",
+        "kn",
+        "kna",
+        "saint kitts and nevis"
+      ]
+    },
+    "KOR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 37.0,
+          "lon": 127.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KR",
+      "iso_alpha3": "KOR",
+      "iso_numeric": "410",
+      "name": "South Korea",
+      "variations": [
+        "410",
+        "kor",
+        "korea, republic of",
+        "kr",
+        "republic of korea",
+        "south korea",
+        "\ub0a8\uc870\uc120",
+        "\ub0a8\ud55c"
+      ]
+    },
+    "KWT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 29.5,
+          "lon": 45.75
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KW",
+      "iso_alpha3": "KWT",
+      "iso_numeric": "414",
+      "name": "Kuwait",
+      "variations": [
+        "414",
+        "dawlat al-kuwait",
+        "kuwait",
+        "kw",
+        "kwt",
+        "state of kuwait"
+      ]
+    },
+    "LAO": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.0,
+          "lon": 105.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "LA",
+      "iso_alpha3": "LAO",
+      "iso_numeric": "418",
+      "name": "Laos",
+      "variations": [
+        "418",
+        "la",
+        "lao",
+        "lao people's democratic republic",
+        "laos",
+        "sathalanalat paxathipatai paxaxon lao"
+      ]
+    },
+    "LBN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 33.83333333,
+          "lon": 35.83333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "LB",
+      "iso_alpha3": "LBN",
+      "iso_numeric": "422",
+      "name": "Lebanon",
+      "variations": [
+        "422",
+        "al-jumh\u016br\u012byah al-libn\u0101n\u012byah",
+        "lb",
+        "lbn",
+        "lebanese republic",
+        "lebanon"
+      ]
+    },
+    "LBR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 6.5,
+          "lon": -9.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "LR",
+      "iso_alpha3": "LBR",
+      "iso_numeric": "430",
+      "name": "Liberia",
+      "variations": [
+        "430",
+        "lbr",
+        "liberia",
+        "lr",
+        "republic of liberia"
+      ]
+    },
+    "LBY": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 25.0,
+          "lon": 17.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "LY",
+      "iso_alpha3": "LBY",
+      "iso_numeric": "434",
+      "name": "Libya",
+      "variations": [
+        "434",
+        "dawlat libya",
+        "lby",
+        "libya",
+        "ly",
+        "state of libya"
+      ]
+    },
+    "LCA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.88333333,
+          "lon": -60.96666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "LC",
+      "iso_alpha3": "LCA",
+      "iso_numeric": "662",
+      "name": "Saint Lucia",
+      "variations": [
+        "662",
+        "lc",
+        "lca",
+        "saint lucia"
+      ]
+    },
+    "LIE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 47.26666666,
+          "lon": 9.53333333
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "LI",
+      "iso_alpha3": "LIE",
+      "iso_numeric": "438",
+      "name": "Liechtenstein",
+      "variations": [
+        "438",
+        "f\u00fcrstentum liechtenstein",
+        "li",
+        "lie",
+        "liechtenstein",
+        "principality of liechtenstein"
+      ]
+    },
+    "LKA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 7.0,
+          "lon": 81.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "LK",
+      "iso_alpha3": "LKA",
+      "iso_numeric": "144",
+      "name": "Sri Lanka",
+      "variations": [
+        "144",
+        "democratic socialist republic of sri lanka",
+        "ila\u1e45kai",
+        "lk",
+        "lka",
+        "sri lanka"
+      ]
+    },
+    "LSO": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -29.5,
+          "lon": 28.5
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "LS",
+      "iso_alpha3": "LSO",
+      "iso_numeric": "426",
+      "name": "Lesotho",
+      "variations": [
+        "426",
+        "kingdom of lesotho",
+        "lesotho",
+        "ls",
+        "lso",
+        "muso oa lesotho"
+      ]
+    },
+    "LTU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 56.0,
+          "lon": 24.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "LT",
+      "iso_alpha3": "LTU",
+      "iso_numeric": "440",
+      "name": "Lithuania",
+      "variations": [
+        "440",
+        "lietuvos respublika",
+        "lithuania",
+        "lt",
+        "ltu",
+        "republic of lithuania"
+      ]
+    },
+    "LUX": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 49.75,
+          "lon": 6.16666666
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "LU",
+      "iso_alpha3": "LUX",
+      "iso_numeric": "442",
+      "name": "Luxembourg",
+      "variations": [
+        "442",
+        "grand duchy of luxembourg",
+        "grand-duch\u00e9 de luxembourg",
+        "groussherzogtum l\u00ebtzebuerg",
+        "gro\u00dfherzogtum luxemburg",
+        "lu",
+        "lux",
+        "luxembourg"
+      ]
+    },
+    "LVA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 57.0,
+          "lon": 25.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "LV",
+      "iso_alpha3": "LVA",
+      "iso_numeric": "428",
+      "name": "Latvia",
+      "variations": [
+        "428",
+        "latvia",
+        "latvijas republika",
+        "lv",
+        "lva",
+        "republic of latvia"
+      ]
+    },
+    "MAC": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 22.16666666,
+          "lon": 113.55
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MO",
+      "iso_alpha3": "MAC",
+      "iso_numeric": "446",
+      "name": "Macau",
+      "variations": [
+        "446",
+        "mac",
+        "macao",
+        "macao special administrative region of the people's republic of china",
+        "macau",
+        "mo",
+        "regi\u00e3o administrativa especial de macau da rep\u00fablica popular da china",
+        "\u4e2d\u83ef\u4eba\u6c11\u5171\u548c\u570b\u6fb3\u9580\u7279\u5225\u884c\u653f\u5340",
+        "\u6fb3\u95e8"
+      ]
+    },
+    "MAF": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.08333333,
+          "lon": -63.95
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MF",
+      "iso_alpha3": "MAF",
+      "iso_numeric": "663",
+      "name": "Saint Martin",
+      "variations": [
+        "663",
+        "collectivity of saint martin",
+        "collectivit\u00e9 de saint-martin",
+        "maf",
+        "mf",
+        "saint martin",
+        "saint martin (french part)"
+      ]
+    },
+    "MAR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 32.0,
+          "lon": -5.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MA",
+      "iso_alpha3": "MAR",
+      "iso_numeric": "504",
+      "name": "Morocco",
+      "variations": [
+        "504",
+        "al-mamlakah al-ma\u0121ribiyah",
+        "kingdom of morocco",
+        "ma",
+        "mar",
+        "morocco"
+      ]
+    },
+    "MCO": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 43.73333333,
+          "lon": 7.4
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MC",
+      "iso_alpha3": "MCO",
+      "iso_numeric": "492",
+      "name": "Monaco",
+      "variations": [
+        "492",
+        "mc",
+        "mco",
+        "monaco",
+        "principality of monaco",
+        "principaut\u00e9 de monaco"
+      ]
+    },
+    "MDA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 47.0,
+          "lon": 29.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "MD",
+      "iso_alpha3": "MDA",
+      "iso_numeric": "498",
+      "name": "Moldova",
+      "variations": [
+        "498",
+        "md",
+        "mda",
+        "moldova",
+        "moldova, republic of",
+        "republic of moldova",
+        "republica moldova"
+      ]
+    },
+    "MDG": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -20.0,
+          "lon": 47.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MG",
+      "iso_alpha3": "MDG",
+      "iso_numeric": "450",
+      "name": "Madagascar",
+      "variations": [
+        "450",
+        "madagascar",
+        "mdg",
+        "mg",
+        "repoblikan'i madagasikara",
+        "republic of madagascar",
+        "r\u00e9publique de madagascar"
+      ]
+    },
+    "MDV": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 3.25,
+          "lon": 73.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MV",
+      "iso_alpha3": "MDV",
+      "iso_numeric": "462",
+      "name": "Maldives",
+      "variations": [
+        "462",
+        "dhivehi raajjeyge jumhooriyya",
+        "maldive islands",
+        "maldives",
+        "mdv",
+        "mv",
+        "republic of the maldives"
+      ]
+    },
+    "MEX": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 23.0,
+          "lon": -102.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MX",
+      "iso_alpha3": "MEX",
+      "iso_numeric": "484",
+      "name": "Mexico",
+      "variations": [
+        "484",
+        "estados unidos mexicanos",
+        "mex",
+        "mexicanos",
+        "mexico",
+        "mx",
+        "united mexican states"
+      ]
+    },
+    "MHL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 9.0,
+          "lon": 168.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MH",
+      "iso_alpha3": "MHL",
+      "iso_numeric": "584",
+      "name": "Marshall Islands",
+      "variations": [
+        "584",
+        "aolep\u0101n aor\u014dkin m\u0327aje\u013c",
+        "marshall islands",
+        "mh",
+        "mhl",
+        "republic of the marshall islands"
+      ]
+    },
+    "MKD": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 41.83333333,
+          "lon": 22.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "MK",
+      "iso_alpha3": "MKD",
+      "iso_numeric": "807",
+      "name": "North Macedonia",
+      "variations": [
+        "807",
+        "macedonia",
+        "macedonia, the former yugoslav republic of",
+        "mk",
+        "mkd",
+        "north macedonia",
+        "republic of north macedonia",
+        "the former yugoslav republic of macedonia",
+        "\u0440\u0435\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u0441\u0435\u0432\u0435\u0440\u043d\u0430 \u043c\u0430\u043a\u0435\u0434\u043e\u043d\u0438\u0458\u0430"
+      ]
+    },
+    "MLI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 17.0,
+          "lon": -4.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "ML",
+      "iso_alpha3": "MLI",
+      "iso_numeric": "466",
+      "name": "Mali",
+      "variations": [
+        "466",
+        "mali",
+        "ml",
+        "mli",
+        "republic of mali",
+        "r\u00e9publique du mali"
+      ]
+    },
+    "MLT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 35.83333333,
+          "lon": 14.58333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MT",
+      "iso_alpha3": "MLT",
+      "iso_numeric": "470",
+      "name": "Malta",
+      "variations": [
+        "470",
+        "malta",
+        "mlt",
+        "mt",
+        "repubblika ta' malta",
+        "republic of malta"
+      ]
+    },
+    "MMR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 22.0,
+          "lon": 98.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MM",
+      "iso_alpha3": "MMR",
+      "iso_numeric": "104",
+      "name": "Myanmar",
+      "variations": [
+        "104",
+        "burma",
+        "mm",
+        "mmr",
+        "myanmar",
+        "pyidaunzu thanm\u0103da my\u0103ma nainngandaw",
+        "republic of the union of myanmar"
+      ]
+    },
+    "MNE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 42.5,
+          "lon": 19.3
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "ME",
+      "iso_alpha3": "MNE",
+      "iso_numeric": "499",
+      "name": "Montenegro",
+      "variations": [
+        "499",
+        "crna gora",
+        "me",
+        "mne",
+        "montenegro"
+      ]
+    },
+    "MNG": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 46.0,
+          "lon": 105.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "MN",
+      "iso_alpha3": "MNG",
+      "iso_numeric": "496",
+      "name": "Mongolia",
+      "variations": [
+        "496",
+        "mn",
+        "mng",
+        "mongolia"
+      ]
+    },
+    "MNP": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.2,
+          "lon": 145.75
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MP",
+      "iso_alpha3": "MNP",
+      "iso_numeric": "580",
+      "name": "Northern Mariana Islands",
+      "variations": [
+        "580",
+        "commonwealth of the northern mariana islands",
+        "mnp",
+        "mp",
+        "northern mariana islands",
+        "sankattan siha na islas mari\u00e5nas"
+      ]
+    },
+    "MOZ": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -18.25,
+          "lon": 35.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MZ",
+      "iso_alpha3": "MOZ",
+      "iso_numeric": "508",
+      "name": "Mozambique",
+      "variations": [
+        "508",
+        "moz",
+        "mozambique",
+        "mz",
+        "republic of mozambique",
+        "rep\u00fablica de mo\u00e7ambique"
+      ]
+    },
+    "MRT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 20.0,
+          "lon": -12.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MR",
+      "iso_alpha3": "MRT",
+      "iso_numeric": "478",
+      "name": "Mauritania",
+      "variations": [
+        "478",
+        "al-jumh\u016briyyah al-\u02beisl\u0101miyyah al-m\u016br\u012bt\u0101niyyah",
+        "islamic republic of mauritania",
+        "mauritania",
+        "mr",
+        "mrt"
+      ]
+    },
+    "MSR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 16.75,
+          "lon": -62.2
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MS",
+      "iso_alpha3": "MSR",
+      "iso_numeric": "500",
+      "name": "Montserrat",
+      "variations": [
+        "500",
+        "montserrat",
+        "ms",
+        "msr"
+      ]
+    },
+    "MTQ": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 14.666667,
+          "lon": -61.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MQ",
+      "iso_alpha3": "MTQ",
+      "iso_numeric": "474",
+      "name": "Martinique",
+      "variations": [
+        "474",
+        "martinique",
+        "mq",
+        "mtq"
+      ]
+    },
+    "MUS": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -20.28333333,
+          "lon": 57.55
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MU",
+      "iso_alpha3": "MUS",
+      "iso_numeric": "480",
+      "name": "Mauritius",
+      "variations": [
+        "480",
+        "mauritius",
+        "mu",
+        "mus",
+        "republic of mauritius",
+        "r\u00e9publique de maurice"
+      ]
+    },
+    "MWI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -13.5,
+          "lon": 34.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "MW",
+      "iso_alpha3": "MWI",
+      "iso_numeric": "454",
+      "name": "Malawi",
+      "variations": [
+        "454",
+        "malawi",
+        "mw",
+        "mwi",
+        "republic of malawi"
+      ]
+    },
+    "MYS": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 2.5,
+          "lon": 112.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "MY",
+      "iso_alpha3": "MYS",
+      "iso_numeric": "458",
+      "name": "Malaysia",
+      "variations": [
+        "458",
+        "malaysia",
+        "my",
+        "mys"
+      ]
+    },
+    "MYT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -12.83333333,
+          "lon": 45.16666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "YT",
+      "iso_alpha3": "MYT",
+      "iso_numeric": "175",
+      "name": "Mayotte",
+      "variations": [
+        "175",
+        "department of mayotte",
+        "d\u00e9partement de mayotte",
+        "mayotte",
+        "myt",
+        "yt"
+      ]
+    },
+    "NAM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -22.0,
+          "lon": 17.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NA",
+      "iso_alpha3": "NAM",
+      "iso_numeric": "516",
+      "name": "Namibia",
+      "variations": [
+        "516",
+        "na",
+        "nam",
+        "namibia",
+        "namibi\u00eb",
+        "republic of namibia"
+      ]
+    },
+    "NCL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -21.5,
+          "lon": 165.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NC",
+      "iso_alpha3": "NCL",
+      "iso_numeric": "540",
+      "name": "New Caledonia",
+      "variations": [
+        "540",
+        "nc",
+        "ncl",
+        "new caledonia"
+      ]
+    },
+    "NER": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 16.0,
+          "lon": 8.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "NE",
+      "iso_alpha3": "NER",
+      "iso_numeric": "562",
+      "name": "Niger",
+      "variations": [
+        "562",
+        "ne",
+        "ner",
+        "niger",
+        "nijar",
+        "republic of niger"
+      ]
+    },
+    "NFK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -29.03333333,
+          "lon": 167.95
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NF",
+      "iso_alpha3": "NFK",
+      "iso_numeric": "574",
+      "name": "Norfolk Island",
+      "variations": [
+        "574",
+        "nf",
+        "nfk",
+        "norfolk island",
+        "teratri of norf'k ailen",
+        "territory of norfolk island"
+      ]
+    },
+    "NGA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 10.0,
+          "lon": 8.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NG",
+      "iso_alpha3": "NGA",
+      "iso_numeric": "566",
+      "name": "Nigeria",
+      "variations": [
+        "566",
+        "federal republic of nigeria",
+        "na\u00edj\u00edr\u00ed\u00e0",
+        "ng",
+        "nga",
+        "nigeria",
+        "nijeriya"
+      ]
+    },
+    "NIC": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.0,
+          "lon": -85.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NI",
+      "iso_alpha3": "NIC",
+      "iso_numeric": "558",
+      "name": "Nicaragua",
+      "variations": [
+        "558",
+        "ni",
+        "nic",
+        "nicaragua",
+        "republic of nicaragua",
+        "rep\u00fablica de nicaragua"
+      ]
+    },
+    "NIU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -19.03333333,
+          "lon": -169.86666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NU",
+      "iso_alpha3": "NIU",
+      "iso_numeric": "570",
+      "name": "Niue",
+      "variations": [
+        "570",
+        "niu",
+        "niue",
+        "nu"
+      ]
+    },
+    "NLD": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 52.5,
+          "lon": 5.75
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NL",
+      "iso_alpha3": "NLD",
+      "iso_numeric": "528",
+      "name": "Netherlands",
+      "variations": [
+        "528",
+        "holland",
+        "kingdom of the netherlands",
+        "nederland",
+        "netherlands",
+        "nl",
+        "nld",
+        "the netherlands"
+      ]
+    },
+    "NOR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 62.0,
+          "lon": 10.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NO",
+      "iso_alpha3": "NOR",
+      "iso_numeric": "578",
+      "name": "Norway",
+      "variations": [
+        "578",
+        "kingdom of norway",
+        "kongeriket noreg",
+        "kongeriket norge",
+        "no",
+        "nor",
+        "noreg",
+        "norge",
+        "norway"
+      ]
+    },
+    "NPL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 28.0,
+          "lon": 84.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "NP",
+      "iso_alpha3": "NPL",
+      "iso_numeric": "524",
+      "name": "Nepal",
+      "variations": [
+        "524",
+        "federal democratic republic of nepal",
+        "lokt\u0101ntrik ganatantra nep\u0101l",
+        "nepal",
+        "np",
+        "npl"
+      ]
+    },
+    "NRU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -0.53333333,
+          "lon": 166.91666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NR",
+      "iso_alpha3": "NRU",
+      "iso_numeric": "520",
+      "name": "Nauru",
+      "variations": [
+        "520",
+        "naoero",
+        "nauru",
+        "nr",
+        "nru",
+        "pleasant island",
+        "republic of nauru",
+        "ripublik naoero"
+      ]
+    },
+    "NZL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -41.0,
+          "lon": 174.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "NZ",
+      "iso_alpha3": "NZL",
+      "iso_numeric": "554",
+      "name": "New Zealand",
+      "variations": [
+        "554",
+        "aotearoa",
+        "new zealand",
+        "nz",
+        "nzl"
+      ]
+    },
+    "OMN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 21.0,
+          "lon": 57.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "OM",
+      "iso_alpha3": "OMN",
+      "iso_numeric": "512",
+      "name": "Oman",
+      "variations": [
+        "512",
+        "om",
+        "oman",
+        "omn",
+        "sal\u1e6danat \u02bbum\u0101n",
+        "sultanate of oman"
+      ]
+    },
+    "PAK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 30.0,
+          "lon": 70.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PK",
+      "iso_alpha3": "PAK",
+      "iso_numeric": "586",
+      "name": "Pakistan",
+      "variations": [
+        "586",
+        "islamic republic of pakistan",
+        "isl\u0101m\u012b jumh\u016briya'eh p\u0101kist\u0101n",
+        "pak",
+        "pakistan",
+        "pk",
+        "p\u0101kist\u0101n"
+      ]
+    },
+    "PAN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 9.0,
+          "lon": -80.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PA",
+      "iso_alpha3": "PAN",
+      "iso_numeric": "591",
+      "name": "Panama",
+      "variations": [
+        "591",
+        "pa",
+        "pan",
+        "panama",
+        "republic of panama",
+        "rep\u00fablica de panam\u00e1"
+      ]
+    },
+    "PCN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -25.06666666,
+          "lon": -130.1
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PN",
+      "iso_alpha3": "PCN",
+      "iso_numeric": "612",
+      "name": "Pitcairn Islands",
+      "variations": [
+        "612",
+        "pcn",
+        "pitcairn",
+        "pitcairn group of islands",
+        "pitcairn henderson ducie and oeno islands",
+        "pitcairn islands",
+        "pn"
+      ]
+    },
+    "PER": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -10.0,
+          "lon": -76.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PE",
+      "iso_alpha3": "PER",
+      "iso_numeric": "604",
+      "name": "Peru",
+      "variations": [
+        "604",
+        "pe",
+        "per",
+        "peru",
+        "republic of peru",
+        "rep\u00fablica del per\u00fa"
+      ]
+    },
+    "PHL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.0,
+          "lon": 122.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PH",
+      "iso_alpha3": "PHL",
+      "iso_numeric": "608",
+      "name": "Philippines",
+      "variations": [
+        "608",
+        "ph",
+        "philippines",
+        "phl",
+        "republic of the philippines",
+        "rep\u00fablika ng pilipinas"
+      ]
+    },
+    "PLW": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 7.5,
+          "lon": 134.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PW",
+      "iso_alpha3": "PLW",
+      "iso_numeric": "585",
+      "name": "Palau",
+      "variations": [
+        "585",
+        "beluu er a belau",
+        "palau",
+        "plw",
+        "pw",
+        "republic of palau"
+      ]
+    },
+    "PNG": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -6.0,
+          "lon": 147.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PG",
+      "iso_alpha3": "PNG",
+      "iso_numeric": "598",
+      "name": "Papua New Guinea",
+      "variations": [
+        "598",
+        "independen stet bilong papua niugini",
+        "independent state of papua new guinea",
+        "papua new guinea",
+        "pg",
+        "png"
+      ]
+    },
+    "POL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 52.0,
+          "lon": 20.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PL",
+      "iso_alpha3": "POL",
+      "iso_numeric": "616",
+      "name": "Poland",
+      "variations": [
+        "616",
+        "pl",
+        "pol",
+        "poland",
+        "republic of poland",
+        "rzeczpospolita polska"
+      ]
+    },
+    "PRI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.25,
+          "lon": -66.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PR",
+      "iso_alpha3": "PRI",
+      "iso_numeric": "630",
+      "name": "Puerto Rico",
+      "variations": [
+        "630",
+        "commonwealth of puerto rico",
+        "estado libre asociado de puerto rico",
+        "pr",
+        "pri",
+        "puerto rico"
+      ]
+    },
+    "PRK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 40.0,
+          "lon": 127.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "KP",
+      "iso_alpha3": "PRK",
+      "iso_numeric": "408",
+      "name": "North Korea",
+      "variations": [
+        "408",
+        "chos\u014fn minjuju\u016di inmin konghwaguk",
+        "democratic people's republic of korea",
+        "dprk",
+        "korea, democratic people's republic of",
+        "kp",
+        "north korea",
+        "prk",
+        "\ubd81\uc870\uc120",
+        "\ubd81\ud55c",
+        "\uc870\uc120\ubbfc\uc8fc\uc8fc\uc758\uc778\ubbfc\uacf5\ud654\uad6d"
+      ]
+    },
+    "PRT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 39.5,
+          "lon": -8.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PT",
+      "iso_alpha3": "PRT",
+      "iso_numeric": "620",
+      "name": "Portugal",
+      "variations": [
+        "620",
+        "portugal",
+        "portuguesa",
+        "portuguese republic",
+        "prt",
+        "pt",
+        "rep\u00fablica portuguesa"
+      ]
+    },
+    "PRY": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -23.0,
+          "lon": -58.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "PY",
+      "iso_alpha3": "PRY",
+      "iso_numeric": "600",
+      "name": "Paraguay",
+      "variations": [
+        "600",
+        "paraguay",
+        "pry",
+        "py",
+        "republic of paraguay",
+        "rep\u00fablica del paraguay",
+        "tet\u00e3 paragu\u00e1i"
+      ]
+    },
+    "PSE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 31.9,
+          "lon": 35.2
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PS",
+      "iso_alpha3": "PSE",
+      "iso_numeric": "275",
+      "name": "Palestine",
+      "variations": [
+        "275",
+        "dawlat filas\u1e6din",
+        "palestine",
+        "palestine, state of",
+        "ps",
+        "pse",
+        "state of palestine"
+      ]
+    },
+    "PYF": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -15.0,
+          "lon": -140.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PF",
+      "iso_alpha3": "PYF",
+      "iso_numeric": "258",
+      "name": "French Polynesia",
+      "variations": [
+        "258",
+        "french polynesia",
+        "pf",
+        "polyn\u00e9sie fran\u00e7aise",
+        "pyf",
+        "p\u014dr\u012bnetia far\u0101ni"
+      ]
+    },
+    "QAT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 25.5,
+          "lon": 51.25
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "QA",
+      "iso_alpha3": "QAT",
+      "iso_numeric": "634",
+      "name": "Qatar",
+      "variations": [
+        "634",
+        "dawlat qa\u1e6dar",
+        "qa",
+        "qat",
+        "qatar",
+        "state of qatar"
+      ]
+    },
+    "REU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -21.15,
+          "lon": 55.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "RE",
+      "iso_alpha3": "REU",
+      "iso_numeric": "638",
+      "name": "R\u00e9union",
+      "variations": [
+        "638",
+        "re",
+        "reu",
+        "reunion",
+        "r\u00e9union",
+        "r\u00e9union island"
+      ]
+    },
+    "ROU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 46.0,
+          "lon": 25.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "RO",
+      "iso_alpha3": "ROU",
+      "iso_numeric": "642",
+      "name": "Romania",
+      "variations": [
+        "642",
+        "ro",
+        "romania",
+        "rom\u00e2nia",
+        "rou",
+        "roumania",
+        "rumania"
+      ]
+    },
+    "RUS": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 60.0,
+          "lon": 100.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "RU",
+      "iso_alpha3": "RUS",
+      "iso_numeric": "643",
+      "name": "Russia",
+      "variations": [
+        "643",
+        "ru",
+        "rus",
+        "russia",
+        "russian federation",
+        "\u0440\u043e\u0441\u0441\u0438\u0439\u0441\u043a\u0430\u044f \u0444\u0435\u0434\u0435\u0440\u0430\u0446\u0438\u044f"
+      ]
+    },
+    "RWA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -2.0,
+          "lon": 30.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "RW",
+      "iso_alpha3": "RWA",
+      "iso_numeric": "646",
+      "name": "Rwanda",
+      "variations": [
+        "646",
+        "republic of rwanda",
+        "repubulika y'u rwanda",
+        "rw",
+        "rwa",
+        "rwanda",
+        "r\u00e9publique du rwanda"
+      ]
+    },
+    "SAU": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 25.0,
+          "lon": 45.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SA",
+      "iso_alpha3": "SAU",
+      "iso_numeric": "682",
+      "name": "Saudi Arabia",
+      "variations": [
+        "682",
+        "al-mamlakah al-\u2018arabiyyah as-su\u2018\u016bdiyyah",
+        "kingdom of saudi arabia",
+        "sa",
+        "sau",
+        "saudi",
+        "saudi arabia"
+      ]
+    },
+    "SDN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.0,
+          "lon": 30.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SD",
+      "iso_alpha3": "SDN",
+      "iso_numeric": "729",
+      "name": "Sudan",
+      "variations": [
+        "729",
+        "jumh\u016br\u012byat as-s\u016bd\u0101n",
+        "republic of the sudan",
+        "sd",
+        "sdn",
+        "sudan"
+      ]
+    },
+    "SEN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 14.0,
+          "lon": -14.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SN",
+      "iso_alpha3": "SEN",
+      "iso_numeric": "686",
+      "name": "Senegal",
+      "variations": [
+        "686",
+        "republic of senegal",
+        "r\u00e9publique du s\u00e9n\u00e9gal",
+        "sen",
+        "senegal",
+        "sn"
+      ]
+    },
+    "SGP": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 1.36666666,
+          "lon": 103.8
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SG",
+      "iso_alpha3": "SGP",
+      "iso_numeric": "702",
+      "name": "Singapore",
+      "variations": [
+        "702",
+        "republic of singapore",
+        "republik singapura",
+        "sg",
+        "sgp",
+        "singapore",
+        "singapura",
+        "\u65b0\u52a0\u5761\u5171\u548c\u56fd"
+      ]
+    },
+    "SGS": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -54.5,
+          "lon": -37.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "GS",
+      "iso_alpha3": "SGS",
+      "iso_numeric": "239",
+      "name": "South Georgia",
+      "variations": [
+        "239",
+        "gs",
+        "sgs",
+        "south georgia",
+        "south georgia and the south sandwich islands"
+      ]
+    },
+    "SHN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -15.95,
+          "lon": -5.72
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SH",
+      "iso_alpha3": "SHN",
+      "iso_numeric": "654",
+      "name": "Saint Helena, Ascension and Tristan da Cunha",
+      "variations": [
+        "654",
+        "saint helena",
+        "saint helena, ascension and tristan da cunha",
+        "sh",
+        "shn",
+        "st. helena, ascension and tristan da cunha"
+      ]
+    },
+    "SJM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 78.0,
+          "lon": 20.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SJ",
+      "iso_alpha3": "SJM",
+      "iso_numeric": "744",
+      "name": "Svalbard and Jan Mayen",
+      "variations": [
+        "744",
+        "sj",
+        "sjm",
+        "svalbard and jan mayen",
+        "svalbard and jan mayen islands",
+        "svalbard og jan mayen"
+      ]
+    },
+    "SLB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -8.0,
+          "lon": 159.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SB",
+      "iso_alpha3": "SLB",
+      "iso_numeric": "090",
+      "name": "Solomon Islands",
+      "variations": [
+        "090",
+        "sb",
+        "slb",
+        "solomon islands"
+      ]
+    },
+    "SLE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 8.5,
+          "lon": -11.5
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SL",
+      "iso_alpha3": "SLE",
+      "iso_numeric": "694",
+      "name": "Sierra Leone",
+      "variations": [
+        "694",
+        "republic of sierra leone",
+        "sierra leone",
+        "sl",
+        "sle"
+      ]
+    },
+    "SLV": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.83333333,
+          "lon": -88.91666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SV",
+      "iso_alpha3": "SLV",
+      "iso_numeric": "222",
+      "name": "El Salvador",
+      "variations": [
+        "222",
+        "el salvador",
+        "republic of el salvador",
+        "rep\u00fablica de el salvador",
+        "slv",
+        "sv"
+      ]
+    },
+    "SMR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 43.76666666,
+          "lon": 12.41666666
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "SM",
+      "iso_alpha3": "SMR",
+      "iso_numeric": "674",
+      "name": "San Marino",
+      "variations": [
+        "674",
+        "most serene republic of san marino",
+        "repubblica di san marino",
+        "republic of san marino",
+        "san marino",
+        "sm",
+        "smr"
+      ]
+    },
+    "SOM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 10.0,
+          "lon": 49.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SO",
+      "iso_alpha3": "SOM",
+      "iso_numeric": "706",
+      "name": "Somalia",
+      "variations": [
+        "706",
+        "a\u1e63-\u1e63\u016bm\u0101l",
+        "federal republic of somalia",
+        "jamhuuriyadda federaalka soomaaliya",
+        "jumh\u016briyyat a\u1e63-\u1e63\u016bm\u0101l al-fider\u0101liyya",
+        "so",
+        "som",
+        "somalia"
+      ]
+    },
+    "SPM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 46.83333333,
+          "lon": -56.33333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "PM",
+      "iso_alpha3": "SPM",
+      "iso_numeric": "666",
+      "name": "Saint Pierre and Miquelon",
+      "variations": [
+        "666",
+        "collectivit\u00e9 territoriale de saint-pierre-et-miquelon",
+        "pm",
+        "saint pierre and miquelon",
+        "spm"
+      ]
+    },
+    "SRB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 44.0,
+          "lon": 21.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "RS",
+      "iso_alpha3": "SRB",
+      "iso_numeric": "688",
+      "name": "Serbia",
+      "variations": [
+        "688",
+        "republic of serbia",
+        "republika srbija",
+        "rs",
+        "serbia",
+        "srb",
+        "srbija",
+        "\u0440\u0435\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u0441\u0440\u0431\u0438\u0458\u0430",
+        "\u0441\u0440\u0431\u0438\u0458\u0430"
+      ]
+    },
+    "SSD": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 7.0,
+          "lon": 30.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "SS",
+      "iso_alpha3": "SSD",
+      "iso_numeric": "728",
+      "name": "South Sudan",
+      "variations": [
+        "728",
+        "republic of south sudan",
+        "south sudan",
+        "ss",
+        "ssd"
+      ]
+    },
+    "STP": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 1.0,
+          "lon": 7.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "ST",
+      "iso_alpha3": "STP",
+      "iso_numeric": "678",
+      "name": "S\u00e3o Tom\u00e9 and Pr\u00edncipe",
+      "variations": [
+        "678",
+        "democratic republic of s\u00e3o tom\u00e9 and pr\u00edncipe",
+        "rep\u00fablica democr\u00e1tica de s\u00e3o tom\u00e9 e pr\u00edncipe",
+        "sao tome and principe",
+        "st",
+        "stp",
+        "s\u00e3o tom\u00e9 and pr\u00edncipe"
+      ]
+    },
+    "SUR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 4.0,
+          "lon": -56.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SR",
+      "iso_alpha3": "SUR",
+      "iso_numeric": "740",
+      "name": "Suriname",
+      "variations": [
+        "740",
+        "republic of suriname",
+        "republiek suriname",
+        "sarnam",
+        "sr",
+        "sranangron",
+        "sur",
+        "suriname"
+      ]
+    },
+    "SVK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 48.66666666,
+          "lon": 19.5
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "SK",
+      "iso_alpha3": "SVK",
+      "iso_numeric": "703",
+      "name": "Slovakia",
+      "variations": [
+        "703",
+        "sk",
+        "slovak republic",
+        "slovakia",
+        "slovensk\u00e1 republika",
+        "svk"
+      ]
+    },
+    "SVN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 46.11666666,
+          "lon": 14.81666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SI",
+      "iso_alpha3": "SVN",
+      "iso_numeric": "705",
+      "name": "Slovenia",
+      "variations": [
+        "705",
+        "republic of slovenia",
+        "republika slovenija",
+        "si",
+        "slovenia",
+        "svn"
+      ]
+    },
+    "SWE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 62.0,
+          "lon": 15.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SE",
+      "iso_alpha3": "SWE",
+      "iso_numeric": "752",
+      "name": "Sweden",
+      "variations": [
+        "752",
+        "kingdom of sweden",
+        "konungariket sverige",
+        "se",
+        "swe",
+        "sweden"
+      ]
+    },
+    "SWZ": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -26.5,
+          "lon": 31.5
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "SZ",
+      "iso_alpha3": "SWZ",
+      "iso_numeric": "748",
+      "name": "Eswatini",
+      "variations": [
+        "748",
+        "eswatini",
+        "kingdom of eswatini",
+        "ngwane",
+        "swatini",
+        "swaziland",
+        "swz",
+        "sz",
+        "umbuso weswatini",
+        "weswatini"
+      ]
+    },
+    "SXM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.033333,
+          "lon": -63.05
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SX",
+      "iso_alpha3": "SXM",
+      "iso_numeric": "534",
+      "name": "Sint Maarten",
+      "variations": [
+        "534",
+        "sint maarten",
+        "sint maarten (dutch part)",
+        "sx",
+        "sxm"
+      ]
+    },
+    "SYC": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -4.58333333,
+          "lon": 55.66666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SC",
+      "iso_alpha3": "SYC",
+      "iso_numeric": "690",
+      "name": "Seychelles",
+      "variations": [
+        "690",
+        "repiblik sesel",
+        "republic of seychelles",
+        "r\u00e9publique des seychelles",
+        "sc",
+        "seychelles",
+        "syc"
+      ]
+    },
+    "SYR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 35.0,
+          "lon": 38.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "SY",
+      "iso_alpha3": "SYR",
+      "iso_numeric": "760",
+      "name": "Syria",
+      "variations": [
+        "760",
+        "al-jumh\u016br\u012byah al-\u02bbarab\u012byah as-s\u016br\u012byah",
+        "sy",
+        "syr",
+        "syria",
+        "syrian arab republic"
+      ]
+    },
+    "TCA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 21.75,
+          "lon": -71.58333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TC",
+      "iso_alpha3": "TCA",
+      "iso_numeric": "796",
+      "name": "Turks and Caicos Islands",
+      "variations": [
+        "796",
+        "tc",
+        "tca",
+        "turks and caicos islands"
+      ]
+    },
+    "TCD": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.0,
+          "lon": 19.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "TD",
+      "iso_alpha3": "TCD",
+      "iso_numeric": "148",
+      "name": "Chad",
+      "variations": [
+        "148",
+        "chad",
+        "republic of chad",
+        "r\u00e9publique du tchad",
+        "tcd",
+        "tchad",
+        "td"
+      ]
+    },
+    "TGO": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 8.0,
+          "lon": 1.16666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TG",
+      "iso_alpha3": "TGO",
+      "iso_numeric": "768",
+      "name": "Togo",
+      "variations": [
+        "768",
+        "r\u00e9publique togolaise",
+        "tg",
+        "tgo",
+        "togo",
+        "togolese",
+        "togolese republic"
+      ]
+    },
+    "THA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.0,
+          "lon": 100.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TH",
+      "iso_alpha3": "THA",
+      "iso_numeric": "764",
+      "name": "Thailand",
+      "variations": [
+        "764",
+        "kingdom of thailand",
+        "prathet",
+        "ratcha anachak thai",
+        "th",
+        "tha",
+        "thai",
+        "thailand",
+        "\u0e23\u0e32\u0e0a\u0e2d\u0e32\u0e13\u0e32\u0e08\u0e31\u0e01\u0e23\u0e44\u0e17\u0e22"
+      ]
+    },
+    "TJK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 39.0,
+          "lon": 71.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "TJ",
+      "iso_alpha3": "TJK",
+      "iso_numeric": "762",
+      "name": "Tajikistan",
+      "variations": [
+        "762",
+        "republic of tajikistan",
+        "tajikistan",
+        "tj",
+        "tjk",
+        "to\u00e7ikiston",
+        "\u00e7umhuriyi to\u00e7ikiston",
+        "\u04b7\u0443\u043c\u04b3\u0443\u0440\u0438\u0438 \u0442\u043e\u04b7\u0438\u043a\u0438\u0441\u0442\u043e\u043d"
+      ]
+    },
+    "TKL": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -9.0,
+          "lon": -172.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TK",
+      "iso_alpha3": "TKL",
+      "iso_numeric": "772",
+      "name": "Tokelau",
+      "variations": [
+        "772",
+        "tk",
+        "tkl",
+        "tokelau"
+      ]
+    },
+    "TKM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 40.0,
+          "lon": 60.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "TM",
+      "iso_alpha3": "TKM",
+      "iso_numeric": "795",
+      "name": "Turkmenistan",
+      "variations": [
+        "795",
+        "tkm",
+        "tm",
+        "turkmenistan"
+      ]
+    },
+    "TLS": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -8.83333333,
+          "lon": 125.91666666
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TL",
+      "iso_alpha3": "TLS",
+      "iso_numeric": "626",
+      "name": "Timor-Leste",
+      "variations": [
+        "626",
+        "democratic republic of timor-leste",
+        "east timor",
+        "rep\u00fablica democr\u00e1tica de timor-leste",
+        "rep\u00fablika demokr\u00e1tika tim\u00f3r-leste",
+        "timor",
+        "timor lorosae",
+        "timor-leste",
+        "tim\u00f3r lorosa'e",
+        "tl",
+        "tls"
+      ]
+    },
+    "TON": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -20.0,
+          "lon": -175.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TO",
+      "iso_alpha3": "TON",
+      "iso_numeric": "776",
+      "name": "Tonga",
+      "variations": [
+        "776",
+        "kingdom of tonga",
+        "to",
+        "ton",
+        "tonga"
+      ]
+    },
+    "TTO": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 11.0,
+          "lon": -61.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TT",
+      "iso_alpha3": "TTO",
+      "iso_numeric": "780",
+      "name": "Trinidad and Tobago",
+      "variations": [
+        "780",
+        "republic of trinidad and tobago",
+        "trinidad and tobago",
+        "tt",
+        "tto"
+      ]
+    },
+    "TUN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 34.0,
+          "lon": 9.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TN",
+      "iso_alpha3": "TUN",
+      "iso_numeric": "788",
+      "name": "Tunisia",
+      "variations": [
+        "788",
+        "al-jumh\u016briyyah at-t\u016bnisiyyah",
+        "republic of tunisia",
+        "tn",
+        "tun",
+        "tunisia",
+        "tunisian republic"
+      ]
+    },
+    "TUR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 39.0,
+          "lon": 35.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TR",
+      "iso_alpha3": "TUR",
+      "iso_numeric": "792",
+      "name": "T\u00fcrkiye",
+      "variations": [
+        "792",
+        "republic of turkey",
+        "republic of t\u00fcrkiye",
+        "tr",
+        "tur",
+        "turkiye",
+        "t\u00fcrkiye",
+        "t\u00fcrkiye cumhuriyeti"
+      ]
+    },
+    "TUV": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -8.0,
+          "lon": 178.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TV",
+      "iso_alpha3": "TUV",
+      "iso_numeric": "798",
+      "name": "Tuvalu",
+      "variations": [
+        "798",
+        "tuv",
+        "tuvalu",
+        "tv"
+      ]
+    },
+    "TWN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 23.5,
+          "lon": 121.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TW",
+      "iso_alpha3": "TWN",
+      "iso_numeric": "158",
+      "name": "Taiwan",
+      "variations": [
+        "158",
+        "chinese taipei",
+        "republic of china",
+        "republic of china (taiwan)",
+        "taiwan",
+        "tw",
+        "twn",
+        "t\u00e1iw\u0101n",
+        "zh\u014dnghu\u00e1 m\u00edngu\u00f3",
+        "\u4e2d\u83ef\u6c11\u570b"
+      ]
+    },
+    "TZA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -6.0,
+          "lon": 35.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "TZ",
+      "iso_alpha3": "TZA",
+      "iso_numeric": "834",
+      "name": "Tanzania",
+      "variations": [
+        "834",
+        "jamhuri ya muungano wa tanzania",
+        "tanzania",
+        "tanzania, united republic of",
+        "tz",
+        "tza",
+        "united republic of tanzania"
+      ]
+    },
+    "UGA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 1.0,
+          "lon": 32.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "UG",
+      "iso_alpha3": "UGA",
+      "iso_numeric": "800",
+      "name": "Uganda",
+      "variations": [
+        "800",
+        "jamhuri ya uganda",
+        "republic of uganda",
+        "ug",
+        "uga",
+        "uganda"
+      ]
+    },
+    "UKR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 49.0,
+          "lon": 32.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "UA",
+      "iso_alpha3": "UKR",
+      "iso_numeric": "804",
+      "name": "Ukraine",
+      "variations": [
+        "804",
+        "ua",
+        "ukr",
+        "ukraine",
+        "ukrayina"
+      ]
+    },
+    "UMI": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 19.3,
+          "lon": 166.633333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "UM",
+      "iso_alpha3": "UMI",
+      "iso_numeric": "581",
+      "name": "United States Minor Outlying Islands",
+      "variations": [
+        "581",
+        "um",
+        "umi",
+        "united states minor outlying islands"
+      ]
+    },
+    "UNK": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 42.666667,
+          "lon": 21.166667
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "XK",
+      "iso_alpha3": "UNK",
+      "iso_numeric": "",
+      "name": "Kosovo",
+      "variations": [
+        "kosovo",
+        "republic of kosovo",
+        "unk",
+        "xk",
+        "\u0440\u0435\u043f\u0443\u0431\u043b\u0438\u043a\u0430 \u043a\u043e\u0441\u043e\u0432\u043e"
+      ]
+    },
+    "URY": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -33.0,
+          "lon": -56.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "UY",
+      "iso_alpha3": "URY",
+      "iso_numeric": "858",
+      "name": "Uruguay",
+      "variations": [
+        "858",
+        "oriental republic of uruguay",
+        "rep\u00fablica oriental del uruguay",
+        "uruguay",
+        "ury",
+        "uy"
+      ]
+    },
+    "USA": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 38.0,
+          "lon": -97.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "US",
+      "iso_alpha3": "USA",
+      "iso_numeric": "840",
+      "name": "United States",
+      "variations": [
+        "840",
+        "united states",
+        "united states of america",
+        "us",
+        "usa"
+      ]
+    },
+    "UZB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 41.0,
+          "lon": 64.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "UZ",
+      "iso_alpha3": "UZB",
+      "iso_numeric": "860",
+      "name": "Uzbekistan",
+      "variations": [
+        "860",
+        "o\u2018zbekiston respublikasi",
+        "republic of uzbekistan",
+        "uz",
+        "uzb",
+        "uzbekistan",
+        "\u045e\u0437\u0431\u0435\u043a\u0438\u0441\u0442\u043e\u043d \u0440\u0435\u0441\u043f\u0443\u0431\u043b\u0438\u043a\u0430\u0441\u0438"
+      ]
+    },
+    "VAT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 41.9,
+          "lon": 12.45
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "VA",
+      "iso_alpha3": "VAT",
+      "iso_numeric": "336",
+      "name": "Vatican City",
+      "variations": [
+        "336",
+        "holy see (vatican city state)",
+        "stato della citt\u00e0 del vaticano",
+        "va",
+        "vat",
+        "vatican",
+        "vatican city",
+        "vatican city state"
+      ]
+    },
+    "VCT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 13.25,
+          "lon": -61.2
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "VC",
+      "iso_alpha3": "VCT",
+      "iso_numeric": "670",
+      "name": "Saint Vincent and the Grenadines",
+      "variations": [
+        "670",
+        "saint vincent and the grenadines",
+        "vc",
+        "vct"
+      ]
+    },
+    "VEN": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 8.0,
+          "lon": -66.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "VE",
+      "iso_alpha3": "VEN",
+      "iso_numeric": "862",
+      "name": "Venezuela",
+      "variations": [
+        "862",
+        "bolivarian republic of venezuela",
+        "rep\u00fablica bolivariana de venezuela",
+        "ve",
+        "ven",
+        "venezuela",
+        "venezuela, bolivarian republic of"
+      ]
+    },
+    "VGB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.431383,
+          "lon": -64.62305
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "VG",
+      "iso_alpha3": "VGB",
+      "iso_numeric": "092",
+      "name": "British Virgin Islands",
+      "variations": [
+        "092",
+        "british virgin islands",
+        "vg",
+        "vgb",
+        "virgin islands",
+        "virgin islands, british"
+      ]
+    },
+    "VIR": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 18.35,
+          "lon": -64.933333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "VI",
+      "iso_alpha3": "VIR",
+      "iso_numeric": "850",
+      "name": "United States Virgin Islands",
+      "variations": [
+        "850",
+        "united states virgin islands",
+        "vi",
+        "vir",
+        "virgin islands of the united states",
+        "virgin islands, u.s."
+      ]
+    },
+    "VNM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 16.16666666,
+          "lon": 107.83333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "VN",
+      "iso_alpha3": "VNM",
+      "iso_numeric": "704",
+      "name": "Vietnam",
+      "variations": [
+        "704",
+        "c\u1ed9ng h\u00f2a x\u00e3 h\u1ed9i ch\u1ee7 ngh\u0129a vi\u1ec7t nam",
+        "socialist republic of vietnam",
+        "viet nam",
+        "vietnam",
+        "vn",
+        "vnm"
+      ]
+    },
+    "VUT": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -16.0,
+          "lon": 167.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "VU",
+      "iso_alpha3": "VUT",
+      "iso_numeric": "548",
+      "name": "Vanuatu",
+      "variations": [
+        "548",
+        "republic of vanuatu",
+        "ripablik blong vanuatu",
+        "r\u00e9publique de vanuatu",
+        "vanuatu",
+        "vu",
+        "vut"
+      ]
+    },
+    "WLF": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -13.3,
+          "lon": -176.2
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "WF",
+      "iso_alpha3": "WLF",
+      "iso_numeric": "876",
+      "name": "Wallis and Futuna",
+      "variations": [
+        "876",
+        "territoire des \u00eeles wallis et futuna",
+        "territory of the wallis and futuna islands",
+        "wallis and futuna",
+        "wf",
+        "wlf"
+      ]
+    },
+    "WSM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -13.58333333,
+          "lon": -172.33333333
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "WS",
+      "iso_alpha3": "WSM",
+      "iso_numeric": "882",
+      "name": "Samoa",
+      "variations": [
+        "882",
+        "independent state of samoa",
+        "malo sa\u02bboloto tuto\u02bbatasi o s\u0101moa",
+        "samoa",
+        "ws",
+        "wsm"
+      ]
+    },
+    "YEM": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": 15.0,
+          "lon": 48.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "YE",
+      "iso_alpha3": "YEM",
+      "iso_numeric": "887",
+      "name": "Yemen",
+      "variations": [
+        "887",
+        "al-jumh\u016briyyah al-yamaniyyah",
+        "republic of yemen",
+        "ye",
+        "yem",
+        "yemen",
+        "yemeni republic"
+      ]
+    },
+    "ZAF": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -29.0,
+          "lon": 24.0
+        }
+      },
+      "has_offshore": true,
+      "iso_alpha2": "ZA",
+      "iso_alpha3": "ZAF",
+      "iso_numeric": "710",
+      "name": "South Africa",
+      "variations": [
+        "710",
+        "republic of south africa",
+        "rsa",
+        "south africa",
+        "suid-afrika",
+        "za",
+        "zaf"
+      ]
+    },
+    "ZMB": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -15.0,
+          "lon": 30.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "ZM",
+      "iso_alpha3": "ZMB",
+      "iso_numeric": "894",
+      "name": "Zambia",
+      "variations": [
+        "894",
+        "republic of zambia",
+        "zambia",
+        "zm",
+        "zmb"
+      ]
+    },
+    "ZWE": {
+      "coordinates": {
+        "offshore": [],
+        "onshore": {
+          "lat": -20.0,
+          "lon": 30.0
+        }
+      },
+      "has_offshore": false,
+      "iso_alpha2": "ZW",
+      "iso_alpha3": "ZWE",
+      "iso_numeric": "716",
+      "name": "Zimbabwe",
+      "variations": [
+        "716",
+        "republic of zimbabwe",
+        "zimbabwe",
+        "zw",
+        "zwe"
+      ]
+    }
+  }
+}
