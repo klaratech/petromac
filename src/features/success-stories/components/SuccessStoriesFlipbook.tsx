@@ -82,11 +82,15 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
   }, [allowedPages, manifest]);
 
   const selectionSummary = useMemo(() => {
-    if (selectedPages.length === 0) return 'No pages selected';
-    if (selectedPages.length === allowedPages.length) {
-      return `Selected ${selectedPages.length} pages`;
+    if (allowedPages.length === 0) return 'No pages available';
+    const excludedCount = allowedPages.length - selectedPages.length;
+    if (excludedCount === 0) {
+      return `All ${allowedPages.length} pages included`;
     }
-    return `Selected ${selectedPages.length} of ${allowedPages.length} pages`;
+    if (selectedPages.length === 0) {
+      return `All ${allowedPages.length} pages excluded`;
+    }
+    return `Excluded ${excludedCount} of ${allowedPages.length} pages`;
   }, [selectedPages, allowedPages.length]);
 
   const handleToggleSelection = (pageNumber: number) => {
@@ -238,17 +242,17 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
             disabled={allowedPages.length === 0}
             className="px-3 py-1.5 text-xs font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
           >
-            Select all
+            Include all
           </button>
           <button
             onClick={handleClearSelection}
             disabled={selectedPages.length === 0}
             className="px-3 py-1.5 text-xs font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
           >
-            Clear selection
+            Exclude all
           </button>
           <span className="text-xs text-gray-500">
-            Use the flipbook controls to toggle the current page.
+            Use the flipbook controls to exclude or include the current page.
           </span>
         </div>
 

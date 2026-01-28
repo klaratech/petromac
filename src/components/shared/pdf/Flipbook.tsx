@@ -145,7 +145,8 @@ export default function Flipbook({
   const totalPages = pages.length;
   const displayPage = currentPage + 1;
   const pageNumber = pageNumbers?.[currentPage] ?? displayPage;
-  const isSelected = selectedPages.includes(pageNumber);
+  const isIncluded = selectedPages.includes(pageNumber);
+  const isExcluded = !isIncluded;
 
   return (
     <div className="w-full flex flex-col justify-center items-center py-2">
@@ -213,13 +214,13 @@ export default function Flipbook({
               <button
                 onClick={() => onToggleSelect(pageNumber)}
                 className={`px-4 py-2 rounded font-medium transition ${
-                  isSelected
-                    ? "bg-green-600 text-white hover:bg-green-700"
+                  isExcluded
+                    ? "bg-red-600 text-white hover:bg-red-700"
                     : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
                 }`}
-                title={isSelected ? "Unselect page" : "Select page"}
+                title={isExcluded ? "Include page" : "Exclude page"}
               >
-                {isSelected ? "Selected" : "Select"}
+                {isExcluded ? "Excluded" : "Exclude"}
               </button>
             )}
             <button
