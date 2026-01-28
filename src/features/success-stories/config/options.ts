@@ -18,17 +18,6 @@ export type Area = typeof AREA_OPTIONS[number];
 export type ServiceCompany = typeof SERVICE_COMPANY_OPTIONS[number];
 export type Technology = typeof TECHNOLOGY_OPTIONS[number];
 
-export interface SuccessStoryRow {
-  page: number;          // page number in flipbook
-  area: string;          // Area column from CSV
-  company: string;       // WL Co column from CSV
-  tech: string;          // Device column from CSV
-  year?: number;
-  country?: string;
-  category1?: string;
-  category2?: string;
-}
-
 /**
  * WHERE TO EDIT OPTIONS (Documentation)
  * 

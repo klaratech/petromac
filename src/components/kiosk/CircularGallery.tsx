@@ -63,8 +63,8 @@ export default function CircularGallery({
     const clonedScene = useMemo(() => {
       const cloned = scene.clone(true);
       cloned.traverse((child) => {
-        if ((child as THREE.Mesh).isMesh) {
-          const mesh = child as THREE.Mesh;
+        const mesh = child as unknown as THREE.Mesh;
+        if (mesh.isMesh) {
           mesh.castShadow = false;
           mesh.receiveShadow = false;
 
@@ -77,7 +77,7 @@ export default function CircularGallery({
 
     useEffect(() => {
       requestAnimationFrame(() => {
-        const box = new THREE.Box3().setFromObject(clonedScene);
+        const box = new THREE.Box3().setFromObject(clonedScene as unknown as THREE.Object3D);
         const size = box.getSize(new THREE.Vector3()).length();
         const scaleFactor = 4.5 / size;
         setScale(scaleFactor);

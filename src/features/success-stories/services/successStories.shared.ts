@@ -72,7 +72,7 @@ export function parseSuccessStoriesCsv(csvText: string): SuccessStoryRow[] {
       const yearValue = pickField(row, YEAR_FIELD_CANDIDATES);
       const year = Number.parseInt(yearValue || '0', 10);
 
-      return {
+      const storyRow: SuccessStoryRow = {
         page,
         areaRaw,
         companyRaw,
@@ -80,11 +80,20 @@ export function parseSuccessStoriesCsv(csvText: string): SuccessStoryRow[] {
         area: normalizedArea,
         company: normalizedCompany,
         tech: normalizedTech,
-        country: pickField(row, COUNTRY_FIELD_CANDIDATES) || undefined,
-        category1: pickField(row, CATEGORY1_FIELD_CANDIDATES) || undefined,
-        category2: pickField(row, CATEGORY2_FIELD_CANDIDATES) || undefined,
-        year: year > 0 ? year : undefined,
-      } satisfies SuccessStoryRow;
+      };
+
+      const country = pickField(row, COUNTRY_FIELD_CANDIDATES);
+      if (country) storyRow.country = country;
+
+      const category1 = pickField(row, CATEGORY1_FIELD_CANDIDATES);
+      if (category1) storyRow.category1 = category1;
+
+      const category2 = pickField(row, CATEGORY2_FIELD_CANDIDATES);
+      if (category2) storyRow.category2 = category2;
+
+      if (year > 0) storyRow.year = year;
+
+      return storyRow;
     })
     .filter((row) => row.page > 0);
 }

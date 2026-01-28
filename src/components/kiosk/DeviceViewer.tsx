@@ -68,8 +68,8 @@ export default function DeviceViewer({
 
     useEffect(() => {
       scene.traverse((child) => {
-        if ((child as THREE.Mesh).isMesh) {
-          const mesh = child as THREE.Mesh;
+        const mesh = child as unknown as THREE.Mesh;
+        if (mesh.isMesh) {
           mesh.castShadow = true;
           mesh.receiveShadow = true;
         }
