@@ -81,18 +81,6 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
       .map((page) => page.url);
   }, [allowedPages, manifest]);
 
-  const selectionSummary = useMemo(() => {
-    if (allowedPages.length === 0) return 'No pages available';
-    const excludedCount = allowedPages.length - selectedPages.length;
-    if (excludedCount === 0) {
-      return `All ${allowedPages.length} pages included`;
-    }
-    if (selectedPages.length === 0) {
-      return `All ${allowedPages.length} pages excluded`;
-    }
-    return `Excluded ${excludedCount} of ${allowedPages.length} pages`;
-  }, [selectedPages, allowedPages.length]);
-
   const handleToggleSelection = (pageNumber: number) => {
     setSelectedPages((prev) => {
       if (prev.includes(pageNumber)) {
@@ -100,14 +88,6 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
       }
       return [...prev, pageNumber].sort((a, b) => a - b);
     });
-  };
-
-  const handleSelectAll = () => {
-    setSelectedPages(allowedPages);
-  };
-
-  const handleClearSelection = () => {
-    setSelectedPages([]);
   };
 
   const buildDownloadFilename = () => {
@@ -214,11 +194,8 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
                 ? 'No stories match the selected filters'
                 : `Showing ${allowedPages.length} of ${totalStories} success stories`}
             </p>
-            {manifest && (
-              <p className="text-sm text-gray-500 mt-2">{selectionSummary}</p>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-3">
+        </div>
+        <div className="flex flex-wrap gap-3">
             <EmailPdfButton
               pdfType="success-stories"
               pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.successStories)}/source.pdf`}
@@ -234,26 +211,6 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
               {isDownloading ? 'Preparing PDF...' : 'Download PDF'}
             </button>
           </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3 mb-4">
-          <button
-            onClick={handleSelectAll}
-            disabled={allowedPages.length === 0}
-            className="px-3 py-1.5 text-xs font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
-          >
-            Include all
-          </button>
-          <button
-            onClick={handleClearSelection}
-            disabled={selectedPages.length === 0}
-            className="px-3 py-1.5 text-xs font-medium rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50"
-          >
-            Exclude all
-          </button>
-          <span className="text-xs text-gray-500">
-            Use the flipbook controls to exclude or include the current page.
-          </span>
         </div>
 
         {downloadError && (
