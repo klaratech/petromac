@@ -1,36 +1,55 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+function unauthorized() {
+  return new NextResponse('Auth required', {
+    status: 401,
+    headers: { 'WWW-Authenticate': 'Basic realm="Intranet"' },
+  });
+}
+
+function safeEqual(a: string, b: string) {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i += 1) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  
-  if (pathname.startsWith("/intranet")) {
-    const user = process.env.INTRANET_USER;
-    const pass = process.env.INTRANET_PASS;
-    const authHeader = req.headers.get("authorization");
 
-    if (!authHeader || !authHeader.startsWith("Basic ")) {
-      return new NextResponse("Auth required", {
-        status: 401,
-        headers: { "WWW-Authenticate": 'Basic realm="Intranet"' },
-      });
+  if (pathname.startsWith('/intranet')) {
+    const user = process.env.INTRANET_USER || '';
+    const pass = process.env.INTRANET_PASS || '';
+    const authHeader = req.headers.get('authorization');
+
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
+      return unauthorized();
     }
 
-    const decoded = Buffer.from(authHeader.split(" ")[1], "base64").toString();
-    const [givenUser, givenPass] = decoded.split(":");
+    let decoded = '';
+    try {
+      decoded = atob(authHeader.slice(6));
+    } catch {
+      return unauthorized();
+    }
 
-    if (givenUser !== user || givenPass !== pass) {
-      return new NextResponse("Invalid credentials", { status: 403 });
+    const [givenUser = '', givenPass = ''] = decoded.split(':');
+
+    if (!safeEqual(givenUser, user) || !safeEqual(givenPass, pass)) {
+      return unauthorized();
     }
 
     const res = NextResponse.next();
-    res.headers.set("X-Robots-Tag", "noindex, nofollow");
+    res.headers.set('X-Robots-Tag', 'noindex, nofollow');
     return res;
   }
-  
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/intranet/:path*"],
+  matcher: ['/intranet/:path*'],
 };
