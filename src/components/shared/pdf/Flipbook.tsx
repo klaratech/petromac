@@ -87,7 +87,7 @@ export default function Flipbook({
         } else {
           (
             flipRef.current as unknown as PageFlip & {
-              updateFromHtml: (items: HTMLElement[]) => void;
+              updateFromHtml: (_items: HTMLElement[]) => void;
             }
           ).updateFromHtml(pageElements);
         }
