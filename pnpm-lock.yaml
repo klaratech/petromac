@@ -96,6 +96,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.3(@types/react@19.2.10)
+      '@types/three':
+        specifier: ^0.182.0
+        version: 0.182.0
       '@types/topojson-client':
         specifier: ^3.1.5
         version: 3.1.5
