@@ -65,10 +65,14 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
   const totalStories = useMemo(() => getTotalStoryCount(csvData), [csvData]);
 
   useEffect(() => {
-    setSelectedPages(allowedPages);
-  }, [allowedPages]);
+    if (!manifest) return;
+    const totalPages = manifest.pageCount;
+    const coverPages = [1, totalPages];
+    const next = Array.from(new Set([...allowedPages, ...coverPages])).sort((a, b) => a - b);
+    setSelectedPages(next);
+  }, [allowedPages, manifest]);
 
-  const pages = useMemo(() => {
+  const displayPages = useMemo(() => {
     if (!manifest) return [];
 
     const allPages = buildFlipbookPageUrls(FLIPBOOK_KEYS.successStories, manifest).map((url, index) => ({
@@ -76,10 +80,14 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
       url,
     }));
 
-    return allPages
-      .filter((page) => allowedPages.includes(page.pageNumber))
-      .map((page) => page.url);
+    const coverPages = new Set<number>([1, allPages.length]);
+    const allowedSet = new Set(allowedPages);
+
+    return allPages.filter((page) => allowedSet.has(page.pageNumber) || coverPages.has(page.pageNumber));
   }, [allowedPages, manifest]);
+
+  const pageUrls = useMemo(() => displayPages.map((page) => page.url), [displayPages]);
+  const pageNumbers = useMemo(() => displayPages.map((page) => page.pageNumber), [displayPages]);
 
   const handleToggleSelection = (pageNumber: number) => {
     setSelectedPages((prev) => {
@@ -238,8 +246,8 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
         ) : (
           <div className="bg-white rounded-lg shadow-lg p-6">
             <Flipbook
-              pages={pages}
-              pageNumbers={allowedPages}
+              pages={pageUrls}
+              pageNumbers={pageNumbers}
               width={600}
               height={800}
               selectedPages={selectedPages}

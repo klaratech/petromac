@@ -65,7 +65,7 @@ export default function Flipbook({
     });
 
     // Wait a tick for DOM to update
-    const timeoutId = window.setTimeout(() => {
+    const rafId = window.requestAnimationFrame(() => {
       if (!bookRef.current) return;
 
       try {
@@ -76,7 +76,6 @@ export default function Flipbook({
 
         // Clear any existing content before init
         bookRef.current.innerHTML = "";
-        pageElements.forEach((page) => bookRef.current?.appendChild(page));
 
         // Initialize PageFlip (two-page on desktop, single-page on mobile)
         flipRef.current = new PageFlip(bookRef.current, {
@@ -112,10 +111,10 @@ export default function Flipbook({
         console.error("Error updating flipbook:", error);
         setIsLoading(false);
       }
-    }, 100);
+    });
 
     return () => {
-      window.clearTimeout(timeoutId);
+      window.cancelAnimationFrame(rafId);
     };
   }, [pages, pageWidth, pageHeight, isMobile]);
 
