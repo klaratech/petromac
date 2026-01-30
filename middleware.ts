@@ -21,6 +21,16 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith('/intranet')) {
+    const isPrefetch =
+      req.headers.get('x-middleware-prefetch') === '1' ||
+      req.headers.get('next-router-prefetch') === '1' ||
+      req.headers.get('purpose') === 'prefetch' ||
+      req.headers.get('sec-purpose') === 'prefetch';
+
+    if (isPrefetch) {
+      return NextResponse.next();
+    }
+
     const user = process.env.INTRANET_USER || '';
     const pass = process.env.INTRANET_PASS || '';
     const authHeader = req.headers.get('authorization');

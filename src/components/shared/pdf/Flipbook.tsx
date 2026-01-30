@@ -25,6 +25,22 @@ export default function Flipbook({
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
+  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    const update = () => setViewportWidth(window.innerWidth);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const isMobile = viewportWidth != null ? viewportWidth < 768 : false;
+  const aspectRatio = height / width;
+  const maxSpreadWidth = viewportWidth ? Math.max(320, viewportWidth - 48) : width * 2;
+  const pageWidth = isMobile
+    ? Math.max(240, Math.min(width, (viewportWidth ?? width) - 32))
+    : Math.max(320, Math.min(width, Math.floor(maxSpreadWidth / 2)));
+  const pageHeight = Math.round(pageWidth * aspectRatio);
 
   useEffect(() => {
     if (!bookRef.current) return;
@@ -53,44 +69,41 @@ export default function Flipbook({
       if (!bookRef.current) return;
 
       try {
-        if (!flipRef.current) {
-          // Clear any existing content before first init
-          bookRef.current.innerHTML = "";
-          pageElements.forEach((page) => bookRef.current?.appendChild(page));
-
-          // Initialize PageFlip with single page view
-          flipRef.current = new PageFlip(bookRef.current, {
-            width,
-            height,
-            size: "fixed",
-            minWidth: 315,
-            maxWidth: 2000,
-            minHeight: 400,
-            maxHeight: 1533,
-            maxShadowOpacity: 0.5,
-            showCover: true,
-            mobileScrollSupport: true,
-            drawShadow: true,
-            flippingTime: 1000,
-            usePortrait: true,
-            startZIndex: 0,
-            autoSize: false,
-          });
-
-          flipRef.current.loadFromHTML(pageElements);
-
-          // Add event listener for page flip
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (flipRef.current as any).on("flip", (e: any) => {
-            setCurrentPage(e.data);
-          });
-        } else {
-          (
-            flipRef.current as unknown as PageFlip & {
-              updateFromHtml: (_items: HTMLElement[]) => void;
-            }
-          ).updateFromHtml(pageElements);
+        if (flipRef.current) {
+          flipRef.current.destroy();
+          flipRef.current = null;
         }
+
+        // Clear any existing content before init
+        bookRef.current.innerHTML = "";
+        pageElements.forEach((page) => bookRef.current?.appendChild(page));
+
+        // Initialize PageFlip (two-page on desktop, single-page on mobile)
+        flipRef.current = new PageFlip(bookRef.current, {
+          width: pageWidth,
+          height: pageHeight,
+          size: "fixed",
+          minWidth: 240,
+          maxWidth: 2000,
+          minHeight: 320,
+          maxHeight: 1533,
+          maxShadowOpacity: 0.5,
+          showCover: true,
+          mobileScrollSupport: true,
+          drawShadow: true,
+          flippingTime: 1000,
+          usePortrait: isMobile,
+          startZIndex: 0,
+          autoSize: false,
+        });
+
+        flipRef.current.loadFromHTML(pageElements);
+
+        // Add event listener for page flip
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (flipRef.current as any).on("flip", (e: any) => {
+          setCurrentPage(e.data);
+        });
         
         setCurrentPage(0);
         setIsLoading(false);
@@ -104,7 +117,7 @@ export default function Flipbook({
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [pages, width, height]);
+  }, [pages, pageWidth, pageHeight, isMobile]);
 
   useEffect(() => {
     return () => {

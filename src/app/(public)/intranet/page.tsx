@@ -10,32 +10,29 @@ export default function IntranetHome() {
   const [showKioskInstructions, setShowKioskInstructions] = useState(false);
   
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-10 py-16">
+    <main className="min-h-screen flex flex-col items-center justify-center gap-8 py-12 bg-gray-50 text-gray-900">
       <h1 className="text-3xl font-bold">Intranet</h1>
 
       <section className="w-full max-w-5xl">
         <div className="mb-4 text-center">
           <h2 className="text-xl font-semibold text-gray-900">Quick Links</h2>
-          <p className="text-sm text-gray-600">
-            Shortcuts to internal tools.
-          </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2">
           {/* Athena Production */}
           <a
             href={athenaProdUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-3 bg-white"
+            className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
           >
             <Image
               src="/images/athena_logo.png"
               alt="Athena Production"
-              width={84}
-              height={84}
+              width={64}
+              height={64}
               className="object-contain"
             />
-            <h3 className="text-lg font-semibold tracking-wide text-gray-900">Athena (Prod)</h3>
+            <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Prod)</h3>
           </a>
 
           {/* Athena Test */}
@@ -43,37 +40,34 @@ export default function IntranetHome() {
             href={athenaTestUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-3 bg-white"
+            className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
           >
             <Image
               src="/images/athena_logo_beta.png"
               alt="Athena Test"
-              width={84}
-              height={84}
+              width={64}
+              height={64}
               className="object-contain"
             />
-            <h3 className="text-lg font-semibold tracking-wide text-gray-900">Athena (Test)</h3>
+            <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Test)</h3>
           </a>
         </div>
       </section>
 
       <section className="w-full max-w-5xl">
         <div className="mb-4 text-center">
-          <h2 className="text-xl font-semibold text-gray-900">Applications</h2>
-          <p className="text-sm text-gray-600">
-            Standalone internal apps.
-          </p>
+          <h2 className="text-xl font-semibold text-gray-900">Internal Applications</h2>
         </div>
         <div className="flex justify-center">
           {/* Kiosk */}
           <button
             onClick={() => setShowKioskInstructions(true)}
-            className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-3 cursor-pointer bg-white w-full max-w-sm"
+            className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 cursor-pointer bg-white w-full max-w-xs"
           >
-            <div className="w-20 h-20 flex items-center justify-center text-4xl">
+            <div className="w-16 h-16 flex items-center justify-center text-3xl">
               🖥️
             </div>
-            <h3 className="text-lg font-semibold tracking-wide text-gray-900">Kiosk</h3>
+            <h3 className="text-base font-semibold tracking-wide text-gray-900">Kiosk</h3>
           </button>
         </div>
       </section>

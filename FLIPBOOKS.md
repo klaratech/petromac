@@ -26,20 +26,53 @@ Current doc keys:
 - `success-stories`
 - `catalog`
 
+> Note: `assets/source-pdfs/` is gitignored. The deployable source of truth is
+> `public/flipbooks/**`, which must be committed.
+
+## Prerequisites (local build)
+
+- Python 3.11+
+- Poppler (required by `pdf2image`)
+- Python deps from `scripts/python/requirements.txt`
+
+Example setup (macOS/Linux):
+
+```bash
+cd scripts/python
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# macOS
+brew install poppler
+```
+
 ## Update workflow (deterministic)
 
 1. Replace source PDFs in `assets/source-pdfs/`.
+   - Success stories must be named `success-stories.pdf`.
+   - Catalog must be named `catalog.pdf`.
 2. Update tags (success stories only) in `assets/tags/success-stories.csv`.
-3. Regenerate flipbooks:
+3. Regenerate flipbooks (run inside your venv):
+
+```bash
+python scripts/update_flipbooks.py
+```
+
+Or use the npm helper:
 
 ```bash
 pnpm run build:flipbooks
 ```
 
-Or use the local helper:
+**Single-doc rebuild** (if you only want one):
 
 ```bash
-python scripts/update_flipbooks.py
+python scripts/build_flipbook.py \
+  --input assets/source-pdfs/success-stories.pdf \
+  --out public/flipbooks/success-stories \
+  --tags assets/tags/success-stories.csv \
+  --title "Success Stories"
 ```
 
 4. Validate outputs:
@@ -51,8 +84,8 @@ pnpm run validate:successstories
 
 5. Commit the updated `public/flipbooks/**` outputs (including `source.pdf`).
 
-> Note: `assets/source-pdfs/` is gitignored. The deployable source of truth is
-> `public/flipbooks/**`, which must be committed.
+> There is no watch script in this repo; flipbooks are generated manually via the
+> commands above.
 
 ## CI automation
 
@@ -92,3 +125,11 @@ To validate offline readiness:
 
 If you change flipbook assets, bump the kiosk SW version in `public/kiosk-sw.js`
 so caches refresh (see `KIOSK.md`).
+
+## Troubleshooting
+
+- `ModuleNotFoundError: pdf2image`:
+  - Install Python deps: `pip install -r scripts/python/requirements.txt`
+  - Ensure you run the build with the same Python/venv where deps are installed.
+- `pdf2image` errors about Poppler / `pdftoppm`:
+  - Install Poppler and ensure it is on your PATH.
