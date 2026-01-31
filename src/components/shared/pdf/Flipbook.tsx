@@ -26,6 +26,14 @@ export default function Flipbook({
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+
+  const isMobile = viewportWidth != null ? viewportWidth < 768 : false;
+  const aspectRatio = height / width;
+  const maxSpreadWidth = viewportWidth ? Math.max(320, viewportWidth - 48) : width * 2;
+  const pageWidth = isMobile
+    ? Math.max(240, Math.min(width, (viewportWidth ?? width) - 32))
+    : Math.max(320, Math.min(width, Math.floor(maxSpreadWidth / 2)));
+  const pageHeight = Math.round(pageWidth * aspectRatio);
   const instanceKey = useMemo(() => {
     const first = pages[0] ?? "";
     const last = pages[pages.length - 1] ?? "";
@@ -38,14 +46,6 @@ export default function Flipbook({
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
-
-  const isMobile = viewportWidth != null ? viewportWidth < 768 : false;
-  const aspectRatio = height / width;
-  const maxSpreadWidth = viewportWidth ? Math.max(320, viewportWidth - 48) : width * 2;
-  const pageWidth = isMobile
-    ? Math.max(240, Math.min(width, (viewportWidth ?? width) - 32))
-    : Math.max(320, Math.min(width, Math.floor(maxSpreadWidth / 2)));
-  const pageHeight = Math.round(pageWidth * aspectRatio);
 
   useEffect(() => {
     if (!bookRef.current) return;
