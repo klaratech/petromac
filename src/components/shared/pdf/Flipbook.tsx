@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PageFlip } from "page-flip";
 
 type FlipbookProps = {
@@ -26,6 +26,11 @@ export default function Flipbook({
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+  const instanceKey = useMemo(() => {
+    const first = pages[0] ?? "";
+    const last = pages[pages.length - 1] ?? "";
+    return `${pages.length}-${first}-${last}-${pageWidth}-${pageHeight}-${isMobile}`;
+  }, [pages, pageWidth, pageHeight, isMobile]);
 
   useEffect(() => {
     const update = () => setViewportWidth(window.innerWidth);
@@ -45,6 +50,7 @@ export default function Flipbook({
   useEffect(() => {
     if (!bookRef.current) return;
 
+    let cancelled = false;
     setIsLoading(true);
 
     // Create all page elements
@@ -66,7 +72,7 @@ export default function Flipbook({
 
     // Wait a tick for DOM to update
     const rafId = window.requestAnimationFrame(() => {
-      if (!bookRef.current) return;
+      if (!bookRef.current || cancelled) return;
 
       try {
         if (flipRef.current) {
@@ -78,7 +84,7 @@ export default function Flipbook({
         bookRef.current.innerHTML = "";
 
         // Initialize PageFlip (two-page on desktop, single-page on mobile)
-        flipRef.current = new PageFlip(bookRef.current, {
+        const flipInstance = new PageFlip(bookRef.current, {
           width: pageWidth,
           height: pageHeight,
           size: "fixed",
@@ -96,11 +102,12 @@ export default function Flipbook({
           autoSize: false,
         });
 
-        flipRef.current.loadFromHTML(pageElements);
+        flipInstance.loadFromHTML(pageElements);
+        flipRef.current = flipInstance;
 
         // Add event listener for page flip
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (flipRef.current as any).on("flip", (e: any) => {
+        (flipInstance as any).on("flip", (e: any) => {
           setCurrentPage(e.data);
         });
         
@@ -114,12 +121,8 @@ export default function Flipbook({
     });
 
     return () => {
+      cancelled = true;
       window.cancelAnimationFrame(rafId);
-    };
-  }, [pages, pageWidth, pageHeight, isMobile]);
-
-  useEffect(() => {
-    return () => {
       if (flipRef.current) {
         try {
           flipRef.current.destroy();
@@ -130,7 +133,7 @@ export default function Flipbook({
         flipRef.current = null;
       }
     };
-  }, []);
+  }, [pages, pageWidth, pageHeight, isMobile, instanceKey]);
 
   const goToNextPage = () => {
     if (flipRef.current) {
@@ -170,6 +173,7 @@ export default function Flipbook({
       
       {/* Flipbook Container */}
       <div 
+        key={instanceKey}
         ref={bookRef} 
         className="flipbook-container"
         style={{
