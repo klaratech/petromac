@@ -18,15 +18,19 @@ export default function DataTableFull() {
   const { data: rawData } = useOperationsData<Operation>();
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
 
-  const data: Operation[] = rawData
-    ? rawData.map((row: Operation) => ({
-        ...row,
-        Month:
-          typeof row.Month === 'number' && row.Month >= 1 && row.Month <= 12
-            ? monthNames[row.Month - 1]
-            : row.Month,
-      }))
-    : [];
+  const data = useMemo<Operation[]>(
+    () =>
+      rawData
+        ? rawData.map((row: Operation) => ({
+            ...row,
+            Month:
+              typeof row.Month === 'number' && row.Month >= 1 && row.Month <= 12
+                ? monthNames[row.Month - 1]
+                : row.Month,
+          }))
+        : [],
+    [rawData]
+  );
 
   const columns = useMemo<ColumnDef<Operation>[]>(() => {
     if (!data[0]) return [];
