@@ -1,36 +1,3 @@
-import type { JobRecord } from '@/types/JobRecord';
-
-// Data validation utilities
-export function validateJobRecord(data: unknown): data is JobRecord {
-  if (!data || typeof data !== 'object') {
-    return false;
-  }
-
-  const record = data as Record<string, unknown>;
-  
-  // Check required fields
-  return (
-    typeof record.Country === 'string' &&
-    typeof record.System === 'string' &&
-    (typeof record.Year === 'string' || typeof record.Year === 'number') &&
-    (typeof record.Successful === 'string' || typeof record.Successful === 'number')
-  );
-}
-
-export function validateJobRecords(data: unknown): JobRecord[] {
-  if (!Array.isArray(data)) {
-    throw new Error('Data must be an array');
-  }
-
-  const validRecords = data.filter(validateJobRecord);
-  
-  if (validRecords.length === 0) {
-    throw new Error('No valid job records found');
-  }
-
-  return validRecords;
-}
-
 export function validateCountryLabels(data: unknown): Record<string, string> {
   if (!data || typeof data !== 'object') {
     throw new Error('Country labels must be an object');

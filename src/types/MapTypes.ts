@@ -1,12 +1,5 @@
-import type { Feature, Geometry, FeatureCollection } from 'geojson';
+import type { FeatureCollection, Geometry } from 'geojson';
 import type { JobRecord } from '@/types/JobRecord';
-
-export interface CountryFeature extends Feature<Geometry> {
-  properties: {
-    name: string;
-    [key: string]: string | number | boolean | null;
-  };
-}
 
 export type CountryStats = [string, number];
 

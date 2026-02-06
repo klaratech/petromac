@@ -2,51 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import fs from 'fs/promises';
 import { getClientIp, rateLimit } from '@/lib/rateLimit';
+import { isOriginAllowed, isRecipientAllowed, allowlistsConfigured } from '@/lib/emailValidation';
 import { FLIPBOOK_KEYS } from '@/features/flipbooks/constants';
 import { getFlipbookPdfPath } from '@/features/flipbooks/services/flipbookManifest.server';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 import { generateSuccessStoriesPdf } from '@/features/success-stories/services/successStoriesPdf.server';
 
 const RATE_LIMIT = { limit: 3, windowMs: 60_000 };
-
-function parseEnvList(value?: string) {
-  return (value || '')
-    .split(',')
-    .map((entry) => entry.trim())
-    .filter(Boolean);
-}
-
-function isOriginAllowed(req: NextRequest) {
-  const allowedOrigins = parseEnvList(process.env.ALLOWED_ORIGINS || process.env.NEXT_PUBLIC_BASE_URL);
-  if (allowedOrigins.length === 0) return true;
-
-  const origin = req.headers.get('origin') || req.headers.get('referer');
-  if (!origin) return true;
-
-  return allowedOrigins.some((allowed) => origin.startsWith(allowed));
-}
-
-function allowlistsConfigured() {
-  const allowedRecipients = parseEnvList(process.env.ALLOWED_EMAIL_RECIPIENTS);
-  const allowedDomains = parseEnvList(process.env.ALLOWED_EMAIL_DOMAINS);
-  return allowedRecipients.length > 0 || allowedDomains.length > 0;
-}
-
-function isRecipientAllowed(email: string) {
-  const allowedRecipients = parseEnvList(process.env.ALLOWED_EMAIL_RECIPIENTS);
-  const allowedDomains = parseEnvList(process.env.ALLOWED_EMAIL_DOMAINS);
-
-  if (allowedRecipients.length === 0 && allowedDomains.length === 0) {
-    return false;
-  }
-
-  if (allowedRecipients.includes(email)) return true;
-
-  const domain = email.split('@')[1]?.toLowerCase();
-  if (!domain) return false;
-
-  return allowedDomains.map((d) => d.toLowerCase()).includes(domain);
-}
 
 function buildDownloadFilename(filters?: SuccessStoriesFilters): string {
   const parts: string[] = ['petromac', 'successstories'];

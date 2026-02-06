@@ -87,7 +87,6 @@ website/
 ├── next.config.ts                        # Next.js configuration
 ├── tailwind.config.ts                    # Tailwind CSS brand theme
 ├── README.md                             # Main documentation
-├── TODO.md                               # Project backlog
 ├── REPO_STRUCTURE.md                     # This file
 └── docs/
     ├── TAILWIND_THEME.md                 # Brand theme specifications

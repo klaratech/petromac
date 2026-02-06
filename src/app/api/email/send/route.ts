@@ -2,48 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 import { getClientIp, rateLimit } from '@/lib/rateLimit';
+import { isOriginAllowed, isRecipientAllowed, allowlistsConfigured } from '@/lib/emailValidation';
 
 const RATE_LIMIT = { limit: 5, windowMs: 60_000 };
-
-function parseEnvList(value?: string) {
-  return (value || '')
-    .split(',')
-    .map((entry) => entry.trim())
-    .filter(Boolean);
-}
-
-function isOriginAllowed(req: NextRequest) {
-  const allowedOrigins = parseEnvList(process.env.ALLOWED_ORIGINS || process.env.NEXT_PUBLIC_BASE_URL);
-  if (allowedOrigins.length === 0) return true;
-
-  const origin = req.headers.get('origin') || req.headers.get('referer');
-  if (!origin) return true;
-
-  return allowedOrigins.some((allowed) => origin.startsWith(allowed));
-}
-
-function isRecipientAllowed(email: string, defaultRecipient?: string | null) {
-  const allowedRecipients = parseEnvList(process.env.ALLOWED_EMAIL_RECIPIENTS);
-  const allowedDomains = parseEnvList(process.env.ALLOWED_EMAIL_DOMAINS);
-
-  if (allowedRecipients.length === 0 && allowedDomains.length === 0) {
-    // Allow only the default recipient when allowlists are unset.
-    return defaultRecipient ? email === defaultRecipient : false;
-  }
-
-  if (allowedRecipients.includes(email)) return true;
-
-  const domain = email.split('@')[1]?.toLowerCase();
-  if (!domain) return false;
-
-  return allowedDomains.map((d) => d.toLowerCase()).includes(domain);
-}
-
-function allowlistsConfigured() {
-  const allowedRecipients = parseEnvList(process.env.ALLOWED_EMAIL_RECIPIENTS);
-  const allowedDomains = parseEnvList(process.env.ALLOWED_EMAIL_DOMAINS);
-  return allowedRecipients.length > 0 || allowedDomains.length > 0;
-}
 
 export async function POST(request: NextRequest) {
   try {

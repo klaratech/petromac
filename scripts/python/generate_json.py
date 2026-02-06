@@ -42,8 +42,8 @@ class Config:
 
     # GitHub config
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-    REPO_OWNER = os.getenv("REPO_OWNER", "Klaratech")
-    REPO_NAME = os.getenv("REPO_NAME", "petromac-kiosk")
+    REPO_OWNER = os.getenv("REPO_OWNER", "klaratech")
+    REPO_NAME = os.getenv("REPO_NAME", "petromac")
     TARGET_FULL_JSON = "public/data/operations_data.json"
     TARGET_BRANCH = "main"
 

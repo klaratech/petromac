@@ -117,6 +117,9 @@ jspm_packages/
 /scripts/python/.env
 /scripts/python/venv/
 /scripts/python/env/
+/scripts/python/*.log
+/scripts/python/*_matched_*.txt
+/scripts/python/unknown_*.txt
 /scripts/node/node_modules/
 
 # Temporary files
