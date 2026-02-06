@@ -68,9 +68,6 @@ website/
 │   ├── images/                           # Images and icons
 │   ├── videos/                           # Video files
 │   └── models/                           # 3D models (.glb files)
-├── assets/                               # Source assets for deterministic builds
-│   ├── source-pdfs/                      # Source PDFs for flipbooks
-│   └── tags/                             # Tag CSVs (success stories)
 ├── data/                                 # Data management (private sources only)
 │   └── private/                          # 🚫 GITIGNORED - not deployed
 │       ├── raw/                          # Raw Excel uploads (e.g., jobhistory.xlsx)

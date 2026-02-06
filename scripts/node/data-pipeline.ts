@@ -1,18 +1,35 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 
-const DEFAULTS = {
-  operationsXlsx: path.join(ROOT, 'data', 'private', 'raw', 'jobhistory.xlsx'),
-  catalogPdf: path.join(ROOT, 'assets', 'source-pdfs', 'catalog.pdf'),
-  successPdf: path.join(ROOT, 'assets', 'source-pdfs', 'success-stories.pdf'),
-  successTagsXlsx: path.join(ROOT, 'assets', 'tags', 'success-stories-summary.xlsx'),
-};
+// Load .env.local so `pnpm data` picks up OneDrive source paths
+// (Next.js does this automatically, but tsx does not)
+function loadEnvFile(filename: string) {
+  const filepath = path.join(ROOT, filename);
+  if (!existsSync(filepath)) return;
 
-function resolvePath(value: string | undefined, fallback: string): string {
-  if (!value || value.trim().length === 0) return fallback;
+  const lines = readFileSync(filepath, 'utf-8').split('\n');
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eqIndex = trimmed.indexOf('=');
+    if (eqIndex === -1) continue;
+    const key = trimmed.slice(0, eqIndex).trim();
+    const value = trimmed.slice(eqIndex + 1).trim();
+    // Don't override values already set in the environment
+    if (!(key in process.env) || process.env[key] === '') {
+      process.env[key] = value;
+    }
+  }
+}
+
+loadEnvFile('.env.local');
+loadEnvFile('.env');
+
+function resolvePath(value: string | undefined): string | undefined {
+  if (!value || value.trim().length === 0) return undefined;
   return path.isAbsolute(value) ? value : path.resolve(ROOT, value);
 }
 
@@ -37,15 +54,15 @@ function warnOrThrow(message: string, strict: boolean) {
 function main() {
   const strict = process.env.DATA_PIPELINE_STRICT !== 'false';
 
-  const operationsSource = resolvePath(process.env.OPERATIONS_SOURCE_XLSX, DEFAULTS.operationsXlsx);
-  const catalogSource = resolvePath(process.env.FLIPBOOK_CATALOG_SOURCE_PDF, DEFAULTS.catalogPdf);
-  const successSource = resolvePath(process.env.FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF, DEFAULTS.successPdf);
-  const successTagsXlsx = resolvePath(process.env.FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX, DEFAULTS.successTagsXlsx);
+  const operationsSource = resolvePath(process.env.OPERATIONS_SOURCE_XLSX);
+  const catalogSource = resolvePath(process.env.FLIPBOOK_CATALOG_SOURCE_PDF);
+  const successSource = resolvePath(process.env.FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF);
+  const successTagsXlsx = resolvePath(process.env.FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX);
 
   // eslint-disable-next-line no-console
   console.log('🚀 Starting unified data pipeline...');
 
-  if (existsSync(operationsSource)) {
+  if (operationsSource && existsSync(operationsSource)) {
     // eslint-disable-next-line no-console
     console.log(`📊 Processing operations data from: ${operationsSource}`);
     run('python', ['scripts/python/generate_json.py'], {
@@ -53,10 +70,13 @@ function main() {
       SKIP_GITHUB_PUSH: 'true',
     });
   } else {
-    warnOrThrow(`Operations source not found: ${operationsSource}`, strict);
+    warnOrThrow(
+      `Operations source not found. Set OPERATIONS_SOURCE_XLSX in .env.local${operationsSource ? ` (checked: ${operationsSource})` : ''}`,
+      strict
+    );
   }
 
-  if (existsSync(catalogSource) && existsSync(successSource)) {
+  if (catalogSource && existsSync(catalogSource) && successSource && existsSync(successSource)) {
     // eslint-disable-next-line no-console
     console.log('📘 Building flipbooks...');
     const flipbookArgs = [
@@ -68,14 +88,14 @@ function main() {
       '--skip-validate',
     ];
 
-    if (existsSync(successTagsXlsx)) {
+    if (successTagsXlsx && existsSync(successTagsXlsx)) {
       flipbookArgs.push('--tags-xlsx', successTagsXlsx);
     }
 
     run('python', flipbookArgs);
   } else {
     warnOrThrow(
-      `Flipbook source PDF missing. catalog: ${catalogSource}, success-stories: ${successSource}`,
+      `Flipbook source PDFs not found. Set FLIPBOOK_CATALOG_SOURCE_PDF and FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF in .env.local`,
       strict
     );
   }

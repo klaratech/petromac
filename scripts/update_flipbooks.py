@@ -8,9 +8,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BUILD_SCRIPT = ROOT / "scripts" / "build_flipbook.py"
 
-DEFAULT_SUCCESS_PDF = ROOT / "assets" / "source-pdfs" / "success-stories.pdf"
-DEFAULT_CATALOG_PDF = ROOT / "assets" / "source-pdfs" / "catalog.pdf"
-
 DEFAULT_SUCCESS_OUT = ROOT / "public" / "flipbooks" / "success-stories"
 DEFAULT_CATALOG_OUT = ROOT / "public" / "flipbooks" / "catalog"
 
@@ -91,8 +88,8 @@ def build_flipbook(input_pdf: Path, output_dir: Path, title: str, tags: Path | N
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build flipbook bundles from local PDFs")
-    parser.add_argument("--success-pdf", default=str(DEFAULT_SUCCESS_PDF), help="Path to success stories PDF")
-    parser.add_argument("--catalog-pdf", default=str(DEFAULT_CATALOG_PDF), help="Path to catalog PDF")
+    parser.add_argument("--success-pdf", required=True, help="Path to success stories PDF")
+    parser.add_argument("--catalog-pdf", required=True, help="Path to catalog PDF")
     parser.add_argument("--tags-xlsx", default=None, help="Path to success stories summary xlsx (preferred)")
     parser.add_argument("--tags", default=None, help="Path to success stories tags CSV (legacy fallback)")
     parser.add_argument("--skip-validate", action="store_true", help="Skip pnpm validation scripts")
