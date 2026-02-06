@@ -17,6 +17,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "data": "tsx scripts/node/data-pipeline.ts",
+    "data:operations": "tsx scripts/node/data-pipeline.ts --operations-only",
     "data:check": "pnpm run validate:flipbooks && pnpm run validate:successstories",
     "build:flipbooks": "python scripts/update_flipbooks.py --skip-validate",
     "validate:successstories": "tsx scripts/node/validate-successstories.ts",

@@ -53,14 +53,14 @@ function warnOrThrow(message: string, strict: boolean) {
 
 function main() {
   const strict = process.env.DATA_PIPELINE_STRICT !== 'false';
+  const operationsOnly = process.argv.includes('--operations-only');
 
   const operationsSource = resolvePath(process.env.OPERATIONS_SOURCE_XLSX);
-  const catalogSource = resolvePath(process.env.FLIPBOOK_CATALOG_SOURCE_PDF);
-  const successSource = resolvePath(process.env.FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF);
-  const successTagsXlsx = resolvePath(process.env.FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX);
 
   // eslint-disable-next-line no-console
-  console.log('🚀 Starting unified data pipeline...');
+  console.log(operationsOnly
+    ? '🚀 Starting operations-only data pipeline...'
+    : '🚀 Starting unified data pipeline...');
 
   if (operationsSource && existsSync(operationsSource)) {
     // eslint-disable-next-line no-console
@@ -76,34 +76,40 @@ function main() {
     );
   }
 
-  if (catalogSource && existsSync(catalogSource) && successSource && existsSync(successSource)) {
-    // eslint-disable-next-line no-console
-    console.log('📘 Building flipbooks...');
-    const flipbookArgs = [
-      'scripts/update_flipbooks.py',
-      '--catalog-pdf',
-      catalogSource,
-      '--success-pdf',
-      successSource,
-      '--skip-validate',
-    ];
+  if (!operationsOnly) {
+    const catalogSource = resolvePath(process.env.FLIPBOOK_CATALOG_SOURCE_PDF);
+    const successSource = resolvePath(process.env.FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF);
+    const successTagsXlsx = resolvePath(process.env.FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX);
 
-    if (successTagsXlsx && existsSync(successTagsXlsx)) {
-      flipbookArgs.push('--tags-xlsx', successTagsXlsx);
+    if (catalogSource && existsSync(catalogSource) && successSource && existsSync(successSource)) {
+      // eslint-disable-next-line no-console
+      console.log('📘 Building flipbooks...');
+      const flipbookArgs = [
+        'scripts/update_flipbooks.py',
+        '--catalog-pdf',
+        catalogSource,
+        '--success-pdf',
+        successSource,
+        '--skip-validate',
+      ];
+
+      if (successTagsXlsx && existsSync(successTagsXlsx)) {
+        flipbookArgs.push('--tags-xlsx', successTagsXlsx);
+      }
+
+      run('python', flipbookArgs);
+    } else {
+      warnOrThrow(
+        `Flipbook source PDFs not found. Set FLIPBOOK_CATALOG_SOURCE_PDF and FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF in .env.local`,
+        strict
+      );
     }
 
-    run('python', flipbookArgs);
-  } else {
-    warnOrThrow(
-      `Flipbook source PDFs not found. Set FLIPBOOK_CATALOG_SOURCE_PDF and FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF in .env.local`,
-      strict
-    );
+    // eslint-disable-next-line no-console
+    console.log('✅ Running validations...');
+    run('pnpm', ['run', 'validate:flipbooks']);
+    run('pnpm', ['run', 'validate:successstories']);
   }
-
-  // eslint-disable-next-line no-console
-  console.log('✅ Running validations...');
-  run('pnpm', ['run', 'validate:flipbooks']);
-  run('pnpm', ['run', 'validate:successstories']);
 
   // eslint-disable-next-line no-console
   console.log('🎉 Data pipeline complete.');
