@@ -36,6 +36,7 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
   const [filters, setFilters] = useState<FiltersState>({});
   const [csvData, setCsvData] = useState<SuccessStoryRow[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [selectedPages, setSelectedPages] = useState<number[]>([]);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -50,7 +51,8 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
         setCsvData(data);
         setIsLoadingData(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        setLoadError(err instanceof Error ? err.message : 'Failed to load success stories data');
         setIsLoadingData(false);
       });
   }, []);
@@ -227,7 +229,11 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
           </div>
         )}
 
-        {isLoadingData || !manifest ? (
+        {loadError ? (
+          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center min-h-[400px]">
+            <p className="text-red-600">Failed to load data: {loadError}</p>
+          </div>
+        ) : isLoadingData || !manifest ? (
           <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center min-h-[700px]">
             <p className="text-gray-600">Loading success stories data...</p>
           </div>

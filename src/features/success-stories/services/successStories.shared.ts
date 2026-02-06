@@ -26,7 +26,7 @@ const CATEGORY1_FIELD_CANDIDATES = ['Category 1', 'Category1', 'category1'];
 const CATEGORY2_FIELD_CANDIDATES = ['Category 2', 'Category2', 'category2'];
 const YEAR_FIELD_CANDIDATES = ['Year', 'year', '\ufeffYear'];
 
-const MULTI_VALUE_DELIMITERS = [',', ';'];
+const MULTI_VALUE_DELIMITERS = [',', ';', '+'];
 const KNOWN_AREAS = ['APAC', 'MENA', 'EUR', 'LAM', 'NAM', 'AFR'];
 
 function normalizeHeader(header: string): string {
@@ -223,7 +223,12 @@ export function getAvailableOptions(
   data: SuccessStoryRow[],
   filters: SuccessStoriesFilters
 ): SuccessStoriesOptions {
-  const filtered = filterSuccessStories(data, filters);
+  // For each dimension, count against data filtered by the OTHER dimensions
+  // so the user sees how many stories each option would yield.
+  const { areas: fAreas = [], companies: fCompanies = [], techs: fTechs = [] } = filters;
+  const filteredForAreas = filterSuccessStories(data, { areas: [], companies: fCompanies, techs: fTechs });
+  const filteredForCompanies = filterSuccessStories(data, { areas: fAreas, companies: [], techs: fTechs });
+  const filteredForTechs = filterSuccessStories(data, { areas: fAreas, companies: fCompanies, techs: [] });
 
   const allAreas = uniqueSorted(data.flatMap((row) => row.areas));
   const allCompanies = uniqueSorted(data.flatMap((row) => row.companies));
@@ -231,17 +236,17 @@ export function getAvailableOptions(
 
   const areas: OptionWithCount[] = allAreas.map((area) => ({
     value: area,
-    count: countMatches(filtered, (row) => row.areas.includes(area)),
+    count: countMatches(filteredForAreas, (row) => row.areas.includes(area)),
   }));
 
   const companies: OptionWithCount[] = allCompanies.map((company) => ({
     value: company,
-    count: countMatches(filtered, (row) => row.companies.includes(company)),
+    count: countMatches(filteredForCompanies, (row) => row.companies.includes(company)),
   }));
 
   const techs: OptionWithCount[] = allTechs.map((tech) => ({
     value: tech,
-    count: countMatches(filtered, (row) => row.techs.includes(tech)),
+    count: countMatches(filteredForTechs, (row) => row.techs.includes(tech)),
   }));
 
   return { areas, companies, techs };
