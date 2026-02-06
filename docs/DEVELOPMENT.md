@@ -126,8 +126,7 @@ Follow these conventions when working with data:
 - Accessible via `/data/*` URLs (e.g., `/data/operations_data.json`)
 - Use for:
   - Large datasets (operations_data.json ~3MB)
-  - Map data (country_labels.json, region_coords.json, region_data.json)
-- CSV files
+  - Map data (country_labels.json, world-110m.json)
 - **Fetch at runtime** - do not import JSON files from here
 
 Flipbook assets (PDFs + images) live under `public/flipbooks/` and are accessed via `/flipbooks/*` URLs.

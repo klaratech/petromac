@@ -84,10 +84,8 @@ Success Stories are implemented as a **single feature module**:
 - Files accessible at `/data/*` URLs (e.g., `/data/operations_data.json`)
 - Includes:
   - Large JSON datasets (operations_data.json ~3MB)
-  - Map data (country_labels.json, region_coords.json, region_data.json)
-  - World map topojson (`world-110m.json`) for offline map rendering
-  - CSV files (Product_and_Device_Line_Growth.csv)
-  - Source PDFs for flipbooks live under `public/flipbooks/`
+  - Map data (country_labels.json, world-110m.json)
+  - Flipbook assets live under `public/flipbooks/`
 
 #### TypeScript Modules (`src/data/`)
 - **Small, typed data modules** imported directly by components

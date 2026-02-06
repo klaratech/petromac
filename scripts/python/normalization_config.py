@@ -5,8 +5,9 @@ COUNTRY_NORMALIZATION = {
     "UAE": "United Arab Emirates",
     "USA": "United States of America",
     "Equatorial Guinea": "Eq. Guinea",
-    "Ivory Coast": "Côte d'Ivoire", 
+    "Ivory Coast": "Côte d'Ivoire",
           # D3 uses the French name
+    "Sao Tome & Principe": "São Tomé and Principe",
 }
 
 # Region corrections

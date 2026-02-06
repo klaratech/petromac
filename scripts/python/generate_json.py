@@ -30,7 +30,6 @@ class Config:
 
     # File paths
     EXCEL_PATH = os.getenv('EXCEL_PATH', os.path.join(REPO_ROOT, "data", "private", "raw", "jobhistory.xlsx"))
-    OUTPUT_CSV = os.path.join(BASE_DIR, "runs-summary.csv")
     OUTPUT_FULL_JSON = os.path.join(REPO_ROOT, "public", "data", "operations_data.json")
     MASTER_COUNTRIES_JSON = os.path.join(BASE_DIR, "master_country_list.json")
     KNOWN_CITIES_JSON = os.path.join(BASE_DIR, "known_cities.json")
@@ -55,7 +54,6 @@ class Config:
 # === BACKWARD COMPATIBILITY ===
 BASE_DIR = Config.BASE_DIR
 EXCEL_PATH = Config.EXCEL_PATH
-OUTPUT_CSV = Config.OUTPUT_CSV
 OUTPUT_FULL_JSON = Config.OUTPUT_FULL_JSON
 MASTER_COUNTRIES_JSON = Config.MASTER_COUNTRIES_JSON
 KNOWN_CITIES_JSON = Config.KNOWN_CITIES_JSON

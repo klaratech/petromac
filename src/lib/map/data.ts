@@ -31,32 +31,3 @@ export async function fetchCountryLabels(): Promise<Record<string, string>> {
   return response.json();
 }
 
-/**
- * Fetch region coordinates
- */
-export async function fetchRegionCoords(): Promise<Record<string, unknown>> {
-  const response = await fetch('/data/region_coords.json', { 
-    cache: 'force-cache' 
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to load region_coords.json: ${response.status}`);
-  }
-  
-  return response.json();
-}
-
-/**
- * Fetch region data
- */
-export async function fetchRegionData(): Promise<Record<string, unknown>> {
-  const response = await fetch('/data/region_data.json', { 
-    cache: 'force-cache' 
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to load region_data.json: ${response.status}`);
-  }
-  
-  return response.json();
-}

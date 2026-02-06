@@ -141,9 +141,7 @@ The repository uses a three-tier data organization to separate private sources, 
 - **Contents**:
   - `operations_data.json` - Processed operations data (3MB+)
   - `country_labels.json` - Country name mappings for map
-  - `region_coords.json` - Region coordinate data for map
-  - `region_data.json` - Additional region metadata
-  - `Product_and_Device_Line_Growth.csv` - Product growth metrics
+  - `world-110m.json` - TopoJSON for offline map rendering
   - Flipbook assets live under `public/flipbooks/` (see `FLIPBOOKS.md`)
 
 #### 3. `src/data/` - TypeScript Data Modules
