@@ -16,7 +16,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "build:flipbooks": "python scripts/build_flipbook.py --input assets/source-pdfs/success-stories.pdf --out public/flipbooks/success-stories --tags assets/tags/success-stories.csv --title \"Success Stories\" && python scripts/build_flipbook.py --input assets/source-pdfs/catalog.pdf --out public/flipbooks/catalog --title \"Product Catalog\"",
+    "data": "tsx scripts/node/data-pipeline.ts",
+    "data:check": "pnpm run validate:flipbooks && pnpm run validate:successstories",
+    "build:flipbooks": "python scripts/update_flipbooks.py --skip-validate",
     "validate:successstories": "tsx scripts/node/validate-successstories.ts",
     "validate:flipbooks": "tsx scripts/node/validate-flipbooks.ts",
     "test:e2e": "playwright test"

@@ -1,11 +1,23 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-function unauthorized() {
+function unauthorized(challenge: boolean) {
+  if (!challenge) {
+    return new NextResponse('Auth required', { status: 401 });
+  }
+
   return new NextResponse('Auth required', {
     status: 401,
     headers: { 'WWW-Authenticate': 'Basic realm="Intranet"' },
   });
+}
+
+function isDocumentRequest(req: NextRequest) {
+  const fetchMode = req.headers.get('sec-fetch-mode');
+  const fetchDest = req.headers.get('sec-fetch-dest');
+  const accept = req.headers.get('accept') || '';
+
+  return fetchMode === 'navigate' || fetchDest === 'document' || accept.includes('text/html');
 }
 
 function safeEqual(a: string, b: string) {
@@ -35,21 +47,23 @@ export function middleware(req: NextRequest) {
     const pass = process.env.INTRANET_PASS || '';
     const authHeader = req.headers.get('authorization');
 
+    const challenge = isDocumentRequest(req);
+
     if (!authHeader || !authHeader.startsWith('Basic ')) {
-      return unauthorized();
+      return unauthorized(challenge);
     }
 
     let decoded = '';
     try {
       decoded = atob(authHeader.slice(6));
     } catch {
-      return unauthorized();
+      return unauthorized(challenge);
     }
 
     const [givenUser = '', givenPass = ''] = decoded.split(':');
 
     if (!safeEqual(givenUser, user) || !safeEqual(givenPass, pass)) {
-      return unauthorized();
+      return unauthorized(challenge);
     }
 
     const res = NextResponse.next();

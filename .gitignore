@@ -109,7 +109,6 @@ jspm_packages/
 
 # Private data (DO NOT COMMIT)
 /data/private/
-/assets/source-pdfs/
 
 # Python scripts
 /scripts/python/.venv

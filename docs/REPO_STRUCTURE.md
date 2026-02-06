@@ -101,30 +101,28 @@ website/
 ## 📖 Flipbook Module
 
 ### Overview
-The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. These are generated from PDFs in `assets/source-pdfs/`.
+The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. Source PDFs and tags xlsx are sourced from OneDrive (paths configured in `.env.local`).
 
 ### File Locations
-- **Source PDFs**:  
-  - `assets/source-pdfs/catalog.pdf`  
-  - `assets/source-pdfs/success-stories.pdf`
+- **Source files**: Configured via `.env.local` env vars (OneDrive paths)
+  - `FLIPBOOK_CATALOG_SOURCE_PDF`
+  - `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF`
+  - `FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX`
 
-- **Generated Bundles**:  
-  - `public/flipbooks/catalog/`  
+- **Generated Bundles**:
+  - `public/flipbooks/catalog/`
   - `public/flipbooks/success-stories/`
 
-- **Component**:  
+- **Component**:
   - `src/components/shared/pdf/Flipbook.tsx`
 
-- **Routes**:  
-  - `/catalog` → Product Catalog flipbook  
-  - `/success-stories/flipbook` → Success Stories flipbook  
+- **Routes**:
+  - `/catalog` → Product Catalog flipbook
+  - `/success-stories/flipbook` → Success Stories flipbook
 
 ### Update Workflow
-- Replace the PDFs in `assets/source-pdfs/` and tags in `assets/tags/` (as needed).  
-- Run `pnpm run build:flipbooks` and commit `public/flipbooks/**`.  
-- GitHub Actions workflow `.github/workflows/pdf-flipbooks-build.yml` regenerates outputs on changes.
-
-> ⚠️ Keep filenames stable. Archive old PDFs elsewhere if versioning is needed.
+- Update source PDFs and/or the "Kiosk" sheet in `Success Stories_Summary.xlsx` (in OneDrive).
+- Run `pnpm run data` (or `pnpm run build:flipbooks`) and commit `public/flipbooks/**`.
 
 ## 📁 Data Organization
 

@@ -21,14 +21,12 @@ pnpm run dev
 - Track Record (map): http://localhost:3000/track-record
 
 ### Flipbooks
-- Source PDFs live in `assets/source-pdfs/`
+- Source PDFs and tags xlsx live in OneDrive (paths configured in `.env.local`)
 - Generated bundles live in `public/flipbooks/<docKey>/`
-- Regenerate assets:
+- Preferred unified pipeline (operations + flipbooks):
   ```bash
-  pnpm run build:flipbooks
-  pnpm run validate:flipbooks
+  pnpm run data
   ```
-- Flipbook details and tag format: see `FLIPBOOKS.md`
 - View flipbooks:
   - http://localhost:3000/catalog
   - http://localhost:3000/success-stories/flipbook
@@ -36,13 +34,13 @@ pnpm run dev
 ### Success Stories Filters
 
 Filters are derived from the tags file at `public/flipbooks/success-stories/tags.csv`.
+This CSV is auto-generated from the `Success Stories_Summary.xlsx` file (sheet: "Kiosk") during the build pipeline.
 Normalization rules live in `src/features/success-stories/services/successStories.shared.ts`.
 
 To update filters:
-1. Update `assets/tags/success-stories.csv`
-2. Run `pnpm run build:flipbooks`
-3. Run `pnpm run validate:successstories`
-4. Commit generated outputs
+1. Edit the "Kiosk" sheet in `Success Stories_Summary.xlsx` (OneDrive)
+2. Run `pnpm run data`
+3. Commit generated outputs
 
 ## Code Organization
 
@@ -60,8 +58,35 @@ To update filters:
 
 ## GitHub Actions
 
-- `.github/workflows/data-build.yaml` → Excel → JSON pipeline
+- `.github/workflows/data-build.yaml` → unified data pipeline (`pnpm run data`)
 - `.github/workflows/pdf-flipbooks-build.yml` → Flipbook generation
+
+## Unified Data Pipeline (`pnpm run data`)
+
+This repository supports an env-driven source workflow so raw files can stay outside git (e.g., OneDrive-synced local paths).
+
+Configure these in `.env.local`:
+
+```bash
+OPERATIONS_SOURCE_XLSX=/absolute/path/to/jobhistory.xlsx
+FLIPBOOK_CATALOG_SOURCE_PDF=/absolute/path/to/catalog.pdf
+FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF=/absolute/path/to/success-stories.pdf
+FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX=/absolute/path/to/Success Stories_Summary.xlsx
+DATA_PIPELINE_STRICT=true
+```
+
+Then run:
+
+```bash
+pnpm run data
+```
+
+This will:
+1. build `public/data/operations_data.json`
+2. rebuild `public/flipbooks/*`
+3. run flipbook/success-stories validators
+
+For cron-style usage, schedule `pnpm run data` periodically and commit updated outputs only.
 
 ## Testing
 
@@ -173,6 +198,5 @@ Check these pages:
 ## Notes
 
 - The old PDF viewer/builder modals are **deprecated** and replaced by the Flipbook module.
-- Always keep flipbook source PDF filenames stable (`assets/source-pdfs/catalog.pdf`, `assets/source-pdfs/success-stories.pdf`).
-- Archive older versions if needed, but pipeline depends on stable names.
+- Source PDFs and tags xlsx are sourced from OneDrive via `.env.local` paths.
 - **Data organization is critical** - follow the three-tier structure to avoid deployment issues.

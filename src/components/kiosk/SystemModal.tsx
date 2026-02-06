@@ -2,6 +2,7 @@
 
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import { useEffect, useRef, useState } from 'react';
+import useOperationsData from '@/hooks/useOperationsData';
 import { motion, AnimatePresence } from 'framer-motion';
 import CircularGallery from '@/components/kiosk/CircularGallery';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
@@ -23,7 +24,7 @@ export default function SystemModal({
   const ref = useRef<HTMLVideoElement | null>(null);
   const [showDrilldown, setShowDrilldown] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
-  const [jobData, setJobData] = useState<JobRecord[] | null>(null);
+  const { data: jobData } = useOperationsData<JobRecord>({ enabled: showDrilldown });
 
   const media = systemMedia[system];
   const videoSrc = media?.video;
@@ -38,15 +39,7 @@ export default function SystemModal({
     return () => window.removeEventListener('keydown', listener);
   }, [onClose]);
 
-  useEffect(() => {
-    if (!showDrilldown || jobData) return;
-    fetch('/data/operations_data.json', { cache: 'force-cache' })
-      .then((res) => res.json())
-      .then((data: JobRecord[]) => setJobData(data))
-      .catch(() => {
-        // Error handled silently
-      });
-  }, [showDrilldown, jobData]);
+  // No longer need manual fetch; jobData is provided by useOperationsData hook.
 
   const models = Object.entries(deviceSpecs)
     .filter(([, d]) => d.system === system)

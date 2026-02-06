@@ -2,11 +2,11 @@ import type { JobRecord } from '@/types/JobRecord';
 
 /**
  * Fetch operations data from the public data directory
- * Uses force-cache to ensure data is cached after first load
+ * Always fetch fresh operations data so track-record reflects latest generated output
  */
 export async function fetchOperationsData(): Promise<JobRecord[]> {
   const response = await fetch('/data/operations_data.json', { 
-    cache: 'force-cache' 
+    cache: 'no-store' 
   });
   
   if (!response.ok) {

@@ -45,6 +45,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r scripts/python/requirements.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Install Node.js dependencies
+        run: pnpm install --frozen-lockfile
       
       - name: Verify private data exists
         run: |
@@ -55,14 +66,12 @@ jobs:
           fi
           echo "✅ Private data file found"
       
-      - name: Run data processing script
+      - name: Run unified data pipeline
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
-        run: |
-          cd scripts/python
-          python generate_json.py
+          SKIP_GITHUB_PUSH: 'true'
+          DATA_PIPELINE_STRICT: 'false'
+          OPERATIONS_SOURCE_XLSX: data/private/raw/jobhistory.xlsx
+        run: pnpm run data
         continue-on-error: false
       
       - name: Verify output file
@@ -77,7 +86,7 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          git diff --exit-code public/data/operations_data.json || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --exit-code public/data/operations_data.json public/flipbooks/ || echo "changed=true" >> $GITHUB_OUTPUT
       
       - name: Commit and push changes
         if: |
@@ -86,8 +95,8 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add public/data/operations_data.json
-          git commit -m "chore(data): update operations data [skip ci]"
+          git add public/data/operations_data.json public/flipbooks/
+          git commit -m "chore(data): update generated data artifacts [skip ci]"
           git push
       
       - name: Upload processing logs as artifacts

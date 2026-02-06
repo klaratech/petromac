@@ -1,6 +1,7 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
+import useOperationsData from '@/hooks/useOperationsData';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import { Suspense, useState, useRef, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
@@ -8,8 +9,6 @@ import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
-
-import type { JobRecord } from '@/types/JobRecord';
 
 export default function DeviceViewer({
   model,
@@ -22,7 +21,7 @@ export default function DeviceViewer({
   const [isUserInteracting, setIsUserInteracting] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showSuccessMap, setShowSuccessMap] = useState(false);
-  const [drilldownData, setDrilldownData] = useState<JobRecord[] | null>(null);
+  const { data: drilldownData } = useOperationsData({ enabled: showSuccessMap });
   const [fadingOut, setFadingOut] = useState(false);
 
   const cleanModel = model.split('?')[0];
@@ -51,16 +50,7 @@ export default function DeviceViewer({
     return () => window.removeEventListener('keydown', handleEscape);
   }, [showVideo, showSuccessMap, showSpecs, handleClose]);
 
-  useEffect(() => {
-    fetch('/data/operations_data.json', { cache: 'force-cache' })
-      .then((res) => res.json())
-      .then((json) => {
-        setDrilldownData(json);
-      })
-      .catch(() => {
-        // Error handled silently
-      });
-  }, []);
+  // Data is loaded via useOperationsData hook; no manual fetch required.
 
   const Model = () => {
     const { scene } = useGLTF(model);

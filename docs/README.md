@@ -46,17 +46,15 @@ Protected by Basic Auth. Includes:
 - **Kiosk Application** with dashboards, product lines, success stories manager, data check tools
 
 ### Flipbooks
-- Flipbooks generated from PDFs stored in `assets/source-pdfs/`
+- Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.local`)
 - Output bundle format under `public/flipbooks/<docKey>/` (manifest, pages, source.pdf, optional tags)
 - Component: `src/components/shared/pdf/Flipbook.tsx`
 - Automated regeneration with GitHub Actions workflow `.github/workflows/pdf-flipbooks-build.yml`
-- See `FLIPBOOKS.md` for update workflow and validation steps
 
 ### Success Stories
-- **Data Source**: Tags CSV at `public/flipbooks/success-stories/tags.csv`
+- **Data Source**: Tags CSV at `public/flipbooks/success-stories/tags.csv` (auto-generated from `Success Stories_Summary.xlsx`)
 - **Options**: Derived from tags + normalization logic in `src/features/success-stories/services/successStories.shared.ts`
 - **Flipbook**: Interactive flipbook with filtering at `/success-stories/flipbook`
-- See `FLIPBOOKS.md` for tag format and update workflow
 
 ### PWA & Offline Functionality
 - **Scope**: PWA functionality is limited to `/intranet/kiosk/*` only
@@ -92,6 +90,7 @@ pnpm run dev
 ### Common Scripts
 - `pnpm run lint`
 - `pnpm run typecheck`
+- `pnpm run data` (unified operations + flipbooks rebuild using env-configured source paths)
 - `pnpm run validate:successstories`
 - `pnpm run build:flipbooks`
 - `pnpm run validate:flipbooks`
@@ -116,9 +115,16 @@ pip install -r requirements.txt
 ```
 
 ### Data Processing & Flipbooks
-- Run `python scripts/python/generate_json.py` for operations data
-- Run `pnpm run build:flipbooks` for flipbooks (optional, normally handled by Actions)
-- Or run `python scripts/update_flipbooks.py` for local updates
+- Preferred: run `pnpm run data` to rebuild operations JSON + flipbook assets in one command
+- Source files can be configured via `.env.local` (raw sources do not need to be committed):
+  - `OPERATIONS_SOURCE_XLSX`
+  - `FLIPBOOK_CATALOG_SOURCE_PDF`
+  - `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF`
+  - `FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX`
+- Optional legacy commands:
+  - `python scripts/python/generate_json.py`
+  - `pnpm run build:flipbooks`
+  - `python scripts/update_flipbooks.py`
 
 ### GitHub Actions
 - `.github/workflows/data-build.yaml` → Operations data

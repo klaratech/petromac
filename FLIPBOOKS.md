@@ -5,13 +5,11 @@ The public site and kiosk both read from the same bundle paths.
 
 ## Folder layout
 
-Source inputs (local only, not checked in by default):
+Source inputs (configured via `.env.local`, typically OneDrive paths):
 
-- `assets/source-pdfs/`
-  - `success-stories.pdf`
-  - `catalog.pdf`
-- `assets/tags/`
-  - `success-stories.csv` (page tags)
+- `FLIPBOOK_CATALOG_SOURCE_PDF` - Catalog PDF
+- `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF` - Success Stories PDF
+- `FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX` - Success Stories summary xlsx (sheet: "Kiosk")
 
 Generated outputs (checked in):
 
@@ -20,13 +18,13 @@ Generated outputs (checked in):
   - `manifest.json`
   - `pages/0001.jpg` (or `.webp`)
   - `thumbs/0001.jpg` (optional)
-  - `tags.csv` (success-stories only)
+  - `tags.csv` (success-stories only, auto-generated from xlsx)
 
 Current doc keys:
 - `success-stories`
 - `catalog`
 
-> Note: `assets/source-pdfs/` is gitignored. The deployable source of truth is
+> Note: Source PDFs live outside the repo (OneDrive). The deployable source of truth is
 > `public/flipbooks/**`, which must be committed.
 
 ## Prerequisites (local build)
@@ -49,30 +47,18 @@ brew install poppler
 
 ## Update workflow (deterministic)
 
-1. Replace source PDFs in `assets/source-pdfs/`.
-   - Success stories must be named `success-stories.pdf`.
-   - Catalog must be named `catalog.pdf`.
-2. Update tags (success stories only) in `assets/tags/success-stories.csv`.
-3. Regenerate flipbooks (run inside your venv):
+1. Update source PDFs and/or the "Kiosk" sheet in `Success Stories_Summary.xlsx` (in OneDrive).
+2. Ensure `.env.local` paths point to the correct files.
+3. Regenerate flipbooks:
 
 ```bash
-python scripts/update_flipbooks.py
+pnpm run data
 ```
 
-Or use the npm helper:
+Or build flipbooks only:
 
 ```bash
 pnpm run build:flipbooks
-```
-
-**Single-doc rebuild** (if you only want one):
-
-```bash
-python scripts/build_flipbook.py \
-  --input assets/source-pdfs/success-stories.pdf \
-  --out public/flipbooks/success-stories \
-  --tags assets/tags/success-stories.csv \
-  --title "Success Stories"
 ```
 
 4. Validate outputs:
@@ -89,17 +75,16 @@ pnpm run validate:successstories
 
 ## CI automation
 
-The GitHub Action `.github/workflows/pdf-flipbooks-build.yml` runs when files in
-`assets/tags/**` or flipbook tooling change. It:
+The GitHub Action `.github/workflows/pdf-flipbooks-build.yml` runs when flipbook
+tooling changes. It validates manifests/tags and commits updated outputs.
 
-- Generates flipbook assets if source PDFs are present
-- Validates manifests/tags
-- Commits updated outputs
+The unified data pipeline `.github/workflows/data-build.yaml` also rebuilds flipbooks
+as part of the weekly scheduled run.
 
 ## Success Stories tags format
 
-`public/flipbooks/success-stories/tags.csv` is the single source of truth for
-filtering and page mapping. Required columns:
+`public/flipbooks/success-stories/tags.csv` is auto-generated from the xlsx and serves
+as the single source of truth for filtering and page mapping. Required columns:
 
 - `Page`
 - `Area`
@@ -110,6 +95,7 @@ Optional columns:
 - `Year`, `Country`, `Category 1`, `Category 2`
 
 Notes:
+- The xlsx "Kiosk" sheet column `Kiosk v1` is mapped to the CSV `Device` column.
 - Multi-value cells may be comma-separated.
 - Normalization (Area/Company/Technology) happens in
   `src/features/success-stories/services/successStories.shared.ts`.

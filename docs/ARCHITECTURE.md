@@ -37,7 +37,7 @@ The Petromac platform combines a **public-facing website**, a **protected intran
 
 ### Flipbook Module
 - Replaces the old PDF viewer/builder modals
-- Source PDFs live in `assets/source-pdfs/`
+- Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.local`)
 - Generated bundles in `public/flipbooks/<docKey>/` (manifest, pages, source.pdf, optional tags)
 - Converted into images with Python (`scripts/build_flipbook.py` using pdf2image + pillow)
 - Interactive flipbooks built with **page-flip**
