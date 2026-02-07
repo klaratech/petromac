@@ -4,6 +4,7 @@ set -euo pipefail
 REPO_DIR="/Users/rthatha/Projects/Petromac/Website"
 LOG_FILE="$HOME/Library/Logs/petromac-data-update.log"
 DATA_FILE="public/data/operations_data.json"
+EMAIL_LOG_FILE="data/email-log.jsonl"
 
 log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
@@ -27,16 +28,31 @@ if ! pnpm data:operations >> "$LOG_FILE" 2>&1; then
   exit 1
 fi
 
-# Check if the operations data file changed
-if git diff --quiet "$DATA_FILE"; then
-  log "No changes to $DATA_FILE. Nothing to commit."
+# Check if the operations data file or email log changed
+FILES_TO_COMMIT=""
+
+if ! git diff --quiet "$DATA_FILE" 2>/dev/null; then
+  FILES_TO_COMMIT="$DATA_FILE"
+fi
+
+if [ -f "$EMAIL_LOG_FILE" ] && ! git diff --quiet "$EMAIL_LOG_FILE" 2>/dev/null; then
+  FILES_TO_COMMIT="$FILES_TO_COMMIT $EMAIL_LOG_FILE"
+fi
+
+# Also check for untracked email log file
+if [ -f "$EMAIL_LOG_FILE" ] && ! git ls-files --error-unmatch "$EMAIL_LOG_FILE" >/dev/null 2>&1; then
+  FILES_TO_COMMIT="$FILES_TO_COMMIT $EMAIL_LOG_FILE"
+fi
+
+if [ -z "$FILES_TO_COMMIT" ]; then
+  log "No changes to commit. Nothing to do."
   log "=== Daily operations update finished (no changes) ==="
   exit 0
 fi
 
 # Commit and push
-log "Changes detected in $DATA_FILE. Committing..."
-git add "$DATA_FILE"
+log "Changes detected in:$FILES_TO_COMMIT. Committing..."
+git add $FILES_TO_COMMIT
 git commit -m "chore: update operations data (automated daily)" >> "$LOG_FILE" 2>&1
 log "Pushing to remote..."
 git push >> "$LOG_FILE" 2>&1

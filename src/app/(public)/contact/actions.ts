@@ -1,7 +1,8 @@
 "use server";
 
-import nodemailer from "nodemailer";
 import { z } from "zod";
+import { createEmailTransport, getFromAddress } from "@/lib/email";
+import { appendEmailLog } from "@/lib/emailLog";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -38,31 +39,18 @@ export async function submitContact(formData: FormData) {
     // TODO: verify hCaptcha on server if using it
 
     // Check if SMTP is configured
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT;
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
     const contactToEmail = process.env.CONTACT_TO_EMAIL;
-    const contactFromEmail = process.env.CONTACT_FROM_EMAIL;
 
-    if (!smtpHost || !smtpUser || !smtpPass || !contactToEmail || !contactFromEmail) {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS || !contactToEmail) {
       return { ok: true }; // Return success even if not configured
     }
 
     // Send email via Nodemailer
     try {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: parseInt(smtpPort || "465", 10),
-        secure: true,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass,
-        },
-      });
+      const transporter = createEmailTransport();
 
       const info = await transporter.sendMail({
-        from: contactFromEmail,
+        from: getFromAddress(),
         to: contactToEmail,
         replyTo: data.email,
         subject: `Contact Form: ${data.name}`,
@@ -75,6 +63,8 @@ export async function submitContact(formData: FormData) {
           <p>${data.message.replace(/\n/g, "<br>")}</p>
         `,
       });
+
+      await appendEmailLog({ recipientEmail: data.email, emailType: 'contact' });
 
       return { ok: true, id: info.messageId };
     } catch {

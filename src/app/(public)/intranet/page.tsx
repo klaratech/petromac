@@ -58,7 +58,7 @@ export default function IntranetHome() {
         <div className="mb-4 text-center">
           <h2 className="text-xl font-semibold text-gray-900">Internal Applications</h2>
         </div>
-        <div className="flex justify-center">
+        <div className="grid gap-4 md:grid-cols-2 justify-items-center">
           {/* Kiosk */}
           <button
             onClick={() => setShowKioskInstructions(true)}
@@ -69,6 +69,19 @@ export default function IntranetHome() {
             </div>
             <h3 className="text-base font-semibold tracking-wide text-gray-900">Kiosk</h3>
           </button>
+
+          {/* Email Log */}
+          <Link
+            href="/intranet/email-log"
+            className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white w-full max-w-xs"
+          >
+            <div className="w-16 h-16 flex items-center justify-center text-3xl">
+              <svg className="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+            </div>
+            <h3 className="text-base font-semibold tracking-wide text-gray-900">Email Log</h3>
+          </Link>
         </div>
       </section>
 

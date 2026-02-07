@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
 import fs from 'fs/promises';
 import { getClientIp, rateLimit } from '@/lib/rateLimit';
 import { isOriginAllowed, isRecipientAllowed, allowlistsConfigured } from '@/lib/emailValidation';
+import { createEmailTransport, getFromAddress } from '@/lib/email';
+import { appendEmailLog } from '@/lib/emailLog';
 import { FLIPBOOK_KEYS } from '@/features/flipbooks/constants';
 import { getFlipbookPdfPath } from '@/features/flipbooks/services/flipbookManifest.server';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
@@ -95,15 +96,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid pdfType' }, { status: 400 });
     }
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: parseInt(process.env.EMAIL_PORT || '587', 10),
-      secure: process.env.EMAIL_SECURE === 'true',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
+    const transporter = createEmailTransport();
 
     const subject = pdfType === 'catalog' ? 'Petromac Product Catalog' : 'Petromac Success Stories';
 
@@ -122,7 +115,7 @@ export async function POST(req: NextRequest) {
     `;
 
     await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
+      from: getFromAddress(),
       to: email,
       subject,
       html: htmlContent,
@@ -133,6 +126,12 @@ export async function POST(req: NextRequest) {
           contentType: 'application/pdf',
         },
       ],
+    });
+
+    await appendEmailLog({
+      recipientEmail: email,
+      emailType: pdfType as 'catalog' | 'success-stories',
+      ...(pdfType === 'success-stories' && filters ? { filtersApplied: filters } : {}),
     });
 
     return NextResponse.json({ success: true });
