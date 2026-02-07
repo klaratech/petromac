@@ -43,8 +43,7 @@ export default function ContactForm() {
   return (
     <div className="bg-slate-950 py-16 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Left: Contact Form */}
+        <div className="max-w-xl mx-auto">
           <div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-8">
               Get in Touch
@@ -137,32 +136,6 @@ export default function ContactForm() {
             </form>
           </div>
 
-          {/* Right: Partner Logos */}
-          <div className="flex items-center justify-center">
-            <div className="bg-slate-900 rounded-xl p-8 border border-slate-800">
-              <h3 className="font-heading text-xl font-semibold text-white mb-6 text-center">
-                Trusted by Industry Leaders
-              </h3>
-              <div className="grid grid-cols-2 gap-6 items-center">
-                {/* Placeholder for partner logos */}
-                <div className="h-20 bg-slate-800 rounded-lg flex items-center justify-center text-slate-600 text-sm">
-                  Partner Logo
-                </div>
-                <div className="h-20 bg-slate-800 rounded-lg flex items-center justify-center text-slate-600 text-sm">
-                  Partner Logo
-                </div>
-                <div className="h-20 bg-slate-800 rounded-lg flex items-center justify-center text-slate-600 text-sm">
-                  Partner Logo
-                </div>
-                <div className="h-20 bg-slate-800 rounded-lg flex items-center justify-center text-slate-600 text-sm">
-                  Partner Logo
-                </div>
-              </div>
-              <p className="text-slate-400 text-sm mt-6 text-center">
-                Join our network of satisfied clients worldwide
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

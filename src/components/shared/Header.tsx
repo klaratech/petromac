@@ -12,6 +12,7 @@ export default function Header() {
     { name: "About", href: "/about" },
     { name: "Catalog", href: "/catalog" },
     { name: "Track Record", href: "/track-record" },
+    { name: "Simulation", href: "/simulation" },
     { name: "Team", href: "/team" },
   ];
 
