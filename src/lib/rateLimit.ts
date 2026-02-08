@@ -10,11 +10,37 @@ type RateLimitState = {
 
 const memoryStore = new Map<string, RateLimitState>();
 
+// Cap store size to prevent unbounded growth from unique keys (e.g. spoofed IPs).
+const MAX_STORE_SIZE = 10_000;
+// Cleanup runs at most once per this interval.
+const CLEANUP_INTERVAL_MS = 60_000;
+let lastCleanup = 0;
+
+function pruneExpired() {
+  const now = Date.now();
+  if (now - lastCleanup < CLEANUP_INTERVAL_MS) return;
+  lastCleanup = now;
+
+  for (const [key, state] of memoryStore) {
+    if (state.resetAt <= now) {
+      memoryStore.delete(key);
+    }
+  }
+}
+
 export function rateLimit(key: string, options: RateLimitOptions) {
+  pruneExpired();
+
   const now = Date.now();
   const existing = memoryStore.get(key);
 
   if (!existing || existing.resetAt <= now) {
+    // Evict oldest entries if store is at capacity
+    if (memoryStore.size >= MAX_STORE_SIZE) {
+      const firstKey = memoryStore.keys().next().value;
+      if (firstKey !== undefined) memoryStore.delete(firstKey);
+    }
+
     const resetAt = now + options.windowMs;
     memoryStore.set(key, { count: 1, resetAt });
     return { allowed: true, remaining: options.limit - 1, resetAt };

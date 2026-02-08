@@ -70,6 +70,7 @@ export default function ContactForm() {
                   id="name"
                   name="name"
                   required
+                  maxLength={200}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full rounded-md bg-slate-800 border-slate-700 text-slate-100 placeholder-slate-400 focus:border-brand focus:ring-brand"
@@ -87,6 +88,7 @@ export default function ContactForm() {
                   id="email"
                   name="email"
                   required
+                  maxLength={320}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full rounded-md bg-slate-800 border-slate-700 text-slate-100 placeholder-slate-400 focus:border-brand focus:ring-brand"
@@ -103,6 +105,7 @@ export default function ContactForm() {
                   id="message"
                   name="message"
                   required
+                  maxLength={5000}
                   rows={6}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}

@@ -1,8 +1,12 @@
 "use server";
 
 import { z } from "zod";
+import { headers } from "next/headers";
 import { createEmailTransport, getFromAddress } from "@/lib/email";
 import { appendEmailLog } from "@/lib/emailLog";
+import { rateLimit, getClientIp } from "@/lib/rateLimit";
+
+const CONTACT_RATE_LIMIT = { limit: 3, windowMs: 60_000 };
 
 function escapeHtml(str: string): string {
   return str
@@ -14,12 +18,11 @@ function escapeHtml(str: string): string {
 }
 
 const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  name: z.string().min(2, "Name must be at least 2 characters").max(200, "Name is too long"),
+  email: z.string().email("Invalid email address").max(320, "Email is too long"),
+  message: z.string().min(10, "Message must be at least 10 characters").max(5000, "Message is too long"),
   company: z.string().optional(), // honeypot field
   _timing: z.string().default("0"), // timing check
-  token: z.string().optional(), // hCaptcha token if used
 });
 
 export async function submitContact(formData: FormData) {
@@ -31,7 +34,6 @@ export async function submitContact(formData: FormData) {
       message: formData.get("message"),
       company: formData.get("company")?.toString() || "",
       _timing: formData.get("_timing")?.toString() || "0",
-      token: formData.get("token")?.toString(),
     });
 
     // Honeypot check - if filled, pretend success but don't send
@@ -45,7 +47,13 @@ export async function submitContact(formData: FormData) {
       return { ok: true }; // Pretend success
     }
 
-    // TODO: verify hCaptcha on server if using it
+    // Rate limit by client IP
+    const reqHeaders = await headers();
+    const ip = getClientIp(reqHeaders);
+    const rate = rateLimit(`contact:${ip}`, CONTACT_RATE_LIMIT);
+    if (!rate.allowed) {
+      return { ok: false, error: "Too many submissions. Please try again later." };
+    }
 
     // Check if SMTP is configured
     const contactToEmail = process.env.CONTACT_TO_EMAIL;
