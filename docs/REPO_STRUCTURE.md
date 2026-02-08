@@ -86,12 +86,13 @@ website/
 ├── tailwind.config.mjs                   # Tailwind CSS config
 ├── next.config.ts                        # Next.js configuration
 ├── tailwind.config.ts                    # Tailwind CSS brand theme
-├── README.md                             # Main documentation
-├── REPO_STRUCTURE.md                     # This file
 └── docs/
-    ├── TAILWIND_THEME.md                 # Brand theme specifications
+    ├── README.md                         # Main documentation
+    ├── REPO_STRUCTURE.md                 # This file
     ├── ARCHITECTURE.md                   # Architecture overview
-    └── DEVELOPMENT.md                    # Development workflow
+    ├── DEVELOPMENT.md                    # Development workflow
+    ├── TAILWIND_THEME.md                 # Brand theme specifications
+    └── VERCEL_EMAIL_SETUP.md             # Email configuration guide
 ```
 
 ## 📖 Flipbook Module

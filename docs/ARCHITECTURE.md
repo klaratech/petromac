@@ -62,6 +62,13 @@ Success Stories are implemented as a **single feature module**:
 - Published data artifacts stored in `public/data/` and served via Vercel CDN
 - Operations data, map data, and other static JSON files accessible at `/data/*` URLs
 
+### Email & Security
+- Unified SMTP transport (`src/lib/email.ts`) shared by contact form and PDF email delivery
+- Rate limiting (`src/lib/rateLimit.ts`) on contact form (3/min), PDF email (3/min), and PDF generation (5/min)
+- Email recipient allowlists and origin validation (`src/lib/emailValidation.ts`)
+- Contact form: HTML escaping, honeypot, timing check, input length limits
+- Basic Auth with timing-safe comparison for `/intranet/*` routes (`middleware.ts`)
+
 ### Deployment
 - Hosted on **Vercel**
 - Static assets delivered via Vercel CDN

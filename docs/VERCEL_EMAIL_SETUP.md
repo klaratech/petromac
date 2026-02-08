@@ -49,15 +49,7 @@ Before configuring Vercel, you need:
 | `CONTACT_FROM_EMAIL` | `info@petromac.co.nz` | Email address to send from |
 | `CONTACT_TO_EMAIL` | `info@petromac.co.nz` | Where contact form emails should be sent |
 
-#### For PDF Email Delivery (New Feature):
-| Variable Name | Value | Description |
-|--------------|-------|-------------|
-| `EMAIL_HOST` | `smtp-mail.outlook.com` | Office365 SMTP server |
-| `EMAIL_PORT` | `587` | SMTP server port (TLS) |
-| `EMAIL_SECURE` | `false` | Use TLS (not SSL) |
-| `EMAIL_USER` | `info@petromac.co.nz` | Petromac email address |
-| `EMAIL_PASSWORD` | `[app-password]` | App password from Office365 |
-| `EMAIL_FROM` | `"Petromac <info@petromac.co.nz>"` | Sender name and email |
+**Note:** The `SMTP_*` variables are shared by both the contact form and PDF email delivery endpoints. There is no separate `EMAIL_*` configuration.
 
 #### Security Allowlists (Recommended):
 | Variable Name | Example Value | Description |
@@ -70,7 +62,7 @@ Before configuring Vercel, you need:
 
 **Complete Environment Variables Setup:**
 ```env
-# Contact Form Variables
+# Unified SMTP (used by contact form + PDF email endpoints)
 SMTP_HOST=smtp-mail.outlook.com
 SMTP_PORT=587
 SMTP_USER=info@petromac.co.nz
@@ -78,21 +70,11 @@ SMTP_PASS=[your-office365-app-password]
 CONTACT_FROM_EMAIL=info@petromac.co.nz
 CONTACT_TO_EMAIL=info@petromac.co.nz
 
-# PDF Email Variables (Catalog & Success Stories)
-EMAIL_HOST=smtp-mail.outlook.com
-EMAIL_PORT=587
-EMAIL_SECURE=false
-EMAIL_USER=info@petromac.co.nz
-EMAIL_PASSWORD=[your-office365-app-password]
-EMAIL_FROM="Petromac <info@petromac.co.nz>"
-
 # Email Endpoint Security
 ALLOWED_ORIGINS=https://www.petromac.com,https://petromac.vercel.app
 ALLOWED_EMAIL_DOMAINS=petromac.com,petromac.co.nz
 ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz
 ```
-
-**Note:** Use the same app password for both `SMTP_PASS` and `EMAIL_PASSWORD`.
 
 ### Other SMTP Configurations (for reference):
 
@@ -201,7 +183,7 @@ After adding all environment variables:
 If you prefer a dedicated email service:
 1. Sign up for SendGrid (free tier: 100 emails/day) or Mailgun
 2. Get API credentials
-3. Update `src/app/contact/actions.ts` to use their API
+3. Update `src/app/(public)/contact/actions.ts` to use their API
 4. Set API credentials as environment variables in Vercel
 
 ---
@@ -211,8 +193,9 @@ If you prefer a dedicated email service:
 ### Contact Form Features:
 - ✅ Honeypot spam protection (invisible company field)
 - ✅ Timing check (minimum 3 seconds to fill form)
-- ✅ Form validation with Zod
-- ✅ Graceful error handling
+- ✅ Form validation with Zod (including input length limits)
+- ✅ Rate limiting (3 requests/minute per IP)
+- ✅ HTML escaping to prevent XSS in email content
 - ✅ HTML and plain text email formats
 - ✅ Reply-to header set to user's email
 

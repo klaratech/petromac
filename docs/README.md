@@ -20,9 +20,11 @@ A Next.js-based application featuring:
 - **Analytics**: Vercel Analytics
 - **PWA**: Kiosk-only service worker for offline functionality
 
-> 📁 See [REPO_STRUCTURE.md](REPO_STRUCTURE.md) for structure  
-> 🎨 See [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) for brand theme  
-> 📖 See Flipbook module docs in REPO_STRUCTURE.md
+> 📁 See [REPO_STRUCTURE.md](REPO_STRUCTURE.md) for file layout
+> 🏗️ See [ARCHITECTURE.md](ARCHITECTURE.md) for architecture overview
+> 🔧 See [DEVELOPMENT.md](DEVELOPMENT.md) for development workflow
+> 🎨 See [TAILWIND_THEME.md](TAILWIND_THEME.md) for brand theme
+> 📧 See [VERCEL_EMAIL_SETUP.md](VERCEL_EMAIL_SETUP.md) for email configuration
 
 ### Shared Components
 - **Header/Footer**: Single implementations in `src/components/shared/` used across public and intranet
@@ -98,7 +100,7 @@ pnpm run dev
 
 ## Kiosk
 Kiosk routes live under `/intranet/kiosk`. Offline caching is implemented via a kiosk-scoped Service Worker.
-See `KIOSK.md` for cache versioning and offline validation steps.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for kiosk offline refresh steps and cache details.
 
 ### E2E tests
 Install Playwright browsers once:
@@ -131,9 +133,12 @@ pip install -r requirements.txt
 - `.github/workflows/pdf-flipbooks-build.yml` → Flipbooks
 
 ## 🔐 Security
-- Basic Auth for `/intranet/*`
+- Basic Auth for `/intranet/*` (timing-safe credential comparison)
 - `X-Robots-Tag: noindex, nofollow` for intranet
 - Environment variables for intranet credentials
+- Contact form: HTML escaping, rate limiting (3 req/min), honeypot + timing bot checks, input length limits
+- Email APIs: recipient allowlists, origin validation, rate limiting (3 req/min)
+- PDF generation API: rate limiting (5 req/min), sanitized error responses
 
 ## 📚 Resources
 - [Next.js Docs](https://nextjs.org/docs)
