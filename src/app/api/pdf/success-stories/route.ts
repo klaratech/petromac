@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 import { generateSuccessStoriesPdf } from '@/features/success-stories/services/successStoriesPdf.server';
+import { getClientIp, rateLimit } from '@/lib/rateLimit';
+
+const RATE_LIMIT = { limit: 5, windowMs: 60_000 };
 
 function buildDownloadFilename(filters?: SuccessStoriesFilters): string {
   const parts: string[] = ['petromac', 'successstories'];
@@ -31,6 +34,15 @@ function buildDownloadFilename(filters?: SuccessStoriesFilters): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request.headers);
+    const rate = rateLimit(`pdf-gen:${ip}`, RATE_LIMIT);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil((rate.resetAt - Date.now()) / 1000)) } }
+      );
+    }
+
     const body = await request.json();
     const { filters, mode = 'download', pageNumbers } = body as {
       filters?: SuccessStoriesFilters;
@@ -62,11 +74,15 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to generate PDF';
-    const status = message.startsWith('Too many pages') ? 400 : 500;
+    const internalMessage = error instanceof Error ? error.message : 'Unknown error';
+    const isUserError = internalMessage.startsWith('Too many pages');
+    if (!isUserError) {
+      // eslint-disable-next-line no-console
+      console.error('PDF generation error:', internalMessage);
+    }
     return NextResponse.json(
-      { error: message },
-      { status }
+      { error: isUserError ? internalMessage : 'Failed to generate PDF' },
+      { status: isUserError ? 400 : 500 }
     );
   }
 }

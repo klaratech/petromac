@@ -12,7 +12,7 @@ export function isOriginAllowed(req: NextRequest) {
   if (allowedOrigins.length === 0) return true;
 
   const origin = req.headers.get('origin') || req.headers.get('referer');
-  if (!origin) return true;
+  if (!origin) return false;
 
   return allowedOrigins.some((allowed) => origin.startsWith(allowed));
 }

@@ -4,6 +4,15 @@ import { z } from "zod";
 import { createEmailTransport, getFromAddress } from "@/lib/email";
 import { appendEmailLog } from "@/lib/emailLog";
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
@@ -42,7 +51,9 @@ export async function submitContact(formData: FormData) {
     const contactToEmail = process.env.CONTACT_TO_EMAIL;
 
     if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS || !contactToEmail) {
-      return { ok: true }; // Return success even if not configured
+      // eslint-disable-next-line no-console
+      console.error('Contact form: SMTP not configured (missing SMTP_HOST, SMTP_USER, SMTP_PASS, or CONTACT_TO_EMAIL)');
+      return { ok: false, error: "Email service is not configured. Please try again later." };
     }
 
     // Send email via Nodemailer
@@ -53,23 +64,24 @@ export async function submitContact(formData: FormData) {
         from: getFromAddress(),
         to: contactToEmail,
         replyTo: data.email,
-        subject: `Contact Form: ${data.name}`,
+        subject: `Contact Form: ${escapeHtml(data.name)}`,
         text: `From: ${data.name} <${data.email}>\n\nMessage:\n${data.message}`,
         html: `
           <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${data.name}</p>
-          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Name:</strong> ${escapeHtml(data.name)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
           <p><strong>Message:</strong></p>
-          <p>${data.message.replace(/\n/g, "<br>")}</p>
+          <p>${escapeHtml(data.message).replace(/\n/g, "<br>")}</p>
         `,
       });
 
       await appendEmailLog({ recipientEmail: data.email, emailType: 'contact' });
 
       return { ok: true, id: info.messageId };
-    } catch {
-      // Still return success to user
-      return { ok: true };
+    } catch (emailError) {
+      // eslint-disable-next-line no-console
+      console.error('Contact form: Failed to send email', emailError);
+      return { ok: false, error: "Failed to send your message. Please try again later." };
     }
   } catch (error) {
     if (error instanceof z.ZodError) {
