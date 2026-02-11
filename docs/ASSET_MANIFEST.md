@@ -183,7 +183,20 @@ npx @gltf-transform/cli optimize input.glb output.glb --compress draco
 
 ---
 
-## 4. Flipbook Pages
+## 4. Email-Optimized PDFs
+
+The website emails PDF attachments to users on request. The current source PDFs are too large for email (18 MB catalog). Please provide lightweight email-optimized versions.
+
+| File | Deliver As | Target Size | Source | Notes |
+|------|-----------|-------------|--------|-------|
+| `/flipbooks/catalog/email.pdf` | **PDF, compressed images, 150 DPI** | <3 MB | Full catalog source.pdf | Reduced image quality suitable for on-screen reading |
+| `/flipbooks/success-stories/email.pdf` | **PDF, compressed images, 150 DPI** | <3 MB | Full success stories source.pdf | Same treatment |
+
+> Current `source.pdf` files are 18 MB (catalog) and similar for success stories. Email providers typically cap attachments at 10-25 MB. Target < 3 MB for reliable delivery. Use "Save for Web" / "Reduce File Size" in Acrobat or similar. Keep all pages; just reduce image resolution to 150 DPI.
+
+---
+
+## 5. Flipbook Pages
 
 Flipbook pages are auto-generated from source PDFs by the build pipeline. If you update the source PDFs, the pages regenerate automatically via `pnpm run data`.
 
