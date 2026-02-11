@@ -11,10 +11,23 @@ export function isOriginAllowed(req: NextRequest) {
   const allowedOrigins = parseEnvList(process.env.ALLOWED_ORIGINS || process.env.NEXT_PUBLIC_BASE_URL);
   if (allowedOrigins.length === 0) return true;
 
-  const origin = req.headers.get('origin') || req.headers.get('referer');
-  if (!origin) return false;
+  const raw = req.headers.get('origin') || req.headers.get('referer');
+  if (!raw) return false;
 
-  return allowedOrigins.some((allowed) => origin.startsWith(allowed));
+  let incoming: string;
+  try {
+    incoming = new URL(raw).hostname;
+  } catch {
+    return false;
+  }
+
+  return allowedOrigins.some((allowed) => {
+    try {
+      return new URL(allowed).hostname === incoming;
+    } catch {
+      return false;
+    }
+  });
 }
 
 export function isRecipientAllowed(email: string, defaultRecipient?: string | null) {
