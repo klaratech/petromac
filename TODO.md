@@ -13,7 +13,7 @@
   - [ ] Convert large PNGs (tv-bg.png, thor.png) to WebP
   - [ ] Optimize favicon (currently 58 KB, target < 5 KB)
 - [ ] Place delivered files in correct directories
-- [ ] Wire up email-optimized PDFs in send-pdf API route (use `email.pdf` instead of `source.pdf`)
+- [x] Wire up email-optimized PDFs in send-pdf API route (use `email.pdf` instead of `source.pdf`)
 
 ## Phase 2 — Security Audit
 

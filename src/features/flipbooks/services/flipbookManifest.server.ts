@@ -17,6 +17,10 @@ export function getFlipbookPdfPath(docKey: FlipbookKey): string {
   return path.join(getFlipbookDir(docKey), 'source.pdf');
 }
 
+export function getFlipbookEmailPdfPath(docKey: FlipbookKey): string {
+  return path.join(getFlipbookDir(docKey), 'email.pdf');
+}
+
 export function getFlipbookTagsPath(docKey: FlipbookKey): string {
   return path.join(getFlipbookDir(docKey), 'tags.csv');
 }

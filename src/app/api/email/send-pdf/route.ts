@@ -6,7 +6,7 @@ import { isOriginAllowed, isRecipientAllowed, allowlistsConfigured } from '@/lib
 import { createEmailTransport, getFromAddress } from '@/lib/email';
 import { appendEmailLog } from '@/lib/emailLog';
 import { FLIPBOOK_KEYS } from '@/features/flipbooks/constants';
-import { getFlipbookPdfPath } from '@/features/flipbooks/services/flipbookManifest.server';
+import { getFlipbookPdfPath, getFlipbookEmailPdfPath } from '@/features/flipbooks/services/flipbookManifest.server';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 import { generateSuccessStoriesPdf } from '@/features/success-stories/services/successStoriesPdf.server';
 
@@ -24,6 +24,16 @@ const sendPdfSchema = z.object({
 });
 
 const RATE_LIMIT = { limit: 3, windowMs: 60_000 };
+
+/** Read the email-optimized PDF if it exists, otherwise fall back to the full source PDF. */
+async function readEmailPdf(docKey: Parameters<typeof getFlipbookEmailPdfPath>[0]): Promise<Buffer> {
+  const emailPath = getFlipbookEmailPdfPath(docKey);
+  try {
+    return await fs.readFile(emailPath);
+  } catch {
+    return fs.readFile(getFlipbookPdfPath(docKey));
+  }
+}
 
 function buildDownloadFilename(filters?: SuccessStoriesFilters): string {
   const parts: string[] = ['petromac', 'successstories'];
@@ -103,14 +113,14 @@ export async function POST(req: NextRequest) {
     };
 
     if (pdfType === 'catalog') {
-      pdfBuffer = await fs.readFile(getFlipbookPdfPath(FLIPBOOK_KEYS.catalog));
+      pdfBuffer = await readEmailPdf(FLIPBOOK_KEYS.catalog);
       pdfName = buildCatalogFilename();
     } else if (pdfType === 'success-stories') {
       if (Array.isArray(pageNumbers) && pageNumbers.length > 0) {
         const result = await generateSuccessStoriesPdf({ pageNumbers });
         pdfBuffer = Buffer.from(result.bytes);
       } else {
-        pdfBuffer = await fs.readFile(getFlipbookPdfPath(FLIPBOOK_KEYS.successStories));
+        pdfBuffer = await readEmailPdf(FLIPBOOK_KEYS.successStories);
       }
       pdfName = buildDownloadFilename(cleanFilters);
     } else {
