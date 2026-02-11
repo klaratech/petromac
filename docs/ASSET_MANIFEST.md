@@ -22,8 +22,9 @@
 | `/images/Petromac-Logo.png.webp` | 7.7 KB, WebP | **WebP, 360 x 108 px** (2x of 180x54 display) | 180 x 54 px | Header on all pages |
 | `/icons/icon-192x192.png` | 7 KB, PNG | **PNG, 192 x 192 px** | 192 x 192 px | Apple touch icon + PWA manifest |
 | `/icons/icon-512x512.png` | 22 KB, PNG | **PNG, 512 x 512 px** | 512 x 512 px | PWA manifest (splash/install) |
+| `src/app/favicon.ico` | 58 KB, ICO | **ICO, 32 x 32 px** (multi-size: 16+32) target <10 KB | 16-32 px | Browser tab favicon |
 
-> Logo already optimized. App icons must stay PNG per PWA spec. Re-export if branding changes.
+> Logo already optimized. App icons must stay PNG per PWA spec. Favicon at 58 KB is oversized — regenerate as a lean multi-size ICO (16x16 + 32x32). Re-export all if branding changes.
 
 ---
 
