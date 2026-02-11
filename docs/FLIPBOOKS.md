@@ -110,7 +110,7 @@ To validate offline readiness:
 3. Toggle DevTools → Network → Offline and refresh.
 
 If you change flipbook assets, bump the kiosk SW version in `public/kiosk-sw.js`
-so caches refresh (see `KIOSK.md`).
+so caches refresh (see [KIOSK.md](KIOSK.md)).
 
 ## Troubleshooting
 

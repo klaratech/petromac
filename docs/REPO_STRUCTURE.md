@@ -86,11 +86,14 @@ website/
 ├── tailwind.config.mjs                   # Tailwind CSS config
 ├── next.config.ts                        # Next.js configuration
 ├── tailwind.config.ts                    # Tailwind CSS brand theme
+├── README.md                             # Main project README
 └── docs/
-    ├── README.md                         # Main documentation
+    ├── README.md                         # Documentation index
     ├── REPO_STRUCTURE.md                 # This file
     ├── ARCHITECTURE.md                   # Architecture overview
     ├── DEVELOPMENT.md                    # Development workflow
+    ├── FLIPBOOKS.md                      # Flipbook build pipeline
+    ├── KIOSK.md                          # Kiosk operations & offline caching
     ├── TAILWIND_THEME.md                 # Brand theme specifications
     └── VERCEL_EMAIL_SETUP.md             # Email configuration guide
 ```
@@ -142,7 +145,7 @@ The repository uses a three-tier data organization to separate private sources, 
   - `operations_data.json` - Processed operations data (3MB+)
   - `country_labels.json` - Country name mappings for map
   - `world-110m.json` - TopoJSON for offline map rendering
-  - Flipbook assets live under `public/flipbooks/` (see `FLIPBOOKS.md`)
+  - Flipbook assets live under `public/flipbooks/` (see [FLIPBOOKS.md](FLIPBOOKS.md))
 
 #### 3. `src/data/` - TypeScript Data Modules
 - **Purpose**: Small, typed data consumed directly by UI components
