@@ -1,12 +1,25 @@
 # TODO
 
-## Open
+## Phase 1 — Finalize Design & Assets
 
-- [ ] Re-encode videos with H.264 VBR (309MB total, 50-70% reduction possible)
-- [ ] Apply Draco compression to GLB models (213MB total, 30-50% reduction)
-- [ ] Compress flipbook page JPGs and consider WebP variants (58MB total)
-- [ ] Convert large PNGs (tv-bg.png, thor.png) to WebP
-- [ ] Remove unused `Hero.tsx` component (replaced by `HeroV2.tsx`)
+- [ ] Finalize home page design
+- [ ] Update asset manifest with final design requirements
+- [ ] Collect all optimized asset files from designers (images, videos, OG image)
+  - [ ] Add `petromac-og.png` (1200×630) for Open Graph share image
+  - [ ] Re-encode videos with H.264 VBR (309 MB total, 50-70% reduction possible)
+  - [ ] Apply Draco compression to GLB models (213 MB total, 30-50% reduction)
+  - [ ] Compress flipbook page JPGs and consider WebP variants (58 MB total)
+  - [ ] Convert large PNGs (tv-bg.png, thor.png) to WebP
+  - [ ] Optimize favicon (currently 58 KB, target < 5 KB)
+- [ ] Place delivered files in correct directories
+
+## Phase 2 — Security Audit
+
+- [ ] Full security audit (dependencies, headers, API routes, input validation, auth)
+
+## Phase 3 — SEO Audit
+
+- [ ] Full SEO audit (metadata, structured data, performance, accessibility, crawlability)
 
 ## Completed
 
@@ -21,3 +34,10 @@
 - [x] Remove operations_data.json (3.2MB) from service worker precache
 - [x] Remove dead CSS hero.jpg reference from globals.css
 - [x] Add `/public/models/Step/` to .gitignore
+- [x] Add metadata to all 11 public pages
+- [x] Create sitemap.ts (12 URLs) and robots.ts
+- [x] Add Open Graph & Twitter card metadata to root layout
+- [x] Add title template (`%s | Petromac`) to root layout
+- [x] Create not-found.tsx (404) and error.tsx (500) with brand styling
+- [x] Remove dead code: Hero.tsx, ProblemSection.tsx, TeamCard.tsx, ProductTeaser.tsx
+- [x] Create asset optimization manifest for designers (`docs/ASSET_MANIFEST.md`)
