@@ -105,6 +105,7 @@ jspm_packages/
 
 # Project specific exclusions
 /public/models/Step Files/
+/public/models/Step/
 /public/videos/WIP/
 
 # Private data (DO NOT COMMIT)

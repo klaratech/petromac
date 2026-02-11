@@ -5,9 +5,7 @@ import type { JobRecord } from '@/types/JobRecord';
  * Always fetch fresh operations data so track-record reflects latest generated output
  */
 export async function fetchOperationsData(): Promise<JobRecord[]> {
-  const response = await fetch('/data/operations_data.json', { 
-    cache: 'no-store' 
-  });
+  const response = await fetch('/data/operations_data.json');
   
   if (!response.ok) {
     throw new Error(`Failed to load operations_data.json: ${response.status}`);

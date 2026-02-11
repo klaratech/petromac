@@ -35,7 +35,6 @@ const PRECACHE_ASSETS = [
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
   '/data/country_labels.json',
-  '/data/operations_data.json',
   '/flipbooks/success-stories/manifest.json',
   '/flipbooks/success-stories/tags.csv',
   '/flipbooks/catalog/manifest.json',

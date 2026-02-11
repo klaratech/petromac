@@ -1,5 +1,7 @@
 import { useEffect, memo } from 'react';
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
+import { geoNaturalEarth1, geoPath } from 'd3-geo';
+import 'd3-transition';
 import type { Feature, Geometry } from 'geojson';
 import type { MapRendererProps } from '@/types/MapTypes';
 import { APP_CONSTANTS } from '@/constants/app';
@@ -19,13 +21,13 @@ const MapRenderer = memo(function MapRenderer({
   useEffect(() => {
     if (!worldData || isLoading) return;
 
-    const svg = d3.select(svgRef.current);
+    const svg = select(svgRef.current);
     svg.selectAll('*').remove();
 
     const width = APP_CONSTANTS.MAP_WIDTH;
     const height = APP_CONSTANTS.MAP_HEIGHT;
-    const projection = d3.geoNaturalEarth1().fitSize([width, height], worldData);
-    const path = d3.geoPath(projection);
+    const projection = geoNaturalEarth1().fitSize([width, height], worldData);
+    const path = geoPath(projection);
 
     const g = svg.append('g').node();
     if (!g) return;
@@ -34,7 +36,7 @@ const MapRenderer = memo(function MapRenderer({
       gRef.current = g as SVGGElement;
     }
     
-    const gSel = d3.select(g);
+    const gSel = select(g);
 
     // Add countries  
     const countries = gSel.selectAll('path')
@@ -106,7 +108,7 @@ const MapRenderer = memo(function MapRenderer({
         const feature = d as Feature<Geometry>;
         const name = feature.properties?.name || '';
         if (countryMap.has(name)) {
-          d3.select(this)
+          select(this)
             .transition()
             .duration(MAP_CONSTANTS.TRANSITION_DURATION)
             .style('filter', `drop-shadow(0 0 2px ${MAP_CONSTANTS.COLORS.SELECTED_GLOW})`);
@@ -117,7 +119,7 @@ const MapRenderer = memo(function MapRenderer({
         const name = feature.properties?.name || '';
         const isSelected = name === selectedCountry;
         
-        d3.select(this)
+        select(this)
           .transition()
           .duration(MAP_CONSTANTS.TRANSITION_DURATION)
           .style('filter', isSelected 

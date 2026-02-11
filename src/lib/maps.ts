@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { rollups, sum } from 'd3-array';
 import type { JobRecord } from '@/types/JobRecord';
 import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
 
@@ -32,9 +32,9 @@ export function calculateCountryStats(
 ): CountryStats[] {
   const source = isPathfinderOnly ? allData : filteredData;
 
-  return d3.rollups(
+  return rollups(
     source,
-    (entries) => d3.sum(entries, (d) => {
+    (entries) => sum(entries, (d) => {
       if (isPathfinderOnly) {
         return (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
       }

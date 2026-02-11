@@ -29,11 +29,6 @@ body {
   color: #1E4A9A !important;
 }
 
-/* Hero section background */
-.hero-bg {
-  background-image: url('/images/hero.jpg');
-}
-
 /* Hide horizontal scrollbars */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

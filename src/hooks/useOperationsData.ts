@@ -17,7 +17,7 @@ export default function useOperationsData<T = JobRecord>(options: UseOperationsD
   const load = useCallback(async () => {
     try {
       setError(null);
-      const res = await fetch('/data/operations_data.json', { cache: 'no-store' });
+      const res = await fetch('/data/operations_data.json');
       if (!res.ok) {
         throw new Error(`Failed to load operations data: ${res.status}`);
       }

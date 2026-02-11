@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import * as d3 from 'd3';
+import { json } from 'd3-fetch';
+import { geoCentroid } from 'd3-geo';
 import * as topojson from 'topojson-client';
 import type { Topology } from 'topojson-specification';
 import type { FeatureCollection, Geometry } from 'geojson';
@@ -22,7 +23,7 @@ export function useMapData(): UseMapDataResult {
       setIsLoading(true);
       setError(null);
       
-      const topologyData = await d3.json(EXTERNAL_URLS.WORLD_MAP_DATA) as Topology;
+      const topologyData = await json(EXTERNAL_URLS.WORLD_MAP_DATA) as Topology;
       
       if (!topologyData || !topologyData.objects || !topologyData.objects.countries) {
         throw new Error('Invalid topology data structure');
@@ -38,7 +39,7 @@ export function useMapData(): UseMapDataResult {
       
       // Filter out Antarctica and remote Pacific islands
       const filtered = countries.features.filter((f) => {
-        const [lon, lat] = d3.geoCentroid(f);
+        const [lon, lat] = geoCentroid(f);
         return f.properties?.name !== 'Antarctica' && !(lon < -150 && lat > 10);
       });
 
