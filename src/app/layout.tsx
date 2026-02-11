@@ -15,12 +15,43 @@ const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.petromac.com';
+
 export const metadata: Metadata = {
-  title: 'Petromac',
-  description: 'Petromac website and kiosk',
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'Petromac | Wireline Logging & Downhole Technology',
+    template: '%s | Petromac',
+  },
+  description:
+    'Petromac designs and manufactures wireline logging devices, centralisers, and conveyance systems for the global oil & gas industry.',
   icons: {
     icon: '/favicon.ico',
     apple: '/icons/icon-192x192.png',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Petromac',
+    title: 'Petromac | Wireline Logging & Downhole Technology',
+    description:
+      'Petromac designs and manufactures wireline logging devices, centralisers, and conveyance systems for the global oil & gas industry.',
+    url: BASE_URL,
+    images: [
+      {
+        url: '/images/petromac-og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Petromac – Wireline Logging & Downhole Technology',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Petromac | Wireline Logging & Downhole Technology',
+    description:
+      'Petromac designs and manufactures wireline logging devices, centralisers, and conveyance systems for the global oil & gas industry.',
+    images: ['/images/petromac-og.png'],
   },
 };
 

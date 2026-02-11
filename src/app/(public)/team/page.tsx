@@ -1,5 +1,12 @@
 import TeamFlipCard from "@/components/public/TeamFlipCard";
 import { regionalManagers, hqTeam } from "@/data/team";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Team",
+  description:
+    "Meet Petromac's team of regional managers and headquarters staff supporting wireline logging operations worldwide.",
+};
 
 export default function TeamPage() {
   return (

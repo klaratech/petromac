@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Use | Petromac",
+  title: "Terms of Use",
   description: "Terms of Use for Petromac website",
 };
 

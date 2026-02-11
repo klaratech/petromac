@@ -1,21 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
 const DrilldownMapPublic = dynamic(
   () => import("@/components/geo/DrilldownMapPublic"),
-  { 
+  {
     ssr: false,
     loading: () => <div className="min-h-[600px] flex items-center justify-center" aria-hidden="true">Loading map...</div>,
   }
 );
 
 export default function TrackRecordPage() {
-  useEffect(() => {
-    document.title = "Track Record | Petromac";
-  }, []);
 
   return (
     <main className="container mx-auto px-4 py-8">

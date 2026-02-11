@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Publications",
+  description:
+    "Published papers and conference presentations on Petromac's wireline conveyance and centraliser technologies.",
+};
+
 export default function PublicationsPage() {
   const publications = [
     {

@@ -8,7 +8,7 @@ import BottomCTA from "@/components/public/simulation/BottomCTA";
 import ContactForm from "@/components/public/ContactForm";
 
 export const metadata = {
-  title: "Athena — Wireline Job Planning & Simulation | Petromac",
+  title: "Athena — Wireline Job Planning & Simulation",
   description:
     "Plan wireline conveyance jobs with confidence. Athena designs configurations for all three major wireline providers and includes Hermes downhole tension/drag simulation.",
 };

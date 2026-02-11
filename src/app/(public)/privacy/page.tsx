@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Petromac",
+  title: "Privacy Policy",
   description: "Privacy Policy for Petromac website",
 };
 
