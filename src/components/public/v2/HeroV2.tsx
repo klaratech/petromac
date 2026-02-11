@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 
 export default function HeroV2() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -14,11 +15,13 @@ export default function HeroV2() {
       {/* Background video (desktop) / static image (mobile) */}
       <div className="absolute inset-0">
         {/* Static fallback image for all screens */}
-        <img
+        <Image
           src="/images/sampling.jpg"
           alt=""
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
           aria-hidden="true"
+          priority
         />
         {/* Video overlay — hidden on mobile for performance */}
         <video
