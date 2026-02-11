@@ -15,13 +15,15 @@
 
 ## 1. Images
 
-### 1.1 Logo
+### 1.1 Logo & App Icons
 
 | File | Current | Deliver As | Display Size | Used In |
 |------|---------|-----------|--------------|---------|
 | `/images/Petromac-Logo.png.webp` | 7.7 KB, WebP | **WebP, 360 x 108 px** (2x of 180x54 display) | 180 x 54 px | Header on all pages |
+| `/icons/icon-192x192.png` | 7 KB, PNG | **PNG, 192 x 192 px** | 192 x 192 px | Apple touch icon + PWA manifest |
+| `/icons/icon-512x512.png` | 22 KB, PNG | **PNG, 512 x 512 px** | 512 x 512 px | PWA manifest (splash/install) |
 
-> Already optimized. No action needed unless logo changes.
+> Logo already optimized. App icons must stay PNG per PWA spec. Re-export if branding changes.
 
 ---
 
