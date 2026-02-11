@@ -7,7 +7,7 @@ const DrilldownMapPublic = dynamic(
   () => import("@/components/geo/DrilldownMapPublic"),
   {
     ssr: false,
-    loading: () => <div className="min-h-[600px] flex items-center justify-center" aria-hidden="true">Loading map...</div>,
+    loading: () => <div className="min-h-[600px] flex items-center justify-center" role="status">Loading map...</div>,
   }
 );
 

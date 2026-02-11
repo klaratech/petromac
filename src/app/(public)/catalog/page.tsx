@@ -8,7 +8,7 @@ import { useFlipbookManifest } from "@/features/flipbooks/hooks/useFlipbookManif
 const Flipbook = dynamic(() => import("@/components/shared/pdf/Flipbook"), {
   ssr: false,
   loading: () => (
-    <div className="min-h-[700px] flex items-center justify-center" aria-hidden="true">
+    <div className="min-h-[700px] flex items-center justify-center" role="status">
       Loading flipbook...
     </div>
   ),
@@ -44,7 +44,7 @@ export default function CatalogPage() {
         </div>
         <div className="bg-white rounded-lg shadow-lg p-6">
           {manifest ? (
-            <Flipbook pages={pages} width={500} height={700} />
+            <Flipbook pages={pages} width={600} height={840} />
           ) : (
             <div className="min-h-[700px] flex items-center justify-center text-gray-600">
               Loading catalog...

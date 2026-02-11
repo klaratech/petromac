@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
+import { z } from 'zod';
 import { getClientIp, rateLimit } from '@/lib/rateLimit';
 import { isOriginAllowed, isRecipientAllowed, allowlistsConfigured } from '@/lib/emailValidation';
 import { createEmailTransport, getFromAddress } from '@/lib/email';
@@ -8,6 +9,19 @@ import { FLIPBOOK_KEYS } from '@/features/flipbooks/constants';
 import { getFlipbookPdfPath } from '@/features/flipbooks/services/flipbookManifest.server';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 import { generateSuccessStoriesPdf } from '@/features/success-stories/services/successStoriesPdf.server';
+
+const filtersSchema = z.object({
+  areas: z.array(z.string()).optional(),
+  companies: z.array(z.string()).optional(),
+  techs: z.array(z.string()).optional(),
+});
+
+const sendPdfSchema = z.object({
+  email: z.string().email('Invalid email address').max(320),
+  pdfType: z.enum(['catalog', 'success-stories']),
+  pageNumbers: z.array(z.number().int().positive()).optional(),
+  filters: filtersSchema.optional(),
+});
 
 const RATE_LIMIT = { limit: 3, windowMs: 60_000 };
 
@@ -68,11 +82,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email, pdfType, pageNumbers, filters } = await req.json();
-
-    if (!email || !pdfType) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    const body = await req.json();
+    const parsed = sendPdfSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid request', details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+    const { email, pdfType, pageNumbers, filters } = parsed.data;
 
     if (!isRecipientAllowed(email)) {
       return NextResponse.json({ error: 'Recipient not allowed' }, { status: 403 });
@@ -80,6 +95,12 @@ export async function POST(req: NextRequest) {
 
     let pdfBuffer: Buffer;
     let pdfName: string;
+
+    const cleanFilters: SuccessStoriesFilters = {
+      ...(filters?.areas ? { areas: filters.areas } : {}),
+      ...(filters?.companies ? { companies: filters.companies } : {}),
+      ...(filters?.techs ? { techs: filters.techs } : {}),
+    };
 
     if (pdfType === 'catalog') {
       pdfBuffer = await fs.readFile(getFlipbookPdfPath(FLIPBOOK_KEYS.catalog));
@@ -91,7 +112,7 @@ export async function POST(req: NextRequest) {
       } else {
         pdfBuffer = await fs.readFile(getFlipbookPdfPath(FLIPBOOK_KEYS.successStories));
       }
-      pdfName = buildDownloadFilename(filters);
+      pdfName = buildDownloadFilename(cleanFilters);
     } else {
       return NextResponse.json({ error: 'Invalid pdfType' }, { status: 400 });
     }
@@ -130,8 +151,8 @@ export async function POST(req: NextRequest) {
 
     await appendEmailLog({
       recipientEmail: email,
-      emailType: pdfType as 'catalog' | 'success-stories',
-      ...(pdfType === 'success-stories' && filters ? { filtersApplied: filters } : {}),
+      emailType: pdfType,
+      ...(pdfType === 'success-stories' && filters ? { filtersApplied: cleanFilters } : {}),
     });
 
     return NextResponse.json({ success: true });

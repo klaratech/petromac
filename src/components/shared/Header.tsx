@@ -22,6 +22,12 @@ export default function Header() {
 
   return (
     <header className="bg-black text-white border-b border-gray-800">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-brand focus:text-white focus:px-4 focus:py-2 focus:rounded"
+      >
+        Skip to main content
+      </a>
       <div className="container mx-auto px-4 py-5 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
@@ -41,6 +47,7 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={isActive(item.href) ? "page" : undefined}
               className={`text-base font-medium transition-colors hover:text-blue-400 ${
                 isActive(item.href)
                   ? "text-blue-400 border-b-2 border-blue-400 pb-1"
@@ -56,6 +63,7 @@ export default function Header() {
           <Link
             href="/intranet"
             prefetch={false}
+            aria-current={isActive("/intranet") ? "page" : undefined}
             className={`text-base font-medium transition-colors hover:text-blue-400 ${
               isActive("/intranet")
                 ? "text-blue-400 border-b-2 border-blue-400 pb-1"
@@ -71,7 +79,7 @@ export default function Header() {
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-blue-400 transition-colors"
-            aria-label="Visit Petromac on LinkedIn"
+            aria-label="Visit Petromac on LinkedIn (opens in new tab)"
           >
             <svg
               className="w-6 h-6"

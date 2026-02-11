@@ -22,6 +22,8 @@
     "build:flipbooks": "python scripts/update_flipbooks.py --skip-validate",
     "validate:successstories": "tsx scripts/node/validate-successstories.ts",
     "validate:flipbooks": "tsx scripts/node/validate-flipbooks.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -68,6 +70,8 @@
     "@types/topojson-specification": "^1.0.5",
     "eslint": "^9",
     "eslint-config-next": "^15.5.4",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"

@@ -70,6 +70,7 @@ export default function ContactForm() {
                   id="name"
                   name="name"
                   required
+                  aria-required="true"
                   maxLength={200}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -88,6 +89,7 @@ export default function ContactForm() {
                   id="email"
                   name="email"
                   required
+                  aria-required="true"
                   maxLength={320}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -105,6 +107,7 @@ export default function ContactForm() {
                   id="message"
                   name="message"
                   required
+                  aria-required="true"
                   maxLength={5000}
                   rows={6}
                   value={formData.message}
@@ -126,16 +129,18 @@ export default function ContactForm() {
               </div>
 
               {/* Status Messages */}
-              {submitStatus === "success" && (
-                <div className="p-4 rounded-md bg-green-900/20 border border-green-700 text-green-300">
-                  Thank you for your message! We&apos;ll get back to you soon.
-                </div>
-              )}
-              {submitStatus === "error" && (
-                <div className="p-4 rounded-md bg-red-900/20 border border-red-700 text-red-300">
-                  Something went wrong. Please try again or contact us directly.
-                </div>
-              )}
+              <div aria-live="polite">
+                {submitStatus === "success" && (
+                  <div role="alert" className="p-4 rounded-md bg-green-900/20 border border-green-700 text-green-300">
+                    Thank you for your message! We&apos;ll get back to you soon.
+                  </div>
+                )}
+                {submitStatus === "error" && (
+                  <div role="alert" className="p-4 rounded-md bg-red-900/20 border border-red-700 text-red-300">
+                    Something went wrong. Please try again or contact us directly.
+                  </div>
+                )}
+              </div>
             </form>
           </div>
 

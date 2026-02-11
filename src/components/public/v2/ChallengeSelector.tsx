@@ -79,12 +79,21 @@ export default function ChallengeSelector() {
               <motion.div
                 key={c.id}
                 layout
-                className={`rounded-xl overflow-hidden cursor-pointer border-2 transition-colors ${
+                role="button"
+                tabIndex={0}
+                aria-expanded={isExpanded}
+                className={`rounded-xl overflow-hidden cursor-pointer border-2 transition-colors focus:outline-2 focus:outline-brand ${
                   isExpanded
                     ? "border-brand shadow-card lg:col-span-2"
                     : "border-slate-200 hover:border-brand/40 shadow-subtle hover:shadow-card"
                 }`}
                 onClick={() => toggle(c.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggle(c.id);
+                  }
+                }}
               >
                 <div className="relative h-48 overflow-hidden">
                   <Image
@@ -124,7 +133,7 @@ export default function ChallengeSelector() {
                           onClick={(e) => e.stopPropagation()}
                         >
                           Learn more
-                          <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </Link>
