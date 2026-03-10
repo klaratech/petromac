@@ -7,8 +7,10 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir uv
 
+COPY backend/requirements.txt /app/backend/requirements.txt
+RUN uv pip install --system -r /app/backend/requirements.txt
+
 COPY backend /app/backend
-RUN uv pip install --system /app/backend
 
 COPY public /app/public
 RUN mkdir -p /app/data
