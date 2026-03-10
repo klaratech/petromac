@@ -1,2 +1,0 @@
-# Exclude oversized source model files not used by the runtime build.
-public/models/Step Files/*.obj

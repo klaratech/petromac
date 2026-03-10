@@ -6,10 +6,6 @@ import Image from "next/image";
 export default function HeroV2() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
       {/* Background video (desktop) / static image (mobile) */}
@@ -49,20 +45,6 @@ export default function HeroV2() {
         <p className="text-lg md:text-xl text-slate-200 max-w-2xl mb-10">
           Hardware + planning software validated in the field.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <button
-            onClick={() => scrollTo("challenge-selector")}
-            className="px-8 py-3 rounded-lg bg-white text-brand font-semibold text-lg hover:bg-slate-100 transition-colors shadow-lg"
-          >
-            Select your challenge
-          </button>
-          <button
-            onClick={() => scrollTo("contact")}
-            className="px-8 py-3 rounded-lg border-2 border-white text-white font-semibold text-lg hover:bg-white/10 transition-colors"
-          >
-            Request Athena demo
-          </button>
-        </div>
       </div>
     </section>
   );

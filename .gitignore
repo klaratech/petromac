@@ -76,6 +76,7 @@ pids
 *.pid
 *.seed
 *.pid.lock
+data/email-config.json
 
 # Coverage directory used by tools like istanbul
 coverage/
@@ -121,12 +122,16 @@ jspm_packages/
 /scripts/python/*.log
 /scripts/python/*_matched_*.txt
 /scripts/python/unknown_*.txt
+/scripts/__pycache__/
+/scripts/*.pyc
 /scripts/node/node_modules/
 
 # Temporary files
 *.tmp
 *.temp
 .cache/
+eslint-report.txt
+build.log
 
 # Build artifacts
 .turbo/
