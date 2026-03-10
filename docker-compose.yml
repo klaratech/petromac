@@ -1,0 +1,11 @@
+services:
+  petromac:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: petromac:local
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.dev
+    restart: unless-stopped

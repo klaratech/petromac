@@ -15,14 +15,15 @@ A Next.js-based application featuring:
 - **Data Visualization**: D3.js
 - **Data Processing**: Python 3.11+ (polars, openpyxl, pdf2image, pillow)
 - **API Services**: Next.js API Routes
-- **Deployment**: Vercel
+- **Deployment**: EC2 + Caddy + Cloudflare
 - **CI/CD**: GitHub Actions (including automated flipbook generation)
-- **Analytics**: Vercel Analytics
+- **Analytics**: optional privacy-first analytics
 - **PWA**: Kiosk-only service worker for offline functionality
 
 > See [docs/REPO_STRUCTURE.md](docs/REPO_STRUCTURE.md) for file layout
 > See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for architecture overview
 > See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for development workflow
+> See [DEPLOY.md](DEPLOY.md) for production deployment model
 > See [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) for brand theme
 > See [docs/VERCEL_EMAIL_SETUP.md](docs/VERCEL_EMAIL_SETUP.md) for email configuration
 > See [docs/FLIPBOOKS.md](docs/FLIPBOOKS.md) for flipbook build pipeline
@@ -50,7 +51,7 @@ Protected by Basic Auth. Includes:
 - **Kiosk Application** with dashboards, product lines, success stories manager, data check tools
 
 ### Flipbooks
-- Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.local`)
+- Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.dev`)
 - Output bundle format under `public/flipbooks/<docKey>/` (manifest, pages, source.pdf, optional tags)
 - Component: `src/components/shared/pdf/Flipbook.tsx`
 - Automated regeneration with GitHub Actions workflow `.github/workflows/pdf-flipbooks-build.yml`
@@ -87,7 +88,7 @@ To test offline functionality:
 git clone https://github.com/Klaratech/petromac.git
 cd petromac
 pnpm install
-cp .env.example .env.local
+cp .env.example .env.dev
 pnpm run dev
 ```
 
@@ -120,7 +121,7 @@ pip install -r requirements.txt
 
 ### Data Processing & Flipbooks
 - Preferred: run `pnpm run data` to rebuild operations JSON + flipbook assets in one command
-- Source files can be configured via `.env.local` (raw sources do not need to be committed):
+- Source files can be configured via `.env.dev` (raw sources do not need to be committed):
   - `OPERATIONS_SOURCE_XLSX`
   - `FLIPBOOK_CATALOG_SOURCE_PDF`
   - `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF`
@@ -133,6 +134,13 @@ pip install -r requirements.txt
 ### GitHub Actions
 - `.github/workflows/data-build.yaml` - Operations data
 - `.github/workflows/pdf-flipbooks-build.yml` - Flipbooks
+
+### Production Deploy (EC2 + Caddy + Cloudflare)
+- Local development uses `.env.dev`
+- CI chain: `CI` -> `Build and Push Container` -> `Deploy to EC2`
+- EC2 stack path: `/opt/petromac-web`
+- Required env on EC2: `/opt/petromac-web/.env.prod` (start from `.env.prod.example`)
+- Add a Caddy site block to reverse proxy `petromac-web:3000` from the shared `web` Docker network
 
 ## Security
 - Basic Auth for `/intranet/*` (timing-safe credential comparison)
