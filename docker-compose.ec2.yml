@@ -13,6 +13,8 @@ services:
     container_name: petromac-backend
     env_file:
       - /opt/petromac/.env.prod
+    volumes:
+      - /opt/petromac/data:/app/data
     networks:
       - web
     restart: unless-stopped

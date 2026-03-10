@@ -11,7 +11,7 @@ COPY backend /app/backend
 RUN uv pip install --system /app/backend
 
 COPY public /app/public
-COPY data /app/data
+RUN mkdir -p /app/data
 
 EXPOSE 8000
 
