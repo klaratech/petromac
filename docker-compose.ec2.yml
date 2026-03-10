@@ -1,7 +1,16 @@
 services:
-  petromac:
-    image: ${IMAGE_REF:?IMAGE_REF is required}
-    container_name: petromac
+  petromac-frontend:
+    image: ${IMAGE_FRONTEND_REF:?IMAGE_FRONTEND_REF is required}
+    container_name: petromac-frontend
+    env_file:
+      - /opt/petromac/.env.prod
+    networks:
+      - web
+    restart: unless-stopped
+
+  petromac-backend:
+    image: ${IMAGE_BACKEND_REF:?IMAGE_BACKEND_REF is required}
+    container_name: petromac-backend
     env_file:
       - /opt/petromac/.env.prod
     networks:

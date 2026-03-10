@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
 import { useDebounce } from '@/hooks/useDebounce';
+import { buildClientApiUrl } from '@/lib/api';
 import SuccessStoriesFilters from './SuccessStoriesFilters';
 import {
   loadSuccessStoriesData,
@@ -133,7 +134,7 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
     setDownloadError(null);
 
     try {
-      const response = await fetch('/api/pdf/success-stories', {
+      const response = await fetch(buildClientApiUrl('/api/pdf/success-stories'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pageNumbers: selectedPages, mode: 'download' }),
@@ -209,7 +210,7 @@ export default function SuccessStoriesFlipbook({ backHref, backLabel }: SuccessS
             <EmailPdfButton
               pdfType="success-stories"
               pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.successStories)}/source.pdf`}
-              endpoint="/api/email/send-pdf"
+              endpoint={buildClientApiUrl('/api/email/send-pdf')}
               payload={{ pageNumbers: selectedPages, filters: debouncedFilters }}
               disabled={selectedPages.length === 0}
             />

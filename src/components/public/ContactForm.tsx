@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { submitContact } from "@/app/(public)/contact/actions";
+import { buildClientApiUrl } from "@/lib/api";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -25,9 +25,14 @@ export default function ContactForm() {
       const timeTaken = (Date.now() - formStartTime) / 1000;
       formDataObj.append("_timing", timeTaken.toString());
 
-      const result = await submitContact(formDataObj);
+      const response = await fetch(buildClientApiUrl("/api/contact"), {
+        method: "POST",
+        body: formDataObj,
+      });
 
-      if (result.ok) {
+      const result = (await response.json()) as { ok: boolean; error?: string };
+
+      if (response.ok && result.ok) {
         setSubmitStatus("success");
         setFormData({ name: "", email: "", message: "" });
       } else {

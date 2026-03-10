@@ -38,8 +38,6 @@ export const VIDEO_SOURCES = [
 // External URLs
 export const EXTERNAL_URLS = {
   WORLD_MAP_DATA: '/data/world-110m.json',
-  COUNTRY_LABELS: '/data/country_labels.json',
-  OPERATIONS_DATA: '/data/operations_data.json',
 } as const;
 
 // Device types

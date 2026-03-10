@@ -1,11 +1,27 @@
 services:
-  petromac:
+  petromac-frontend:
     build:
       context: .
       dockerfile: Dockerfile
-    image: petromac:local
+    image: petromac-frontend:local
     ports:
       - "3000:3000"
+    env_file:
+      - .env.dev
+    environment:
+      API_BASE_URL: http://petromac-backend:8000
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+    depends_on:
+      - petromac-backend
+    restart: unless-stopped
+
+  petromac-backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: petromac-backend:local
+    ports:
+      - "8000:8000"
     env_file:
       - .env.dev
     restart: unless-stopped

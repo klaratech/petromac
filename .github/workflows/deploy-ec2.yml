@@ -16,19 +16,21 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGISTRY: ghcr.io
-      IMAGE_NAME: klaratech/petromac
+      FRONTEND_IMAGE_NAME: klaratech/petromac-frontend
+      BACKEND_IMAGE_NAME: klaratech/petromac-backend
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
-      - name: Resolve image ref
+      - name: Resolve image refs
         id: prep
         shell: bash
         run: |
           set -euo pipefail
           image_tag="${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}"
-          echo "image_ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${image_tag}" >> "$GITHUB_OUTPUT"
+          echo "frontend_image_ref=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${image_tag}" >> "$GITHUB_OUTPUT"
+          echo "backend_image_ref=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${image_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Set up SSH key and known hosts
         shell: bash
@@ -49,7 +51,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ssh -p "${{ secrets.EC2_PORT || 22 }}" -i ~/.ssh/ec2_key "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" "IMAGE_REF='${{ steps.prep.outputs.image_ref }}' bash -se" <<'EOF'
+          ssh -p "${{ secrets.EC2_PORT || 22 }}" -i ~/.ssh/ec2_key "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" "IMAGE_FRONTEND_REF='${{ steps.prep.outputs.frontend_image_ref }}' IMAGE_BACKEND_REF='${{ steps.prep.outputs.backend_image_ref }}' bash -se" <<'EOF'
           set -euo pipefail
           sudo mkdir -p /opt/petromac
           sudo chown -R $USER:$USER /opt/petromac
@@ -60,7 +62,8 @@ jobs:
             exit 1
           fi
           echo "${{ secrets.GHCR_PULL_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_PULL_USER }}" --password-stdin
-          docker pull "${IMAGE_REF}"
+          docker pull "${IMAGE_FRONTEND_REF}"
+          docker pull "${IMAGE_BACKEND_REF}"
           docker compose -f docker-compose.ec2.yml up -d --remove-orphans
           docker image prune -f
           EOF

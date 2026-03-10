@@ -5,6 +5,8 @@
 - Local development via `.env.dev`
 - GitHub Actions chain: `CI` -> `Build and Push Container` -> `Deploy to EC2`
 - EC2 docker compose stack at `/opt/petromac`
+- Frontend image: `ghcr.io/klaratech/petromac-frontend`
+- Backend image: `ghcr.io/klaratech/petromac-backend`
 - Caddy reverse proxy on shared Docker network `web`
 - Optional Cloudflare proxy in front of origin
 
@@ -13,7 +15,9 @@
 1. `sudo mkdir -p /opt/petromac`
 2. Create `/opt/petromac/.env.prod`
 3. Ensure Caddy is attached to external Docker network `web`
-4. Add Caddy site block to proxy `petromac:3000`
+4. Add Caddy routes for:
+   - `petromac-frontend:3000` on `/`
+   - `petromac-backend:8000` on `/api/*`
 
 ## Required GitHub Secrets
 

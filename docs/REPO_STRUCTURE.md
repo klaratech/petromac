@@ -9,11 +9,16 @@ The repository contains:
 2. **Intranet Portal** - Protected internal portal at `/intranet`
 3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
 4. **Flipbook Module** - Interactive PDF flipbooks for product catalog and success stories
+5. **Backend Service** - FastAPI service for email, PDFs, and track-record data
 
 ## Directory Structure
 
 ```
 website/
+├── backend/
+│   ├── app/                              # FastAPI application
+│   ├── Dockerfile                        # Backend image
+│   └── pyproject.toml                    # Backend Python package config
 ├── src/
 │   ├── app/                              # Next.js App Router
 │   │   ├── (public)/                     # 🌐 Public shell routes
@@ -21,7 +26,7 @@ website/
 │   │   │   ├── about/                    # About pages
 │   │   │   ├── catalog/                  # Catalog + flipbook
 │   │   │   ├── track-record/             # Global deployment map
-│   │   │   ├── contact/                  # Contact + server actions
+│   │   │   ├── contact/                  # Contact page (submits to backend API)
 │   │   │   ├── success-stories/flipbook/ # Success stories flipbook
 │   │   │   └── intranet/                 # 🔒 Intranet homepage
 │   │   ├── (kiosk)/                      # 🔒 Kiosk shell routes
@@ -31,7 +36,6 @@ website/
 │   │   │       ├── productlines/         # Product lines viewer
 │   │   │       ├── datacheck/            # Data validation tools
 │   │   │       └── successstories/       # Success stories flipbook
-│   │   ├── api/                          # API routes
 │   │   ├── layout.tsx                    # Root layout (global)
 │   │   └── globals.css                   # Global styles
 │   ├── features/                         # Feature modules (shared)
@@ -140,7 +144,7 @@ The repository uses a three-tier data organization to separate private sources, 
 #### 2. `public/data/` - Published Artifacts
 - **Purpose**: Static data files served to clients
 - **Git Status**: Tracked and deployed
-- **URL Access**: Files are accessible at `/data/*` (e.g., `/data/operations_data.json`)
+- **Runtime Access**: Backend serves the relevant data to the frontend via `/api/data/*`
 - **Contents**:
   - `operations_data.json` - Processed operations data (3MB+)
   - `country_labels.json` - Country name mappings for map
@@ -168,7 +172,7 @@ export function useOperationsData() {
   const [data, setData] = useState(null);
   
   useEffect(() => {
-    fetch("/data/operations_data.json")
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/data/operations`)
       .then(r => r.ok ? r.json() : Promise.reject())
       .then(d => setData(d))
       .catch(e => console.error("Failed to load data:", e));
@@ -181,7 +185,7 @@ export function useOperationsData() {
 **Server Component Example:**
 ```tsx
 export default async function ServerPage() {
-  const res = await fetch("https://yourdomain.com/data/operations_data.json", {
+  const res = await fetch("https://api.petromac.com/api/data/operations", {
     next: { revalidate: 3600 } // Cache for 1 hour
   });
   const data = await res.json();
@@ -248,5 +252,5 @@ Map components follow a core + wrapper pattern:
 1. **Source**: `public/flipbooks/success-stories/tags.csv` (single source of truth)
 2. **Normalization**: Filter normalization in `src/features/success-stories/services/successStories.shared.ts`
 3. **Services**: Tags parsing + filtering in `src/features/success-stories/services/successStories.shared.ts`
-4. **API**: `/api/pdf/success-stories` for PDF generation
+4. **Backend API**: `/api/pdf/success-stories` for PDF generation
 5. **UI**: Filters in `src/features/success-stories/components/SuccessStoriesFilters.tsx`

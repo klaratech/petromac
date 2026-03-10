@@ -1,14 +1,8 @@
 'use client';
 
-import { useState, useMemo, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import type { EmailLogEntry } from '@/lib/emailLog';
-import { updateEventTag, clearEventTag } from './actions';
-
-interface Props {
-  entries: EmailLogEntry[];
-  currentEvent: string | null;
-}
+import { useEffect, useMemo, useState, useTransition } from 'react';
+import type { EmailConfig, EmailLogEntry } from '@/types/emailLog';
+import { buildClientApiUrl } from '@/lib/api';
 
 function formatFilters(f?: EmailLogEntry['filtersApplied']): string {
   if (!f) return '';
@@ -27,9 +21,11 @@ function toLocalTimeStr(iso: string): string {
   return new Date(iso).toLocaleTimeString();
 }
 
-export function EmailLogClient({ entries, currentEvent }: Props) {
-  const router = useRouter();
+export function EmailLogClient() {
   const [isPending, startTransition] = useTransition();
+  const [entries, setEntries] = useState<EmailLogEntry[]>([]);
+  const [currentEvent, setCurrentEvent] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Filters
   const [dateFrom, setDateFrom] = useState('');
@@ -39,6 +35,40 @@ export function EmailLogClient({ entries, currentEvent }: Props) {
 
   // Event tag input
   const [eventInput, setEventInput] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      try {
+        setIsLoading(true);
+        const [entriesRes, configRes] = await Promise.all([
+          fetch(buildClientApiUrl('/api/email-log'), { cache: 'no-store' }),
+          fetch(buildClientApiUrl('/api/email-config'), { cache: 'no-store' }),
+        ]);
+
+        if (!entriesRes.ok || !configRes.ok) {
+          throw new Error('Failed to load email log data');
+        }
+
+        const [entriesJson, configJson] = (await Promise.all([
+          entriesRes.json(),
+          configRes.json(),
+        ])) as [EmailLogEntry[], EmailConfig];
+
+        if (!active) return;
+        setEntries(entriesJson);
+        setCurrentEvent(configJson.currentEvent);
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    }
+
+    void load();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const uniqueEvents = useMemo(
     () => [...new Set(entries.map((e) => e.eventTag).filter(Boolean))] as string[],
@@ -97,16 +127,32 @@ export function EmailLogClient({ entries, currentEvent }: Props) {
 
   function handleSetEvent(formData: FormData) {
     startTransition(async () => {
-      await updateEventTag(formData);
+      const event = formData.get('event')?.toString().trim() || null;
+      const res = await fetch(buildClientApiUrl('/api/email-config'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentEvent: event }),
+      });
+      if (!res.ok) return;
       setEventInput('');
-      router.refresh();
+      setCurrentEvent(event);
     });
+  }
+
+  function handleSubmitEvent(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    handleSetEvent(new FormData(event.currentTarget));
   }
 
   function handleClearEvent() {
     startTransition(async () => {
-      await clearEventTag();
-      router.refresh();
+      const res = await fetch(buildClientApiUrl('/api/email-config'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentEvent: null }),
+      });
+      if (!res.ok) return;
+      setCurrentEvent(null);
     });
   }
 
@@ -125,7 +171,7 @@ export function EmailLogClient({ entries, currentEvent }: Props) {
                 {currentEvent || 'No event set'}
               </strong>
             </span>
-            <form action={handleSetEvent} className="flex items-center gap-2">
+            <form onSubmit={handleSubmitEvent} className="flex items-center gap-2">
               <input
                 type="text"
                 name="event"
@@ -225,7 +271,13 @@ export function EmailLogClient({ entries, currentEvent }: Props) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {sortedFiltered.length === 0 ? (
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
+                      Loading email log...
+                    </td>
+                  </tr>
+                ) : sortedFiltered.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
                       No email log entries found.

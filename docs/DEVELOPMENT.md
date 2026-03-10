@@ -10,13 +10,14 @@ git clone https://github.com/Klaratech/petromac.git
 cd petromac
 pnpm install
 cp .env.example .env.dev
-pnpm run dev
+docker compose up --build
 ```
 
 - Python scripts: set up virtualenv in `scripts/python`, install from `requirements.txt`
 
 ### Running Locally
 - Public site: http://localhost:3000
+- Backend API: http://localhost:8000
 - Intranet: http://localhost:3000/intranet (requires Basic Auth)
 - Track Record (map): http://localhost:3000/track-record
 
@@ -46,13 +47,14 @@ To update filters:
 
 - `src/app/(public)` → Public shell routes
 - `src/app/(kiosk)` → Kiosk shell routes
+- `backend/app` → FastAPI backend service
 - `src/components/public/` → Public site components
 - `src/components/shared/pdf/Flipbook.tsx` → Shared flipbook component
 - `src/components/geo/` → Shared map components
   - `DrilldownMapCore.tsx` → Core map logic (reusable)
   - `DrilldownMapPublic.tsx` → Public wrapper for `/track-record`
   - `DrilldownMapKiosk.tsx` → Kiosk wrapper for dashboard
-- `src/lib/map/data.ts` → Map data fetchers for `/data/*.json`
+- `src/lib/map/data.ts` → Frontend map data fetchers for backend `/api/data/*`
 - `src/features/success-stories/` → Success Stories feature (filters, parsing, services)
 - `src/shared/ui/` → Shared UI primitives
 
@@ -91,6 +93,7 @@ For cron-style usage, schedule `pnpm run data` periodically and commit updated o
 ## Testing
 
 - Run lint/typecheck before commits (`pnpm run lint`, `pnpm exec tsc --noEmit`)
+- Syntax check backend Python (`python3 -m compileall backend`)
 - Run data validation (`pnpm run validate:successstories`)
 - Run smoke tests (`pnpm run test:e2e`) with a local server running
 - Production deploys build in GitHub Actions and run on EC2 via Docker Compose
@@ -122,12 +125,12 @@ Follow these conventions when working with data:
 - These files are never deployed
 
 #### 2. Published Data (`public/data/`)
-- All JSON/CSV/PDF files served to clients
-- Accessible via `/data/*` URLs (e.g., `/data/operations_data.json`)
+- JSON/CSV/PDF artifacts generated for backend/frontend use
+- The backend exposes live data to the frontend via `/api/data/*`
 - Use for:
   - Large datasets (operations_data.json ~3MB)
   - Map data (country_labels.json, world-110m.json)
-- **Fetch at runtime** - do not import JSON files from here
+- **Fetch at runtime through the backend API** - do not import JSON files from here
 
 Flipbook assets (PDFs + images) live under `public/flipbooks/` and are accessed via `/flipbooks/*` URLs.
 
@@ -146,13 +149,13 @@ For data in `public/data/`, always use fetch:
 const [data, setData] = useState(null);
 
 useEffect(() => {
-  fetch("/data/operations_data.json")
+  fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/data/operations`)
     .then(r => r.json())
     .then(setData);
 }, []);
 
 // ✅ Server Component
-const res = await fetch("https://yourdomain.com/data/file.json", {
+const res = await fetch(`${process.env.API_BASE_URL}/api/data/operations`, {
   next: { revalidate: 3600 }
 });
 const data = await res.json();
@@ -182,10 +185,10 @@ DIAGNOSTICS = "data/private/intermediate/validation.txt"
 After making changes, verify all data fetches work:
 
 ```bash
-pnpm run dev
+docker compose up --build
 # Open http://localhost:3000
-# Open DevTools → Network tab → Filter by "data/"
-# Verify all /data/*.json requests return 200 OK (no 404s)
+# Open DevTools → Network tab → Filter by "/api/data"
+# Verify all backend data requests return 200 OK (no 404s)
 ```
 
 Check these pages:

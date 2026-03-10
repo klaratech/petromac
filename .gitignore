@@ -113,6 +113,8 @@ jspm_packages/
 /data/private/
 
 # Python scripts
+/__pycache__/
+*.pyc
 /scripts/python/.venv
 /scripts/python/__pycache__
 /scripts/python/*.pyc

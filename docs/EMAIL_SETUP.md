@@ -126,7 +126,7 @@ After adding all environment variables:
 - ✅ `ALLOWED_EMAIL_DOMAINS` or `ALLOWED_EMAIL_RECIPIENTS` is set (email allowlist)
 - ✅ `SMTP_*` variables are set in the active environment file
 - ✅ Email endpoints return **clear errors** if allowlists are missing
-- ✅ Success Stories PDF endpoint works: `POST /api/pdf/success-stories`
+- ✅ Success Stories PDF endpoint works through the backend: `POST <backend>/api/pdf/success-stories`
 
 ---
 
@@ -145,7 +145,7 @@ After adding all environment variables:
 ### Emails not arriving
 - Check spam/junk folder
 - Verify `CONTACT_TO_EMAIL` is correct
-- Check the app container logs for errors
+- Check the backend container logs for errors
 
 ### "Less secure app access" (Gmail)
 - This setting is deprecated - use App Passwords instead

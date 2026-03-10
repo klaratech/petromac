@@ -17,12 +17,19 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: klaratech/petromac
 
 jobs:
   docker:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_name: klaratech/petromac-frontend
+            dockerfile: Dockerfile
+          - image_name: klaratech/petromac-backend
+            dockerfile: backend/Dockerfile
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,7 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           image_tag="${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}"
-          echo "image_ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" >> "$GITHUB_OUTPUT"
+          echo "image_ref=${{ env.REGISTRY }}/${{ matrix.image_name }}" >> "$GITHUB_OUTPUT"
           echo "image_tag=${image_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
@@ -48,6 +55,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ${{ matrix.dockerfile }}
           push: true
           tags: |
             ${{ steps.prep.outputs.image_ref }}:latest

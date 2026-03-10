@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { JobRecord } from "@/types/JobRecord";
+import { buildClientApiUrl } from "@/lib/api";
 
 interface Stats {
   countries: number;
@@ -17,7 +18,7 @@ export default function ProofSection() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const res = await fetch("/data/operations_data.json", { cache: "force-cache" });
+        const res = await fetch(buildClientApiUrl("/api/data/operations"), { cache: "force-cache" });
         if (!res.ok) throw new Error("Failed to load");
         const data: JobRecord[] = await res.json();
 

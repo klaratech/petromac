@@ -14,7 +14,7 @@ A Next.js-based application featuring:
 - **3D Visualization**: Three.js, React Three Fiber
 - **Data Visualization**: D3.js
 - **Data Processing**: Python 3.11+ (polars, openpyxl, pdf2image, pillow)
-- **API Services**: Next.js API Routes
+- **API Services**: FastAPI backend + Next.js frontend
 - **Deployment**: EC2 + Caddy + Cloudflare
 - **CI/CD**: GitHub Actions (including automated flipbook generation)
 - **Analytics**: optional privacy-first analytics
@@ -140,7 +140,9 @@ pip install -r requirements.txt
 - CI chain: `CI` -> `Build and Push Container` -> `Deploy to EC2`
 - EC2 stack path: `/opt/petromac`
 - Required env on EC2: `/opt/petromac/.env.prod`
-- Add a Caddy site block to reverse proxy `petromac:3000` from the shared `web` Docker network
+- Frontend container: `petromac-frontend:3000`
+- Backend container: `petromac-backend:8000`
+- Configure Caddy to route `/` to `petromac-frontend:3000` and `/api/*` to `petromac-backend:8000`
 
 ## Security
 - Basic Auth for `/intranet/*` (timing-safe credential comparison)

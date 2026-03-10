@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { EXTERNAL_URLS } from '@/constants/app';
 import { fetchJsonWithValidation, validateCountryLabels } from '@/lib/validation';
+import { buildClientApiUrl } from '@/lib/api';
 
 interface UseCountryLabelsResult {
   countryLabels: Record<string, string>;
@@ -20,7 +20,7 @@ export function useCountryLabels(): UseCountryLabelsResult {
       setError(null);
       
       const labels = await fetchJsonWithValidation(
-        EXTERNAL_URLS.COUNTRY_LABELS,
+        buildClientApiUrl('/api/data/country-labels'),
         validateCountryLabels
       );
       

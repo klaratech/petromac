@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { buildClientApiUrl } from "@/lib/api";
 
 interface EmailPdfButtonProps {
   pdfUrl?: string;
@@ -14,7 +15,7 @@ interface EmailPdfButtonProps {
 export function EmailPdfButton({
   pdfUrl,
   pdfType,
-  endpoint = "/api/email/send-pdf",
+  endpoint = buildClientApiUrl("/api/email/send-pdf"),
   payload,
   disabled = false,
   buttonLabel = "Email PDF",

@@ -31,7 +31,7 @@ The Petromac platform combines a **public-facing website**, a **protected intran
 - **DrilldownMapCore** (`src/components/geo/DrilldownMapCore.tsx`) - Reusable map logic for both public and kiosk
 - **DrilldownMapPublic** (`src/components/geo/DrilldownMapPublic.tsx`) - Public wrapper for `/track-record`
 - **DrilldownMapKiosk** (`src/components/geo/DrilldownMapKiosk.tsx`) - Kiosk wrapper for dashboard
-- **Map Data Utilities** (`src/lib/map/data.ts`) - Typed fetchers for `/data/*.json` files
+- **Map Data Utilities** (`src/lib/map/data.ts`) - Typed fetchers for backend API data
   - `fetchOperationsData()` - Fetches operations data
   - Handles data loading with proper error handling and caching hints
 
@@ -59,20 +59,20 @@ Success Stories are implemented as a **single feature module**:
 ### Data Pipeline
 - Python scripts process Excel data into JSON
 - Private sources stored in `data/private/` (gitignored, never deployed)
-- Published data artifacts stored in `public/data/` and served by the running app container
-- Operations data, map data, and other static JSON files accessible at `/data/*` URLs
+- Published data artifacts stored in `public/data/`
+- The backend serves operations and country-label data to the frontend via `/api/data/*`
 
 ### Email & Security
-- Unified SMTP transport (`src/lib/email.ts`) shared by contact form and PDF email delivery
-- Rate limiting (`src/lib/rateLimit.ts`) on contact form (3/min), PDF email (3/min), and PDF generation (5/min)
-- Email recipient allowlists and origin validation (`src/lib/emailValidation.ts`)
-- Contact form: HTML escaping, honeypot, timing check, input length limits
+- SMTP, PDF generation, recipient allowlists, origin validation, and email log state live in the backend service
+- Frontend calls the backend over env-configured API base URLs
+- Contact form: HTML escaping, honeypot, timing check, input length limits enforced by the backend
 - Basic Auth with timing-safe comparison for `/intranet/*` routes (`middleware.ts`)
 
 ### Deployment
-- Hosted on **EC2** in Docker
+- Frontend hosted on **EC2** in Docker or on **Vercel**
+- Backend hosted on **EC2** in Docker
 - Public traffic routed through **Caddy** with **Cloudflare** in front of the origin
-- Container images published to **GHCR** by GitHub Actions
+- Container images published to **GHCR** by GitHub Actions (`petromac-frontend`, `petromac-backend`)
 - Flipbooks generated automatically by **GitHub Actions** workflow `.github/workflows/pdf-flipbooks-build.yml`
 - Operations data pipeline also automated via GitHub Actions
 
@@ -87,9 +87,9 @@ Success Stories are implemented as a **single feature module**:
 - Diagnostics and temporary files stored in `data/private/intermediate/`
 
 #### Published Artifacts (`public/data/`)
-- **Deployed with the app container** and publicly accessible
+- **Bundled with the backend/runtime image**
 - Contains all data files consumed by the application
-- Files accessible at `/data/*` URLs (e.g., `/data/operations_data.json`)
+- Backend exposes these through `/api/data/*`
 - Includes:
   - Large JSON datasets (operations_data.json ~3MB)
   - Map data (country_labels.json, world-110m.json)
@@ -108,11 +108,11 @@ Components should fetch data at runtime rather than importing:
 
 ```tsx
 // Client component
-const response = await fetch("/data/operations_data.json");
+const response = await fetch("https://api.petromac.com/api/data/operations");
 const data = await response.json();
 
 // Server component with caching
-const res = await fetch("https://domain.com/data/operations_data.json", {
+const res = await fetch("https://api.petromac.com/api/data/operations", {
   next: { revalidate: 3600 }
 });
 ```

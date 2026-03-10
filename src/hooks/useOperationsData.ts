@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { JobRecord } from '@/types/JobRecord';
+import { buildClientApiUrl } from '@/lib/api';
 
 export type Operation = Record<string, string | number>;
 
@@ -17,7 +18,7 @@ export default function useOperationsData<T = JobRecord>(options: UseOperationsD
   const load = useCallback(async () => {
     try {
       setError(null);
-      const res = await fetch('/data/operations_data.json');
+      const res = await fetch(buildClientApiUrl('/api/data/operations'));
       if (!res.ok) {
         throw new Error(`Failed to load operations data: ${res.status}`);
       }
