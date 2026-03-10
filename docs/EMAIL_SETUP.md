@@ -1,4 +1,4 @@
-# Vercel Email Configuration Guide
+# Email Configuration Guide
 
 This guide explains how to configure email functionality for the Petromac website, including:
 - Contact form submissions
@@ -6,7 +6,7 @@ This guide explains how to configure email functionality for the Petromac websit
 
 ## Prerequisites
 
-Before configuring Vercel, you need:
+Before configuring SMTP, you need:
 1. An email account that supports SMTP (using Office365: info@petromac.co.nz)
 2. App-specific password for Office365
 
@@ -31,11 +31,11 @@ Before configuring Vercel, you need:
 
 ---
 
-## Step 2: Configure Environment Variables in Vercel
+## Step 2: Configure Environment Variables
 
-1. Go to your Vercel project dashboard
-2. Navigate to **Settings** → **Environment Variables**
-3. Add the following variables one by one:
+Set the following variables in:
+1. `.env.dev` for local development
+2. `/opt/petromac/.env.prod` on EC2 for production
 
 ### Required Variables:
 
@@ -54,7 +54,7 @@ Before configuring Vercel, you need:
 #### Security Allowlists (Recommended):
 | Variable Name | Example Value | Description |
 |--------------|---------------|-------------|
-| `ALLOWED_ORIGINS` | `https://www.petromac.com,https://petromac.vercel.app` | Allowed origins/referrers for email endpoints |
+| `ALLOWED_ORIGINS` | `https://www.petromac.com` | Allowed origins/referrers for email endpoints |
 | `ALLOWED_EMAIL_DOMAINS` | `petromac.com,petromac.co.nz` | Domains allowed to receive PDFs |
 | `ALLOWED_EMAIL_RECIPIENTS` | `info@petromac.co.nz,marketing@petromac.co.nz` | Explicit allowlist of recipient emails |
 
@@ -71,7 +71,7 @@ CONTACT_FROM_EMAIL=info@petromac.co.nz
 CONTACT_TO_EMAIL=info@petromac.co.nz
 
 # Email Endpoint Security
-ALLOWED_ORIGINS=https://www.petromac.com,https://petromac.vercel.app
+ALLOWED_ORIGINS=https://www.petromac.com
 ALLOWED_EMAIL_DOMAINS=petromac.com,petromac.co.nz
 ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz
 ```
@@ -96,20 +96,11 @@ SMTP_PASS=your-app-password
 
 ---
 
-## Step 3: Set Environment Variable Scope
-
-For each variable, you can choose which environments it applies to:
-- ✅ **Production** (required)
-- ✅ **Preview** (recommended for testing)
-- ⬜ **Development** (optional - use local .env file instead)
-
----
-
-## Step 4: Deploy
+## Step 3: Deploy
 
 After adding all environment variables:
-1. Trigger a new deployment (or wait for next push to main/master)
-2. The new environment variables will be available in the deployment
+1. Restart `pnpm run dev` locally if you changed `.env.dev`
+2. Redeploy the EC2 app stack if you changed `/opt/petromac/.env.prod`
 
 ---
 
@@ -133,7 +124,7 @@ After adding all environment variables:
 ## Verification Checklist (Recommended)
 - ✅ `ALLOWED_ORIGINS` is set for your production domain(s)
 - ✅ `ALLOWED_EMAIL_DOMAINS` or `ALLOWED_EMAIL_RECIPIENTS` is set (email allowlist)
-- ✅ `SMTP_*` and `EMAIL_*` variables are set in Vercel
+- ✅ `SMTP_*` variables are set in the active environment file
 - ✅ Email endpoints return **clear errors** if allowlists are missing
 - ✅ Success Stories PDF endpoint works: `POST /api/pdf/success-stories`
 
@@ -154,7 +145,7 @@ After adding all environment variables:
 ### Emails not arriving
 - Check spam/junk folder
 - Verify `CONTACT_TO_EMAIL` is correct
-- Check Vercel function logs for errors
+- Check the app container logs for errors
 
 ### "Less secure app access" (Gmail)
 - This setting is deprecated - use App Passwords instead
@@ -184,7 +175,7 @@ If you prefer a dedicated email service:
 1. Sign up for SendGrid (free tier: 100 emails/day) or Mailgun
 2. Get API credentials
 3. Update `src/app/(public)/contact/actions.ts` to use their API
-4. Set API credentials as environment variables in Vercel
+4. Set API credentials as environment variables in the active environment file
 
 ---
 
@@ -212,6 +203,6 @@ If you prefer a dedicated email service:
 ## Questions?
 
 If you encounter issues, check:
-1. Vercel deployment logs: Project → Deployments → [latest] → Functions
+1. App container logs on EC2: `docker logs --tail 120 petromac`
 2. Email provider's SMTP documentation
-3. Vercel environment variables are set correctly
+3. `.env.dev` or `/opt/petromac/.env.prod` is configured correctly

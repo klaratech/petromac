@@ -14,10 +14,21 @@ jobs:
   deploy:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: klaratech/petromac
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Resolve image ref
+        id: prep
+        shell: bash
+        run: |
+          set -euo pipefail
+          image_tag="${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}"
+          echo "image_ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${image_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Set up SSH key and known hosts
         shell: bash
@@ -38,8 +49,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ssh -p "${{ secrets.EC2_PORT || 22 }}" -i ~/.ssh/ec2_key "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" <<'EOF'
-          set -e
+          ssh -p "${{ secrets.EC2_PORT || 22 }}" -i ~/.ssh/ec2_key "${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}" "IMAGE_REF='${{ steps.prep.outputs.image_ref }}' bash -se" <<'EOF'
+          set -euo pipefail
           sudo mkdir -p /opt/petromac
           sudo chown -R $USER:$USER /opt/petromac
           sudo mv /tmp/docker-compose.ec2.yml /opt/petromac/docker-compose.ec2.yml
@@ -49,7 +60,7 @@ jobs:
             exit 1
           fi
           echo "${{ secrets.GHCR_PULL_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_PULL_USER }}" --password-stdin
-          docker compose -f docker-compose.ec2.yml pull
+          docker pull "${IMAGE_REF}"
           docker compose -f docker-compose.ec2.yml up -d --remove-orphans
           docker image prune -f
           EOF

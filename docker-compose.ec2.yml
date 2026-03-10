@@ -1,6 +1,6 @@
 services:
   petromac:
-    image: ghcr.io/klaratech/petromac:latest
+    image: ${IMAGE_REF:?IMAGE_REF is required}
     container_name: petromac
     env_file:
       - /opt/petromac/.env.prod

@@ -57,7 +57,7 @@ website/
 │   ├── config/                           # App configuration
 │   └── constants/                        # Constants and enums
 ├── middleware.ts                         # 🔒 Basic Auth for /intranet/*
-├── public/                               # Static assets (Vercel CDN)
+├── public/                               # Static assets served by Next.js
 │   ├── kiosk-sw.js                       # 🔧 Kiosk-only service worker
 │   ├── data/                             # Data files (JSON/CSV for maps, ops)
 │   │   ├── world-110m.json               # Local topojson for offline map
@@ -95,16 +95,16 @@ website/
     ├── FLIPBOOKS.md                      # Flipbook build pipeline
     ├── KIOSK.md                          # Kiosk operations & offline caching
     ├── TAILWIND_THEME.md                 # Brand theme specifications
-    └── VERCEL_EMAIL_SETUP.md             # Email configuration guide
+    └── EMAIL_SETUP.md                    # Email configuration guide
 ```
 
 ## 📖 Flipbook Module
 
 ### Overview
-The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. Source PDFs and tags xlsx are sourced from OneDrive (paths configured in `.env.local`).
+The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. Source PDFs and tags xlsx are sourced from OneDrive (paths configured in `.env.dev`).
 
 ### File Locations
-- **Source files**: Configured via `.env.local` env vars (OneDrive paths)
+- **Source files**: Configured via `.env.dev` env vars (OneDrive paths)
   - `FLIPBOOK_CATALOG_SOURCE_PDF`
   - `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF`
   - `FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX`
@@ -137,7 +137,7 @@ The repository uses a three-tier data organization to separate private sources, 
   - `data/private/raw/` - Raw Excel uploads (e.g., `jobhistory.xlsx`)
   - `data/private/intermediate/` - Python processing outputs, diagnostics, and temporary files
 
-#### 2. `public/data/` - Published Artifacts (VERCEL CDN)
+#### 2. `public/data/` - Published Artifacts
 - **Purpose**: Static data files served to clients
 - **Git Status**: Tracked and deployed
 - **URL Access**: Files are accessible at `/data/*` (e.g., `/data/operations_data.json`)

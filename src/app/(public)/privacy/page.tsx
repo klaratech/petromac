@@ -103,34 +103,6 @@ export default function PrivacyPage() {
             We employ third party companies and individuals to facilitate our Website (&quot;Service Providers&quot;), to provide our Website on our behalf, to perform Website-related services or to assist us in analyzing how our Website is used. These third-parties have access to your personal information only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Analytics</h2>
-          
-          <p>
-            We use Vercel Analytics to collect anonymous usage data to help us understand how visitors interact with our Website. Vercel Analytics is a privacy-friendly web analytics service that does not use cookies and does not collect personal information. The analytics data is fully anonymized and aggregated, ensuring compliance with GDPR and other privacy regulations.
-          </p>
-
-          <p>
-            Vercel Analytics collects only the following anonymous information:
-          </p>
-
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Page views and navigation patterns</li>
-            <li>Referrer information (where visitors came from)</li>
-            <li>Device type and browser information</li>
-            <li>Geographic location (country level only)</li>
-          </ul>
-
-          <p>
-            This data cannot be used to identify individual users and is used solely to improve our Website experience. No personal information is collected or shared with third parties through Vercel Analytics.
-          </p>
-
-          <p>
-            For more information on Vercel&apos;s privacy practices, please visit:{" "}
-            <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">
-              https://vercel.com/legal/privacy-policy
-            </a>
-          </p>
-
           <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Data Retention</h2>
           
           <p>

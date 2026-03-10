@@ -109,7 +109,7 @@ GITHUB_TOKEN=$YOUR_TOKEN python generate_json.py
                ▼
 ┌──────────────────────────────────────┐
 │  public/data/operations_data.json    │
-│  (Public, served by Vercel CDN)      │
+│  (Public, served by the app)         │
 └──────────────────────────────────────┘
 ```
 

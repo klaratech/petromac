@@ -9,7 +9,7 @@ This document describes how to develop, test, and deploy features for the Petrom
 git clone https://github.com/Klaratech/petromac.git
 cd petromac
 pnpm install
-cp .env.example .env.local
+cp .env.example .env.dev
 pnpm run dev
 ```
 
@@ -21,7 +21,7 @@ pnpm run dev
 - Track Record (map): http://localhost:3000/track-record
 
 ### Flipbooks
-- Source PDFs and tags xlsx live in OneDrive (paths configured in `.env.local`)
+- Source PDFs and tags xlsx live in OneDrive (paths configured in `.env.dev`)
 - Generated bundles live in `public/flipbooks/<docKey>/`
 - Preferred unified pipeline (operations + flipbooks):
   ```bash
@@ -65,7 +65,7 @@ To update filters:
 
 This repository supports an env-driven source workflow so raw files can stay outside git (e.g., OneDrive-synced local paths).
 
-Configure these in `.env.local`:
+Configure these in `.env.dev`:
 
 ```bash
 OPERATIONS_SOURCE_XLSX=/absolute/path/to/jobhistory.xlsx
@@ -93,7 +93,7 @@ For cron-style usage, schedule `pnpm run data` periodically and commit updated o
 - Run lint/typecheck before commits (`pnpm run lint`, `pnpm exec tsc --noEmit`)
 - Run data validation (`pnpm run validate:successstories`)
 - Run smoke tests (`pnpm run test:e2e`) with a local server running
-- Preview builds deployed automatically for PRs
+- Production deploys build in GitHub Actions and run on EC2 via Docker Compose
 
 ## Kiosk Offline Refresh (Trade Shows)
 
@@ -197,5 +197,5 @@ Check these pages:
 ## Notes
 
 - The old PDF viewer/builder modals are **deprecated** and replaced by the Flipbook module.
-- Source PDFs and tags xlsx are sourced from OneDrive via `.env.local` paths.
+- Source PDFs and tags xlsx are sourced from OneDrive via `.env.dev` paths.
 - **Data organization is critical** - follow the three-tier structure to avoid deployment issues.

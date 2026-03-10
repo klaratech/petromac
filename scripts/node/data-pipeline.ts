@@ -4,7 +4,7 @@ import { spawnSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 
-// Load .env.local so `pnpm data` picks up OneDrive source paths
+// Load .env.dev so `pnpm data` picks up OneDrive source paths
 // (Next.js does this automatically, but tsx does not)
 function loadEnvFile(filename: string) {
   const filepath = path.join(ROOT, filename);
@@ -25,7 +25,7 @@ function loadEnvFile(filename: string) {
   }
 }
 
-loadEnvFile('.env.local');
+loadEnvFile('.env.dev');
 loadEnvFile('.env');
 
 function resolvePath(value: string | undefined): string | undefined {
@@ -71,7 +71,7 @@ function main() {
     });
   } else {
     warnOrThrow(
-      `Operations source not found. Set OPERATIONS_SOURCE_XLSX in .env.local${operationsSource ? ` (checked: ${operationsSource})` : ''}`,
+      `Operations source not found. Set OPERATIONS_SOURCE_XLSX in .env.dev${operationsSource ? ` (checked: ${operationsSource})` : ''}`,
       strict
     );
   }
@@ -100,7 +100,7 @@ function main() {
       run('python', flipbookArgs);
     } else {
       warnOrThrow(
-        `Flipbook source PDFs not found. Set FLIPBOOK_CATALOG_SOURCE_PDF and FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF in .env.local`,
+        `Flipbook source PDFs not found. Set FLIPBOOK_CATALOG_SOURCE_PDF and FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF in .env.dev`,
         strict
       );
     }

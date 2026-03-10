@@ -40,9 +40,6 @@ export async function setEmailConfig(config: EmailConfig): Promise<void> {
 }
 
 export async function appendEmailLog(entry: NewEmailLogEntry): Promise<void> {
-  // No-op on Vercel — log file is only for local/kiosk use
-  if (process.env.VERCEL) return;
-
   await ensureDataDir();
 
   const config = await getEmailConfig();

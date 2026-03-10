@@ -32,7 +32,7 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, protec
 ## Key Conventions
 
 - Environment variables for all secrets (see `.env.example`)
-- Source PDFs/xlsx come from OneDrive paths configured in `.env.local`
+- Source PDFs/xlsx come from OneDrive paths configured in `.env.dev`
 - Flipbook tags CSV is the single source of truth for success stories filtering
 - Kiosk service worker (`public/kiosk-sw.js`) scoped to `/intranet/kiosk/` only
 - Security: rate limiting, HTML escaping, origin validation (URL hostname parsing), email allowlists
@@ -48,7 +48,7 @@ All docs live in `docs/`:
 - [docs/FLIPBOOKS.md](docs/FLIPBOOKS.md) — Flipbook build pipeline & troubleshooting
 - [docs/KIOSK.md](docs/KIOSK.md) — Kiosk operations & offline caching
 - [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) — Brand colors & typography
-- [docs/VERCEL_EMAIL_SETUP.md](docs/VERCEL_EMAIL_SETUP.md) — Email/SMTP configuration
+- [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) — Email/SMTP configuration
 
 ## Current Tasks
 

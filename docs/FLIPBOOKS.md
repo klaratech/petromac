@@ -5,7 +5,7 @@ The public site and kiosk both read from the same bundle paths.
 
 ## Folder layout
 
-Source inputs (configured via `.env.local`, typically OneDrive paths):
+Source inputs (configured via `.env.dev`, typically OneDrive paths):
 
 - `FLIPBOOK_CATALOG_SOURCE_PDF` - Catalog PDF
 - `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF` - Success Stories PDF
@@ -48,7 +48,7 @@ brew install poppler
 ## Update workflow (deterministic)
 
 1. Update source PDFs and/or the "Kiosk" sheet in `Success Stories_Summary.xlsx` (in OneDrive).
-2. Ensure `.env.local` paths point to the correct files.
+2. Ensure `.env.dev` paths point to the correct files.
 3. Regenerate flipbooks:
 
 ```bash

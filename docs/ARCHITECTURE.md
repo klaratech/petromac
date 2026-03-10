@@ -37,7 +37,7 @@ The Petromac platform combines a **public-facing website**, a **protected intran
 
 ### Flipbook Module
 - Replaces the old PDF viewer/builder modals
-- Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.local`)
+- Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.dev`)
 - Generated bundles in `public/flipbooks/<docKey>/` (manifest, pages, source.pdf, optional tags)
 - Converted into images with Python (`scripts/build_flipbook.py` using pdf2image + pillow)
 - Interactive flipbooks built with **page-flip**
@@ -59,7 +59,7 @@ Success Stories are implemented as a **single feature module**:
 ### Data Pipeline
 - Python scripts process Excel data into JSON
 - Private sources stored in `data/private/` (gitignored, never deployed)
-- Published data artifacts stored in `public/data/` and served via Vercel CDN
+- Published data artifacts stored in `public/data/` and served by the running app container
 - Operations data, map data, and other static JSON files accessible at `/data/*` URLs
 
 ### Email & Security
@@ -70,8 +70,9 @@ Success Stories are implemented as a **single feature module**:
 - Basic Auth with timing-safe comparison for `/intranet/*` routes (`middleware.ts`)
 
 ### Deployment
-- Hosted on **Vercel**
-- Static assets delivered via Vercel CDN
+- Hosted on **EC2** in Docker
+- Public traffic routed through **Caddy** with **Cloudflare** in front of the origin
+- Container images published to **GHCR** by GitHub Actions
 - Flipbooks generated automatically by **GitHub Actions** workflow `.github/workflows/pdf-flipbooks-build.yml`
 - Operations data pipeline also automated via GitHub Actions
 
@@ -86,7 +87,7 @@ Success Stories are implemented as a **single feature module**:
 - Diagnostics and temporary files stored in `data/private/intermediate/`
 
 #### Published Artifacts (`public/data/`)
-- **Deployed to Vercel CDN** and publicly accessible
+- **Deployed with the app container** and publicly accessible
 - Contains all data files consumed by the application
 - Files accessible at `/data/*` URLs (e.g., `/data/operations_data.json`)
 - Includes:

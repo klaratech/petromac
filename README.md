@@ -25,7 +25,7 @@ A Next.js-based application featuring:
 > See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for development workflow
 > See [DEPLOY.md](DEPLOY.md) for production deployment model
 > See [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) for brand theme
-> See [docs/VERCEL_EMAIL_SETUP.md](docs/VERCEL_EMAIL_SETUP.md) for email configuration
+> See [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) for email configuration
 > See [docs/FLIPBOOKS.md](docs/FLIPBOOKS.md) for flipbook build pipeline
 > See [docs/KIOSK.md](docs/KIOSK.md) for kiosk operations & offline caching
 
@@ -138,9 +138,9 @@ pip install -r requirements.txt
 ### Production Deploy (EC2 + Caddy + Cloudflare)
 - Local development uses `.env.dev`
 - CI chain: `CI` -> `Build and Push Container` -> `Deploy to EC2`
-- EC2 stack path: `/opt/petromac-web`
-- Required env on EC2: `/opt/petromac-web/.env.prod` (start from `.env.prod.example`)
-- Add a Caddy site block to reverse proxy `petromac-web:3000` from the shared `web` Docker network
+- EC2 stack path: `/opt/petromac`
+- Required env on EC2: `/opt/petromac/.env.prod`
+- Add a Caddy site block to reverse proxy `petromac:3000` from the shared `web` Docker network
 
 ## Security
 - Basic Auth for `/intranet/*` (timing-safe credential comparison)
@@ -154,4 +154,3 @@ pip install -r requirements.txt
 - [Next.js Docs](https://nextjs.org/docs)
 - [React Docs](https://react.dev)
 - [Tailwind CSS Docs](https://tailwindcss.com/docs)
-- [Vercel Docs](https://vercel.com/docs)
