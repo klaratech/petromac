@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import type { EmailConfig, EmailLogEntry } from '@/types/emailLog';
 import { buildClientApiUrl } from '@/lib/api';
+import { toCsvRow } from '@/shared/utils/csv';
 
 function formatFilters(f?: EmailLogEntry['filtersApplied']): string {
   if (!f) return '';
@@ -97,22 +98,32 @@ export function EmailLogClient() {
   );
 
   function exportCsv() {
-    const header = 'Date,Time,Recipient Email,Type,Filters Applied,Event,Name,Company,Regional Manager';
+    const header = toCsvRow([
+      'Date',
+      'Time',
+      'Recipient Email',
+      'Type',
+      'Filters Applied',
+      'Event',
+      'Name',
+      'Company',
+      'Regional Manager',
+    ]);
     const rows = sortedFiltered.map((e) => {
       const date = toLocalDateStr(e.timestamp);
       const time = toLocalTimeStr(e.timestamp);
       const filters = formatFilters(e.filtersApplied);
-      return [
+      return toCsvRow([
         date,
         time,
         e.recipientEmail,
         e.emailType,
-        `"${filters}"`,
+        filters,
         e.eventTag || '',
         '', // Name — blank for manual fill
         '', // Company — blank for manual fill
         '', // Regional Manager — blank for manual fill
-      ].join(',');
+      ]);
     });
 
     const csv = [header, ...rows].join('\n');
