@@ -6,7 +6,7 @@ This document explains the organization and structure of the Petromac website an
 
 The repository contains:
 1. **Public Website** - Public-facing marketing site at `/`
-2. **Intranet Portal** - Protected internal portal at `/intranet`
+2. **Intranet Portal** - Internal portal at `/intranet`
 3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
 4. **Flipbook Module** - Interactive PDF flipbooks for product catalog and success stories
 5. **Backend Service** - FastAPI service for email, PDFs, and track-record data
@@ -28,14 +28,15 @@ website/
 │   │   │   ├── track-record/             # Global deployment map
 │   │   │   ├── contact/                  # Contact page (submits to backend API)
 │   │   │   ├── success-stories/flipbook/ # Success stories flipbook
-│   │   │   └── intranet/                 # 🔒 Intranet homepage
-│   │   ├── (kiosk)/                      # 🔒 Kiosk shell routes
+│   │   │   └── intranet/                 # Intranet homepage
+│   │   ├── (kiosk)/                      # Kiosk shell routes
 │   │   │   └── intranet/kiosk/           # Kiosk application
 │   │   │       ├── page.tsx              # Kiosk entry (video intro)
 │   │   │       ├── dashboard/            # Operations dashboard (map)
 │   │   │       ├── productlines/         # Product lines viewer
 │   │   │       ├── datacheck/            # Data validation tools
 │   │   │       └── successstories/       # Success stories flipbook
+│   │   ├── auth/microsoft/               # Entra login/callback/logout routes
 │   │   ├── layout.tsx                    # Root layout (global)
 │   │   └── globals.css                   # Global styles
 │   ├── features/                         # Feature modules (shared)
@@ -60,7 +61,6 @@ website/
 │   │   └── team.ts                       # Team member data
 │   ├── config/                           # App configuration
 │   └── constants/                        # Constants and enums
-├── middleware.ts                         # 🔒 Basic Auth for /intranet/*
 ├── public/                               # Static assets served by Next.js
 │   ├── kiosk-sw.js                       # 🔧 Kiosk-only service worker
 │   ├── data/                             # Data files (JSON/CSV for maps, ops)
@@ -99,7 +99,8 @@ website/
     ├── FLIPBOOKS.md                      # Flipbook build pipeline
     ├── KIOSK.md                          # Kiosk operations & offline caching
     ├── TAILWIND_THEME.md                 # Brand theme specifications
-    └── EMAIL_SETUP.md                    # Email configuration guide
+    ├── EMAIL_SETUP.md                    # Email configuration guide
+    └── MS365_ENTRA_KIOSK_SETUP.md        # Microsoft admin setup for staff sign-in
 ```
 
 ## 📖 Flipbook Module

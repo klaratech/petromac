@@ -18,7 +18,7 @@ docker compose up --build
 ### Running Locally
 - Public site: http://localhost:3000
 - Backend API: http://localhost:8000
-- Intranet: http://localhost:3000/intranet (requires Basic Auth)
+- Intranet: http://localhost:3000/intranet
 - Track Record (map): http://localhost:3000/track-record
 
 ### Flipbooks
@@ -48,6 +48,7 @@ To update filters:
 - `src/app/(public)` → Public shell routes
 - `src/app/(kiosk)` → Kiosk shell routes
 - `backend/app` → FastAPI backend service
+- `src/app/auth/microsoft/*` → Entra login/callback/logout routes
 - `src/components/public/` → Public site components
 - `src/components/shared/pdf/Flipbook.tsx` → Shared flipbook component
 - `src/components/geo/` → Shared map components
@@ -97,6 +98,7 @@ For cron-style usage, schedule `pnpm run data` periodically and commit updated o
 - Run data validation (`pnpm run validate:successstories`)
 - Run smoke tests (`pnpm run test:e2e`) with a local server running
 - Production deploys build in GitHub Actions and run on EC2 via Docker Compose
+- If you are testing Microsoft staff sign-in locally, add the localhost callback URL to the Entra app and populate the Entra env vars in `.env.dev`
 
 ## Kiosk Offline Refresh (Trade Shows)
 

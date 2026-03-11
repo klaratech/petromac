@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import StaffIdentityCard from "@/components/shared/StaffIdentityCard";
 
 export default function IntranetHome() {
   const athenaProdUrl = process.env.NEXT_PUBLIC_ATHENA_PROD_URL || "https://athena.petromac.co.nz/";
@@ -12,6 +13,8 @@ export default function IntranetHome() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-8 py-12 bg-gray-50 text-gray-900">
       <h1 className="text-3xl font-bold">Intranet</h1>
+
+      <StaffIdentityCard />
 
       <section className="w-full max-w-5xl">
         <div className="mb-4 text-center">
@@ -105,6 +108,9 @@ export default function IntranetHome() {
               <div className="space-y-6 text-gray-700">
                 <p className="text-lg">
                   The kiosk view is developed to be shown at trade shows. The ideal way to use it is to mirror an Android tablet to an Amazon Fire Stick connected to a TV. That way you can control the application with a tablet but also display the videos on a big screen.
+                </p>
+                <p className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                  If a team member signs in with Microsoft on this intranet page first, that staff identity will continue into kiosk mode and can be used for future staff-assisted email workflows.
                 </p>
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">

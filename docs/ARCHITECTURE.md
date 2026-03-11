@@ -1,6 +1,6 @@
 # Architecture
 
-The Petromac platform combines a **public-facing website**, a **protected intranet portal**, a **kiosk shell**, and supporting **data processing pipelines**.
+The Petromac platform combines a **public-facing website**, an **intranet portal**, a **kiosk shell**, and supporting **data processing pipelines**.
 
 ## Components
 
@@ -12,12 +12,12 @@ The Petromac platform combines a **public-facing website**, a **protected intran
 - Flipbooks for **Catalog** and **Success Stories** provide interactive PDF viewing
 
 ### Intranet Portal
-- Protected with **Basic Authentication**
 - Homepage with tiles:
   - Athena (external portal)
   - Kiosk (internal dashboard app)
   - Catalog (flipbook)
   - Success Stories (flipbook + filters, reusing shared components)
+- Optional **Microsoft Entra staff sign-in** establishes a staff identity that carries into kiosk mode
 - Kiosk app includes:
   - Operations dashboard with map visualization (shared DrilldownMapCore)
   - Product lines explorer
@@ -66,7 +66,7 @@ Success Stories are implemented as a **single feature module**:
 - SMTP, PDF generation, recipient allowlists, origin validation, and email log state live in the backend service
 - Frontend calls the backend over env-configured API base URLs
 - Contact form: HTML escaping, honeypot, timing check, input length limits enforced by the backend
-- Basic Auth with timing-safe comparison for `/intranet/*` routes (`middleware.ts`)
+- Microsoft staff identity uses Entra OAuth routes and an encrypted session cookie
 
 ### Deployment
 - Frontend hosted on **EC2** in Docker or on **Vercel**

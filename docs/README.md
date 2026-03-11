@@ -11,5 +11,6 @@
 - [KIOSK.md](KIOSK.md) - Kiosk operations & offline caching
 - [TAILWIND_THEME.md](TAILWIND_THEME.md) - Brand theme
 - [EMAIL_SETUP.md](EMAIL_SETUP.md) - Email configuration
+- [MS365_ENTRA_KIOSK_SETUP.md](MS365_ENTRA_KIOSK_SETUP.md) - Microsoft staff sign-in setup
 - [ASSET_MANIFEST.md](ASSET_MANIFEST.md) - Image/video/3D model optimization specs for designers
 - [BrandBook.pdf](BrandBook.pdf) - Petromac brand book

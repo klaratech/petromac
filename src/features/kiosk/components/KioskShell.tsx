@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import StaffIdentityBadge from '@/components/kiosk/StaffIdentityBadge';
 
 export default function KioskShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -20,5 +21,10 @@ export default function KioskShell({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
-  return <div className="fixed inset-0 z-50 bg-black overflow-hidden">{children}</div>;
+  return (
+    <div className="fixed inset-0 z-50 bg-black overflow-hidden">
+      <StaffIdentityBadge />
+      {children}
+    </div>
+  );
 }

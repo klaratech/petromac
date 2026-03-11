@@ -26,6 +26,7 @@ A Next.js-based application featuring:
 > See [DEPLOY.md](DEPLOY.md) for production deployment model
 > See [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) for brand theme
 > See [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) for email configuration
+> See [docs/MS365_ENTRA_KIOSK_SETUP.md](docs/MS365_ENTRA_KIOSK_SETUP.md) for Microsoft staff sign-in setup
 > See [docs/FLIPBOOKS.md](docs/FLIPBOOKS.md) for flipbook build pipeline
 > See [docs/KIOSK.md](docs/KIOSK.md) for kiosk operations & offline caching
 
@@ -46,9 +47,10 @@ A Next.js-based application featuring:
 - **Contact** (`/contact`)
 
 ### Intranet (/intranet/*)
-Protected by Basic Auth. Includes:
+Staff area for team workflows. Includes:
 - **Intranet Homepage** with Athena + Kiosk tiles
 - **Kiosk Application** with dashboards, product lines, success stories manager, data check tools
+- Optional **Microsoft staff sign-in** for team identity that persists into kiosk mode
 
 ### Flipbooks
 - Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.dev`)
@@ -145,9 +147,7 @@ pip install -r requirements.txt
 - Configure Caddy to route `/` to `petromac-frontend:3000` and `/api/*` to `petromac-backend:8000`
 
 ## Security
-- Basic Auth for `/intranet/*` (timing-safe credential comparison)
-- `X-Robots-Tag: noindex, nofollow` for intranet
-- Environment variables for intranet credentials
+- Microsoft Entra sign-in available for staff identity in intranet and kiosk
 - Contact form: HTML escaping, rate limiting (3 req/min), honeypot + timing bot checks, input length limits
 - Email APIs: recipient allowlists, origin validation, rate limiting (3 req/min)
 - PDF generation API: rate limiting (5 req/min), sanitized error responses

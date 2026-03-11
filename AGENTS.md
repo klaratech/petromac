@@ -1,6 +1,6 @@
 # Petromac Website
 
-Next.js 15 (App Router) + React 19 + TypeScript website with public site, intranet, and trade-show kiosk.
+Next.js 15 (App Router) + React 19 + TypeScript website with public site, protected intranet, and trade-show kiosk.
 
 ## Quick Reference
 
