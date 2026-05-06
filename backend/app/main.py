@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import html
 import io
 import json
@@ -8,6 +9,7 @@ import smtplib
 import threading
 import time
 import uuid
+from base64 import urlsafe_b64decode
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
@@ -16,6 +18,7 @@ from urllib.parse import urlparse
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from pydantic import BaseModel, EmailStr, Field
 from pypdf import PdfReader, PdfWriter
 
@@ -29,6 +32,7 @@ COUNTRY_LABELS_PATH = PUBLIC_DIR / "data" / "country_labels.json"
 CATALOG_PDF_PATH = PUBLIC_DIR / "flipbooks" / "catalog" / "source.pdf"
 SUCCESS_STORIES_PDF_PATH = PUBLIC_DIR / "flipbooks" / "success-stories" / "source.pdf"
 
+SESSION_COOKIE_NAME = "petromac_staff_session"
 CONTACT_RATE_LIMIT = {"limit": 3, "window_ms": 60_000}
 EMAIL_RATE_LIMIT = {"limit": 3, "window_ms": 60_000}
 PDF_RATE_LIMIT = {"limit": 5, "window_ms": 60_000}
@@ -179,6 +183,54 @@ def allowlists_configured() -> bool:
         parse_env_list(os.getenv("ALLOWED_EMAIL_RECIPIENTS"))
         or parse_env_list(os.getenv("ALLOWED_EMAIL_DOMAINS"))
     )
+
+
+def decode_base64url(value: str) -> bytes:
+    padding = "=" * (-len(value) % 4)
+    return urlsafe_b64decode((value + padding).encode("ascii"))
+
+
+def get_staff_session_secret() -> str:
+    secret = os.getenv("STAFF_SESSION_SECRET") or ""
+    if len(secret) < 32:
+        raise HTTPException(
+            status_code=503,
+            detail="Staff session verification is not configured.",
+        )
+    return secret
+
+
+def read_staff_session_cookie(value: str | None) -> dict | None:
+    if not value:
+        return None
+
+    try:
+        iv_part, tag_part, data_part = value.split(".")
+        key = hashlib.sha256(get_staff_session_secret().encode("utf-8")).digest()
+        plaintext = AESGCM(key).decrypt(
+            decode_base64url(iv_part),
+            decode_base64url(data_part) + decode_base64url(tag_part),
+            None,
+        )
+        session = json.loads(plaintext.decode("utf-8"))
+    except HTTPException:
+        raise
+    except Exception:
+        return None
+
+    expires_at = session.get("expiresAt")
+    if not isinstance(expires_at, (int, float)) or expires_at <= time.time() * 1000:
+        return None
+    if not isinstance(session.get("user"), dict):
+        return None
+    return session
+
+
+def require_staff_session(request: Request) -> dict:
+    session = read_staff_session_cookie(request.cookies.get(SESSION_COOKIE_NAME))
+    if not session:
+        raise HTTPException(status_code=401, detail="Staff sign-in required")
+    return session
 
 
 def get_from_address() -> str:
@@ -336,17 +388,20 @@ def get_country_labels():
 
 
 @app.get("/api/email-log")
-def get_email_log():
+def get_email_log(request: Request):
+    require_staff_session(request)
     return read_email_log()
 
 
 @app.get("/api/email-config")
-def get_email_config_endpoint():
+def get_email_config_endpoint(request: Request):
+    require_staff_session(request)
     return get_email_config()
 
 
 @app.post("/api/email-config")
-def set_email_config_endpoint(payload: EmailConfigRequest):
+def set_email_config_endpoint(payload: EmailConfigRequest, request: Request):
+    require_staff_session(request)
     value = payload.currentEvent.strip() if payload.currentEvent else None
     return set_email_config(value or None)
 
@@ -413,6 +468,18 @@ async def submit_contact(request: Request):
 async def success_stories_pdf(payload: SuccessStoriesPdfRequest, request: Request):
     if not is_origin_allowed(request):
         raise HTTPException(status_code=403, detail="Invalid origin")
+
+    allowed, retry_after = check_rate_limit(
+        f"pdf-success-stories:{get_client_ip(request.headers)}",
+        PDF_RATE_LIMIT["limit"],
+        PDF_RATE_LIMIT["window_ms"],
+    )
+    if not allowed:
+        return JSONResponse(
+            {"error": "Too many PDF requests. Please try again later."},
+            status_code=429,
+            headers={"Retry-After": str(retry_after)},
+        )
 
     pdf_bytes, _total_pages = build_success_stories_pdf(payload.pageNumbers)
     headers = {

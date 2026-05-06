@@ -89,11 +89,11 @@ This will:
 2. rebuild `public/flipbooks/*`
 3. run flipbook/success-stories validators
 
-For cron-style usage, schedule `pnpm run data` periodically and commit updated outputs only.
+For GitHub Actions schedule usage, set `OPERATIONS_SOURCE_XLSX_URL` to a private downloadable URL for the raw workbook. If the URL requires an access token, set `OPERATIONS_SOURCE_XLSX_BEARER_TOKEN` as well. Scheduled runs skip cleanly when no source URL is configured.
 
 ## Testing
 
-- Run lint/typecheck before commits (`pnpm run lint`, `pnpm exec tsc --noEmit`)
+- Run lint/typecheck before commits (`pnpm run lint`, `pnpm run typecheck`)
 - Syntax check backend Python (`python3 -m compileall backend`)
 - Run data validation (`pnpm run validate:successstories`)
 - Run smoke tests (`pnpm run test:e2e`) with a local server running

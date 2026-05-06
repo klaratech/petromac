@@ -1,19 +1,14 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
+import prettierConfig from "eslint-config-prettier";
 
 const eslintConfig = [
   {
     ignores: [".next/**", "node_modules/**", "scripts/**"],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
+  ...nextVitals,
+  ...nextTypescript,
+  prettierConfig,
   {
     rules: {
       "no-console": "warn",
@@ -22,6 +17,10 @@ const eslintConfig = [
       "prefer-const": "error",
       "no-var": "error",
       "react/no-unescaped-entities": "warn",
+      "react-hooks/incompatible-library": "warn",
+      "react-hooks/purity": "warn",
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/static-components": "warn",
     },
   },
   {

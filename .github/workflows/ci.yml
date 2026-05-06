@@ -33,3 +33,6 @@ jobs:
 
       - name: ESLint
         run: pnpm lint
+
+      - name: Production build
+        run: pnpm build
