@@ -97,7 +97,7 @@ For GitHub Actions schedule usage, set `OPERATIONS_SOURCE_XLSX_URL` to a private
 - Syntax check backend Python (`python3 -m compileall backend`)
 - Run data validation (`pnpm run validate:successstories`)
 - Run smoke tests (`pnpm run test:e2e`) with a local server running
-- Production deploys build in GitHub Actions and run on EC2 via Docker Compose
+- Production deploys build in GitHub Actions and run on Hetzner (`klaratech-1`) via Docker Compose — see [DEPLOY.md](../DEPLOY.md)
 - If you are testing Microsoft staff sign-in locally, add the localhost callback URL to the Entra app and populate the Entra env vars in `.env.dev`
 
 ## Kiosk Offline Refresh (Trade Shows)

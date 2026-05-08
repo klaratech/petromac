@@ -69,12 +69,13 @@ Success Stories are implemented as a **single feature module**:
 - Microsoft staff identity uses Entra OAuth routes and an encrypted session cookie
 
 ### Deployment
-- Frontend hosted on **EC2** in Docker or on **Vercel**
-- Backend hosted on **EC2** in Docker
-- Public traffic routed through **Caddy** with **Cloudflare** in front of the origin
-- Container images published to **GHCR** by GitHub Actions (`petromac-frontend`, `petromac-backend`)
-- Flipbooks generated automatically by **GitHub Actions** workflow `.github/workflows/pdf-flipbooks-build.yml`
-- Operations data pipeline also automated via GitHub Actions
+- Frontend and backend run as Docker containers on **`klaratech-1`** (Hetzner) under `/root/apps/petromac/`
+- Public traffic routed through a **Cloudflare Tunnel** (`klaratech-1` tunnel) to localhost ports `3015` (frontend) and `8012` (backend `/api/*`)
+- No public ports open on the server — cloudflared connects outbound; SSH is via Tailscale or the deploy key
+- Container images published to **GHCR** by GitHub Actions: `ghcr.io/klaratech/petromac-frontend` and `petromac-backend`, both `linux/amd64` only
+- Flipbooks generated automatically by `.github/workflows/pdf-flipbooks-build.yml`
+- Operations data pipeline automated via `.github/workflows/data-build.yaml`
+- See [DEPLOY.md](../DEPLOY.md) for the full pipeline and rollback flow
 
 ## Data Architecture
 
@@ -87,9 +88,9 @@ Success Stories are implemented as a **single feature module**:
 - Diagnostics and temporary files stored in `data/private/intermediate/`
 
 #### Published Artifacts (`public/data/`)
-- **Bundled with the backend/runtime image**
+- **Bundled with the frontend image** and served by Next.js
 - Contains all data files consumed by the application
-- Backend exposes these through `/api/data/*`
+- The backend reads operations and country-label JSON from the same artifacts and exposes them through `/api/data/*`
 - Includes:
   - Large JSON datasets (operations_data.json ~3MB)
   - Map data (country_labels.json, world-110m.json)

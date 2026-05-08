@@ -13,9 +13,5 @@ dependencies = [
   "uvicorn>=0.35,<1.0",
 ]
 
-[build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-packages = ["backend", "backend.app"]
+# The backend is run from source (uvicorn backend.app.main:app), not installed
+# as a package — uv sync uses --no-install-project. No build-system needed.

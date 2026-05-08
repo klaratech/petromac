@@ -1,0 +1,38 @@
+# Build artifacts
+node_modules
+.next
+.next/cache
+**/__pycache__
+*.pyc
+.venv
+backend/.venv
+
+# Local env / secrets — never bake into images
+.env
+.env.*
+!.env.example
+
+# Repo metadata
+.git
+.github
+.claude
+
+# Editor / OS
+.DS_Store
+.idea
+.vscode
+
+# Tooling caches
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.eslintcache
+
+# Docs / templates not needed at runtime
+*.md
+!README.md
+Dockerfile
+backend/Dockerfile
+.dockerignore
+docker-compose*.yml
+deploy/

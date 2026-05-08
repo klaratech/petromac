@@ -15,9 +15,9 @@ A Next.js-based application featuring:
 - **Data Visualization**: D3.js
 - **Data Processing**: Python 3.11+ (polars, openpyxl, pdf2image, pillow)
 - **API Services**: FastAPI backend + Next.js frontend
-- **Deployment**: EC2 + Caddy + Cloudflare
-- **CI/CD**: GitHub Actions (including automated flipbook generation)
-- **Analytics**: optional privacy-first analytics
+- **Deployment**: Hetzner (`klaratech-1`) + Cloudflare Tunnel; images on GHCR
+- **CI/CD**: GitHub Actions (build + push + SSH deploy; flipbook + data pipelines)
+- **Analytics**: Plausible (optional, privacy-first)
 - **PWA**: Kiosk-only service worker for offline functionality
 
 > See [docs/REPO_STRUCTURE.md](docs/REPO_STRUCTURE.md) for file layout
@@ -137,14 +137,14 @@ pip install -r requirements.txt
 - `.github/workflows/data-build.yaml` - Operations data
 - `.github/workflows/pdf-flipbooks-build.yml` - Flipbooks
 
-### Production Deploy (EC2 + Caddy + Cloudflare)
-- Local development uses `.env.dev`
-- CI chain: `CI` -> `Build and Push Container` -> `Deploy to EC2`
-- EC2 stack path: `/opt/petromac`
-- Required env on EC2: `/opt/petromac/.env.prod`
-- Frontend container: `petromac-frontend:3000`
-- Backend container: `petromac-backend:8000`
-- Configure Caddy to route `/` to `petromac-frontend:3000` and `/api/*` to `petromac-backend:8000`
+### Production Deploy (Hetzner + Cloudflare Tunnel)
+- Server: `klaratech-1` (Hetzner)
+- App folder: `/root/apps/petromac/`
+- Frontend image: `ghcr.io/klaratech/petromac-frontend` on host port `3015` → container `3000`
+- Backend image: `ghcr.io/klaratech/petromac-backend` on host port `8012` → container `8000`
+- Hostname: `petromac.klaratech.it` (Cloudflare Tunnel: `klaratech-1`)
+- Server `.env` lives at `/root/apps/petromac/.env` and is **never** committed
+- See [DEPLOY.md](DEPLOY.md) for the full pipeline and rollback flow.
 
 ## Security
 - Microsoft Entra sign-in available for staff identity in intranet and kiosk

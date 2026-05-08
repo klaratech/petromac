@@ -1,0 +1,30 @@
+# Production docker-compose for Petromac on klaratech-1.
+#
+# This file is the canonical reference. The live copy is at
+# /root/apps/petromac/docker-compose.yml on the server. Sibling files
+# (never committed):
+#   /root/apps/petromac/.env-frontend
+#   /root/apps/petromac/.env-backend
+#
+# See DEPLOY.md and the org-wide Tech Standards (Hetzner Server.md,
+# docker-compose Templates.md) for the broader pattern.
+
+services:
+  frontend:
+    image: ghcr.io/klaratech/petromac-frontend:latest
+    container_name: petromac-frontend
+    restart: unless-stopped
+    env_file: .env-frontend
+    ports:
+      - "127.0.0.1:3015:3000"
+
+  backend:
+    image: ghcr.io/klaratech/petromac-backend:latest
+    container_name: petromac-backend
+    restart: unless-stopped
+    env_file: .env-backend
+    volumes:
+      # Persist the email log across container recreation.
+      - /root/apps/petromac/data:/app/data
+    ports:
+      - "127.0.0.1:8012:8000"

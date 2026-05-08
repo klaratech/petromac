@@ -18,6 +18,11 @@
 ## Phase 2 — Security Audit
 
 - [ ] Full security audit (dependencies, headers, API routes, input validation, auth)
+- [ ] Add Cloudflare Turnstile to the contact form (parked May 2026 — revisit when ready). Standards specify Turnstile; Petromac currently uses honeypot + timing only.
+
+## Service-provider follow-ups
+
+- [ ] **Email**: Petromac sends transactional mail via Microsoft 365 SMTP (RMS account) by deliberate choice — the customer already has Microsoft mailboxes. This deviates from the org standard ([Service Providers.md](https://example.local) — Brevo for EU sites). Revisit if MS 365 SMTP becomes a maintenance burden.
 
 ## Phase 3 — SEO Audit
 
