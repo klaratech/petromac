@@ -1,5 +1,7 @@
 // New structured data model
 
+export type Lane = 'oh' | 'ch';
+
 export interface SystemMedia {
   video: string;
   logo: string;
@@ -15,6 +17,8 @@ export interface DeviceSpec {
   media: DeviceMedia;
   system: string;
   subsystem: string;
+  /** Which kiosk lane this device belongs to. */
+  lane: Lane;
 }
 
 export const systemMedia: Record<string, SystemMedia> = {
@@ -33,7 +37,20 @@ export const systemMedia: Record<string, SystemMedia> = {
   'PathFinder': {
     video: '/videos/pf.mp4?v=20240519',
     logo: '/images/pathfinder.png',
-  }
+  },
+  // Cased-hole systems (split out for the OH/CH kiosk lane)
+  'Helix': {
+    // TODO(graphics): replace with dedicated Helix logo + intro video
+    // (extracted from ICOTA 2026 MaIn.pptx, slide 2 → media1.mp4 transcoded)
+    video: '/videos/helix.mp4?v=20240517',
+    logo: '/images/focus.png',
+  },
+  'Rocker': {
+    // TODO(graphics): Rocker logo, intro video, and 3D model are all pending.
+    // Placeholder reuses the Focus assets so the tile renders.
+    video: '/videos/helix.mp4?v=20240517',
+    logo: '/images/focus.png',
+  },
 };
 
 export const deviceSpecs: Record<string, DeviceSpec> = {
@@ -58,6 +75,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
     },
     system: 'Focus',
     subsystem: 'Focus-OH',
+    lane: 'oh',
   },
   '/models/cp8.glb': {
     specs: {
@@ -80,6 +98,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
     },
     system: 'Focus',
     subsystem: 'Focus - OH',
+    lane: 'oh',
   },
   '/models/ttbs75.glb': {
     specs: {
@@ -101,6 +120,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
     },
     system: 'Wireline Express',
     subsystem: 'Wireline Express',
+    lane: 'oh',
   },
   '/models/thor.glb': {
     specs: {
@@ -123,6 +143,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
     },
     system: 'Thor',
     subsystem: 'Thor',
+    lane: 'oh',
   },
   '/models/helix.glb': {
     specs: {
@@ -142,8 +163,12 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       model: '/models/helix.glb',
       image: '/images/helix.png',
     },
-    system: 'Focus',
-    subsystem: 'Focus - CH',
+    // Promoted to its own top-level system so the cased-hole kiosk lane can
+    // surface it as a discrete tile (with its own video + sub-buttons),
+    // separate from the Focus open-hole centralisers.
+    system: 'Helix',
+    subsystem: 'Helix CX-9',
+    lane: 'ch',
   },
   '/models/pathfinderht.glb': {
     specs: {
@@ -164,5 +189,23 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
     },
     system: 'PathFinder',
     subsystem: 'Pathfinder HT',
-  }
+    lane: 'oh',
+  },
+  // Stub for ROCKER — sister cased-hole tool to Helix for smaller casing.
+  // No 3D model yet; the entry exists so the tile renders in the CH lane and
+  // we can wire up real specs/media as graphics delivers them.
+  '/models/rocker.glb': {
+    specs: {
+      Name: 'Rocker Centraliser',
+      Status: 'Coming soon',
+      Notes: 'Sister tool to Helix for small casing sizes (3.3"–6.3" range).',
+    },
+    media: {
+      model: '/models/rocker.glb', // placeholder — file not yet present
+      image: '/images/focus.png',  // placeholder
+    },
+    system: 'Rocker',
+    subsystem: 'Rocker',
+    lane: 'ch',
+  },
 };

@@ -148,3 +148,7 @@ build.log
 # Deployment artifacts
 .deployment
 deploy.log
+
+# ICOTA presentation sources (kept locally only)
+ICOTA*.pptx
+.claude/

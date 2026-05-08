@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { APP_CONSTANTS, VIDEO_SOURCES } from '@/constants/app';
+import { APP_CONSTANTS, KIOSK_LANE_PATH, VIDEO_SOURCES } from '@/constants/app';
 
 function KioskContent() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
@@ -68,7 +68,8 @@ function KioskContent() {
   }, []);
 
   const handleExplore = () => {
-    router.push('/intranet/kiosk/productlines');
+    // Splash → OH/CH chooser → productlines (filtered by lane).
+    router.push(KIOSK_LANE_PATH);
   };
 
   return (

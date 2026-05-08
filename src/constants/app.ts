@@ -1,5 +1,7 @@
 // Kiosk routes
 export const KIOSK_HOME_PATH = '/intranet/kiosk';
+export const KIOSK_LANE_PATH = '/intranet/kiosk/lane';
+export const KIOSK_PRODUCTLINES_PATH = '/intranet/kiosk/productlines';
 
 // App-wide constants
 export const APP_CONSTANTS = {
