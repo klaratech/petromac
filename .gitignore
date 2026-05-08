@@ -152,3 +152,6 @@ deploy.log
 # ICOTA presentation sources (kept locally only)
 ICOTA*.pptx
 .claude/
+
+# Office lockfiles
+~$*

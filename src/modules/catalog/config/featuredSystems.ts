@@ -21,9 +21,11 @@ export const FEATURED_SYSTEMS: FeaturedSystem[] = [
   { name: 'Focus', lane: 'oh' },
   { name: 'Thor', lane: 'oh' },
 
-  // Cased hole
-  { name: 'Helix', lane: 'ch' },
-  { name: 'Rocker', lane: 'ch' },
+  // Cased hole — single Focus Centralizers tile (Helix + Rocker live inside
+  // its experience, with Rocker as a corner badge). "Other CH" is a slot for
+  // future cased-hole product families.
+  { name: 'Focus Centralizers', lane: 'ch' },
+  { name: 'Other CH', lane: 'ch' },
 ];
 
 /** Back-compat alias — string[] of system names, no lane. */

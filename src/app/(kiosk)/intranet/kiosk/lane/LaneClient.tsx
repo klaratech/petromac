@@ -25,22 +25,23 @@ const LANES: LaneCard[] = [
   {
     lane: 'oh',
     title: 'Open Hole',
-    subtitle: 'Conveyance, centralisation, formation testing',
+    subtitle: '',
     bullets: [
-      'PathFinder universal hole finder',
-      'Focus open-hole centralisers',
-      'Wireline Express formation testing',
-      'Thor controlled-impulse jar',
+      'Wireline Express',
+      'WL Express Formation Testing',
+      'Pathfinder',
+      'Stick-slip Reduction',
+      'Thor WL Jar',
     ],
     bg: '/images/conveyance.jpg',
   },
   {
     lane: 'ch',
     title: 'Cased Hole',
-    subtitle: 'Centralisation across the casing range',
+    subtitle: '',
     bullets: [
-      'HELIX — large casing sizes',
-      'ROCKER — small casing sizes',
+      'Focus Centralizers',
+      'Other',
     ],
     bg: '/images/sticking.jpg',
   },
@@ -96,15 +97,9 @@ export default function LaneClient() {
 
       {/* Header */}
       <div className="relative z-10 w-full text-center mb-10 px-8">
-        <p className="text-base uppercase tracking-[0.4em] text-white/60 mb-3">
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
           Petromac
-        </p>
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-3">
-          Choose your application
         </h1>
-        <p className="text-lg md:text-xl text-white/70">
-          Tap a lane to see the relevant product line.
-        </p>
       </div>
 
       {/* Lane cards */}
@@ -125,12 +120,14 @@ export default function LaneClient() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
             <div className="relative h-full flex flex-col justify-end p-10">
-              <h2 className="text-5xl md:text-6xl font-extrabold mb-3 drop-shadow-lg">
+              <h2 className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg">
                 {card.title}
               </h2>
-              <p className="text-lg md:text-xl text-white/80 mb-6">
-                {card.subtitle}
-              </p>
+              {card.subtitle && (
+                <p className="text-lg md:text-xl text-white/80 mb-6">
+                  {card.subtitle}
+                </p>
+              )}
               <ul className="space-y-1.5 text-base md:text-lg text-white/90">
                 {card.bullets.map((b) => (
                   <li key={b} className="flex items-start gap-2">

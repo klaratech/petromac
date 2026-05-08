@@ -38,16 +38,20 @@ export const systemMedia: Record<string, SystemMedia> = {
     video: '/videos/pf.mp4?v=20240519',
     logo: '/images/pathfinder.png',
   },
-  // Cased-hole systems (split out for the OH/CH kiosk lane)
-  'Helix': {
-    // TODO(graphics): replace with dedicated Helix logo + intro video
-    // (extracted from ICOTA 2026 MaIn.pptx, slide 2 → media1.mp4 transcoded)
+  // Cased-hole experience. The CH lane shows a single "Focus Centralizers"
+  // tile which opens the Helix-centric experience (looping video + HUD
+  // overlay + Rocker corner badge). Helix and Rocker are NOT separate tiles.
+  'Focus Centralizers': {
+    // TODO(rajesh): replace with the transcoded slide-2 Helix intro video
+    //   from ICOTA 2026 MaIn.pptx. Drop at /public/videos/kiosk/helix-intro.mp4
+    //   then update this path. For now we reuse the existing helix.mp4.
     video: '/videos/helix.mp4?v=20240517',
+    // TODO(graphics): dedicated Focus Centralizers brandmark.
     logo: '/images/focus.png',
   },
-  'Rocker': {
-    // TODO(graphics): Rocker logo, intro video, and 3D model are all pending.
-    // Placeholder reuses the Focus assets so the tile renders.
+  // Other cased-hole product family — placeholder slot. The chooser shows it
+  // as a tile but tapping opens a "Coming soon" screen until populated.
+  'Other CH': {
     video: '/videos/helix.mp4?v=20240517',
     logo: '/images/focus.png',
   },
@@ -163,10 +167,11 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       model: '/models/helix.glb',
       image: '/images/helix.png',
     },
-    // Promoted to its own top-level system so the cased-hole kiosk lane can
-    // surface it as a discrete tile (with its own video + sub-buttons),
-    // separate from the Focus open-hole centralisers.
-    system: 'Helix',
+    // Helix lives inside the "Focus Centralizers" CH experience — it's the
+    // primary tool, with the Helix intro video looping in the background.
+    // Rocker is the secondary tool accessed via a corner badge inside the
+    // same experience.
+    system: 'Focus Centralizers',
     subsystem: 'Helix CX-9',
     lane: 'ch',
   },

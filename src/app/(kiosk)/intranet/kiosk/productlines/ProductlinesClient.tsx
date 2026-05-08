@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SystemModal from '@/components/kiosk/SystemModal';
+import FocusCentralizersExperience from '@/components/kiosk/FocusCentralizersExperience';
 import {
   FEATURED_SYSTEMS,
   featuredSystems,
@@ -139,15 +140,54 @@ export default function ProductlinesClient() {
           )}
         </div>
 
-        {selectedSystem && (
-          <SystemModal
-            system={selectedSystem}
+        {/* CH lane "Focus Centralizers" tile gets the dedicated Helix-centric
+            experience (looping video + HUD overlay + Rocker corner badge). */}
+        {selectedSystem === 'Focus Centralizers' && (
+          <FocusCentralizersExperience
             onClose={() => setSelectedSystem(null)}
-            onVideoPlay={() => setVideoPlaying(true)}
-            onVideoPause={() => setVideoPlaying(false)}
           />
         )}
+
+        {/* "Other CH" — placeholder slot for future cased-hole product
+            families. Shows a lightweight "Coming soon" panel. */}
+        {selectedSystem === 'Other CH' && (
+          <OtherComingSoon onClose={() => setSelectedSystem(null)} />
+        )}
+
+        {/* Everything else (the OH lane systems) keeps the existing modal. */}
+        {selectedSystem &&
+          selectedSystem !== 'Focus Centralizers' &&
+          selectedSystem !== 'Other CH' && (
+            <SystemModal
+              system={selectedSystem}
+              onClose={() => setSelectedSystem(null)}
+              onVideoPlay={() => setVideoPlaying(true)}
+              onVideoPause={() => setVideoPlaying(false)}
+            />
+          )}
       </div>
     </>
+  );
+}
+
+function OtherComingSoon({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
+      <div className="text-center text-white max-w-xl px-8">
+        <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-4">
+          Cased Hole · Other
+        </p>
+        <h2 className="text-5xl font-extrabold mb-6">Coming soon</h2>
+        <p className="text-lg text-white/70 mb-10">
+          Additional cased-hole product families will live here.
+        </p>
+        <button
+          onClick={onClose}
+          className="px-8 py-3 rounded-full bg-white text-black font-semibold tracking-wide"
+        >
+          Back
+        </button>
+      </div>
+    </div>
   );
 }
