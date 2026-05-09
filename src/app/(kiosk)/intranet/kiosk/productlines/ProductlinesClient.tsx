@@ -22,6 +22,20 @@ const LANE_LABEL: Record<Lane, string> = {
   ch: 'Cased Hole',
 };
 
+/**
+ * Per-lane background video sequence. Plays muted on loop behind the system
+ * tiles. `dice.mp4` acts as a short interlude between product clips.
+ */
+const LANE_VIDEOS: Record<Lane, string[]> = {
+  oh: [
+    '/videos/pf.mp4',
+    '/videos/dice.mp4',
+    '/videos/WirelineExpress.mp4',
+    '/videos/dice.mp4',
+  ],
+  ch: ['/videos/helix.mp4', '/videos/dice.mp4'],
+};
+
 const IDLE_TIMEOUT_DEFAULT = 30000;        // 30 seconds
 const IDLE_TIMEOUT_MODAL = 5 * 60 * 1000;  // 5 minutes
 
@@ -31,12 +45,15 @@ export default function ProductlinesClient() {
   const [fading, setFading] = useState(false);
   const [selectedSystem, setSelectedSystem] = useState<string | null>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const [bgVideoIdx, setBgVideoIdx] = useState(0);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Lane comes from ?lane=oh|ch (set by the chooser screen). When missing,
   // we show every system (back-compat for direct links to /productlines).
   const laneParam = searchParams.get('lane');
   const lane: Lane | null = isLane(laneParam) ? laneParam : null;
+
+  const bgVideos = lane ? LANE_VIDEOS[lane] : [];
 
   const systemList = useMemo<[string, string][]>(() => {
     const names = lane
@@ -85,17 +102,37 @@ export default function ProductlinesClient() {
       </Head>
 
       <div
-        className={`relative w-full h-screen bg-blue-800 flex flex-col items-center justify-center overflow-hidden transition-opacity duration-1000 ${
+        className={`relative w-full h-screen bg-black flex flex-col items-center justify-center overflow-hidden transition-opacity duration-1000 ${
           fading ? 'opacity-0' : 'opacity-100'
         }`}
       >
-        <Image
-          src="/images/tv-bg.png"
-          alt="Background"
-          fill
-          priority
-          className="absolute inset-0 object-cover z-0"
-        />
+        {/* Background: lane-specific video loop (muted, plays through a
+            sequence and cycles). Falls back to tv-bg.png when no lane is set. */}
+        {bgVideos.length > 0 ? (
+          <>
+            <video
+              key={bgVideos[bgVideoIdx]}
+              src={bgVideos[bgVideoIdx]}
+              autoPlay
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover z-0"
+              onEnded={() =>
+                setBgVideoIdx((i) => (i + 1) % bgVideos.length)
+              }
+            />
+            {/* Dim overlay so tile labels stay readable over bright frames */}
+            <div className="absolute inset-0 bg-black/45 z-0 pointer-events-none" />
+          </>
+        ) : (
+          <Image
+            src="/images/tv-bg.png"
+            alt="Background"
+            fill
+            priority
+            className="absolute inset-0 object-cover z-0"
+          />
+        )}
 
         {/* Lane breadcrumb (top-left) — only when a lane is active */}
         {lane && (

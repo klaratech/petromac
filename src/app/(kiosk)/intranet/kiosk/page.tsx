@@ -89,7 +89,7 @@ function KioskContent() {
 
             {showButton && (
               <button
-                onClick={() => setMode('video')}
+                onClick={handleExplore}
                 className="mt-12 px-8 py-3 text-lg font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-1000"
               >
                 Touch to Begin
