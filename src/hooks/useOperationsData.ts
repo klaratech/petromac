@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { JobRecord } from '@/types/JobRecord';
-import { buildClientApiUrl } from '@/lib/api';
 
 export type Operation = Record<string, string | number>;
 
@@ -18,7 +17,14 @@ export default function useOperationsData<T = JobRecord>(options: UseOperationsD
   const load = useCallback(async () => {
     try {
       setError(null);
-      const res = await fetch(buildClientApiUrl('/api/data/operations'));
+      // Fetch the static JSON published by the data pipeline directly. We
+      // previously routed through /api/data/operations on the FastAPI
+      // backend, but that's just a passthrough to this file — and it
+      // doesn't exist on Vercel-only deploys, which is why Track Record
+      // was hanging on "Loading…".
+      const res = await fetch('/data/operations_data.json', {
+        cache: 'force-cache',
+      });
       if (!res.ok) {
         throw new Error(`Failed to load operations data: ${res.status}`);
       }

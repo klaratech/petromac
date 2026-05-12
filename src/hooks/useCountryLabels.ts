@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchJsonWithValidation, validateCountryLabels } from '@/lib/validation';
-import { buildClientApiUrl } from '@/lib/api';
 
 interface UseCountryLabelsResult {
   countryLabels: Record<string, string>;
@@ -19,8 +18,11 @@ export function useCountryLabels(): UseCountryLabelsResult {
       setIsLoading(true);
       setError(null);
       
+      // Static JSON from the data pipeline. The backend's
+      // /api/data/country-labels route is just a passthrough — fetching
+      // the static file directly works on Vercel without a backend.
       const labels = await fetchJsonWithValidation(
-        buildClientApiUrl('/api/data/country-labels'),
+        '/data/country_labels.json',
         validateCountryLabels
       );
       
