@@ -31,11 +31,11 @@ const DEVICES: Device[] = [
       { title: "Sensor Transportation Apparatus – \"Lubrication Delivery system\"", number: "US11,111,774", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11111774B2.pdf" },
       { title: "Orientation apparatus and hole finder device for a wireline logging tool string", number: "US11,371,306", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11371306B2.pdf" },
       { title: "Sensor transportation apparatus for a wireline logging toolstring", number: "US11,873,692", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11873692B2.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "UAE-7283", jurisdiction: "United Arab Emirates", link: "https://www.petromac.co.nz/pdf/UAE-7283.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "UAE-7283", jurisdiction: "UAE", link: "https://www.petromac.co.nz/pdf/UAE-7283.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-169945", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-169945%20B.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-195422-A", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-195422-A.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP2920405", jurisdiction: "France, Netherlands, Norway, United Kingdom", link: "https://www.petromac.co.nz/pdf/EP2920405B1.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP3726001", jurisdiction: "Denmark, Italy, Norway, United Kingdom", link: "https://www.petromac.co.nz/pdf/EP3726001B1.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP2920405", jurisdiction: "France, Netherlands, Norway, UK", link: "https://www.petromac.co.nz/pdf/EP2920405B1.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP3726001", jurisdiction: "Denmark, Italy, Norway, UK", link: "https://www.petromac.co.nz/pdf/EP3726001B1.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "Eurasia 031097", jurisdiction: "Russia, Armenia, Azerbaijan, Belarus, Kazakhstan, Kyrgyzstan, Tajikistan, Turkmenistan", link: "https://www.petromac.co.nz/pdf/EA031097B1.pdf" },
       { title: "Un dispositivo guía para uso en equipos de sensores de guía en Aplicaciones de registro por cable de perforación", number: "NC2020/0008570", jurisdiction: "Colombia", link: "https://www.petromac.co.nz/pdf/NC202_0008570.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "ZL201380059792.3", jurisdiction: "China", link: "https://www.petromac.co.nz/pdf/CN104919132B.pdf" },
@@ -52,7 +52,7 @@ const DEVICES: Device[] = [
       { title: "Guide Device", number: "US11,371,296", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11371296B2.pdf" },
       { title: "A device for centering a sensor assembly in a wellbore", number: "US12,116,850", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US12116850B1.pdf" },
       { title: "A Guide Device", number: "MY-203027-A", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-203027-A.pdf" },
-      { title: "A Guide Device", number: "GB2583249", jurisdiction: "United Kingdom", link: "https://www.petromac.co.nz/pdf/GB2583249B.pdf" },
+      { title: "A Guide Device", number: "GB2583249", jurisdiction: "UK", link: "https://www.petromac.co.nz/pdf/GB2583249B.pdf" },
       { title: "Guide Device", number: "CA3085434", jurisdiction: "Canada", link: "https://www.petromac.co.nz/pdf/CA3085434 Granted specification.pdf" },
       { title: "Guide Device", number: "AU2019205752", jurisdiction: "Australia", link: "https://www.petromac.co.nz/pdf/AU2019205752B2.pdf" },
     ],
@@ -77,7 +77,7 @@ const DEVICES: Device[] = [
       { title: "Device for centering sensor assembly in a bore", number: "US11,913,291", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11913291B2.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "US12,281,525", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US12281525.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "SA 16064", jurisdiction: "Saudi Arabia", link: "https://www.petromac.co.nz/pdf/SA16064.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "GB2611986", jurisdiction: "United Kingdom", link: "https://www.petromac.co.nz/pdf/GB2611986.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "GB2611986", jurisdiction: "UK", link: "https://www.petromac.co.nz/pdf/GB2611986.pdf" },
     ],
   },
   {
@@ -110,7 +110,7 @@ const DEVICES: Device[] = [
   },
   {
     family: "Focus",
-    device: "Co-pivot Centraliser (PC8)",
+    device: "Co-pivot Centraliser (CP8)",
     summary:
       "Co-pivot mechanism for centralisation in tight bores where pivot-on-same-side geometry constrains travel.",
     patents: [
