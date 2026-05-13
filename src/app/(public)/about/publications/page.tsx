@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Publications",
@@ -49,8 +50,16 @@ export default function PublicationsPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="mb-2">
+          <Link
+            href="/about/patents"
+            className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+          >
+            See also: Patents →
+          </Link>
+        </div>
         <h1 className="text-4xl font-bold mb-8 text-gray-900">Publications</h1>
-        
+
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
