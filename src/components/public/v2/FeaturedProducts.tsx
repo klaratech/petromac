@@ -5,6 +5,9 @@ interface Product {
   name: string;
   description: string;
   image: string | null;
+  /** Optional looping video shown in the card thumbnail instead of the
+   *  static image. Image (when set) is used as the video poster. */
+  video?: string;
   badge?: string;
 }
 
@@ -14,16 +17,19 @@ const products: Product[] = [
     description: "Anti-differential-sticking system for wireline logging in overbalanced wells.",
     image: "/images/thor.png",
     badge: "New",
+    // No video yet — placeholder static image until graphics delivers.
   },
   {
     name: "Pathfinder",
     description: "Conveyance system for reliable tool delivery in high-deviation wells.",
     image: "/images/pathfinder.png",
+    video: "/videos/pf.mp4",
   },
   {
     name: "Helix",
     description: "Centralizer for consistent standoff in demanding borehole conditions.",
     image: null,
+    video: "/videos/helix.mp4",
   },
   {
     name: "Focus",
@@ -51,7 +57,18 @@ export default function FeaturedProducts() {
               className="group block rounded-xl border-2 border-slate-200 bg-white overflow-hidden hover:border-brand/40 hover:shadow-card transition-all"
             >
               <div className="relative h-48 bg-slate-100 flex items-center justify-center overflow-hidden">
-                {p.image ? (
+                {p.video ? (
+                  <video
+                    src={p.video}
+                    poster={p.image ?? undefined}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : p.image ? (
                   <Image
                     src={p.image}
                     alt={p.name}
