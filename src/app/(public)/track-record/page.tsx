@@ -119,18 +119,18 @@ export default function TrackRecordPage() {
       </section>
 
       {/* Map — full bleed on large screens with a deep brand frame */}
-      <section className="bg-slate-900 py-6 md:py-8">
+      <section className="bg-slate-900 pt-6 md:pt-8 pb-10 md:pb-14">
         <div className="px-3 md:px-6 lg:px-10">
           <div className="relative w-full rounded-2xl overflow-hidden bg-white shadow-2xl ring-1 ring-slate-200">
             {error ? (
-              <div className="h-[60vh] flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <div className="h-[70vh] flex flex-col items-center justify-center gap-3 p-6 text-center">
                 <h3 className="text-lg font-semibold text-red-600">
                   Couldn&apos;t load track record
                 </h3>
                 <p className="text-slate-600 max-w-md">{error}</p>
               </div>
             ) : !data ? (
-              <div className="h-[70vh] flex items-center justify-center text-slate-500" role="status">
+              <div className="h-[80vh] flex items-center justify-center text-slate-500" role="status">
                 Loading map data…
               </div>
             ) : (
@@ -138,19 +138,11 @@ export default function TrackRecordPage() {
                 data={data}
                 hideInlineStats
                 showSuccessStoriesLink={false}
-                className="relative w-full h-[70vh] md:h-[78vh] overflow-hidden bg-slate-50"
+                className="relative w-full h-[80vh] md:h-[88vh] overflow-hidden bg-slate-50"
               />
             )}
           </div>
         </div>
-      </section>
-
-      {/* Footnote */}
-      <section className="container mx-auto px-4 py-10 text-center">
-        <p className="text-sm text-slate-500">
-          Tap a country to see the year-by-year breakdown. Filter by system in
-          the panel at the bottom of the map.
-        </p>
       </section>
     </main>
   );
