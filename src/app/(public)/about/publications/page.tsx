@@ -49,53 +49,60 @@ export default function PublicationsPage() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         {/* Header: title left, cross-link right */}
         <div className="flex items-end justify-between flex-wrap gap-4 mb-4">
-          <h1 className="text-4xl font-bold text-gray-900">Publications</h1>
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">
+              Research
+            </p>
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+              Publications
+            </h1>
+          </div>
           <Link
             href="/about/patents"
-            className="text-sm text-blue-600 hover:text-blue-800 hover:underline whitespace-nowrap"
+            className="text-sm text-brand hover:text-brand/80 hover:underline whitespace-nowrap font-medium"
           >
             See also: Patents →
           </Link>
         </div>
-        <p className="text-gray-600 leading-relaxed mb-8">
+        <p className="text-base md:text-lg text-slate-600 leading-relaxed mb-8 max-w-3xl">
           Peer-reviewed papers and conference presentations covering
           Petromac&apos;s wireline conveyance, centralisation, and
           formation-testing technologies. Click any reference to open the
           published paper.
         </p>
 
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white rounded-2xl ring-1 ring-slate-200 shadow-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-slate-200">
+              <thead className="bg-slate-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/6">
                     Organization
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/2">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/2">
                     Reference
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-1/3">
                     Event
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-slate-200">
                 {publications.map((publication, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                  <tr key={index} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4 text-sm text-slate-900">
                       {publication.organization}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
+                    <td className="px-6 py-4 text-sm text-slate-700">
                       {publication.url ? (
-                        <a 
+                        <a
                           href={publication.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 hover:underline"
+                          className="text-brand hover:text-brand/80 hover:underline"
                         >
                           {publication.reference}
                         </a>
@@ -103,7 +110,7 @@ export default function PublicationsPage() {
                         publication.reference
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
+                    <td className="px-6 py-4 text-sm text-slate-700">
                       {publication.event}
                     </td>
                   </tr>
