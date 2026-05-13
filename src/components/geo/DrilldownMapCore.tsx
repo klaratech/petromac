@@ -173,6 +173,19 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
     }
   }, []);
 
+  // Document-level Escape handler — the map container's onKeyDown only
+  // fires when it has focus, which is lost the moment the user clicks a
+  // country (focus often moves into the drawer or to <body>). Listen
+  // globally while a country is selected so Esc reliably dismisses it.
+  useEffect(() => {
+    if (!tappedCountry) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setTappedCountry(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [tappedCountry]);
+
   const isLoading = isLoadingMap || isLoadingLabels;
   const error = mapError || labelsError;
 
@@ -365,8 +378,9 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
         </div>
       )}
 
-      {/* Floating hover tooltip — desktop pointer affordance */}
-      {hover && (
+      {/* Floating hover tooltip — desktop pointer affordance. Suppressed
+          while a country is tapped so it doesn't overlap the drawer. */}
+      {hover && !tappedCountry && (
         <div
           className="fixed z-[60] pointer-events-none px-3 py-1.5 rounded-md bg-slate-900/95 text-white text-xs shadow-lg whitespace-nowrap"
           style={{
