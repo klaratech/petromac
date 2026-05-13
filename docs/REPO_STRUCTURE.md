@@ -245,9 +245,8 @@ Components in `src/components/shared/` are used by both public and intranet sect
 ### Map Components
 Map components follow a core + wrapper pattern:
 - **MapRenderer.tsx**: D3.js SVG rendering logic
-- **DrilldownMapCore.tsx**: Core map state and interactions
-- **DrilldownMapPublic.tsx**: Public-facing wrapper for `/track-record`
-- **DrilldownMapKiosk.tsx**: Kiosk wrapper with additional features
+- **DrilldownMapCore.tsx**: Core map state and interactions. The public `/track-record` page imports it directly via `next/dynamic`.
+- **DrilldownMapKiosk.tsx**: Kiosk wrapper used by the operations dashboard (adds fullscreen chrome and kiosk-only controls).
 
 ### Success Stories Data Flow
 1. **Source**: `public/flipbooks/success-stories/tags.csv` (single source of truth)

@@ -5,6 +5,33 @@ The kiosk Service Worker is designed for trade‑show use where connectivity can
 We pre-cache the kiosk shell and small data files, and runtime‑cache large media
 (videos/models/flipbooks) with limits and expiry to keep storage bounded and reliable.
 
+## Routes & flow
+
+```
+/intranet/kiosk                            splash (typed text → Touch to Begin)
+   └─► /intranet/kiosk/lane                Open Hole / Cased Hole chooser
+        └─► /intranet/kiosk/productlines?lane=oh|ch
+             ├─► OH lane tiles: Wireline Express, PathFinder, Focus, Thor
+             │     → SystemModal (video + Track Record + More Info)
+             └─► CH lane tiles: Focus Centralizers, Other CH
+                   → Focus Centralizers: dedicated experience
+                       Helix video on loop + HUD (Track Record /
+                       Success Stories / Mechanism / Logs) + Rocker
+                       corner badge → RockerExperience.
+                   → Other CH: "Coming soon" placeholder.
+
+/intranet/kiosk/dashboard                  operations map (DrilldownMapKiosk)
+/intranet/kiosk/successstories             flipbook with filters
+/intranet/kiosk/3d-viewer                  3D model viewer
+/intranet/kiosk/datacheck                  data validation tools
+```
+
+The OH/CH split was introduced when the product portfolio grew past
+what a single carousel could comfortably show. Splash → chooser →
+filtered productlines is now the canonical entry path; direct deep
+links to `/intranet/kiosk/productlines` without a `lane` query still
+work and fall back to showing every system.
+
 ## Service Worker Cache Versioning
 The kiosk service worker lives at `public/kiosk-sw.js` and uses a version string:
 

@@ -16,11 +16,12 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, intran
 - **Route groups**: `src/app/(public)/` for public site, `src/app/(kiosk)/` for kiosk shell
 - **Intranet**: `/intranet/*` is the staff area; Microsoft sign-in can be enabled for staff identity
 - **Shared components**: `src/components/shared/` (header, footer, flipbook)
-- **Map components**: `src/components/geo/` (DrilldownMapCore + Public/Kiosk wrappers)
+- **Map components**: `src/components/geo/` — `DrilldownMapCore` is the shared map; the public `/track-record` page imports it directly via `next/dynamic`, the kiosk dashboard uses `DrilldownMapKiosk` as a wrapper
 - **Feature modules**: `src/features/` (success-stories filters/services, kiosk shell)
 - **Shared UI primitives**: `src/shared/ui/`
-- **API routes**: `src/app/api/` (email, PDF generation)
-- **Styling**: Tailwind CSS 4 with brand tokens (`brand`, `brandblack`, `brandgray`), fonts: Inter (body), IBM Plex Sans (headings)
+- **API routes**: `src/app/api/` (email, PDF generation). Operations and country-label data are read from static JSON in `/public/data/` directly, not via `/api/data/*` — the FastAPI backend is Hetzner-only and Vercel needs to keep working without it
+- **Kiosk**: OH/CH lane split — `/intranet/kiosk` (splash) → `/intranet/kiosk/lane` (chooser) → `/intranet/kiosk/productlines?lane=oh|ch` (filtered tiles). The CH lane's `Focus Centralizers` tile opens a dedicated `FocusCentralizersExperience` (Helix video loop + HUD overlay + Rocker corner badge); other tiles open `SystemModal` as before.
+- **Styling**: Tailwind CSS 4. Brand tokens (`brand`, `brandblack`, `brandgray`) still exist in `tailwind.config.ts` but the homepage v2 components have migrated to the `slate-*` scale for body text and dark headings — `brand` (#1E4A9A) remains the single brand color across the homepage and Track Record. Legacy `brandblack`/`brandgray` are still in use on error pages, the team page, and intranet surfaces. Fonts: Inter (body), IBM Plex Sans (headings).
 
 ## Data Organization
 

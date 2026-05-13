@@ -52,10 +52,15 @@ To update filters:
 - `src/components/public/` → Public site components
 - `src/components/shared/pdf/Flipbook.tsx` → Shared flipbook component
 - `src/components/geo/` → Shared map components
-  - `DrilldownMapCore.tsx` → Core map logic (reusable)
-  - `DrilldownMapPublic.tsx` → Public wrapper for `/track-record`
-  - `DrilldownMapKiosk.tsx` → Kiosk wrapper for dashboard
-- `src/lib/map/data.ts` → Frontend map data fetchers for backend `/api/data/*`
+  - `DrilldownMapCore.tsx` → Core map logic (reusable). The public
+    `/track-record` page imports it directly via `next/dynamic`; the
+    kiosk dashboard uses `DrilldownMapKiosk` as a wrapper for fullscreen
+    chrome and additional kiosk-only controls.
+  - `DrilldownMapKiosk.tsx` → Kiosk wrapper for the operations dashboard.
+- `src/lib/map/data.ts` → Static data fetchers (`/data/operations_data.json`,
+  `/data/country_labels.json`). Used to route through the FastAPI
+  backend at `/api/data/*`; switched to fetching the published JSON
+  directly so the frontend works on Vercel without the backend.
 - `src/features/success-stories/` → Success Stories feature (filters, parsing, services)
 - `src/shared/ui/` → Shared UI primitives
 

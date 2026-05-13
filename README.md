@@ -32,7 +32,7 @@ A Next.js-based application featuring:
 
 ### Shared Components
 - **Header/Footer**: Single implementations in `src/components/shared/` used across public and intranet
-- **Map**: Unified map implementation in `src/components/geo/` with variants for public and kiosk use
+- **Map**: `DrilldownMapCore` in `src/components/geo/` — imported directly on `/track-record` and via `DrilldownMapKiosk` on the kiosk dashboard
 - **Flipbook**: Reusable PDF flipbook component in `src/components/shared/pdf/`
 
 ## Application Structure

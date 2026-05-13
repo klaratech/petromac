@@ -28,12 +28,9 @@ The Petromac platform combines a **public-facing website**, an **intranet portal
 - All kiosk routes live under `/intranet/kiosk/*` but are isolated by the kiosk route group shell
 
 ### Shared Map Components
-- **DrilldownMapCore** (`src/components/geo/DrilldownMapCore.tsx`) - Reusable map logic for both public and kiosk
-- **DrilldownMapPublic** (`src/components/geo/DrilldownMapPublic.tsx`) - Public wrapper for `/track-record`
-- **DrilldownMapKiosk** (`src/components/geo/DrilldownMapKiosk.tsx`) - Kiosk wrapper for dashboard
-- **Map Data Utilities** (`src/lib/map/data.ts`) - Typed fetchers for backend API data
-  - `fetchOperationsData()` - Fetches operations data
-  - Handles data loading with proper error handling and caching hints
+- **DrilldownMapCore** (`src/components/geo/DrilldownMapCore.tsx`) - Reusable map logic for both public and kiosk surfaces. The public `/track-record` page now imports it directly via `next/dynamic` (lazy-loaded), and computes its own hero stats from the same dataset.
+- **DrilldownMapKiosk** (`src/components/geo/DrilldownMapKiosk.tsx`) - Kiosk wrapper for the operations dashboard.
+- **Map Data Utilities** (`src/lib/map/data.ts`) - Typed fetchers that read the published JSON directly from `/data/operations_data.json` and `/data/country_labels.json`. Previously routed through `/api/data/*` on the FastAPI backend; the backend handlers were pure passthroughs to these files, so going direct removes the round-trip and keeps `/track-record` working on the Vercel-only deploy where the backend isn't reachable.
 
 ### Flipbook Module
 - Replaces the old PDF viewer/builder modals

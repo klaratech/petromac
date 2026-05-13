@@ -2,16 +2,21 @@
 
 ## Phase 1 — Finalize Design & Assets
 
-- [ ] Finalize home page design
+- [x] Finalize home page design (May 2026 — hero accent, eyebrows, unified CTAs, brand-tinted Athena band, reach sentence, sentence case)
+- [x] Re-encode WirelineExpress.mp4 (50 MB → 3.7 MB, in-place transcode May 2026)
+- [x] Transcode DifferentialSticking source → differential-sticking.mp4 (257 MB → 3.6 MB)
 - [ ] Update asset manifest with final design requirements
 - [ ] Collect all optimized asset files from designers (images, videos, OG image)
   - [ ] Add `petromac-og.png` (1200×630) for Open Graph share image
   - [ ] Add email-optimized PDFs (`email.pdf`, <3 MB each) for catalog and success stories
-  - [ ] Re-encode videos with H.264 VBR (309 MB total, 50-70% reduction possible)
+  - [ ] Re-encode remaining videos with H.264 VBR — `intro-loop2.mp4` (56 MB), `helix.mp4` (25 MB), `pf.mp4` (24 MB). `cp12-placeholder.mp4` + `cp8-placeholder.mp4` (~156 MB) are unused and can be deleted outright.
   - [ ] Apply Draco compression to GLB models (213 MB total, 30-50% reduction)
   - [ ] Compress flipbook page JPGs and consider WebP variants (58 MB total)
   - [ ] Convert large PNGs (tv-bg.png, thor.png) to WebP
   - [ ] Optimize favicon (currently 58 KB, target < 5 KB)
+  - [ ] Helix product image (currently uses focus.png placeholder on the homepage FeaturedProducts card and as the kiosk "Focus Centralizers" tile logo)
+  - [ ] Thor product video (the FeaturedProducts Thor card is commented out until graphics + messaging are finalised)
+  - [ ] Rocker product image + GLB model (kiosk CH lane Rocker experience uses placeholder hero image and has no 3D model)
 - [ ] Place delivered files in correct directories
 - [ ] Wire up email-optimized PDFs in send-pdf API route (use `email.pdf` instead of `source.pdf`)
 
@@ -30,6 +35,14 @@
 
 ## Completed
 
+- [x] Kiosk OH / CH split workflow — lane chooser, FocusCentralizersExperience (Helix video loop + HUD), Rocker corner badge, MechanismScreen + LogsScreen, per-lane background video sequence on productlines
+- [x] Track Record page redesign — hero stats row, full-bleed map, brand-color intensity choropleth, legend, hover tooltips, right-side YearlyStats drawer (Esc-dismiss), Top-5 country chart, refined filter pills
+- [x] Patents page rebuild — collapsible summary table, regional jurisdiction grouping, keyboard + ARIA-accessible rows
+- [x] Cross-links between `/about/patents` and `/about/publications`
+- [x] Homepage polish — unified gray scale, section eyebrows, primary/secondary CTA system, brand-tinted Athena platform band, sentence case across all headings, placeholder logo strip replaced with reach sentence
+- [x] Frontend `/api/data/*` routing → static `/data/*.json` (Track Record works on Vercel without the FastAPI backend)
+- [x] GitHub Actions Node 20 deprecation bump (checkout v6, setup-node v6, setup-python v6, upload-artifact v7, docker/setup-buildx v4, docker/login v4, docker/build-push v7); `fail-fast: false` on deploy matrix
+- [x] ESLint: ignore `.claude/**` and nested `**/.next/**` so `pnpm lint` finishes on workspaces with worktrees
 - [x] Consolidate docs: root README + move FLIPBOOKS/KIOSK into `docs/`
 - [x] Upgrade Next.js 15.5.9 → 15.5.12 (fix audit vulnerabilities)
 - [x] Fix origin validation: `startsWith()` → URL hostname parsing
