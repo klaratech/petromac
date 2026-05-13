@@ -50,15 +50,22 @@ export default function PublicationsPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="mb-2">
+        {/* Header: title left, cross-link right */}
+        <div className="flex items-end justify-between flex-wrap gap-4 mb-4">
+          <h1 className="text-4xl font-bold text-gray-900">Publications</h1>
           <Link
             href="/about/patents"
-            className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+            className="text-sm text-blue-600 hover:text-blue-800 hover:underline whitespace-nowrap"
           >
             See also: Patents →
           </Link>
         </div>
-        <h1 className="text-4xl font-bold mb-8 text-gray-900">Publications</h1>
+        <p className="text-gray-600 leading-relaxed mb-8">
+          Peer-reviewed papers and conference presentations covering
+          Petromac&apos;s wireline conveyance, centralisation, and
+          formation-testing technologies. Click any reference to open the
+          published paper.
+        </p>
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="overflow-x-auto">

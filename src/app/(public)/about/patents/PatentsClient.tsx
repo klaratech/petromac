@@ -119,21 +119,24 @@ const DEVICES: Device[] = [
   },
 ];
 
-/** Split EP/Eurasia/etc. patent jurisdiction strings into individual countries. */
-function uniqueCountries(patents: Patent[]): string[] {
-  const set = new Set<string>();
-  for (const p of patents) {
-    for (const country of p.jurisdiction.split(",")) {
-      const trimmed = country.trim();
-      if (trimmed) set.add(trimmed);
-    }
-  }
-  return Array.from(set).sort();
+/**
+ * Roll a patent up to a region for the summary row.
+ * - EP-prefixed patents → "Europe" (regardless of how many EU countries
+ *   are listed in the jurisdiction string).
+ * - Eurasian patents → "Eurasia".
+ * - Everything else uses the jurisdiction string verbatim (single
+ *   country: USA, Malaysia, etc.).
+ */
+function regionFor(p: Patent): string {
+  const num = p.number.trim();
+  if (/^EP/i.test(num)) return "Europe";
+  if (/eurasia/i.test(num)) return "Eurasia";
+  return p.jurisdiction.trim();
 }
 
-function summariseJurisdictions(countries: string[]): string {
-  if (countries.length <= 4) return countries.join(", ");
-  return `${countries.slice(0, 3).join(", ")} + ${countries.length - 3} more`;
+function summariseJurisdictions(patents: Patent[]): string {
+  const set = new Set(patents.map(regionFor));
+  return Array.from(set).sort().join(", ");
 }
 
 export default function PatentsClient() {
@@ -142,14 +145,10 @@ export default function PatentsClient() {
 
   const rows = useMemo(
     () =>
-      DEVICES.map((d) => {
-        const countries = uniqueCountries(d.patents);
-        return {
-          ...d,
-          countries,
-          jurisdictionSummary: summariseJurisdictions(countries),
-        };
-      }),
+      DEVICES.map((d) => ({
+        ...d,
+        jurisdictionSummary: summariseJurisdictions(d.patents),
+      })),
     [],
   );
 
@@ -169,22 +168,33 @@ export default function PatentsClient() {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-16">
-        {/* Header + cross-link */}
-        <div className="mb-2">
+        {/* Header: title left, cross-link right */}
+        <div className="flex items-end justify-between flex-wrap gap-4 mb-4">
+          <h1 className="text-4xl font-bold text-gray-900">Patents</h1>
           <Link
             href="/about/publications"
-            className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+            className="text-sm text-blue-600 hover:text-blue-800 hover:underline whitespace-nowrap"
           >
             See also: Publications →
           </Link>
         </div>
-        <h1 className="text-4xl font-bold mb-4 text-gray-900">Patents</h1>
-        <p className="text-gray-600 leading-relaxed mb-8 max-w-3xl">
-          Petromac&apos;s Wireline Express™ and Focus™ Precision Centraliser
-          technologies are protected by a portfolio of granted patents.
-          {" "}{totalPatents} patents across {DEVICES.length} device families
-          are listed below. Click any row to see the full per-patent detail.
+        <p className="text-gray-600 leading-relaxed mb-6">
+          Petromac&apos;s technologies are protected by a diverse portfolio of
+          granted patents. {totalPatents} patents across {DEVICES.length}{" "}
+          device families are listed below.
         </p>
+
+        {/* Legal note — surfaced above the table so visitors see it first. */}
+        <div className="mb-6 bg-white rounded-lg p-4 border border-gray-200">
+          <p className="text-gray-700 text-sm leading-relaxed">
+            <strong>Note:</strong> Any party (e.g., wireline service company,
+            E&amp;P operator, or conveyance-accessory provider) that
+            manufactures, imports, offers for sale, sells, or uses any
+            Petromac patented technology without permission or licence from
+            Petromac is considered to infringe the patented technology. If
+            you wish to understand more, please feel free to contact us.
+          </p>
+        </div>
 
         {/* Controls */}
         <div className="flex justify-end gap-2 mb-3">
@@ -255,17 +265,6 @@ export default function PatentsClient() {
           </div>
         </div>
 
-        {/* Note about infringement */}
-        <div className="mt-8 bg-white rounded-lg p-6 border border-gray-200">
-          <p className="text-gray-700 text-sm leading-relaxed">
-            <strong>Note:</strong> Any party (e.g., wireline service company,
-            E&amp;P operator, or conveyance-accessory provider) that
-            manufactures, imports, offers for sale, sells, or uses any
-            Petromac patented technology without permission or licence from
-            Petromac is considered to infringe the patented technology. If
-            you wish to understand more, please feel free to contact us.
-          </p>
-        </div>
       </div>
     </main>
   );
@@ -276,7 +275,7 @@ function SummaryRow({
   isOpen,
   onToggle,
 }: {
-  row: Device & { countries: string[]; jurisdictionSummary: string };
+  row: Device & { jurisdictionSummary: string };
   isOpen: boolean;
   onToggle: () => void;
 }) {
@@ -313,10 +312,6 @@ function SummaryRow({
         </td>
         <td className="px-6 py-4 text-sm text-gray-700 align-top">
           {row.jurisdictionSummary}
-          <div className="text-xs text-gray-500 mt-0.5">
-            {row.countries.length}{" "}
-            {row.countries.length === 1 ? "country" : "countries"}
-          </div>
         </td>
         <td className="px-3 py-4 text-right align-top">
           <span
