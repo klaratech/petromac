@@ -39,10 +39,11 @@ export default function HeroV2() {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 max-w-5xl mx-auto">
         <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] mb-6">
-          {/* Em-dash + colored second clause makes the headline read as a
-              deliberate two-beat tagline. The brighter blue 'Optimised'
-              ties to the primary CTA without underlining the word. */}
-          Wireline logging — <span className="text-blue-400">Optimised</span>.
+          {/* Em-dash + brand-tinted second clause makes the headline read
+              as a deliberate two-beat tagline. 'Optimised' uses the
+              Petromac brand navy (#1E4A9A) to tie the headline to the
+              rest of the page's brand color usage. */}
+          Wireline logging — <span className="text-brand">Optimised</span>.
         </h1>
         <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-10">
           Better data. Lower risk. Faster operations.

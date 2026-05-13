@@ -44,9 +44,11 @@ export default function SoftwareHighlight() {
 
           {/* Copy */}
           <p className="text-slate-300 md:flex-1 md:max-w-xl text-base leading-relaxed">
-            <span className="text-white font-semibold">No more spreadsheets and guesswork.</span>{" "}
-            Engineer every wireline run — simulate with confidence before the
-            rig clock starts.
+            No more spreadsheets and guesswork. Engineer every wireline run —{" "}
+            <span className="text-white font-semibold">
+              simulate with confidence
+            </span>
+            .
           </p>
 
           {/* CTA */}
