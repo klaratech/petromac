@@ -4,7 +4,15 @@ import prettierConfig from "eslint-config-prettier";
 
 const eslintConfig = [
   {
-    ignores: [".next/**", "node_modules/**", "scripts/**"],
+    ignores: [
+      ".next/**",
+      "**/.next/**",
+      // Claude Code worktrees — local-only, gitignored, contain copies of
+      // src/ that would otherwise be re-linted as duplicates.
+      ".claude/**",
+      "node_modules/**",
+      "scripts/**",
+    ],
   },
   ...nextVitals,
   ...nextTypescript,

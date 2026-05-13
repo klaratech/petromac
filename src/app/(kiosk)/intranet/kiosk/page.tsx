@@ -113,7 +113,11 @@ function KioskContent() {
               key={VIDEO_SOURCES[videoIndex]}
               src={VIDEO_SOURCES[videoIndex]}
               autoPlay
-              muted={false}
+              // Must be muted for browsers to honour autoplay without a
+              // user gesture. The idle attractor is reached via timeout
+              // (no gesture available); an unmute affordance can be added
+              // later if showroom audio is wanted.
+              muted
               playsInline
               className="absolute top-0 left-0 w-full h-full object-cover"
               onEnded={() => setVideoIndex((prev) => (prev + 1) % VIDEO_SOURCES.length)}

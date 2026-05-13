@@ -279,14 +279,31 @@ function SummaryRow({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  // Stable id for the expanded panel so the summary row can reference it
+  // via aria-controls. Strip whitespace and special chars.
+  const panelId = `patents-detail-${row.device.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTableRowElement>) => {
+    // Activate on Enter or Space, matching native button behaviour.
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onToggle();
+    }
+  };
+
   return (
     <>
       <tr
-        className={`cursor-pointer transition-colors ${
+        className={`cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${
           isOpen ? "bg-blue-50" : "hover:bg-gray-50"
         }`}
         onClick={onToggle}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
         aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-label={`${isOpen ? "Collapse" : "Expand"} ${row.device} patents`}
       >
         <td className="px-6 py-4">
           <div className="text-sm font-semibold text-gray-900">
@@ -325,7 +342,7 @@ function SummaryRow({
         </td>
       </tr>
       {isOpen && (
-        <tr className="bg-gray-50">
+        <tr id={panelId} className="bg-gray-50">
           <td colSpan={5} className="px-6 py-4">
             <table className="min-w-full divide-y divide-gray-200 bg-white rounded-md border border-gray-200">
               <thead className="bg-gray-100">
