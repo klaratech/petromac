@@ -21,21 +21,20 @@ const YearlyStatsChart = memo(function YearlyStatsChart({
   const firstYear = yearlyStats[0]?.year;
   const lastYear = yearlyStats[yearlyStats.length - 1]?.year;
 
+  // Mobile: bottom sheet (inset-x-0 bottom-0 max-h-[75%]).
+  // Desktop (md+): right-side drawer, full map height, 360px wide.
+  const drawerClasses = [
+    'absolute z-50 bg-white shadow-2xl flex flex-col',
+    'inset-x-0 bottom-0 max-h-[75%] rounded-t-2xl border-t border-slate-200',
+    'md:inset-x-auto md:bottom-auto md:top-0 md:right-0 md:h-full md:w-[360px]',
+    'md:rounded-t-none md:border-t-0 md:border-l md:border-slate-200',
+  ].join(' ');
+
   return (
     <aside
-      // Backdrop layer — only on mobile (acts as a tap-to-close scrim).
       role="region"
       aria-label={`Deployment statistics for ${countryName} by year`}
-      className="
-        absolute z-50 bg-white shadow-2xl
-        animate-[slideInRight_180ms_ease-out]
-        /* Mobile (bottom sheet) */
-        inset-x-0 bottom-0 max-h-[75%] rounded-t-2xl border-t border-slate-200
-        /* Desktop (right drawer) */
-        md:inset-x-auto md:bottom-auto md:top-0 md:right-0 md:h-full md:w-[360px]
-        md:rounded-t-none md:border-t-0 md:border-l md:border-slate-200
-        flex flex-col
-      "
+      className={drawerClasses}
     >
       {/* Header */}
       <header className="flex items-start justify-between gap-3 px-5 py-4 border-b border-slate-200">
@@ -94,19 +93,6 @@ const YearlyStatsChart = memo(function YearlyStatsChart({
       <footer className="px-5 py-3 border-t border-slate-200 text-xs text-slate-500">
         Tap another country, or hit Esc to close.
       </footer>
-
-      <style jsx>{`
-        @keyframes slideInRight {
-          from {
-            transform: translateX(20px);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-      `}</style>
     </aside>
   );
 });
