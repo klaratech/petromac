@@ -13,29 +13,38 @@ interface Product {
 
 const products: Product[] = [
   {
-    name: "Thor",
-    description: "Anti-differential-sticking system for wireline logging in overbalanced wells.",
-    image: "/images/thor.png",
-    badge: "New",
-    // No video yet — placeholder static image until graphics delivers.
+    name: "Wireline Express",
+    description:
+      "Flagship conveyance system — gravity descent in high-deviation open hole, including the world record at 79°.",
+    image: "/images/wirelineexpress.png",
+    video: "/videos/WirelineExpress.mp4",
   },
   {
     name: "Pathfinder",
-    description: "Conveyance system for reliable tool delivery in high-deviation wells.",
+    description:
+      "Universal hole finder for navigating restrictions, ledges, and washouts in deviated wells.",
     image: "/images/pathfinder.png",
     video: "/videos/pf.mp4",
   },
   {
-    name: "Helix",
-    description: "Centralizer for consistent standoff in demanding borehole conditions.",
-    image: null,
+    name: "Focus Centralizers",
+    description:
+      "Open and cased hole centralisation — HELIX, Rocker, CP-series, and more across the full casing range.",
+    image: "/images/focus.png",
     video: "/videos/helix.mp4",
   },
-  {
-    name: "Focus",
-    description: "Probe orientation system for optimized formation testing seal quality.",
-    image: "/images/focus.png",
-  },
+  // TODO: re-enable Thor once we have a dedicated Thor video and finalised
+  // anti-differential-sticking copy. Placeholder thor.png + 'New' badge in
+  // the meantime would feel half-finished, so we're keeping it commented
+  // out until graphics + product agree on the messaging.
+  // {
+  //   name: "Thor",
+  //   description:
+  //     "Anti-differential-sticking system for wireline logging in overbalanced wells.",
+  //   image: "/images/thor.png",
+  //   badge: "New",
+  //   // video: "/videos/thor.mp4",  ← when available
+  // },
 ];
 
 export default function FeaturedProducts() {
@@ -49,7 +58,7 @@ export default function FeaturedProducts() {
           Engineered devices that solve specific wireline logging challenges.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((p) => (
             <Link
               key={p.name}
@@ -74,7 +83,7 @@ export default function FeaturedProducts() {
                     alt={p.name}
                     fill
                     className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-slate-400">

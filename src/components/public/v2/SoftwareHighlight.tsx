@@ -14,8 +14,8 @@ export default function SoftwareHighlight() {
           Plan Every Job Before You Get to the Wellsite
         </h2>
         <p className="text-slate-400 text-center mb-14 max-w-3xl mx-auto">
-          Athena replaces spreadsheets, phone calls, and guesswork with a single
-          platform for wireline job design and simulation.
+          Athena replaces spreadsheets and guesswork with a single platform
+          for wireline job design and simulation.
         </p>
 
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-8 md:p-10">
