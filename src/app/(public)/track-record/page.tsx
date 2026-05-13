@@ -158,7 +158,7 @@ function StatTile({
   return (
     <div className="rounded-2xl bg-white border border-slate-200 shadow-sm px-5 py-4 md:py-5 flex items-baseline justify-between gap-3 md:block">
       <p
-        className={`font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-blue-700 tabular-nums leading-none transition-opacity duration-500 ${
+        className={`font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-brand tabular-nums leading-none transition-opacity duration-500 ${
           loading ? "opacity-30" : "opacity-100"
         }`}
         aria-busy={loading}

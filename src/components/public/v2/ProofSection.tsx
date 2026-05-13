@@ -40,38 +40,41 @@ export default function ProofSection() {
   return (
     <section className="py-20 px-6 bg-white">
       <div className="max-w-5xl mx-auto text-center">
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-brandblack mb-14">
+        <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">
+          Proof
+        </p>
+        <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-14">
           Proven in the Field
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-14">
           <div>
-            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
+            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
               {stats.countries}+
             </p>
-            <p className="text-brandgray mt-2 font-medium">Countries</p>
+            <p className="text-slate-600 mt-2 font-medium">Countries</p>
           </div>
           <div>
-            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
+            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
               {stats.deployments.toLocaleString()}+
             </p>
-            <p className="text-brandgray mt-2 font-medium">Successful Deployments</p>
+            <p className="text-slate-600 mt-2 font-medium">Successful Deployments</p>
           </div>
           <div>
-            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
+            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
               {stats.years}+
             </p>
-            <p className="text-brandgray mt-2 font-medium">Years of Experience</p>
+            <p className="text-slate-600 mt-2 font-medium">Years of Experience</p>
           </div>
         </div>
 
         <Link
           href="/track-record"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-brand text-brand font-semibold hover:bg-brand hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-full border-2 border-brand text-brand font-semibold hover:bg-brand hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
         >
           Explore our track record
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
           </svg>
         </Link>
 

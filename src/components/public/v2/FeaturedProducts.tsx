@@ -51,10 +51,13 @@ export default function FeaturedProducts() {
   return (
     <section className="py-20 px-6 bg-slate-50">
       <div className="max-w-7xl mx-auto">
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-brandblack text-center mb-4">
+        <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold text-center mb-3">
+          Products
+        </p>
+        <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 text-center mb-4">
           Purpose-Built Hardware
         </h2>
-        <p className="text-brandgray text-center mb-12 max-w-2xl mx-auto">
+        <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">
           Engineered devices that solve specific wireline logging challenges.
         </p>
 
@@ -100,10 +103,10 @@ export default function FeaturedProducts() {
                 )}
               </div>
               <div className="p-5">
-                <h3 className="font-heading text-lg font-bold text-brandblack mb-1 group-hover:text-brand transition-colors">
+                <h3 className="font-heading text-lg font-bold text-slate-900 mb-1 group-hover:text-brand transition-colors">
                   {p.name}
                 </h3>
-                <p className="text-sm text-brandgray leading-relaxed">{p.description}</p>
+                <p className="text-sm text-slate-600 leading-relaxed">{p.description}</p>
                 <span className="inline-block mt-3 text-brand text-sm font-semibold group-hover:translate-x-1 transition-transform">
                   View in catalog →
                 </span>

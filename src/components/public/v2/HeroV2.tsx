@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HeroV2() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -10,7 +11,6 @@ export default function HeroV2() {
     <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
       {/* Background video (desktop) / static image (mobile) */}
       <div className="absolute inset-0">
-        {/* Static fallback image for all screens */}
         <Image
           src="/images/sampling.jpg"
           alt=""
@@ -19,7 +19,6 @@ export default function HeroV2() {
           aria-hidden="true"
           priority
         />
-        {/* Video overlay — hidden on mobile for performance */}
         <video
           ref={videoRef}
           autoPlay
@@ -40,11 +39,40 @@ export default function HeroV2() {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 max-w-5xl mx-auto">
         <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] mb-6">
-          Wireline logging, optimised.
+          Wireline logging,{" "}
+          <span className="relative inline-block">
+            <span className="relative z-10">optimised</span>
+            {/* Brand-color underline accent — single colored beat in the
+                headline so the line reads as intentional, not generic. */}
+            <span
+              aria-hidden="true"
+              className="absolute left-0 right-0 bottom-[0.08em] h-[0.12em] bg-blue-500 rounded-full"
+            />
+          </span>
+          .
         </h1>
         <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-10">
           Better data. Lower risk. More efficient operations.
         </p>
+
+        {/* CTA pair — primary (solid brand) + secondary (outline) */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          <Link
+            href="/track-record"
+            className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/30 transition-all hover:translate-y-[-1px] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black"
+          >
+            See the track record
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+          <Link
+            href="/catalog"
+            className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white border-2 border-white/60 hover:bg-white hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+          >
+            Browse the catalog
+          </Link>
+        </div>
       </div>
     </section>
   );

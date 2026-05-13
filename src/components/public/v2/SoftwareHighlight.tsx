@@ -8,17 +8,25 @@ export default function SoftwareHighlight() {
   };
 
   return (
-    <section className="py-20 px-6 bg-slate-950">
+    // Brand-tinted dark gradient instead of pure slate-950 — section
+    // now reads as a deliberate brand zone rather than a generic dark
+    // panel. Top hairline echoes the brand color so the section is
+    // visually "stamped".
+    <section className="relative py-20 px-6 bg-gradient-to-b from-[#081a3a] via-slate-900 to-slate-950">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand to-transparent" aria-hidden="true" />
       <div className="max-w-7xl mx-auto">
+        <p className="text-xs uppercase tracking-[0.3em] text-blue-300 font-semibold text-center mb-3">
+          Software
+        </p>
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-white text-center mb-4">
           Plan Every Job Before You Get to the Wellsite
         </h2>
-        <p className="text-slate-400 text-center mb-14 max-w-3xl mx-auto">
+        <p className="text-slate-300 text-center mb-14 max-w-3xl mx-auto">
           Athena replaces spreadsheets and guesswork with a single platform
           for wireline job design and simulation.
         </p>
 
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-8 md:p-10">
+        <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur p-8 md:p-10 shadow-2xl shadow-black/40 ring-1 ring-white/5">
           {/* Athena header */}
           <div className="flex items-center gap-4 mb-8">
             <div className="relative w-12 h-12 flex-shrink-0">
@@ -44,8 +52,8 @@ export default function SoftwareHighlight() {
               </h4>
               <p className="text-slate-300 leading-relaxed">
                 Design wireline jobs for all 3 major providers (SLB,
-                Halliburton, Baker Hughes). Select tools, configure strings,
-                and validate against well conditions.
+                Halliburton, Baker Hughes). Select tools, configure
+                strings, and validate against well conditions.
               </p>
             </div>
 
@@ -61,13 +69,16 @@ export default function SoftwareHighlight() {
             </div>
           </div>
 
-          {/* Single CTA */}
+          {/* Single CTA — primary (solid brand) */}
           <div>
             <button
               onClick={scrollToContact}
-              className="px-6 py-2.5 rounded-lg bg-brand text-white font-semibold hover:bg-brand/90 transition-colors"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/40 transition-all hover:translate-y-[-1px] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               Request a demo
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </div>
