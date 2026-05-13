@@ -19,7 +19,7 @@ export default function CatalogPage() {
   const pages = manifest ? buildFlipbookPageUrls(FLIPBOOK_KEYS.catalog, manifest) : [];
 
   return (
-    <main className="min-h-screen bg-gray-100">
+    <main className="min-h-screen bg-gray-100 overflow-x-hidden">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>

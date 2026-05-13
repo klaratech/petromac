@@ -39,11 +39,14 @@ export default function HeroV2() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 max-w-5xl mx-auto">
-        <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight mb-6">
-          Prevent stuck tools, failed logs, and costly contingency runs in complex wells.
+        <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] mb-6">
+          Wireline logging, optimised.
         </h1>
-        <p className="text-lg md:text-xl text-slate-200 max-w-2xl mb-10">
-          Hardware + planning software validated in the field.
+        <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-4">
+          Better data. Lower risk. More efficient operations.
+        </p>
+        <p className="text-sm md:text-base text-slate-300/80 max-w-2xl mb-10">
+          Hardware and planning software, validated in the field.
         </p>
       </div>
     </section>

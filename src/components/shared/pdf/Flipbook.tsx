@@ -20,18 +20,26 @@ export default function Flipbook({
   selectedPages = [],
   onToggleSelect,
 }: FlipbookProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const bookRef = useRef<HTMLDivElement>(null);
   const flipRef = useRef<PageFlip | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [zoom, setZoom] = useState(1);
-  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+  // Width of the parent container (where the flipbook is dropped in). We
+  // size the spread off this rather than the viewport so the book always
+  // fits its host — fixes horizontal overflow on the Catalog page where
+  // a parent .container limits width below the viewport.
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
 
-  const isMobile = viewportWidth != null ? viewportWidth < 768 : false;
+  const isMobile = containerWidth != null ? containerWidth < 768 : false;
   const aspectRatio = height / width;
-  const maxSpreadWidth = viewportWidth ? Math.max(320, viewportWidth - 48) : width * 2;
+  // Reserve a bit of horizontal padding so page shadows aren't clipped.
+  const maxSpreadWidth = containerWidth
+    ? Math.max(320, containerWidth - 16)
+    : width * 2;
   const pageWidth = isMobile
-    ? Math.max(240, Math.min(width, (viewportWidth ?? width) - 32))
+    ? Math.max(240, Math.min(width, maxSpreadWidth))
     : Math.max(320, Math.min(width, Math.floor(maxSpreadWidth / 2)));
   const pageHeight = Math.round(pageWidth * aspectRatio);
   const instanceKey = useMemo(() => {
@@ -41,10 +49,22 @@ export default function Flipbook({
   }, [pages, pageWidth, pageHeight, isMobile]);
 
   useEffect(() => {
-    const update = () => setViewportWidth(window.innerWidth);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    const el = wrapperRef.current;
+    if (!el) return;
+
+    const set = () => setContainerWidth(el.clientWidth);
+    set();
+
+    // ResizeObserver covers both window resizes and parent layout changes
+    // (e.g. sidebar toggles). Falls back gracefully when unavailable.
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", set);
+      return () => window.removeEventListener("resize", set);
+    }
+
+    const obs = new ResizeObserver(() => set());
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   useEffect(() => {
@@ -164,7 +184,10 @@ export default function Flipbook({
   const isExcluded = !isIncluded;
 
   return (
-    <div className="w-full flex flex-col justify-center items-center py-2">
+    <div
+      ref={wrapperRef}
+      className="w-full flex flex-col justify-center items-center py-2 overflow-hidden"
+    >
       {isLoading && (
         <div className="text-center mb-4">
           <p>Loading flipbook...</p>

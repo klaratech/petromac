@@ -14,43 +14,63 @@ interface Challenge {
 
 const challenges: Challenge[] = [
   {
-    id: "open-hole",
-    title: "Open Hole",
-    image: "/images/conveyance.jpg",
-    bullets: [
-      "Reliable conveyance past ledges and tight spots in high-deviation wells",
-      "Eliminate stuck tool incidents that cost days of rig time",
-      "Pathfinder system proven in 80°+ wells worldwide",
-    ],
-  },
-  {
-    id: "cased-hole",
-    title: "Cased Hole",
+    id: "stuck-tools",
+    title: "Stuck Tools",
     image: "/images/sticking.jpg",
     bullets: [
-      "Overcome differential sticking in overbalanced conditions",
-      "Maintain logging speed without sacrificing data quality",
-      "Thor anti-sticking system reduces NPT by up to 90%",
+      "Conveyance past ledges and tight spots in high-deviation wells",
+      "Pathfinder hole finder helps logging tools navigate restrictions",
+      "Field-proven across operators worldwide",
     ],
   },
   {
-    id: "formation-testing",
-    title: "Formation Testing",
-    image: "/images/orientation.jpg",
+    id: "incomplete-runs",
+    title: "Incomplete Runs",
+    image: "/images/sampling.jpg",
     bullets: [
-      "Orient probes to gravity low-side for optimal seal quality",
-      "Reduce dry tests and improve pressure data reliability",
-      "Focus system ensures consistent probe-to-formation contact",
+      "Reach total depth on the first attempt — no costly contingency runs",
+      "Confidence to log full intervals even with risky access",
+      "Plan ahead with Athena to anticipate every tight zone",
+    ],
+  },
+  {
+    id: "sticking-risk",
+    title: "Sticking Risk",
+    image: "/images/sticking.jpg",
+    bullets: [
+      "Thor controlled-impulse jar frees tools without resorting to fishing",
+      "Engineered for differential-sticking conditions in cased holes",
+      "Reduces non-productive time on at-risk operations",
     ],
   },
   {
     id: "data-quality",
     title: "Data Quality",
-    image: "/images/sampling.jpg",
+    image: "/images/orientation.jpg",
     bullets: [
-      "Plan jobs across all 3 major wireline providers with Athena",
-      "Simulate tensions, friction, and jarring confidence before the job",
-      "Validate tool string design against well conditions in minutes",
+      "Centralised tool strings produce sharper CBL, sonic, and density logs",
+      "Focus and HELIX keep sondes on-axis across the casing range",
+      "Less repeat logging, more first-time-right data",
+    ],
+  },
+  {
+    id: "cased-hole-restrictions",
+    title: "Cased Hole Restrictions",
+    image: "/images/ledges.jpg",
+    bullets: [
+      "HELIX enters tighter restrictions than conventional centralisers",
+      "Improved leverage at smaller casing IDs",
+      "Lower drag = lower mechanical risk in restricted intervals",
+    ],
+  },
+  {
+    id: "high-deviations",
+    title: "High Deviations",
+    image: "/images/conveyance.jpg",
+    bullets: [
+      "Pathfinder proven in 80°+ deviated wells worldwide",
+      "Reliable conveyance through ledges, breakouts, and washouts",
+      "Designed for tortuous wellbore profiles",
     ],
   },
 ];
@@ -72,7 +92,7 @@ export default function ChallengeSelector() {
           Select a challenge to see how Petromac solves it in the field.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {challenges.map((c) => {
             const isExpanded = expanded === c.id;
             return (
@@ -101,7 +121,7 @@ export default function ChallengeSelector() {
                     alt={c.title}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <h3 className="absolute bottom-4 left-4 text-xl font-bold text-white font-heading">
