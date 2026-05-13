@@ -55,7 +55,7 @@ export default function FeaturedProducts() {
           Products
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 text-center mb-4">
-          Purpose-Built Hardware
+          Purpose-built hardware
         </h2>
         <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">
           Engineered devices that solve specific wireline logging challenges.

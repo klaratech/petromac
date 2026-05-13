@@ -52,7 +52,7 @@ export default function HeroV2() {
           .
         </h1>
         <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-10">
-          Better data. Lower risk. More efficient operations.
+          Better data. Lower risk. Faster operations.
         </p>
 
         {/* CTA pair — primary (solid brand) + secondary (outline) */}

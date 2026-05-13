@@ -10,6 +10,10 @@ interface Stats {
   years: number;
 }
 
+// JobRecord has no Operator field, so we can't compute this from the
+// operations dataset. Adjust here when the real number is confirmed.
+const OPERATOR_COUNT = 30;
+
 export default function ProofSection() {
   const [stats, setStats] = useState<Stats>({ countries: 0, deployments: 0, years: 0 });
   const [loaded, setLoaded] = useState(false);
@@ -44,7 +48,7 @@ export default function ProofSection() {
           Proof
         </p>
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-14">
-          Proven in the Field
+          Proven in the field
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-14">
@@ -78,21 +82,22 @@ export default function ProofSection() {
           </svg>
         </Link>
 
-        {/* Partner logo strip — placeholder */}
+        {/* Reach summary — replaces the placeholder logo strip. */}
         <div className="mt-16 pt-12 border-t border-slate-200">
-          <p className="text-sm text-slate-400 mb-6 uppercase tracking-wide font-medium">
-            Trusted by operators worldwide
+          <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            Used by all three major wireline service companies —{" "}
+            <span className="font-semibold text-slate-900">SLB</span>,{" "}
+            <span className="font-semibold text-slate-900">Halliburton</span>, and{" "}
+            <span className="font-semibold text-slate-900">Baker Hughes</span> —
+            and deployed with{" "}
+            <span className="font-semibold text-slate-900">
+              {OPERATOR_COUNT}+ operators
+            </span>{" "}
+            across{" "}
+            <span className="font-semibold text-slate-900">
+              {stats.countries}+ countries
+            </span>.
           </p>
-          <div className="flex flex-wrap justify-center gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div
-                key={i}
-                className="h-12 w-28 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 text-xs"
-              >
-                Logo {i}
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>

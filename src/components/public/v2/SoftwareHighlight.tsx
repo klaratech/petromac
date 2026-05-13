@@ -1,86 +1,75 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
+/**
+ * Compact "platform band" on the homepage. The full Athena pitch lives
+ * on /simulation — this is a single-line tease that keeps the narrative
+ * beat (hardware + software) without taking 600px of homepage real estate
+ * to repeat what that dedicated page already says.
+ */
 export default function SoftwareHighlight() {
-  const scrollToContact = () => {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    // Brand-tinted dark gradient instead of pure slate-950 — section
-    // now reads as a deliberate brand zone rather than a generic dark
-    // panel. Top hairline echoes the brand color so the section is
-    // visually "stamped".
-    <section className="relative py-20 px-6 bg-gradient-to-b from-[#081a3a] via-slate-900 to-slate-950">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand to-transparent" aria-hidden="true" />
-      <div className="max-w-7xl mx-auto">
-        <p className="text-xs uppercase tracking-[0.3em] text-blue-300 font-semibold text-center mb-3">
-          Software
-        </p>
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-white text-center mb-4">
-          Plan Every Job Before You Get to the Wellsite
-        </h2>
-        <p className="text-slate-300 text-center mb-14 max-w-3xl mx-auto">
-          Athena replaces spreadsheets and guesswork with a single platform
-          for wireline job design and simulation.
-        </p>
+    <section className="relative py-10 md:py-12 px-6 bg-gradient-to-b from-[#081a3a] via-slate-900 to-slate-950">
+      {/* Top hairline — same brand stamp the full section had */}
+      <div
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand to-transparent"
+        aria-hidden="true"
+      />
 
-        <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur p-8 md:p-10 shadow-2xl shadow-black/40 ring-1 ring-white/5">
-          {/* Athena header */}
-          <div className="flex items-center gap-4 mb-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
+          {/* Logo + name */}
+          <div className="flex items-center gap-4 flex-shrink-0">
             <div className="relative w-12 h-12 flex-shrink-0">
               <Image
                 src="/images/athena_logo.png"
-                alt="Athena logo"
+                alt=""
                 fill
                 className="object-contain"
                 sizes="48px"
+                aria-hidden="true"
               />
             </div>
-            <h3 className="font-heading text-2xl font-bold text-white">
-              Athena
-            </h3>
-          </div>
-
-          {/* Two capability columns */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-            {/* Job Design */}
             <div>
-              <h4 className="text-lg font-semibold text-white mb-3">
-                Job Design
-              </h4>
-              <p className="text-slate-300 leading-relaxed">
-                Design wireline jobs for all 3 major providers (SLB,
-                Halliburton, Baker Hughes). Select tools, configure
-                strings, and validate against well conditions.
+              <p className="text-[10px] uppercase tracking-[0.3em] text-blue-300 font-semibold">
+                Software
               </p>
-            </div>
-
-            {/* Hermes Simulation Engine */}
-            <div>
-              <h4 className="text-lg font-semibold text-white mb-3">
-                Hermes Simulation Engine
-              </h4>
-              <p className="text-slate-300 leading-relaxed">
-                Simulate cable tensions, friction, and jarring confidence. Know
-                if your tool string will reach TD before the job starts.
-              </p>
+              <h3 className="font-heading text-2xl font-bold text-white leading-tight">
+                Athena
+              </h3>
             </div>
           </div>
 
-          {/* Single CTA — primary (solid brand) */}
-          <div>
-            <button
-              onClick={scrollToContact}
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/40 transition-all hover:translate-y-[-1px] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+          {/* Copy */}
+          <p className="text-slate-300 md:flex-1 md:max-w-xl text-base leading-relaxed">
+            Wireline job design and simulation — plan every run for SLB,
+            Halliburton, and Baker Hughes operations before you get to the
+            wellsite.
+          </p>
+
+          {/* CTA */}
+          <Link
+            href="/simulation"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white border-2 border-white/40 hover:bg-white hover:text-slate-900 hover:border-white transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-900 whitespace-nowrap self-start md:self-auto"
+          >
+            See the platform
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
             >
-              Request a demo
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>
