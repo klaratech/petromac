@@ -8,16 +8,17 @@ import { APP_CONSTANTS } from '@/constants/app';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
 import { formatDeploymentCount } from '@/lib/maps';
 
-const MapRenderer = memo(function MapRenderer({ 
-  worldData, 
-  countryMap, 
-  selectedCountry, 
-  onCountryClick, 
+const MapRenderer = memo(function MapRenderer({
+  worldData,
+  countryMap,
+  selectedCountry,
+  onCountryClick,
+  onCountryHover,
+  getColor,
   isLoading,
   svgRef,
-  gRef
+  gRef,
 }: MapRendererProps) {
-
   useEffect(() => {
     if (!worldData || isLoading) return;
 
@@ -29,17 +30,32 @@ const MapRenderer = memo(function MapRenderer({
     const projection = geoNaturalEarth1().fitSize([width, height], worldData);
     const path = geoPath(projection);
 
+    // Ocean / canvas — gives the choropleth a frame instead of bleeding
+    // into the page background.
+    svg
+      .append('rect')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('fill', '#f8fafc')
+      .attr('rx', 0);
+
     const g = svg.append('g').node();
     if (!g) return;
-    
+
     if (gRef.current) {
       gRef.current = g as SVGGElement;
     }
-    
+
     const gSel = select(g);
 
-    // Add countries  
-    const countries = gSel.selectAll('path')
+    const resolveFill = (count: number) => {
+      if (getColor) return getColor(count);
+      return count > 0 ? '#34d399' : MAP_CONSTANTS.COLORS.COUNTRY_DEFAULT;
+    };
+
+    // Add countries
+    const countries = gSel
+      .selectAll('path')
       .data(worldData.features)
       .enter()
       .append('path')
@@ -47,25 +63,22 @@ const MapRenderer = memo(function MapRenderer({
       .attr('fill', (d) => {
         const feature = d as Feature<Geometry>;
         const name = feature.properties?.name || '';
-        const hasData = countryMap.has(name);
-        const isSelected = name === selectedCountry;
-        
-        if (isSelected) return MAP_CONSTANTS.COLORS.COUNTRY_SELECTED;
-        if (hasData) return MAP_CONSTANTS.COLORS.COUNTRY_WITH_DATA;
-        return MAP_CONSTANTS.COLORS.COUNTRY_DEFAULT;
+        const count = countryMap.get(name) || 0;
+        return resolveFill(count);
       })
-      .attr('stroke', '#ccc')
+      .attr('stroke', (d) => {
+        const feature = d as Feature<Geometry>;
+        const name = feature.properties?.name || '';
+        return name === selectedCountry
+          ? MAP_CONSTANTS.COLORS.COUNTRY_SELECTED_STROKE
+          : '#ffffff';
+      })
       .style('stroke-width', (d) => {
         const feature = d as Feature<Geometry>;
         const name = feature.properties?.name || '';
-        return name === selectedCountry ? MAP_CONSTANTS.STROKE_WIDTH_SELECTED : MAP_CONSTANTS.STROKE_WIDTH_DEFAULT;
-      })
-      .style('filter', (d) => {
-        const feature = d as Feature<Geometry>;
-        const name = feature.properties?.name || '';
-        return name === selectedCountry 
-          ? `drop-shadow(0 0 4px ${MAP_CONSTANTS.COLORS.SELECTED_GLOW})` 
-          : 'none';
+        return name === selectedCountry
+          ? MAP_CONSTANTS.STROKE_WIDTH_SELECTED
+          : MAP_CONSTANTS.STROKE_WIDTH_DEFAULT;
       })
       .style('cursor', (d) => {
         const feature = d as Feature<Geometry>;
@@ -83,7 +96,7 @@ const MapRenderer = memo(function MapRenderer({
         const name = feature.properties?.name || 'Unknown';
         const count = countryMap.get(name) || 0;
         const isSelected = name === selectedCountry;
-        
+
         if (count === 0) return `${name}: No deployments`;
         return `${name}: ${formatDeploymentCount(count)}. ${isSelected ? 'Selected. Press Enter to deselect.' : 'Press Enter to select.'}`;
       })
@@ -104,44 +117,69 @@ const MapRenderer = memo(function MapRenderer({
           }
         }
       })
-      .on('mouseover', function(_, d) {
+      .on('mousemove', function (event, d) {
         const feature = d as Feature<Geometry>;
         const name = feature.properties?.name || '';
-        if (countryMap.has(name)) {
-          select(this)
-            .transition()
-            .duration(MAP_CONSTANTS.TRANSITION_DURATION)
-            .style('filter', `drop-shadow(0 0 2px ${MAP_CONSTANTS.COLORS.SELECTED_GLOW})`);
+        if (!countryMap.has(name)) return;
+
+        if (onCountryHover) {
+          // event.clientX/Y are viewport-relative; the React tooltip
+          // overlay is positioned with `position: fixed`, so that's
+          // exactly what we want.
+          const mouseEvent = event as MouseEvent;
+          onCountryHover({
+            country: name,
+            count: countryMap.get(name) || 0,
+            x: mouseEvent.clientX,
+            y: mouseEvent.clientY,
+          });
         }
+        select(this)
+          .attr('stroke', MAP_CONSTANTS.COLORS.HOVER_STROKE)
+          .style('stroke-width', 1);
       })
-      .on('mouseout', function(_, d) {
+      .on('mouseout', function (_, d) {
         const feature = d as Feature<Geometry>;
         const name = feature.properties?.name || '';
+        if (onCountryHover) onCountryHover(null);
         const isSelected = name === selectedCountry;
-        
         select(this)
-          .transition()
-          .duration(MAP_CONSTANTS.TRANSITION_DURATION)
-          .style('filter', isSelected 
-            ? `drop-shadow(0 0 4px ${MAP_CONSTANTS.COLORS.SELECTED_GLOW})` 
-            : 'none'
+          .attr(
+            'stroke',
+            isSelected
+              ? MAP_CONSTANTS.COLORS.COUNTRY_SELECTED_STROKE
+              : '#ffffff',
+          )
+          .style(
+            'stroke-width',
+            isSelected
+              ? MAP_CONSTANTS.STROKE_WIDTH_SELECTED
+              : MAP_CONSTANTS.STROKE_WIDTH_DEFAULT,
           );
       });
 
-    // Add tooltip functionality using title elements for better accessibility
-    countries.append('title')
-      .text((d) => {
-        const feature = d as Feature<Geometry>;
-        const name = feature.properties?.name || 'Unknown';
-        const count = countryMap.get(name) || 0;
-        return `${name}: ${formatDeploymentCount(count)}`;
-      });
+    // Accessibility — native title element for OS-level tooltip fallback.
+    countries.append('title').text((d) => {
+      const feature = d as Feature<Geometry>;
+      const name = feature.properties?.name || 'Unknown';
+      const count = countryMap.get(name) || 0;
+      return `${name}: ${formatDeploymentCount(count)}`;
+    });
 
-    // Cleanup function
     return () => {
       svg.selectAll('*').remove();
     };
-  }, [worldData, countryMap, selectedCountry, onCountryClick, isLoading, svgRef, gRef]);
+  }, [
+    worldData,
+    countryMap,
+    selectedCountry,
+    onCountryClick,
+    onCountryHover,
+    getColor,
+    isLoading,
+    svgRef,
+    gRef,
+  ]);
 
   return (
     <svg

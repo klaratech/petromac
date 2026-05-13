@@ -13,11 +13,23 @@ export interface YearlyStats {
   count: number;
 }
 
+export interface HoverPayload {
+  country: string;
+  count: number;
+  /** Viewport-relative mouse position (use with position: fixed overlays). */
+  x: number;
+  y: number;
+}
+
 export interface MapRendererProps {
   worldData: FeatureCollection<Geometry, { name?: string }> | null;
   countryMap: Map<string, number>;
   selectedCountry: string | null;
   onCountryClick: (_countryName: string | null) => void;
+  onCountryHover?: (_payload: HoverPayload | null) => void;
+  /** Maps deployment count → fill color. When undefined the renderer
+   *  falls back to a single solid green for any country with data. */
+  getColor?: (_count: number) => string;
   isLoading: boolean;
   svgRef: React.RefObject<SVGSVGElement | null>;
   gRef: React.RefObject<SVGGElement | null>;

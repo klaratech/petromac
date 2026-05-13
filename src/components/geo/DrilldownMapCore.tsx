@@ -9,8 +9,16 @@ import { useDebounce } from '@/hooks/useDebounce';
 import YearlyStatsChart from '@/components/kiosk/YearlyStatsChart';
 import CountryChart from '@/components/kiosk/CountryChart';
 import MapRenderer from '@/components/geo/MapRenderer';
-import { processMapData, calculateCountryStats } from '@/lib/maps';
-import type { CountryStats, ProcessedMapData } from '@/types/MapTypes';
+import {
+  processMapData,
+  calculateCountryStats,
+  buildIntensityScale,
+} from '@/lib/maps';
+import type {
+  CountryStats,
+  ProcessedMapData,
+  HoverPayload,
+} from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
 
 export interface DrilldownMapCoreProps {
@@ -19,105 +27,122 @@ export interface DrilldownMapCoreProps {
   showCloseButton?: boolean;
   onClose?: () => void;
   showSuccessStoriesLink?: boolean;
+  /** When true, hides the small in-map deployments pill (e.g. on the
+   *  public Track Record page where the page already has a hero stats
+   *  row above the map). */
+  hideInlineStats?: boolean;
   className?: string;
 }
 
-const DrilldownMapCore = memo(function DrilldownMapCore({ 
-  data, 
-  initialSystem, 
+const DrilldownMapCore = memo(function DrilldownMapCore({
+  data,
+  initialSystem,
   showCloseButton = false,
   onClose,
   showSuccessStoriesLink = false,
-  className = "relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white"
+  hideInlineStats = false,
+  className = 'relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white',
 }: DrilldownMapCoreProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const gRef = useRef<SVGGElement | null>(null);
   const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
   const [tappedCountry, setTappedCountry] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [hover, setHover] = useState<HoverPayload | null>(null);
 
-  // Custom hooks for data loading
   const { worldData, isLoading: isLoadingMap, error: mapError, retry: retryMap } = useMapData();
   const { countryLabels, isLoading: isLoadingLabels, error: labelsError } = useCountryLabels();
 
-  // Debounce system selection changes to prevent rapid re-renders
   const debouncedSelectedSystems = useDebounce(selectedSystems, 300);
 
   const systemOptions = useMemo(() => {
     return Array.from(new Set(data.map((job) => job.System).filter(Boolean))).sort();
   }, [data]);
 
-  // Initialize selected systems
   useEffect(() => {
     if (selectedSystems.length > 0 || systemOptions.length === 0) return;
     if (initialSystem) {
-      const matches = systemOptions.filter(s => s.toLowerCase().startsWith(initialSystem.toLowerCase()));
+      const matches = systemOptions.filter((s) =>
+        s.toLowerCase().startsWith(initialSystem.toLowerCase()),
+      );
       setSelectedSystems(matches.length > 0 ? matches : systemOptions);
     } else {
       setSelectedSystems(systemOptions);
     }
   }, [initialSystem, systemOptions, selectedSystems.length]);
 
-  // Process data once instead of filtering on every render
-  const processedData: ProcessedMapData = useMemo(() => {
-    return processMapData(data, debouncedSelectedSystems);
-  }, [data, debouncedSelectedSystems]);
+  const processedData: ProcessedMapData = useMemo(
+    () => processMapData(data, debouncedSelectedSystems),
+    [data, debouncedSelectedSystems],
+  );
 
   const { filteredData, isPathfinderOnly } = processedData;
 
-  // Calculate country statistics
-  const countryStats: CountryStats[] = useMemo(() => {
-    return calculateCountryStats(data, filteredData, isPathfinderOnly);
-  }, [data, filteredData, isPathfinderOnly]);
-
-  const countryMap = useMemo(() => new Map(countryStats.map(([country, count]) => [country, count])), [countryStats]);
-
-  const sortedCountries = useMemo(() => 
-    [...countryStats].sort((a, b) => b[1] - a[1]), 
-    [countryStats]
+  const countryStats: CountryStats[] = useMemo(
+    () => calculateCountryStats(data, filteredData, isPathfinderOnly),
+    [data, filteredData, isPathfinderOnly],
   );
 
-  const chartCountries = useMemo(() => 
-    sortedCountries.filter(([, count]) => count > 0), 
-    [sortedCountries]
+  const countryMap = useMemo(
+    () => new Map(countryStats.map(([country, count]) => [country, count])),
+    [countryStats],
   );
 
-  const totalDeployments = useMemo(() => {
-    return countryStats.reduce((sum, [, count]) => sum + count, 0);
-  }, [countryStats]);
+  // Quantile-based intensity scale — drives both the choropleth fill and
+  // the legend swatches. Rebuilds when the filtered data changes.
+  const intensity = useMemo(() => buildIntensityScale(countryStats), [countryStats]);
 
-  const countryCount = useMemo(() => {
-    return countryStats.filter(([, count]) => count > 0).length;
-  }, [countryStats]);
+  const sortedCountries = useMemo(
+    () => [...countryStats].sort((a, b) => b[1] - a[1]),
+    [countryStats],
+  );
+
+  const chartCountries = useMemo(
+    () => sortedCountries.filter(([, count]) => count > 0),
+    [sortedCountries],
+  );
+
+  const totalDeployments = useMemo(
+    () => countryStats.reduce((sum, [, count]) => sum + count, 0),
+    [countryStats],
+  );
+
+  const countryCount = useMemo(
+    () => countryStats.filter(([, count]) => count > 0).length,
+    [countryStats],
+  );
 
   const yearlyStats = useMemo(() => {
     if (!tappedCountry) return [];
 
     const source = isPathfinderOnly ? data : filteredData;
     const countryData = source.filter((d: JobRecord) => d.Country === tappedCountry);
-    
-    const yearGroups = countryData.reduce((acc: Record<string, number>, d: JobRecord) => {
-      const year = d.Year;
-      if (!acc[year]) acc[year] = 0;
-      
-      if (isPathfinderOnly) {
-        acc[year] += (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
-      } else {
-        acc[year] += +d.Successful || 0;
-      }
-      
-      return acc;
-    }, {} as Record<string, number>);
+
+    const yearGroups = countryData.reduce(
+      (acc: Record<string, number>, d: JobRecord) => {
+        const year = d.Year;
+        if (!acc[year]) acc[year] = 0;
+
+        if (isPathfinderOnly) {
+          acc[year] +=
+            (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
+        } else {
+          acc[year] += +d.Successful || 0;
+        }
+
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     return Object.entries(yearGroups)
       .map(([year, count]) => ({ year, count }))
       .sort((a, b) => +a.year - +b.year);
   }, [data, filteredData, tappedCountry, isPathfinderOnly]);
 
-  // Handle system selection with proper state management
   const handleSystemToggle = useCallback((system: string) => {
     setSelectedSystems((prev) =>
-      prev.includes(system) ? prev.filter((s) => s !== system) : [...prev, system]
+      prev.includes(system) ? prev.filter((s) => s !== system) : [...prev, system],
     );
   }, []);
 
@@ -125,22 +150,23 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
     setSelectedSystems(systemOptions);
   }, [systemOptions]);
 
-  // Handle country selection
-  const handleCountryClick = useCallback((countryName: string | null) => {
-    setTappedCountry(current => current === countryName ? null : countryName);
+  const handleClearSystems = useCallback(() => {
+    setSelectedSystems([]);
   }, []);
 
-  // Handle retry with exponential backoff
+  const handleCountryClick = useCallback((countryName: string | null) => {
+    setTappedCountry((current) => (current === countryName ? null : countryName));
+  }, []);
+
   const handleRetry = useCallback(async () => {
     if (retryCount < MAP_CONSTANTS.MAX_RETRIES) {
-      setRetryCount(prev => prev + 1);
+      setRetryCount((prev) => prev + 1);
       setTimeout(() => {
         retryMap();
       }, 1000 * (retryCount + 1));
     }
   }, [retryCount, retryMap]);
 
-  // Handle keyboard navigation
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
     if (event.key === 'Escape') {
       setTappedCountry(null);
@@ -162,33 +188,27 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
             ✕
           </button>
         )}
-        
+
         <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
           <div className="text-center p-6">
             <h3 className="text-lg font-semibold text-red-600 mb-2">Error Loading Map</h3>
             <p className="text-gray-600 mb-4">{error}</p>
-            <div className="space-y-2">
-              <button
-                onClick={handleRetry}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mr-2"
-                disabled={retryCount >= MAP_CONSTANTS.MAX_RETRIES}
-              >
-                Retry ({MAP_CONSTANTS.MAX_RETRIES - retryCount} attempts left)
-              </button>
-              <div className="text-sm text-gray-500">
-                Showing simplified view as fallback
-              </div>
-              {/* Fallback: Simple list view */}
-              <div className="mt-4 max-w-md mx-auto">
-                <h4 className="font-semibold mb-2">Deployment Summary</h4>
-                <div className="space-y-1 text-left">
-                  {chartCountries.slice(0, 10).map(([country, count]) => (
-                    <div key={country} className="flex justify-between py-1 border-b">
-                      <span>{countryLabels[country] || country}</span>
-                      <span className="font-medium">{count}</span>
-                    </div>
-                  ))}
-                </div>
+            <button
+              onClick={handleRetry}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mr-2"
+              disabled={retryCount >= MAP_CONSTANTS.MAX_RETRIES}
+            >
+              Retry ({MAP_CONSTANTS.MAX_RETRIES - retryCount} attempts left)
+            </button>
+            <div className="mt-4 max-w-md mx-auto">
+              <h4 className="font-semibold mb-2">Deployment Summary</h4>
+              <div className="space-y-1 text-left">
+                {chartCountries.slice(0, 10).map(([country, count]) => (
+                  <div key={country} className="flex justify-between py-1 border-b">
+                    <span>{countryLabels[country] || country}</span>
+                    <span className="font-medium">{count}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -198,7 +218,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   }
 
   return (
-    <div 
+    <div
       className={className}
       onKeyDown={handleKeyDown}
       tabIndex={0}
@@ -215,24 +235,55 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
         </button>
       )}
 
-      {/* Stats Summary */}
-      <div className="absolute top-6 left-4 z-50 bg-white/90 backdrop-blur-md text-black border border-gray-200 rounded-lg shadow px-4 py-3">
-        <div className="text-sm font-medium" role="status" aria-live="polite">
-          <span className="text-green-600 font-bold">{totalDeployments}</span> Total Deployments in{' '}
-          <span className="text-blue-600 font-bold">{countryCount}</span> Countries
+      {/* Inline stats pill (hidden on the public Track Record page where
+          the page already has a hero stats row above the map). */}
+      {!hideInlineStats && (
+        <div className="absolute top-4 left-4 z-40 bg-white/95 backdrop-blur-md text-slate-900 border border-slate-200 rounded-lg shadow px-4 py-2.5">
+          <div className="text-sm font-medium" role="status" aria-live="polite">
+            <span className="text-blue-600 font-bold">{totalDeployments}</span> deployments
+            in{' '}
+            <span className="text-blue-600 font-bold">{countryCount}</span> countries
+          </div>
+          {showSuccessStoriesLink && (
+            <a
+              href="/success-stories/flipbook"
+              className="mt-1.5 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Success Stories"
+            >
+              Success Stories
+            </a>
+          )}
         </div>
-        {showSuccessStoriesLink && (
-          <a
-            href="/success-stories/flipbook"
-            className="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Success Stories"
-          >
-            Success Stories
-          </a>
-        )}
-      </div>
+      )}
 
-      {/* Yearly Stats Chart */}
+      {/* Legend — intensity scale */}
+      {!isLoading && intensity.max > 0 && (
+        <div
+          className="absolute top-4 right-4 z-40 bg-white/95 backdrop-blur-md border border-slate-200 rounded-lg shadow px-3 py-2.5"
+          role="img"
+          aria-label="Deployment intensity legend"
+        >
+          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-1.5">
+            Deployments
+          </p>
+          <div className="flex items-center gap-1">
+            {MAP_CONSTANTS.COLORS.INTENSITY_RAMP.map((c) => (
+              <span
+                key={c}
+                className="block w-5 h-3"
+                style={{ backgroundColor: c }}
+                aria-hidden="true"
+              />
+            ))}
+          </div>
+          <div className="flex justify-between text-[10px] text-slate-500 mt-1 tabular-nums">
+            <span>{intensity.min}</span>
+            <span>{intensity.max}+</span>
+          </div>
+        </div>
+      )}
+
+      {/* Yearly stats — right-side drawer (or bottom sheet on mobile) */}
       {tappedCountry && yearlyStats.length > 0 && (
         <YearlyStatsChart
           countryName={countryLabels[tappedCountry] || tappedCountry}
@@ -241,69 +292,115 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
         />
       )}
 
-      {/* Country Chart */}
-      <CountryChart
-        countries={chartCountries}
-        countryLabels={countryLabels}
-        selectedCountry={tappedCountry}
-        onCountryClick={handleCountryClick}
-      />
+      {/* Bottom-left country chart — desktop only. On mobile it would
+          collide with the filter pills at the bottom; the map + drawer +
+          tap interaction covers the same need. */}
+      <div className="hidden md:block">
+        <CountryChart
+          countries={chartCountries}
+          countryLabels={countryLabels}
+          selectedCountry={tappedCountry}
+          onCountryClick={handleCountryClick}
+        />
+      </div>
 
-      {/* System Selection */}
+      {/* System filter pills — labeled, filled/outline toggle pattern */}
       {systemOptions.length > 0 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white/90 backdrop-blur-md px-4 py-2 rounded-lg shadow flex gap-2 overflow-x-auto">
-          {selectedSystems.length < systemOptions.length && (
+        <div
+          className="
+            absolute z-40
+            bottom-4 left-1/2 -translate-x-1/2
+            md:left-auto md:right-4 md:translate-x-0
+            bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl shadow-lg
+            px-3 py-2 max-w-[calc(100%-2rem)]
+            flex items-center gap-2 overflow-x-auto
+          "
+          role="group"
+          aria-label="Filter by system"
+        >
+          <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap pl-1">
+            Filter
+          </span>
+          <div className="h-4 w-px bg-slate-200" aria-hidden="true" />
+
+          {systemOptions.map((sys) => {
+            const isOn = selectedSystems.includes(sys);
+            return (
+              <button
+                key={sys}
+                onClick={() => handleSystemToggle(sys)}
+                aria-pressed={isOn}
+                aria-label={`${isOn ? 'Hide' : 'Show'} ${sys} deployments`}
+                className={`
+                  text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap transition-colors
+                  focus:outline-none focus:ring-2 focus:ring-blue-500
+                  ${
+                    isOn
+                      ? 'bg-blue-600 text-white border border-blue-600 hover:bg-blue-700'
+                      : 'bg-white text-slate-600 border border-slate-300 hover:bg-slate-50'
+                  }
+                `}
+              >
+                {sys}
+              </button>
+            );
+          })}
+
+          <div className="h-4 w-px bg-slate-200 mx-1" aria-hidden="true" />
+          {selectedSystems.length === systemOptions.length ? (
+            <button
+              onClick={handleClearSystems}
+              className="text-xs text-slate-500 hover:text-slate-800 whitespace-nowrap pr-1 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+            >
+              Clear
+            </button>
+          ) : (
             <button
               onClick={handleSelectAllSystems}
-              className="text-xs px-2 py-1 border border-blue-300 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              aria-label="Select all systems"
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap pr-1 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
             >
-              Select All
+              All
             </button>
           )}
-
-          {selectedSystems.length === 0 && (
-            <span className="text-xs text-gray-500 italic" role="status">
-              No systems selected
-            </span>
-          )}
-
-          {systemOptions.map((sys) => (
-            <button
-              key={sys}
-              className={`text-xs px-2 py-1 border rounded-full flex items-center gap-1 transition whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                selectedSystems.includes(sys)
-                  ? 'bg-green-100 text-green-800 border-green-300'
-                  : 'bg-gray-100 text-gray-500 border-gray-300 line-through'
-              }`}
-              onClick={() => handleSystemToggle(sys)}
-              aria-pressed={selectedSystems.includes(sys)}
-              aria-label={`${selectedSystems.includes(sys) ? 'Deselect' : 'Select'} ${sys} system`}
-            >
-              {sys} <span className="text-xs">✕</span>
-            </button>
-          ))}
         </div>
       )}
 
-      {/* Loading State */}
+      {/* Floating hover tooltip — desktop pointer affordance */}
+      {hover && (
+        <div
+          className="fixed z-[60] pointer-events-none px-3 py-1.5 rounded-md bg-slate-900/95 text-white text-xs shadow-lg whitespace-nowrap"
+          style={{
+            left: hover.x + 14,
+            top: hover.y + 14,
+          }}
+          role="tooltip"
+        >
+          <div className="font-semibold">
+            {countryLabels[hover.country] || hover.country}
+          </div>
+          <div className="text-slate-300">
+            {hover.count} deployment{hover.count !== 1 ? 's' : ''}
+          </div>
+        </div>
+      )}
+
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-50">
           <LoadingSpinner size="lg" message="Loading map data..." />
         </div>
       )}
 
-      {/* Map Renderer */}
       <MapRenderer
         worldData={worldData}
         countryMap={countryMap}
         selectedCountry={tappedCountry}
         onCountryClick={handleCountryClick}
+        onCountryHover={setHover}
+        getColor={intensity.color}
         isLoading={isLoading}
         svgRef={svgRef}
         gRef={gRef}
       />
-
     </div>
   );
 });

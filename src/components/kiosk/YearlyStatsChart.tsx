@@ -2,93 +2,112 @@ import { memo } from 'react';
 import type { YearlyStatsChartProps } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
 
+/**
+ * YearlyStatsChart — right-side slide-in drawer (was a floating popup).
+ *
+ * On desktop renders as a 360-wide drawer pinned to the right edge of
+ * the map container. On mobile (<768px) it slides up from the bottom
+ * as a sheet so it doesn't dominate the small viewport.
+ */
 const YearlyStatsChart = memo(function YearlyStatsChart({
   countryName,
   yearlyStats,
-  onClose
+  onClose,
 }: YearlyStatsChartProps) {
   if (yearlyStats.length === 0) return null;
 
-  const maxValue = Math.max(...yearlyStats.map(stat => stat.count));
-  const chartHeight = Math.min(yearlyStats.length * MAP_CONSTANTS.YEAR_CHART_BAR_HEIGHT, 300);
+  const maxValue = Math.max(...yearlyStats.map((s) => s.count));
+  const total = yearlyStats.reduce((sum, s) => sum + s.count, 0);
+  const firstYear = yearlyStats[0]?.year;
+  const lastYear = yearlyStats[yearlyStats.length - 1]?.year;
 
   return (
-    <div 
-      className="absolute top-6 right-4 z-50 bg-white text-black border border-gray-300 rounded-lg shadow px-4 py-4 w-[320px]"
-      style={{ height: `${MAP_CONSTANTS.YEARLY_CHART_HEIGHT_RATIO * 100}vh` }}
+    <aside
+      // Backdrop layer — only on mobile (acts as a tap-to-close scrim).
       role="region"
       aria-label={`Deployment statistics for ${countryName} by year`}
+      className="
+        absolute z-50 bg-white shadow-2xl
+        animate-[slideInRight_180ms_ease-out]
+        /* Mobile (bottom sheet) */
+        inset-x-0 bottom-0 max-h-[75%] rounded-t-2xl border-t border-slate-200
+        /* Desktop (right drawer) */
+        md:inset-x-auto md:bottom-auto md:top-0 md:right-0 md:h-full md:w-[360px]
+        md:rounded-t-none md:border-t-0 md:border-l md:border-slate-200
+        flex flex-col
+      "
     >
-      <div className="flex justify-between items-center mb-3">
-        <div className="text-md font-semibold">
-          Deployments in {countryName} by Year
+      {/* Header */}
+      <header className="flex items-start justify-between gap-3 px-5 py-4 border-b border-slate-200">
+        <div className="min-w-0">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
+            Deployments by Year
+          </p>
+          <h3 className="text-lg font-bold text-slate-900 truncate mt-0.5">
+            {countryName}
+          </h3>
+          <p className="text-xs text-slate-500 mt-1">
+            {firstYear} — {lastYear} · {total} total
+          </p>
         </div>
         <button
           onClick={onClose}
-          className={`text-gray-500 hover:text-gray-700 ${MAP_CONSTANTS.FOCUS_RING}`}
+          className={`flex-shrink-0 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center text-lg ${MAP_CONSTANTS.FOCUS_RING}`}
           aria-label="Close yearly statistics"
         >
           ✕
         </button>
-      </div>
-      
-      <div className="overflow-y-auto h-full">
-        <svg 
-          viewBox={`0 0 ${MAP_CONSTANTS.YEARLY_CHART_WIDTH} ${chartHeight}`} 
-          width="100%" 
-          height="100%"
-          role="img"
-          aria-label={`Bar chart showing deployments in ${countryName} by year`}
-        >
-          {yearlyStats.map((stat, i) => {
-            const barWidth = maxValue > 0 ? (stat.count / maxValue) * 200 : 0;
-            const y = i * MAP_CONSTANTS.YEAR_CHART_BAR_HEIGHT;
-            
+      </header>
+
+      {/* Body — horizontal bars per year, scrollable */}
+      <div className="flex-1 overflow-y-auto px-5 py-4">
+        <ul className="space-y-2.5" aria-label="Yearly deployment counts">
+          {yearlyStats.map((stat) => {
+            const pct = maxValue > 0 ? (stat.count / maxValue) * 100 : 0;
             return (
-              <g key={stat.year} transform={`translate(0,${y})`}>
-                {/* Year label */}
-                <text 
-                  x={0} 
-                  y={15} 
-                  fontSize="10" 
-                  fill={MAP_CONSTANTS.COLORS.TEXT_SECONDARY}
-                  className="font-medium"
-                >
+              <li
+                key={stat.year}
+                className="grid grid-cols-[44px_1fr_auto] items-center gap-3"
+              >
+                <span className="text-sm font-medium text-slate-600 tabular-nums">
                   {stat.year}
-                </text>
-                
-                {/* Bar */}
-                <rect 
-                  x={50} 
-                  y={4} 
-                  height={12} 
-                  width={Math.max(barWidth, 2)} 
-                  fill={MAP_CONSTANTS.COLORS.CHART_BAR}
-                  rx={2}
-                  className="transition-all duration-200"
-                />
-                
-                {/* Value label */}
-                <text 
-                  x={50 + barWidth + 8} 
-                  y={14} 
-                  fontSize="10" 
-                  fill={MAP_CONSTANTS.COLORS.TEXT_PRIMARY}
-                  className="font-medium"
-                >
+                </span>
+                <div className="h-5 rounded bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full rounded transition-all duration-300"
+                    style={{
+                      width: `${Math.max(pct, 2)}%`,
+                      backgroundColor: MAP_CONSTANTS.COLORS.CHART_BAR,
+                    }}
+                    aria-label={`${stat.count} deployments in ${stat.year}`}
+                  />
+                </div>
+                <span className="text-sm font-semibold text-slate-900 tabular-nums w-10 text-right">
                   {stat.count}
-                </text>
-              </g>
+                </span>
+              </li>
             );
           })}
-        </svg>
+        </ul>
       </div>
-      
-      {/* Summary footer */}
-      <div className="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-600">
-        Total: {yearlyStats.reduce((sum, stat) => sum + stat.count, 0)} deployments
-      </div>
-    </div>
+
+      <footer className="px-5 py-3 border-t border-slate-200 text-xs text-slate-500">
+        Tap another country, or hit Esc to close.
+      </footer>
+
+      <style jsx>{`
+        @keyframes slideInRight {
+          from {
+            transform: translateX(20px);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
+    </aside>
   );
 });
 

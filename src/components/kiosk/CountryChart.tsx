@@ -1,106 +1,122 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import type { CountryChartProps } from '@/types/MapTypes';
 import { APP_CONSTANTS } from '@/constants/app';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
 
+const TOP_N_DEFAULT = 5;
+
+/**
+ * CountryChart — horizontal bar chart of country deployment counts.
+ *
+ * Default view shows the top 5 by count. "Show all" expands to the
+ * existing 15-country cap; "Show top 5" collapses back. Renders as a
+ * compact pill anchored to the bottom-left of the map container.
+ */
 const CountryChart = memo(function CountryChart({
   countries,
   countryLabels,
   selectedCountry,
-  onCountryClick
+  onCountryClick,
 }: CountryChartProps) {
+  const [expanded, setExpanded] = useState(false);
+
   if (countries.length === 0) return null;
 
   const maxCount = countries[0][1];
-  const visibleCountries = countries.slice(0, APP_CONSTANTS.MAX_CHART_COUNTRIES);
-  const remainingCount = countries.length - APP_CONSTANTS.MAX_CHART_COUNTRIES;
+  const limit = expanded ? APP_CONSTANTS.MAX_CHART_COUNTRIES : TOP_N_DEFAULT;
+  const visibleCountries = countries.slice(0, limit);
+  const moreCount = countries.length - visibleCountries.length;
 
   return (
-    <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-40 bg-white/95 backdrop-blur-md text-black border border-gray-200 rounded-lg shadow px-6 py-4 max-w-[90vw] w-fit">
-      <div className="text-sm font-medium mb-4 text-center">
-        Deployments by Country
-      </div>
-      
-      <div className="overflow-x-auto">
-        <div className="flex items-end gap-3 min-w-fit px-2">
-          {visibleCountries.map(([country, count]) => {
-            const barHeight = Math.max(
-              (count / maxCount) * APP_CONSTANTS.MAX_BAR_HEIGHT, 
-              APP_CONSTANTS.MIN_BAR_HEIGHT
-            );
-            const isSelected = selectedCountry === country;
-            
-            return (
-              <div 
-                key={country} 
-                className="flex flex-col items-center cursor-pointer group transition-all duration-200 hover:scale-105"
-                onClick={() => onCountryClick(selectedCountry === country ? null : country)}
-                role="button"
-                tabIndex={0}
-                aria-label={`${countryLabels[country] || country}: ${count} deployments. Click to ${isSelected ? 'deselect' : 'select'}.`}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onCountryClick(selectedCountry === country ? null : country);
-                  }
-                }}
-              >
-                <div className="relative">
-                  {/* Tooltip */}
-                  {isSelected && (
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-                      {count} deployment{count !== 1 ? 's' : ''}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-gray-800"></div>
-                    </div>
-                  )}
-                  
-                  {/* Bar */}
-                  <div
-                    className={`w-8 rounded-t transition-all duration-200 ${MAP_CONSTANTS.FOCUS_RING} ${
-                      isSelected 
-                        ? 'bg-green-500 shadow-lg ring-2 ring-green-300' 
-                        : 'bg-green-400 group-hover:bg-green-500'
-                    }`}
-                    style={{ height: `${barHeight}px` }}
-                    role="img"
-                    aria-label={`Bar representing ${count} deployments`}
-                  />
-                </div>
-                
-                {/* Country label and count */}
-                <div className="mt-2 text-xs text-center max-w-[60px] leading-tight">
-                  <div className="font-medium truncate" title={countryLabels[country] || country}>
-                    {countryLabels[country] || country}
-                  </div>
-                  <div className={`${isSelected ? 'text-green-600 font-bold' : 'text-gray-600'}`}>
-                    {count}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-          
-          {/* "More countries" indicator */}
-          {remainingCount > 0 && (
-            <div 
-              className="flex flex-col items-center justify-end text-gray-500"
-              role="status"
-              aria-label={`${remainingCount} more countries with deployments`}
-            >
-              <div className="w-8 h-4 bg-gray-200 rounded-t opacity-60" />
-              <div className="mt-2 text-xs text-center">
-                <div className="font-medium">+{remainingCount}</div>
-                <div className="text-gray-400">more</div>
-              </div>
-            </div>
-          )}
+    <div
+      className="
+        absolute z-40
+        bottom-4 left-4
+        bg-white/95 backdrop-blur-md text-slate-900
+        border border-slate-200 rounded-xl shadow-lg
+        px-4 py-3
+        w-[280px] md:w-[320px]
+      "
+      role="region"
+      aria-label="Top countries by deployments"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">
+            By Country
+          </p>
+          <p className="text-sm font-semibold text-slate-900">
+            {expanded ? 'All deployments' : 'Top 5'}
+          </p>
         </div>
+        {countries.length > TOP_N_DEFAULT && (
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className={`text-xs font-medium text-blue-600 hover:text-blue-800 ${MAP_CONSTANTS.FOCUS_RING} rounded px-1`}
+          >
+            {expanded ? 'Top 5' : `Show all (${countries.length})`}
+          </button>
+        )}
       </div>
-      
-      {/* Chart summary */}
-      <div className="mt-3 pt-2 border-t border-gray-200 text-xs text-gray-600 text-center">
-        Showing top {Math.min(countries.length, APP_CONSTANTS.MAX_CHART_COUNTRIES)} of {countries.length} countries
-      </div>
+
+      <ul className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1">
+        {visibleCountries.map(([country, count]) => {
+          const pct = maxCount > 0 ? (count / maxCount) * 100 : 0;
+          const isSelected = selectedCountry === country;
+          const label = countryLabels[country] || country;
+
+          return (
+            <li key={country}>
+              <button
+                type="button"
+                onClick={() =>
+                  onCountryClick(selectedCountry === country ? null : country)
+                }
+                className={`w-full grid grid-cols-[1fr_auto] items-center gap-2 px-2 py-1.5 rounded-md text-left hover:bg-slate-100 ${MAP_CONSTANTS.FOCUS_RING} ${
+                  isSelected ? 'bg-blue-50 ring-1 ring-blue-200' : ''
+                }`}
+                aria-label={`${label}: ${count} deployment${count !== 1 ? 's' : ''}. ${isSelected ? 'Selected — click to deselect.' : 'Click to select.'}`}
+                aria-pressed={isSelected}
+              >
+                <div className="min-w-0">
+                  <div
+                    className={`text-xs font-medium truncate ${
+                      isSelected ? 'text-blue-900' : 'text-slate-700'
+                    }`}
+                    title={label}
+                  >
+                    {label}
+                  </div>
+                  <div className="h-1.5 mt-1 rounded-full bg-slate-100 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-200"
+                      style={{
+                        width: `${Math.max(pct, 4)}%`,
+                        backgroundColor: isSelected
+                          ? MAP_CONSTANTS.COLORS.CHART_BAR
+                          : '#60a5fa',
+                      }}
+                    />
+                  </div>
+                </div>
+                <div
+                  className={`text-xs tabular-nums font-semibold ${
+                    isSelected ? 'text-blue-700' : 'text-slate-700'
+                  }`}
+                >
+                  {count}
+                </div>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      {moreCount > 0 && !expanded && (
+        <p className="mt-2 pt-2 border-t border-slate-200 text-[11px] text-slate-500 text-center">
+          +{moreCount} more countries
+        </p>
+      )}
     </div>
   );
 });
