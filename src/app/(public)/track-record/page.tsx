@@ -62,20 +62,36 @@ export default function TrackRecordPage() {
             <p className="text-xs uppercase tracking-[0.3em] text-blue-600 font-semibold mb-3">
               Track Record
             </p>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.05] mb-4">
-              Every job. Every country. Since 2013.
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.05]">
+              Every Petromac job. Mapped.
             </h1>
-            <p className="text-lg text-slate-600">
-              From the first wireline run to thousands of deployments across
-              every major basin — every Petromac job, mapped.
-            </p>
           </div>
           <Link
             href="/success-stories/flipbook"
-            className="self-start md:self-end inline-flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-slate-300 text-slate-700 hover:border-blue-600 hover:text-blue-700 transition-colors font-medium whitespace-nowrap"
+            className="
+              self-start md:self-end inline-flex items-center gap-2 whitespace-nowrap
+              px-6 py-3 rounded-full font-semibold text-white
+              bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20
+              ring-1 ring-blue-900/10
+              transition-all hover:translate-y-[-1px] hover:shadow-xl
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+            "
           >
-            Success Stories
-            <span aria-hidden="true">→</span>
+            <span>Read the Success Stories</span>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
           </Link>
         </div>
       </section>
