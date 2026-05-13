@@ -44,9 +44,9 @@ export default function SoftwareHighlight() {
 
           {/* Copy */}
           <p className="text-slate-300 md:flex-1 md:max-w-xl text-base leading-relaxed">
-            Wireline job design and simulation — plan every run for SLB,
-            Halliburton, and Baker Hughes operations before you get to the
-            wellsite.
+            <span className="text-white font-semibold">No more spreadsheets and guesswork.</span>{" "}
+            Engineer every wireline run — simulate with confidence before the
+            rig clock starts.
           </p>
 
           {/* CTA */}

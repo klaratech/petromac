@@ -10,10 +10,6 @@ interface Stats {
   years: number;
 }
 
-// JobRecord has no Operator field, so we can't compute this from the
-// operations dataset. Adjust here when the real number is confirmed.
-const OPERATOR_COUNT = 30;
-
 export default function ProofSection() {
   const [stats, setStats] = useState<Stats>({ countries: 0, deployments: 0, years: 0 });
   const [loaded, setLoaded] = useState(false);
@@ -85,18 +81,19 @@ export default function ProofSection() {
         {/* Reach summary — replaces the placeholder logo strip. */}
         <div className="mt-16 pt-12 border-t border-slate-200">
           <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-            Used by all three major wireline service companies —{" "}
-            <span className="font-semibold text-slate-900">SLB</span>,{" "}
-            <span className="font-semibold text-slate-900">Halliburton</span>, and{" "}
-            <span className="font-semibold text-slate-900">Baker Hughes</span> —
+            Used by{" "}
+            <span className="font-semibold text-slate-900">
+              all three major wireline service companies
+            </span>{" "}
             and deployed with{" "}
             <span className="font-semibold text-slate-900">
-              {OPERATOR_COUNT}+ operators
+              major IOCs and NOCs
             </span>{" "}
             across{" "}
             <span className="font-semibold text-slate-900">
               {stats.countries}+ countries
-            </span>.
+            </span>
+            .
           </p>
         </div>
       </div>

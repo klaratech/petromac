@@ -56,10 +56,11 @@ export default function TrackRecordPage() {
   return (
     <main className="bg-slate-50">
       {/* Header band — constrained width */}
-      <section className="container mx-auto px-4 pt-8 pb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
-          <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight leading-[1.05] max-w-3xl md:whitespace-nowrap">
-            Every Petromac job. Mapped.
+      <section className="container mx-auto px-4 pt-12 pb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
+          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.05] max-w-3xl md:whitespace-nowrap">
+            Every Petromac job —{" "}
+            <span className="text-brand">Mapped</span>.
           </h1>
           <Link
             href="/success-stories/flipbook"
@@ -92,8 +93,8 @@ export default function TrackRecordPage() {
       </section>
 
       {/* Hero stats — 3 tiles, big bold numbers */}
-      <section className="container mx-auto px-4 pb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+      <section className="container mx-auto px-4 pb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
           <StatTile
             label="Deployments"
             value={stats?.deployments}
@@ -114,18 +115,18 @@ export default function TrackRecordPage() {
       </section>
 
       {/* Map — full bleed on large screens with a deep brand frame */}
-      <section className="bg-slate-900 pt-4 md:pt-6 pb-8 md:pb-10">
+      <section className="bg-slate-900 pt-6 md:pt-10 pb-12 md:pb-16">
         <div className="px-3 md:px-6 lg:px-10">
           <div className="relative w-full rounded-2xl overflow-hidden bg-white shadow-2xl ring-1 ring-slate-200">
             {error ? (
-              <div className="h-[80vh] flex flex-col items-center justify-center gap-3 p-6 text-center">
+              <div className="h-[75vh] flex flex-col items-center justify-center gap-3 p-6 text-center">
                 <h3 className="text-lg font-semibold text-red-600">
                   Couldn&apos;t load track record
                 </h3>
                 <p className="text-slate-600 max-w-md">{error}</p>
               </div>
             ) : !data ? (
-              <div className="h-[88vh] flex items-center justify-center text-slate-500" role="status">
+              <div className="h-[82vh] flex items-center justify-center text-slate-500" role="status">
                 Loading map data…
               </div>
             ) : (
@@ -133,7 +134,7 @@ export default function TrackRecordPage() {
                 data={data}
                 hideInlineStats
                 showSuccessStoriesLink={false}
-                className="relative w-full h-[85vh] md:h-[92vh] overflow-hidden bg-slate-50"
+                className="relative w-full h-[78vh] md:h-[85vh] overflow-hidden bg-slate-50"
               />
             )}
           </div>
@@ -156,9 +157,9 @@ function StatTile({
 }) {
   const display = value === undefined ? "—" : value.toLocaleString();
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 shadow-sm px-5 py-4 md:py-5 flex items-baseline justify-between gap-3 md:block">
+    <div className="rounded-2xl bg-white border border-slate-200 shadow-sm px-6 py-6 md:py-8">
       <p
-        className={`font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-brand tabular-nums leading-none transition-opacity duration-500 ${
+        className={`font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-brand tabular-nums leading-none transition-opacity duration-500 ${
           loading ? "opacity-30" : "opacity-100"
         }`}
         aria-busy={loading}
@@ -166,7 +167,7 @@ function StatTile({
         {display}
         {value !== undefined && suffix}
       </p>
-      <p className="md:mt-2 text-[11px] md:text-xs uppercase tracking-[0.18em] text-slate-500 font-medium">
+      <p className="mt-3 text-xs md:text-sm uppercase tracking-[0.18em] text-slate-500 font-medium">
         {label}
       </p>
     </div>

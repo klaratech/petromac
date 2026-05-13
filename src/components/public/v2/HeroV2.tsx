@@ -39,17 +39,10 @@ export default function HeroV2() {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 max-w-5xl mx-auto">
         <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] mb-6">
-          Wireline logging,{" "}
-          <span className="relative inline-block">
-            <span className="relative z-10">optimised</span>
-            {/* Brand-color underline accent — single colored beat in the
-                headline so the line reads as intentional, not generic. */}
-            <span
-              aria-hidden="true"
-              className="absolute left-0 right-0 bottom-[0.08em] h-[0.12em] bg-blue-500 rounded-full"
-            />
-          </span>
-          .
+          {/* Em-dash + colored second clause makes the headline read as a
+              deliberate two-beat tagline. The brighter blue 'Optimised'
+              ties to the primary CTA without underlining the word. */}
+          Wireline logging — <span className="text-blue-400">Optimised</span>.
         </h1>
         <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-10">
           Better data. Lower risk. Faster operations.
