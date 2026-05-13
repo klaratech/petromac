@@ -42,11 +42,8 @@ export default function HeroV2() {
         <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] mb-6">
           Wireline logging, optimised.
         </h1>
-        <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-4">
+        <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-10">
           Better data. Lower risk. More efficient operations.
-        </p>
-        <p className="text-sm md:text-base text-slate-300/80 max-w-2xl mb-10">
-          Hardware and planning software, validated in the field.
         </p>
       </div>
     </section>

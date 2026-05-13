@@ -155,3 +155,7 @@ ICOTA*.pptx
 
 # Office lockfiles
 ~$*
+
+# Raw video exports from the ICOTA deck — must be transcoded before commit.
+# Keep the small, web-optimized versions only.
+public/videos/DifferentialSticking_*.mp4

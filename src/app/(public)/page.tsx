@@ -16,8 +16,8 @@ export default function HomePage() {
     <>
       <HeroV2 />
       <ChallengeSelector />
-      <FeaturedProducts />
       <SoftwareHighlight />
+      <FeaturedProducts />
       <ProofSection />
       <div id="contact">
         <ContactForm />

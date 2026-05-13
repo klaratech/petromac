@@ -9,6 +9,10 @@ interface Challenge {
   id: string;
   title: string;
   image: string;
+  /** When set, the card plays this video (autoplay, muted, loop) in the
+   *  image area instead of the static image. `image` is still used as the
+   *  poster so something renders while the video loads. */
+  video?: string;
   bullets: string[];
 }
 
@@ -17,6 +21,10 @@ const challenges: Challenge[] = [
     id: "stuck-tools",
     title: "Stuck Tools",
     image: "/images/sticking.jpg",
+    // Transcoded from DifferentialSticking_13May.mp4 (257 MB → 3.6 MB).
+    // 854x480 H.264 CRF 30, no audio, faststart. Source kept locally only
+    // (gitignored). Re-transcode any time the source updates.
+    video: "/videos/differential-sticking.mp4",
     bullets: [
       "Conveyance past ledges and tight spots in high-deviation wells",
       "Pathfinder hole finder helps logging tools navigate restrictions",
@@ -24,9 +32,10 @@ const challenges: Challenge[] = [
     ],
   },
   {
-    id: "incomplete-runs",
-    title: "Incomplete Runs",
+    id: "incomplete-operations",
+    title: "Incomplete Operations",
     image: "/images/sampling.jpg",
+    video: "/videos/pf.mp4",
     bullets: [
       "Reach total depth on the first attempt — no costly contingency runs",
       "Confidence to log full intervals even with risky access",
@@ -54,13 +63,14 @@ const challenges: Challenge[] = [
     ],
   },
   {
-    id: "cased-hole-restrictions",
-    title: "Cased Hole Restrictions",
+    id: "cased-hole-centralization",
+    title: "Cased Hole Centralization",
     image: "/images/ledges.jpg",
+    video: "/videos/helix.mp4",
     bullets: [
-      "HELIX enters tighter restrictions than conventional centralisers",
-      "Improved leverage at smaller casing IDs",
-      "Lower drag = lower mechanical risk in restricted intervals",
+      "HELIX maintains centralisation across the full casing range",
+      "Improved leverage and lower drag than conventional centralisers",
+      "Cleaner CBL, sonic, and density logs through optimal standoff",
     ],
   },
   {
@@ -115,14 +125,27 @@ export default function ChallengeSelector() {
                   }
                 }}
               >
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={c.image}
-                    alt={c.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
+                <div className="relative h-48 overflow-hidden bg-slate-800">
+                  {c.video ? (
+                    <video
+                      src={c.video}
+                      poster={c.image}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Image
+                      src={c.image}
+                      alt={c.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <h3 className="absolute bottom-4 left-4 text-xl font-bold text-white font-heading">
                     {c.title}
