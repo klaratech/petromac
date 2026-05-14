@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function SimulationHero() {
   return (
-    <section className="relative overflow-hidden bg-slate-950 px-6 py-16 md:py-20">
+    <section className="relative overflow-hidden bg-slate-950 px-6 py-14 md:py-16">
       <Image
         src="/images/tv-bg.png"
         alt=""
@@ -19,14 +19,14 @@ export default function SimulationHero() {
         loop
         playsInline
         preload="metadata"
-        className="absolute inset-0 hidden h-full w-full object-cover opacity-30 md:block"
+        className="absolute inset-0 hidden h-full w-full object-cover opacity-25 md:block"
       >
         <source src="/videos/WirelineExpress.mp4" type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-slate-950/70 to-slate-950" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-slate-950/75 to-slate-950" />
 
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="max-w-3xl">
+      <div className="relative z-10 mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.75fr] lg:items-end">
+        <div>
           <div className="mb-6 flex items-center gap-4">
             <span className="relative flex h-12 w-12 shrink-0">
               <Image
@@ -39,7 +39,7 @@ export default function SimulationHero() {
               />
             </span>
             <div>
-              <p className="text-xs uppercase text-blue-200 font-semibold">
+              <p className="text-xs font-semibold uppercase text-blue-200">
                 Athena&trade; by Petromac
               </p>
               <p className="text-sm text-slate-300">
@@ -48,46 +48,39 @@ export default function SimulationHero() {
             </div>
           </div>
 
-          <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.05] mb-6">
-            Predict sticking risk before the tool enters the hole.
+          <h1 className="mb-5 max-w-4xl font-heading text-4xl font-bold leading-[1.04] text-white sm:text-5xl md:text-6xl">
+            Not just hardware. A planning partner before the run.
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-100 max-w-2xl mb-9 leading-relaxed">
-            Athena&trade; combines Petromac engineering, Hermes&trade; tension
-            simulation, and field-backed configuration logic so teams can rehearse
-            the run before the truck moves.
+          <p className="mb-8 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl">
+            Predict sticking risk, compare conveyance scenarios, and choose a
+            defensible job plan before the tool enters the hole.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
             <Link
               href="#contact"
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-7 py-3 font-semibold text-white shadow-lg shadow-blue-900/30 transition-all hover:bg-brand/90 hover:translate-y-[-1px] focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black"
+              className="inline-flex items-center justify-center rounded-full bg-brand px-7 py-3 font-semibold text-white shadow-lg shadow-blue-900/30 transition-all hover:-translate-y-0.5 hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black"
             >
               Request a simulation
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
             </Link>
             <Link
-              href="#simulation-output"
+              href="#athena-demo"
               className="inline-flex items-center justify-center rounded-full border-2 border-white/60 px-7 py-3 font-semibold text-white transition-colors hover:bg-white hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
             >
-              See decision outputs
+              See Athena in action
             </Link>
           </div>
         </div>
 
-        <div className="mt-14 grid max-w-4xl grid-cols-1 gap-px overflow-hidden rounded-lg bg-white/15 sm:grid-cols-3">
-          {[
-            ["Model", "well path, tool string, friction"],
-            ["Predict", "tension, drag, sticking risk"],
-            ["Decide", "configuration, limits, contingency"],
-          ].map(([label, text]) => (
-            <div key={label} className="bg-slate-950/75 p-4">
-              <p className="font-heading text-lg font-bold text-white">{label}</p>
-              <p className="mt-1 text-sm text-slate-300">{text}</p>
-            </div>
-          ))}
+        <div className="border-l border-white/20 pl-5 text-slate-200 lg:mb-2">
+          <p className="font-heading text-xl font-bold text-white">
+            Before the truck moves.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">
+            Athena brings Petromac engineering, Hermes&trade; simulation, and
+            field-backed configuration logic into the planning conversation.
+          </p>
         </div>
       </div>
     </section>

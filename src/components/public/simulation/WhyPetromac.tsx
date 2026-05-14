@@ -1,62 +1,65 @@
 import Link from "next/link";
 
-const proofPoints = [
-  "Engineering-led planning support",
-  "Field-backed configuration logic",
-  "Hardware, simulation, and job design in one conversation",
+const points = [
+  {
+    title: "Vendor-neutral",
+    text: "Planning intelligence that supports major wireline workflows without tying the recommendation to one logging provider.",
+  },
+  {
+    title: "Engineering-led",
+    text: "Hermes simulation is paired with Petromac field experience and configuration logic.",
+  },
+  {
+    title: "Operationally useful",
+    text: "Outputs are built around what changes the job: reach margin, risk intervals, configuration, and contingencies.",
+  },
 ];
 
 export default function WhyPetromac() {
   return (
-    <section className="bg-white px-6 py-16 md:py-20">
-      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_0.85fr] lg:items-center">
-        <div>
-          <p className="mb-3 text-xs uppercase text-brand font-semibold">
-            Planning partner
-          </p>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-5">
-            Not just hardware. Decision support before execution.
-          </h2>
-          <p className="text-lg text-slate-600 leading-relaxed">
-            Petromac pairs purpose-built conveyance technology with simulation
-            and field experience. The result is a practical recommendation: what
-            to run, where the risk sits, and what should trigger a change of plan.
-          </p>
+    <section className="bg-white px-6 py-12 md:py-16">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase text-brand">
+              Decision support layer
+            </p>
+            <h2 className="font-heading text-3xl font-bold text-slate-900 md:text-4xl">
+              Independent planning before hardware selection.
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-slate-600">
+              Athena sits above the equipment choice. It helps teams understand
+              risk first, then select the conveyance and centralisation package
+              that best reduces that risk.
+            </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/track-record"
-              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-brand px-6 py-3 font-semibold text-brand transition-colors hover:bg-brand hover:text-white focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
-            >
-              Explore track record
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-            <Link
-              href="/catalog"
-              className="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold text-slate-700 transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2"
-            >
-              Browse hardware
-            </Link>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/track-record"
+                className="inline-flex items-center justify-center rounded-full border-2 border-brand px-6 py-3 font-semibold text-brand transition-colors hover:bg-brand hover:text-white focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
+              >
+                Explore track record
+              </Link>
+              <Link
+                href="/catalog"
+                className="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold text-slate-700 transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2"
+              >
+                Browse hardware
+              </Link>
+            </div>
           </div>
-        </div>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
-          <h3 className="font-heading text-xl font-bold text-slate-900">
-            Credibility signals
-          </h3>
-          <ul className="mt-5 space-y-4">
-            {proofPoints.map((point) => (
-              <li key={point} className="flex gap-3 text-slate-700">
-                <span className="text-brand mt-1 shrink-0">&#x2713;</span>
-                <span>{point}</span>
-              </li>
+          <div className="grid gap-px overflow-hidden rounded-lg bg-slate-200 md:grid-cols-3">
+            {points.map((point) => (
+              <div key={point.title} className="bg-slate-50 p-5">
+                <h3 className="font-heading text-lg font-bold text-slate-900">
+                  {point.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                  {point.text}
+                </p>
+              </div>
             ))}
-          </ul>
-          <div className="mt-6 border-t border-slate-200 pt-5 text-sm text-slate-600">
-            Compatible planning workflows for all three major wireline providers,
-            with final constraints validated during the simulation request.
           </div>
         </div>
       </div>
