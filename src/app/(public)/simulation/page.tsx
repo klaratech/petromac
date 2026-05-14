@@ -1,6 +1,5 @@
 import SimulationHero from "@/components/public/simulation/SimulationHero";
 import AthenaInAction from "@/components/public/simulation/AthenaInAction";
-import WhatAthenaDoes from "@/components/public/simulation/WhatAthenaDoes";
 import WhyPetromac from "@/components/public/simulation/WhyPetromac";
 import ContactForm from "@/components/public/ContactForm";
 
@@ -14,7 +13,6 @@ export default function SimulationPage() {
   return (
     <>
       <SimulationHero />
-      <WhatAthenaDoes />
       <AthenaInAction />
       <WhyPetromac />
       <div id="contact">
