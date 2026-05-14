@@ -49,6 +49,11 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   const [tappedCountry, setTappedCountry] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [hover, setHover] = useState<HoverPayload | null>(null);
+  // One-time guard so the selection is seeded only when the data first
+  // loads — NOT every time the user changes the selection. Previously
+  // this effect re-ran on `selectedSystems.length` and re-selected every
+  // system whenever the array went empty, which made "Clear" impossible.
+  const seededRef = useRef(false);
 
   const { worldData, isLoading: isLoadingMap, error: mapError, retry: retryMap } = useMapData();
   const { countryLabels, isLoading: isLoadingLabels, error: labelsError } = useCountryLabels();
@@ -60,7 +65,8 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   }, [data]);
 
   useEffect(() => {
-    if (selectedSystems.length > 0 || systemOptions.length === 0) return;
+    if (seededRef.current || systemOptions.length === 0) return;
+    seededRef.current = true;
     if (initialSystem) {
       const matches = systemOptions.filter((s) =>
         s.toLowerCase().startsWith(initialSystem.toLowerCase()),
@@ -69,7 +75,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
     } else {
       setSelectedSystems(systemOptions);
     }
-  }, [initialSystem, systemOptions, selectedSystems.length]);
+  }, [initialSystem, systemOptions]);
 
   const processedData: ProcessedMapData = useMemo(
     () => processMapData(data, debouncedSelectedSystems),
