@@ -126,7 +126,7 @@ export default function TermsPage() {
           </p>
 
           <p className="text-sm text-gray-600 mt-8 pt-8 border-t border-gray-200">
-            Last updated: 30 September 2025 Version 1.2
+            Last updated: 14 May 2026 Version 1.3
           </p>
         </div>
       </div>

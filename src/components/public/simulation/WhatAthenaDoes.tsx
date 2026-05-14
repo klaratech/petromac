@@ -1,61 +1,57 @@
 const columns = [
   {
-    title: "Design",
+    title: "Inputs",
     bullets: [
-      "Build configurations for conveyance, orientation, and centralization",
-      "Compare options by risk, friction, and operational constraints",
-      "Document decisions for the program and well file",
+      "Well trajectory and restriction profile",
+      "Tool string, conveyance, and centralisation options",
+      "Friction, cable, access, and operational limits",
     ],
   },
   {
-    title: "Simulate",
-    subtitle: "Powered by Hermes\u2122",
+    title: "Outputs",
     bullets: [
-      "Run downhole tension/drag simulations with Hermes\u2122",
-      "Identify pass/fail envelopes and contingency triggers",
-      "Pressure-test assumptions before the job",
+      "Tension vs depth profiles from Hermes",
+      "Pass/fail envelope and limiting intervals",
+      "Recommended configuration with alternates",
     ],
   },
   {
-    title: "Execute",
+    title: "Decisions",
     bullets: [
-      "Generate a run-ready configuration summary",
-      "Align tool placement with objectives (reach TD / stable standoff / sample quality)",
-      "Shorten the loop between planning and field execution",
+      "Proceed, revise, or add contingency",
+      "Choose hardware by risk reduction, not habit",
+      "Align planning, crew, and client expectations",
     ],
   },
 ];
 
 export default function WhatAthenaDoes() {
   return (
-    <section className="py-20 px-6 bg-slate-900">
+    <section className="bg-slate-950 px-6 py-16 md:py-20">
       <div className="max-w-6xl mx-auto">
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4">
-          From &ldquo;should work&rdquo; to &ldquo;will work.&rdquo;
-        </h2>
-        <p className="text-slate-300 max-w-3xl mb-14 text-lg">
-          Athena helps wireline teams choose the right configuration, predict
-          downhole behavior, and de-risk execution&mdash;before you mobilize.
-          It&rsquo;s built for the failure modes that cost the most: inability to
-          reach TD, differential sticking, stick-slip, ledges/washouts, unstable
-          tool standoff, and poor data quality.
-        </p>
+        <div className="mb-10 max-w-3xl">
+          <p className="mb-3 text-xs uppercase text-blue-300 font-semibold">
+            Planning loop
+          </p>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-white mb-4">
+            From well data to operational decision.
+          </h2>
+          <p className="text-slate-300 text-lg leading-relaxed">
+            Athena shortens the path from simulation to action. Build the case,
+            run the scenarios, and leave with the decision points that matter on
+            the rig floor.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-px overflow-hidden rounded-lg bg-slate-700 md:grid-cols-3">
           {columns.map((col) => (
             <div
               key={col.title}
-              className="bg-slate-800/60 border border-slate-700 rounded-xl p-8"
+              className="bg-slate-900 p-6 md:p-7"
             >
-              <h3 className="font-heading text-xl font-bold text-white mb-1">
+              <h3 className="font-heading text-xl font-bold text-white mb-4">
                 {col.title}
               </h3>
-              {col.subtitle && (
-                <p className="text-brand text-sm font-medium mb-4">
-                  {col.subtitle}
-                </p>
-              )}
-              {!col.subtitle && <div className="mb-4" />}
               <ul className="space-y-3">
                 {col.bullets.map((b) => (
                   <li key={b} className="flex gap-3 text-slate-300 text-sm leading-relaxed">
@@ -67,6 +63,11 @@ export default function WhatAthenaDoes() {
             </div>
           ))}
         </div>
+
+        <p className="mt-8 max-w-3xl text-slate-400">
+          Athena is vendor-neutral at the planning layer while supporting the
+          workflows used by the major wireline service companies.
+        </p>
       </div>
     </section>
   );

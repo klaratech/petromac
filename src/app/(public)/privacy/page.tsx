@@ -122,7 +122,7 @@ export default function PrivacyPage() {
           </p>
 
           <p className="text-sm text-gray-600 mt-8 pt-8 border-t border-gray-200">
-            Last Updated: 30-Sep-2025, Version 2.0
+            Last Updated: 14-May-2026, Version 2.1
           </p>
         </div>
       </div>
