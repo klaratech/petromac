@@ -7,20 +7,29 @@ interface Patent {
   title: string;
   number: string;
   jurisdiction: string;
-  link: string;
+  /** Link to the granted-patent PDF. Optional — patents granted in the
+   *  most recent update don't have a published PDF yet, and render as
+   *  plain text until one is available. */
+  link?: string;
 }
 
 interface Device {
-  family: "Wireline Express" | "Focus";
+  /** Broad product line. Note: this is NOT a "patent family" in the legal
+   *  sense — per IP counsel, a category can contain multiple legally
+   *  unrelated patent families. */
+  productLine: "Wireline Express" | "Focus";
+  /** The device category (one of the 9 shown on the page). */
   device: string;
   summary: string;
   patents: Patent[];
 }
 
+// Source of truth: "2026-05-14 List of patents for Website.docx" (IP counsel).
+// 44 granted patents across 9 device categories.
 const DEVICES: Device[] = [
   {
-    family: "Wireline Express",
-    device: "Tool Taxi & Guide",
+    productLine: "Wireline Express",
+    device: "Tool Taxi (TTB, TTA)",
     summary:
       "The core Wireline Express conveyance technology — sensor transportation, guide devices, and the Lubrication Delivery system. The foundation of the open-hole gravity-descent record.",
     patents: [
@@ -30,45 +39,47 @@ const DEVICES: Device[] = [
       { title: "Sensor Transportation Apparatus and Guide Device", number: "US11,047,191", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11047191B1.pdf" },
       { title: "Sensor Transportation Apparatus – \"Lubrication Delivery system\"", number: "US11,111,774", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11111774B2.pdf" },
       { title: "Orientation apparatus and hole finder device for a wireline logging tool string", number: "US11,371,306", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11371306B2.pdf" },
-      { title: "Sensor transportation apparatus for a wireline logging toolstring", number: "US11,873,692", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11873692B2.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "UAE-7283", jurisdiction: "UAE", link: "https://www.petromac.co.nz/pdf/UAE-7283.pdf" },
+      { title: "Sensor transportation apparatus for a wireline logging tool string", number: "US11,873,692", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11873692B2.pdf" },
+      { title: "Sensor transportation apparatus for a wireline logging tool string", number: "US12,320,216", jurisdiction: "USA" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "UAE 7283", jurisdiction: "UAE", link: "https://www.petromac.co.nz/pdf/UAE-7283.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-169945", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-169945%20B.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-195422-A", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-195422-A.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP2920405", jurisdiction: "France, Netherlands, Norway, UK", link: "https://www.petromac.co.nz/pdf/EP2920405B1.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP2920405", jurisdiction: "France", link: "https://www.petromac.co.nz/pdf/EP2920405B1.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "EP3726001", jurisdiction: "Denmark, Italy, Norway, UK", link: "https://www.petromac.co.nz/pdf/EP3726001B1.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "Eurasia 031097", jurisdiction: "Russia, Armenia, Azerbaijan, Belarus, Kazakhstan, Kyrgyzstan, Tajikistan, Turkmenistan", link: "https://www.petromac.co.nz/pdf/EA031097B1.pdf" },
-      { title: "Un dispositivo guía para uso en equipos de sensores de guía en Aplicaciones de registro por cable de perforación", number: "NC2020/0008570", jurisdiction: "Colombia", link: "https://www.petromac.co.nz/pdf/NC202_0008570.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "Eurasia 031097", jurisdiction: "Azerbaijan, Kazakhstan, Turkmenistan", link: "https://www.petromac.co.nz/pdf/EA031097B1.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "ZL201380059792.3", jurisdiction: "China", link: "https://www.petromac.co.nz/pdf/CN104919132B.pdf" },
       { title: "Sensor Transportation Device - \"Guide Device\"", number: "ZL201810053768.3", jurisdiction: "China", link: "https://www.petromac.co.nz/pdf/CN108104751B.pdf" },
-      { title: "Aparelho de transporte... Guide device combination through a wellbore.", number: "BR 112015010666.8", jurisdiction: "Brazil", link: "https://www.petromac.co.nz/pdf/BR%20taxi.pdf" },
+      { title: "Transport apparatus for transporting a wireline logging tool and guide device combination through a wellbore", number: "BR 112015010666.8", jurisdiction: "Brazil", link: "https://www.petromac.co.nz/pdf/BR%20taxi.pdf" },
     ],
   },
   {
-    family: "Wireline Express",
+    productLine: "Wireline Express",
     device: "Pathfinder",
     summary:
       "Universal hole finder for navigating restrictions, ledges, and washouts in high-deviation wells.",
     patents: [
       { title: "Guide Device", number: "US11,371,296", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11371296B2.pdf" },
-      { title: "A device for centering a sensor assembly in a wellbore", number: "US12,116,850", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US12116850B1.pdf" },
-      { title: "A Guide Device", number: "MY-203027-A", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-203027-A.pdf" },
       { title: "A Guide Device", number: "GB2583249", jurisdiction: "UK", link: "https://www.petromac.co.nz/pdf/GB2583249B.pdf" },
-      { title: "Guide Device", number: "CA3085434", jurisdiction: "Canada", link: "https://www.petromac.co.nz/pdf/CA3085434 Granted specification.pdf" },
+      { title: "A Guide Device", number: "UAE P9643", jurisdiction: "UAE" },
+      { title: "A Guide Device", number: "MY-203027-A", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-203027-A.pdf" },
+      { title: "Un dispositivo guía para uso en equipos de sensores de guía en Aplicaciones de registro por cable de perforación", number: "NC2020/0008570", jurisdiction: "Colombia", link: "https://www.petromac.co.nz/pdf/NC202_0008570.pdf" },
+      { title: "A Guide Device", number: "CA3085434", jurisdiction: "Canada", link: "https://www.petromac.co.nz/pdf/CA3085434 Granted specification.pdf" },
       { title: "Guide Device", number: "AU2019205752", jurisdiction: "Australia", link: "https://www.petromac.co.nz/pdf/AU2019205752B2.pdf" },
     ],
   },
   {
-    family: "Wireline Express",
-    device: "Wireline Express — Cased Hole",
+    productLine: "Wireline Express",
+    device: "Cased Hole",
     summary:
       "Cased-hole adaptation of the conveyance system for in-casing logging operations.",
     patents: [
-      { title: "Sensor transportation device", number: "US11,933,160", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11933160B1.pdf" },
-      { title: "Toolstring transportation apparatus", number: "US11,970,914", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11970914.pdf" },
+      { title: "Sensor Transportation Device", number: "US11,933,160", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11933160B1.pdf" },
+      { title: "Tool string transportation apparatus", number: "US11,970,914", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11970914.pdf" },
+      { title: "Sensor Transportation Device", number: "US12,352,155", jurisdiction: "USA" },
     ],
   },
   {
-    family: "Focus",
+    productLine: "Focus",
     device: "Helix Centraliser (CX7, CX9, CX13)",
     summary:
       "World-first open-hole roller centraliser. Improved leverage geometry for entering restrictions and maintaining centralisation across a wide casing range.",
@@ -76,12 +87,16 @@ const DEVICES: Device[] = [
       { title: "Device for centering a sensor assembly in a bore", number: "US10,947,791", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US10947791B1.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "US11,913,291", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11913291B2.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "US12,281,525", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US12281525.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "US12,560,033", jurisdiction: "USA" },
       { title: "Device for centering sensor assembly in a bore", number: "SA 16064", jurisdiction: "Saudi Arabia", link: "https://www.petromac.co.nz/pdf/SA16064.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "GB2611986", jurisdiction: "UK", link: "https://www.petromac.co.nz/pdf/GB2611986.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "NO349155", jurisdiction: "Norway" },
+      { title: "Device for centering sensor assembly in a bore", number: "CN116034206", jurisdiction: "China" },
+      { title: "Device for centering sensor assembly in a bore", number: "AU2021320591", jurisdiction: "Australia" },
     ],
   },
   {
-    family: "Focus",
+    productLine: "Focus",
     device: "Rocker Centraliser (CRU, CRIL)",
     summary:
       "Synchronised rocker-arm mechanism for centralisation in small tubing and casing sizes where conventional centralisers lose leverage.",
@@ -91,7 +106,7 @@ const DEVICES: Device[] = [
     ],
   },
   {
-    family: "Focus",
+    productLine: "Focus",
     device: "Adjustable Centraliser (CA7)",
     summary:
       "Field-adjustable centraliser geometry for varied wellbore conditions in a single run.",
@@ -100,7 +115,7 @@ const DEVICES: Device[] = [
     ],
   },
   {
-    family: "Focus",
+    productLine: "Focus",
     device: "Parallelogram & Compact Spring Centraliser (CP12)",
     summary:
       "Parallelogram-linkage and compact-spring mechanisms for open-hole centralisation in larger boreholes.",
@@ -109,12 +124,23 @@ const DEVICES: Device[] = [
     ],
   },
   {
-    family: "Focus",
+    productLine: "Focus",
     device: "Co-pivot Centraliser (CP8)",
     summary:
       "Co-pivot mechanism for centralisation in tight bores where pivot-on-same-side geometry constrains travel.",
     patents: [
       { title: "Device for centering sensor assembly in a bore – \"Co-pivot Centraliser\"", number: "US11,713,627", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11713627B1.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "US12,410,664", jurisdiction: "USA" },
+    ],
+  },
+  {
+    productLine: "Focus",
+    device: "Other Centering Devices",
+    summary:
+      "Additional centralisation technologies — including bowspring-type devices — that fall outside the primary centraliser categories.",
+    patents: [
+      { title: "A device for centering a sensor assembly in a wellbore", number: "US12,116,850", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US12116850B1.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "US12,607,075", jurisdiction: "USA" },
     ],
   },
 ];
@@ -188,7 +214,7 @@ export default function PatentsClient() {
         <p className="text-base md:text-lg text-slate-600 leading-relaxed mb-6 max-w-3xl">
           Petromac&apos;s technologies are protected by a diverse portfolio of
           granted patents. {totalPatents} patents across {DEVICES.length}{" "}
-          device families are listed below.
+          device categories are listed below.
         </p>
 
         {/* Legal note — surfaced above the table so visitors see it first. */}
@@ -237,7 +263,7 @@ export default function PatentsClient() {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider"
                   >
-                    Family
+                    Product line
                   </th>
                   <th
                     scope="col"
@@ -324,12 +350,12 @@ function SummaryRow({
         <td className="px-6 py-4 text-sm text-slate-700 whitespace-nowrap align-top">
           <span
             className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-              row.family === "Wireline Express"
+              row.productLine === "Wireline Express"
                 ? "bg-blue-100 text-blue-800"
                 : "bg-emerald-100 text-emerald-800"
             }`}
           >
-            {row.family}
+            {row.productLine}
           </span>
         </td>
         <td className="px-6 py-4 text-sm text-slate-900 font-semibold text-right tabular-nums align-top">
@@ -382,15 +408,22 @@ function SummaryRow({
                       {p.title}
                     </td>
                     <td className="px-4 py-3 text-sm whitespace-nowrap">
-                      <a
-                        href={p.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-brand hover:text-brand/80 hover:underline font-medium"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {p.number}
-                      </a>
+                      {p.link ? (
+                        <a
+                          href={p.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand hover:text-brand/80 hover:underline font-medium"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {p.number}
+                        </a>
+                      ) : (
+                        // Recently granted — PDF not published yet.
+                        <span className="text-slate-700 font-medium">
+                          {p.number}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-sm text-slate-700">
                       {p.jurisdiction}
