@@ -10,119 +10,169 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-6 py-16">
         <h1 className="text-4xl font-bold text-brand mb-8">Privacy Policy</h1>
-        
+
         <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
           <p>
-            We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.
+            This Privacy Policy explains how Petromac collects, uses, stores, and
+            shares personal information through this website, including public
+            pages, contact forms, document email tools, and staff intranet
+            features.
           </p>
 
           <p>
-            This Privacy Policy governs the privacy policies and practices of our Website, located at www.petromac.co.nz. Please read our Privacy Policy carefully as it will help you make informed decisions about sharing your personal information with us.
+            Petromac is based in New Zealand. We handle personal information in
+            line with the New Zealand Privacy Act 2020 and, where applicable, other
+            privacy laws that may apply to visitors or customers outside New Zealand.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Information We Collect</h2>
-          
-          <p>
-            As a Visitor, you can browse our Website to find out more about our products and services. You are not required to provide us with any personal information as a Visitor.
-          </p>
-
-          <h3 className="text-xl font-semibold text-brand mt-6 mb-3">Information You Provide to Us</h3>
-          
-          <p>
-            We collect your personal information when you register with us (&quot;User&quot;), when you express an interest in obtaining information about us or our products and services, when you participate in activities on our Website Site (such as responding to a survey) or otherwise contacting us.
-          </p>
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Information We Collect
+          </h2>
 
           <p>
-            Generally, you control the amount and type of information you provide to us when using our Website. The personal information that we collect depends on the context of your interaction with us and the Website, the choices you make and the products and features you use. The personal information we collect can include the following:
+            You can browse most of this website without telling us who you are. We
+            collect personal information when you choose to provide it, or where it
+            is needed to operate and secure the website.
           </p>
+
+          <h3 className="text-xl font-semibold text-brand mt-6 mb-3">
+            Information you provide
+          </h3>
 
           <ul className="list-disc pl-6 space-y-2">
-            <li>Name, Email Address and Contact Data</li>
-            <li>Business Information such as your Designation and Company Name</li>
+            <li>Your name, email address, company, role, and contact details.</li>
+            <li>
+              Messages, enquiries, demo requests, simulation requests, and any
+              well, tool, job, or operational details you choose to send us.
+            </li>
+            <li>
+              Email addresses entered to receive catalogues, success stories, or
+              other Petromac documents.
+            </li>
+            <li>
+              Staff identity details used for intranet or kiosk workflows, such as
+              name and email address from Microsoft sign-in.
+            </li>
           </ul>
 
-          <h3 className="text-xl font-semibold text-brand mt-6 mb-3">Automatically Collected Information</h3>
-          
-          <p>
-            When you use our Website, we automatically collect certain computer information by the interaction of your mobile phone or web browser with our Website. Such information is typically considered non-personal information. We also collect the following:
-          </p>
-
-          <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Cookies</h4>
-          
-          <p>
-            Our Website uses &quot;Cookies&quot; to identify the areas of our Website that you have visited. A Cookie is a small piece of data stored on your computer or mobile device by your web browser. We may use Cookies to personalize the Content that you see on our Website. Most web browsers can be set to disable the use of Cookies. However, if you disable Cookies, you may not be able to access functionality on our Website correctly or at all. We never place Personally Identifiable Information in Cookies.
-          </p>
-
-          <h4 className="text-lg font-semibold text-gray-800 mt-4 mb-2">Log Information</h4>
-          
-          <p>
-            We automatically receive information from your web browser or mobile device. This information includes the name of the website from which you entered our Website, if any, as well as the name of the website to which you&apos;re headed when you leave our website. This information also includes the IP address of your computer/proxy server that you use to access the Internet, your Internet Website provider name, web browser type, type of mobile device, and computer operating system. We may use all of this information to analyze trends among our Users to help improve our Website.
-          </p>
-
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Information Regarding Your Data Protection Rights Under General Data Protection Regulation (GDPR)</h2>
-          
-          <p>
-            For the purpose of this Privacy Policy, we are a Data Controller of your personal information.
-          </p>
+          <h3 className="text-xl font-semibold text-brand mt-6 mb-3">
+            Information collected automatically
+          </h3>
 
           <p>
-            If you are from the European Economic Area (EEA), our legal basis for collecting and using your personal information, as described in this Privacy Policy, depends on the information we collect and the specific context in which we collect it. We may process your personal information because:
+            We may collect technical information such as IP address, browser type,
+            device type, pages visited, referring page, timestamps, and security or
+            error logs. This helps us run the website, prevent misuse, diagnose
+            issues, and improve performance.
           </p>
+
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Cookies and Similar Technologies
+          </h2>
+
+          <p>
+            We use cookies and similar technologies where needed for website
+            functionality, security, staff sign-in, and session management. For
+            example, staff intranet sign-in may use secure session and OAuth state
+            cookies. You can disable cookies in your browser, but some features may
+            not work properly.
+          </p>
+
+          <p>
+            If we use analytics or tracking tools, we use them to understand website
+            performance and visitor trends. Where required by applicable law, we
+            will provide any additional notice or consent mechanism needed for those
+            tools.
+          </p>
+
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            How We Use Personal Information
+          </h2>
 
           <ul className="list-disc pl-6 space-y-2">
-            <li>We need to perform a contract with you, such as when you use our services</li>
-            <li>You have given us permission to do so</li>
-            <li>The processing is in our legitimate interests and it&apos;s not overridden by your rights</li>
-            <li>To comply with the law</li>
+            <li>To respond to enquiries and requests.</li>
+            <li>To provide demos, simulation support, documents, or follow-up.</li>
+            <li>To operate staff intranet, kiosk, and email-log workflows.</li>
+            <li>To send requested emails or documents.</li>
+            <li>To protect the website, prevent spam, and enforce rate limits.</li>
+            <li>To maintain records, improve services, and comply with law.</li>
           </ul>
 
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Sharing Personal Information
+          </h2>
+
           <p>
-            If you are a resident of the European Economic Area (EEA), you have certain data protection rights. In certain circumstances, you have the following data protection rights:
+            We do not sell personal information. We may share personal information
+            with service providers who help us operate the website and related
+            systems, including hosting providers, email providers, Microsoft
+            identity services, IT support, security providers, and professional
+            advisers. We may also disclose information where required by law or to
+            protect Petromac, our users, or others.
           </p>
 
-          <ul className="list-disc pl-6 space-y-2">
-            <li>The right to access, update or to delete the personal information we have on you</li>
-            <li>The right of rectification</li>
-            <li>The right to object</li>
-            <li>The right of restriction</li>
-            <li>The right to data portability</li>
-            <li>The right to withdraw consent</li>
-          </ul>
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            International Transfers
+          </h2>
 
           <p>
-            Please note that we may ask you to verify your identity before responding to such requests.
+            Some service providers or systems may store or process information
+            outside New Zealand. Where we disclose personal information overseas, we
+            take reasonable steps to ensure appropriate safeguards apply, consistent
+            with the New Zealand Privacy Act 2020 and any other applicable
+            requirements.
+          </p>
+
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Security and Retention
+          </h2>
+
+          <p>
+            We use reasonable technical and organisational safeguards to protect
+            personal information. No website or email system is completely secure,
+            so please avoid sending highly confidential information unless suitable
+            arrangements are in place.
           </p>
 
           <p>
-            You have the right to complain to a Data Protection Authority about our collection and use of your personal information. For more information, please contact your local data protection authority in the European Economic Area (EEA).
+            We keep personal information only for as long as reasonably needed for
+            the purposes described above, unless a longer period is required or
+            permitted by law. If a notifiable privacy breach occurs, we will notify
+            the Office of the Privacy Commissioner and affected individuals where
+            required by law.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Service Providers</h2>
-          
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Your Rights
+          </h2>
+
           <p>
-            We employ third party companies and individuals to facilitate our Website (&quot;Service Providers&quot;), to provide our Website on our behalf, to perform Website-related services or to assist us in analyzing how our Website is used. These third-parties have access to your personal information only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.
+            You may ask us to access or correct personal information we hold about
+            you. We may need to verify your identity before responding. If you are
+            in a jurisdiction with additional privacy rights, we will respond to
+            those rights where they apply.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Data Retention</h2>
-          
           <p>
-            We retain your personal information only for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law. When we no longer need your personal information, we will securely delete or anonymize it.
+            If you have a privacy concern, please contact us first so we can try to
+            resolve it. You may also contact the New Zealand Office of the Privacy
+            Commissioner or your local privacy authority.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">International Data Transfers</h2>
-          
-          <p>
-            Your information may be transferred to and maintained on computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ from those of your jurisdiction. We will take all steps reasonably necessary to ensure that your data is treated securely and in accordance with this Privacy Policy.
-          </p>
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Contacting Us
+          </h2>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Contacting Us</h2>
-          
           <p>
-            If there are any questions regarding this privacy policy you may contact us.
+            For privacy questions or requests, contact Petromac at{" "}
+            <a href="mailto:info@petromac.co.nz" className="text-brand hover:underline">
+              info@petromac.co.nz
+            </a>
+            .
           </p>
 
           <p className="text-sm text-gray-600 mt-8 pt-8 border-t border-gray-200">
-            Last Updated: 14-May-2026, Version 2.1
+            Last Updated: 14-May-2026, Version 2.2
           </p>
         </div>
       </div>

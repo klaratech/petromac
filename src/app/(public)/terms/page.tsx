@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -10,123 +11,180 @@ export default function TermsPage() {
     <main className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-6 py-16">
         <h1 className="text-4xl font-bold text-brand mb-8">Terms of Use</h1>
-        
+
         <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Access</h2>
-          
           <p>
-            BY USING THIS WEB SITE YOU AGREE TO THE TERMS AND CONDITIONS EXPRESSED HERE. They apply exclusively to your access to, and use of, this Web site and do not alter in any way the Terms and Conditions of any other agreement you may have with Petromac.
+            These Terms of Use apply to your access to and use of the Petromac
+            website. By using this website, you agree to these terms. If you do not
+            agree, please do not use the website.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">General</h2>
-          
           <p>
-            Petromac operates and maintains this Web site, at least in part, from Auckland, New Zealand.
+            These terms do not replace any separate written agreement you may have
+            with Petromac for products, services, software, projects, or confidential
+            information.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Contacts</h2>
-          
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Website Information
+          </h2>
+
           <p>
-            Address technical questions or comments about the Petromac Web site to the Petromac Web Team. Direct general questions to Petromac Corporate Communications. For other communications, direct as indicated in the following paragraphs.
+            The information on this website is provided for general business and
+            technical information only. It is not a substitute for project-specific
+            engineering, operational, safety, legal, or commercial advice. Any
+            simulation, configuration, performance, or case-study information should
+            be assessed against the actual well, tool string, operating conditions,
+            and applicable procedures before use.
+          </p>
+
+          <p>
+            We aim to keep the website accurate and current, but we do not guarantee
+            that all content is complete, error-free, or up to date at all times.
+            Petromac may update, remove, or change website content without notice.
+          </p>
+
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Permitted Use
+          </h2>
+
+          <p>
+            You may view, download, and print reasonable portions of this website
+            for your internal business evaluation or informational use. You must not
+            copy, modify, distribute, frame, scrape, reverse engineer, or commercially
+            exploit website content without Petromac&apos;s prior written permission,
+            except where permitted by law.
+          </p>
+
+          <p>
+            You must not use the website in a way that interferes with its
+            operation, bypasses security controls, attempts unauthorised access, or
+            breaches applicable law.
+          </p>
+
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Intellectual Property
+          </h2>
+
+          <p>
+            Unless otherwise stated, Petromac or its licensors own the copyright,
+            trade marks, trade names, designs, graphics, files, videos, software,
+            and other materials on this website. The Petromac name, logo, product
+            names, and related marks must not be used without Petromac&apos;s prior
+            written permission.
+          </p>
+
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Submissions and Enquiries
+          </h2>
+
+          <p>
+            If you send us an enquiry, request, technical information, well data, or
+            other material through the website, you confirm that you have the right
+            to do so. Unless we have a separate written confidentiality agreement
+            with you, website submissions should not be treated as confidential.
+          </p>
+
+          <p>
+            You retain ownership of information you provide. You allow Petromac to
+            use that information as reasonably needed to respond to you, assess your
+            request, provide requested materials, prepare simulations or
+            recommendations, keep business records, and protect our legal rights.
+          </p>
+
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Petromac Software and Staff Areas
+          </h2>
+
+          <p>
+            Access to Athena, staff intranet pages, kiosk workflows, or any Petromac
+            software may require authorisation and may be subject to separate terms.
+            You must not access those systems unless you are authorised to do so,
+            and you must not copy, sell, modify, decompile, reverse engineer, or
+            create derivative works from any Petromac software except where
+            expressly permitted by law or by written agreement.
           </p>
 
           <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Privacy</h2>
-          
+
           <p>
-            See the Petromac Privacy Policy.
+            Our handling of personal information is described in our{" "}
+            <Link href="/privacy" className="text-brand hover:underline">
+              Privacy Policy
+            </Link>
+            .
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Submissions</h2>
-          
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Third-Party Links
+          </h2>
+
           <p>
-            Except as otherwise provided in a separate written agreement between you and Petromac, you agree that any materials, including but not limited to questions, comments, suggestions, ideas, discoveries, plans, notes, drawings, original or creative materials, or other information, provided by you in the form of e-mail or electronic submissions to Petromac, or postings at this Web site, are nonconfidential and shall become the sole property of Petromac to the fullest extent permitted by applicable law. Petromac shall own exclusive rights and shall be entitled to the unrestricted use of these materials for any purpose, commercial or otherwise, without acknowledgment or additional compensation to you. In the event applicable law operates to prevent Petromac from becoming the sole owner of any such property, then this provision shall be effective as granting to Petromac (with unfettered rights of assignment) a perpetual, worldwide, paid-in-full, nonexclusive right (including any moral rights) and license to make, use, sell, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, communicate to the public, perform and display the content (in whole or in part) worldwide and or to incorporate it in other works in any form, media, or technology now known or later developed, for the full term of any rights that may exist in any such material.
+            This website may link to third-party websites or services. Petromac is
+            not responsible for the content, security, availability, or privacy
+            practices of those third-party sites.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Copyrights, Trademarks, and Permissions</h2>
-          
-          <p>
-            You acknowledge that Petromac or third parties granting rights to Petromac hold title to all materials on this site, which are the copyrighted works of Petromac or the third parties, with all rights reserved. Such materials include but are not limited to design, text, graphics, files, photographs, video and audio clips, and the selection and arrangement thereof. Petromac authorizes you to view and use the Web site with the following restrictions:
-          </p>
-
-          <ol className="list-decimal pl-6 space-y-2">
-            <li>use must be solely for your personal informational and noncommercial use;</li>
-            <li>downloading is limited to one electronic or hard copy of limited portions;</li>
-            <li>each page downloaded must include this copyright statement displayed in a prominent position: &ldquo; Petromac. All rights reserved.&rdquo;;</li>
-            <li>materials cannot be modified, forwarded, displayed, distributed, performed, or published in any media without the prior written permission of Petromac.</li>
-          </ol>
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Disclaimers
+          </h2>
 
           <p>
-            You may not frame or use framing techniques to enclose any portion of this site without the express written consent of Petromac. You may not use meta tags or any other hidden text using the Petromac name or trademarks and service marks without the express written consent of Petromac.
-          </p>
-
-          <p>
-            No commercial use of the information on or under this Web site is licensed or permitted. The use of automated systems (robots, spiders, or any other data-mining or similar data-gathering and extraction tools) to access, acquire, or download information on this Web site is expressly prohibited where such systems are employed in connection with commercial objectives, or in a fashion that directly or indirectly violates the privacy interests of any individual. The word &ldquo;Petromac,&rdquo; the Petromac logo, and the products and services described in this Web site are either trademarks, trade names, or service marks of Petromac and its licensors, or are the property of their respective owners. These marks may not be copied, imitated, or used, in whole or in part, without the express prior written permission of Petromac or their respective owners, and then with the proper acknowledgments. In addition, page headers, custom graphics, button icons, and scripts may be service marks, trademarks, or trade dress of Petromac, and may not be copied, imitated, or used, in whole or in part, without the prior written permission of Petromac.
-          </p>
-
-          <p>
-            Contact Petromac with queries regarding these issues.
-          </p>
-
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Petromac Software</h2>
-          
-          <p>
-            Any Petromac software, including any files, images incorporated in or generated by the software, and data accompanying the software (collectively &ldquo;Software&rdquo;), that may be made available on this Web site is licensed to you by Petromac for your personal, noncommercial use, and no ownership rights pass to you. You shall not copy, distribute, sell, modify, transfer, decompile, reverse engineer, disassemble, or create derivative works from any Software.
-          </p>
-
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Hyperlinks</h2>
-          
-          <p>
-            Petromac makes no claim or representation regarding, and accepts no responsibility for, the quality, content, nature, or reliability of Web sites accessible by hyperlink from this Web site, or Web sites linking to this Web site.
-          </p>
-
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Disclaimer</h2>
-          
-          <p>
-            THIS WEB SITE AND THE MATERIALS UNDER THIS WEB SITE ARE PROVIDED ON AN &ldquo;AS IS&rdquo; AND &ldquo;AS AVAILABLE&rdquo; BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. PETROMAC DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NONINFRINGEMENT. PETROMAC DOES NOT REPRESENT OR WARRANT THAT MATERIALS IN THIS WEB SITE ARE ACCURATE, COMPLETE, RELIABLE, CURRENT, OR ERROR-FREE. PETROMAC DOES NOT REPRESENT OR WARRANT THAT THIS WEB SITE OR ITS SERVER(S) ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.
+            To the fullest extent permitted by law, this website and its content are
+            provided on an &quot;as is&quot; and &quot;as available&quot; basis.
+            Petromac excludes all warranties, representations, and conditions that
+            are not expressly stated in these terms.
           </p>
 
           <p>
-            Petromac reserves the right to change any and all content contained on this Web site at any time without notice. References to any products, services, processes, or other information, by trade name, trademark, manufacturer, supplier, or otherwise does not constitute or imply endorsement, sponsorship, or recommendation thereof by Petromac.
+            Nothing in these terms limits any rights or remedies that cannot lawfully
+            be excluded, including under applicable consumer, fair trading, privacy,
+            or other mandatory laws.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Limitation of Liability</h2>
-          
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Liability
+          </h2>
+
           <p>
-            IN NO EVENT SHALL PETROMAC BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT, OR CONSEQUENTIAL DAMAGES, OR ANY OTHER DAMAGES OF ANY KIND, INCLUDING, BUT NOT LIMITED TO, LOSS OF USE, LOSS OF PROFITS, OR LOSS OF DATA, WHETHER IN AN ACTION IN CONTRACT, TORT (INCLUDING BUT NOT LIMITED TO NEGLIGENCE), OR OTHERWISE, ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE USE OF THIS WEB SITE OR THE MATERIALS CONTAINED IN, OR ACCESSED THROUGH, THIS WEB SITE.
+            To the fullest extent permitted by law, Petromac is not liable for any
+            indirect, incidental, special, consequential, punitive, or loss-of-profit
+            damages arising from use of this website or reliance on its content.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Applicable Laws</h2>
-          
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Compliance with Laws
+          </h2>
+
           <p>
-            The laws of New Zealand shall govern the construction and interpretation of these Terms and Conditions and the rights of the parties hereunder. By accessing or placing orders under this Web site, you acknowledge that you have read, understood, and agreed to be bound by these Terms and Conditions and by all applicable laws and regulations, including U.S. Export control laws and regulations. Visitors who do not agree with these Terms and Conditions should not access or place orders through this Web site. Any controversy or claim arising out of or relating to your use of this Web site or any services provided hereunder shall be settled by binding arbitration to be held in the English language in Auckland, New Zealand, in accordance with the commercial arbitration rules of the International Chamber of Commerce.
+            You are responsible for using the website and any materials obtained
+            from it in compliance with applicable laws, including export control,
+            sanctions, intellectual property, privacy, and safety requirements where
+            relevant.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Termination</h2>
-          
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Governing Law
+          </h2>
+
           <p>
-            Notwithstanding any of these Terms and Conditions, Petromac reserves the right, without notice and in its sole discretion, to terminate your license to use this Web site and to block or prevent future access to and use of this Web site.
+            These terms are governed by the laws of New Zealand. The New Zealand
+            courts have non-exclusive jurisdiction over disputes relating to these
+            terms or this website.
           </p>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Severability</h2>
-          
-          <p>
-            If any provision of these Terms and Conditions shall be deemed unlawful, void, or for any reason unenforceable, then that provision shall be deemed severable from these Terms and Conditions and shall not affect the validity and enforceability of any remaining provisions.
-          </p>
+          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">
+            Changes to These Terms
+          </h2>
 
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Language</h2>
-          
           <p>
-            It is at the express consent of the parties that the present agreement be written in English.
-          </p>
-
-          <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Changes to these Terms</h2>
-          
-          <p>
-            Petromac reserves the right to change, modify, or update these Terms and Conditions of Use, at any time without notice. The date of the latest update is presented below.
+            We may update these terms from time to time. The date of the latest
+            update is shown below. Continued use of the website after an update
+            means you accept the updated terms.
           </p>
 
           <p className="text-sm text-gray-600 mt-8 pt-8 border-t border-gray-200">
-            Last updated: 14 May 2026 Version 1.3
+            Last updated: 14 May 2026 Version 1.4
           </p>
         </div>
       </div>
