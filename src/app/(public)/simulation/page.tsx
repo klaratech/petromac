@@ -1,4 +1,5 @@
 import SimulationHero from "@/components/public/simulation/SimulationHero";
+import AthenaInAction from "@/components/public/simulation/AthenaInAction";
 import WhatAthenaDoes from "@/components/public/simulation/WhatAthenaDoes";
 import ProvidersSection from "@/components/public/simulation/ProvidersSection";
 import WorkflowCards from "@/components/public/simulation/WorkflowCards";
@@ -17,6 +18,7 @@ export default function SimulationPage() {
   return (
     <>
       <SimulationHero />
+      <AthenaInAction />
       <WhatAthenaDoes />
       <ProvidersSection />
       <WorkflowCards />
