@@ -1,6 +1,6 @@
 # Petromac Website
 
-Next.js 15 (App Router) + React 19 + TypeScript website with public site, protected intranet, and trade-show kiosk.
+Next.js 16 (App Router) + React 19 + TypeScript website with public site, protected intranet, and trade-show kiosk.
 
 ## Quick Reference
 
@@ -19,7 +19,7 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, protec
 - **Map components**: `src/components/geo/` (DrilldownMapCore + Public/Kiosk wrappers)
 - **Feature modules**: `src/features/` (success-stories filters/services, kiosk shell)
 - **Shared UI primitives**: `src/shared/ui/`
-- **API routes**: `src/app/api/` (email, PDF generation)
+- **API routes**: `src/app/api/` and `src/app/auth/` for staff session and Microsoft auth; FastAPI handles contact email, PDF generation, email logs/config, and data passthrough endpoints
 - **Styling**: Tailwind CSS 4 with brand tokens (`brand`, `brandblack`, `brandgray`), fonts: Inter (body), IBM Plex Sans (headings)
 
 ## Data Organization
@@ -33,6 +33,7 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, protec
 
 - Environment variables for all secrets (see `.env.example`)
 - Source PDFs/xlsx come from OneDrive paths configured in `.env.dev`
+- Canonical URLs use `NEXT_PUBLIC_SITE_URL`; `NEXT_PUBLIC_BASE_URL` is a legacy alias
 - Flipbook tags CSV is the single source of truth for success stories filtering
 - Kiosk service worker (`public/kiosk-sw.js`) scoped to `/intranet/kiosk/` only
 - Security: rate limiting, HTML escaping, origin validation (URL hostname parsing), email allowlists
@@ -49,6 +50,8 @@ All docs live in `docs/`:
 - [docs/KIOSK.md](docs/KIOSK.md) — Kiosk operations & offline caching
 - [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) — Brand colors & typography
 - [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) — Email/SMTP configuration
+- [docs/ADMIN.md](docs/ADMIN.md) — Recurring content update workflow
+- [docs/MS365_ENTRA_KIOSK_SETUP.md](docs/MS365_ENTRA_KIOSK_SETUP.md) — Microsoft staff sign-in setup
 
 ## Current Tasks
 

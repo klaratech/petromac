@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Center } from '@react-three/drei';
-import { Suspense, useRef, useState, useEffect, useMemo } from 'react';
+import { Suspense, useRef, useState, useEffect, useMemo, type ReactNode } from 'react';
 import * as THREE from 'three';
 import DeviceViewer from './DeviceViewer';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,6 +19,81 @@ interface Props {
   forceSingleModel?: boolean;
 }
 
+function cloneAndBrightenMaterial(material: THREE.Material) {
+  const cloned = material.clone();
+  const color = (cloned as THREE.MeshStandardMaterial).color;
+  if (color) {
+    color.multiplyScalar(1.3);
+  }
+  return cloned;
+}
+
+function FloatingModel({
+  url,
+  position,
+  onClick,
+}: {
+  url: string;
+  position: [number, number, number];
+  onClick: () => void;
+}) {
+  const { scene } = useGLTF(url);
+  const ref = useRef<THREE.Group>(null);
+  const [scale, setScale] = useState(1);
+
+  const clonedScene = useMemo(() => {
+    const cloned = scene.clone(true);
+    cloned.traverse((child) => {
+      const mesh = child as unknown as THREE.Mesh;
+      if (mesh.isMesh) {
+        mesh.castShadow = false;
+        mesh.receiveShadow = false;
+        mesh.material = Array.isArray(mesh.material)
+          ? mesh.material.map(cloneAndBrightenMaterial)
+          : cloneAndBrightenMaterial(mesh.material);
+      }
+    });
+    return cloned;
+  }, [scene]);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const box = new THREE.Box3().setFromObject(clonedScene as unknown as THREE.Object3D);
+      const size = box.getSize(new THREE.Vector3()).length();
+      const scaleFactor = 4.5 / size;
+      setScale(scaleFactor);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [clonedScene]);
+
+  useFrame(({ clock }) => {
+    if (ref.current) {
+      ref.current.rotation.y = clock.getElapsedTime() * 0.5;
+    }
+  });
+
+  return (
+    <group position={position} onClick={onClick} ref={ref} scale={scale}>
+      <Center>
+        <primitive object={clonedScene} />
+      </Center>
+    </group>
+  );
+}
+
+function RotatingGroup({ children }: { children: ReactNode }) {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y += 0.002;
+    }
+  });
+
+  return <group ref={groupRef}>{children}</group>;
+}
+
 export default function CircularGallery({
   onClose,
   models,
@@ -26,90 +101,34 @@ export default function CircularGallery({
 }: Props) {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [isZooming, setIsZooming] = useState(false);
+  const zoomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const forcedModel = forceSingleModel && models.length === 1 ? models[0].file : null;
+  const activeModel = selectedModel ?? forcedModel;
 
   // Preload models
   useEffect(() => {
     models.forEach((m) => useGLTF.preload(m.file));
   }, [models]);
 
-  // Auto-launch viewer if single model
-  useEffect(() => {
-    if (forceSingleModel && models.length === 1) {
-      setSelectedModel(models[0].file);
-    }
-  }, [forceSingleModel, models]);
-
   const handleModelClick = (file: string) => {
     setIsZooming(true);
-    setTimeout(() => {
+    if (zoomTimeoutRef.current) {
+      clearTimeout(zoomTimeoutRef.current);
+    }
+    zoomTimeoutRef.current = setTimeout(() => {
       setSelectedModel(file);
       setIsZooming(false);
+      zoomTimeoutRef.current = null;
     }, 600);
   };
 
-  function FloatingModel({
-    url,
-    position,
-    onClick,
-  }: {
-    url: string;
-    position: [number, number, number];
-    onClick: () => void;
-  }) {
-    const { scene } = useGLTF(url);
-    const ref = useRef<THREE.Group>(null);
-    const [scale, setScale] = useState(1);
-
-    const clonedScene = useMemo(() => {
-      const cloned = scene.clone(true);
-      cloned.traverse((child) => {
-        const mesh = child as unknown as THREE.Mesh;
-        if (mesh.isMesh) {
-          mesh.castShadow = false;
-          mesh.receiveShadow = false;
-
-          const mat = mesh.material as THREE.MeshStandardMaterial;
-          if (mat?.color) mat.color.multiplyScalar(1.3);
-        }
-      });
-      return cloned;
-    }, [scene]);
-
-    useEffect(() => {
-      requestAnimationFrame(() => {
-        const box = new THREE.Box3().setFromObject(clonedScene as unknown as THREE.Object3D);
-        const size = box.getSize(new THREE.Vector3()).length();
-        const scaleFactor = 4.5 / size;
-        setScale(scaleFactor);
-      });
-    }, [clonedScene]);
-
-    useFrame(({ clock }) => {
-      if (ref.current) {
-        ref.current.rotation.y = clock.getElapsedTime() * 0.5;
+  useEffect(() => {
+    return () => {
+      if (zoomTimeoutRef.current) {
+        clearTimeout(zoomTimeoutRef.current);
       }
-    });
-
-    return (
-      <group position={position} onClick={onClick} ref={ref} scale={scale}>
-        <Center>
-          <primitive object={clonedScene} />
-        </Center>
-      </group>
-    );
-  }
-
-  function RotatingGroup({ children }: { children: React.ReactNode }) {
-    const groupRef = useRef<THREE.Group>(null);
-
-    useFrame(() => {
-      if (groupRef.current) {
-        groupRef.current.rotation.y += 0.002;
-      }
-    });
-
-    return <group ref={groupRef}>{children}</group>;
-  }
+    };
+  }, []);
 
   return (
     <div className="w-full h-screen relative group">
@@ -122,7 +141,7 @@ export default function CircularGallery({
       />
 
       <AnimatePresence>
-        {!selectedModel && (
+        {!activeModel && (
           <motion.div
             key="gallery"
             initial={{ opacity: 1, scale: 1 }}
@@ -162,7 +181,7 @@ export default function CircularGallery({
           </motion.div>
         )}
 
-        {selectedModel && (
+        {activeModel && (
           <motion.div
             key="viewer"
             initial={{ opacity: 0 }}
@@ -172,7 +191,7 @@ export default function CircularGallery({
             className="absolute inset-0 z-10"
           >
             <DeviceViewer
-              model={selectedModel}
+              model={activeModel}
               onClose={() => {
                 if (forceSingleModel) {
                   onClose(); // Return to productlines

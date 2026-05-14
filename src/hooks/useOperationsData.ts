@@ -17,11 +17,9 @@ export default function useOperationsData<T = JobRecord>(options: UseOperationsD
   const load = useCallback(async () => {
     try {
       setError(null);
-      // Fetch the static JSON published by the data pipeline directly. We
-      // previously routed through /api/data/operations on the FastAPI
-      // backend, but that's just a passthrough to this file — and it
-      // doesn't exist on Vercel-only deploys, which is why Track Record
-      // was hanging on "Loading…".
+      // Fetch the static JSON published by the data pipeline directly.
+      // The backend route is just a passthrough to this same file, so the
+      // map stays independent from backend reachability.
       const res = await fetch('/data/operations_data.json', {
         cache: 'force-cache',
       });

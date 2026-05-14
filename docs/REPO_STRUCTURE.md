@@ -9,7 +9,7 @@ The repository contains:
 2. **Intranet Portal** - Internal portal at `/intranet`
 3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
 4. **Flipbook Module** - Interactive PDF flipbooks for product catalog and success stories
-5. **Backend Service** - FastAPI service for email, PDFs, and track-record data
+5. **Backend Service** - FastAPI service for contact email, PDFs, email logs/config, and data passthrough endpoints
 
 ## Directory Structure
 
@@ -26,9 +26,14 @@ website/
 │   │   │   ├── about/                    # About pages
 │   │   │   ├── catalog/                  # Catalog + flipbook
 │   │   │   ├── track-record/             # Global deployment map
+│   │   │   ├── simulation/               # Athena planning/simulation page
 │   │   │   ├── contact/                  # Contact page (submits to backend API)
 │   │   │   ├── success-stories/flipbook/ # Success stories flipbook
+│   │   │   ├── team/                     # Team page
+│   │   │   ├── privacy/                  # Privacy policy
+│   │   │   ├── terms/                    # Terms of use
 │   │   │   └── intranet/                 # Intranet homepage
+│   │   │       └── email-log/            # Staff email log/config
 │   │   ├── (kiosk)/                      # Kiosk shell routes
 │   │   │   └── intranet/kiosk/           # Kiosk application
 │   │   │       ├── page.tsx              # Kiosk entry (video intro)
@@ -36,6 +41,7 @@ website/
 │   │   │       ├── productlines/         # Product lines viewer
 │   │   │       ├── datacheck/            # Data validation tools
 │   │   │       └── successstories/       # Success stories flipbook
+│   │   ├── api/staff/session/            # Staff session API
 │   │   ├── auth/microsoft/               # Entra login/callback/logout routes
 │   │   ├── layout.tsx                    # Root layout (global)
 │   │   └── globals.css                   # Global styles
@@ -81,13 +87,14 @@ website/
 │   └── node/                             # Node.js utilities
 ├── .github/
 │   └── workflows/
+│       ├── ci.yml                        # Lint/typecheck/build validation
+│       ├── deploy-prod.yml               # Production deploy
 │       ├── data-build.yaml               # Automated data processing
 │       └── pdf-flipbooks-build.yml       # Automated flipbook generation
 ├── .env.example                          # Environment variables template
 ├── package.json                          # Node.js dependencies
 ├── pnpm-lock.yaml                        # pnpm lockfile
 ├── tsconfig.json                         # TypeScript configuration
-├── tailwind.config.mjs                   # Tailwind CSS config
 ├── next.config.ts                        # Next.js configuration
 ├── tailwind.config.ts                    # Tailwind CSS brand theme
 ├── README.md                             # Main project README
@@ -100,6 +107,7 @@ website/
     ├── KIOSK.md                          # Kiosk operations & offline caching
     ├── TAILWIND_THEME.md                 # Brand theme specifications
     ├── EMAIL_SETUP.md                    # Email configuration guide
+    ├── ADMIN.md                          # Recurring content updates
     └── MS365_ENTRA_KIOSK_SETUP.md        # Microsoft admin setup for staff sign-in
 ```
 
@@ -145,7 +153,7 @@ The repository uses a three-tier data organization to separate private sources, 
 #### 2. `public/data/` - Published Artifacts
 - **Purpose**: Static data files served to clients
 - **Git Status**: Tracked and deployed
-- **Runtime Access**: Backend serves the relevant data to the frontend via `/api/data/*`
+- **Runtime Access**: Frontend map surfaces fetch the relevant data directly from `/data/*`; backend `/api/data/*` routes are passthrough/debug endpoints
 - **Contents**:
   - `operations_data.json` - Processed operations data (3MB+)
   - `country_labels.json` - Country name mappings for map
@@ -173,7 +181,7 @@ export function useOperationsData() {
   const [data, setData] = useState(null);
   
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/data/operations`)
+    fetch("/data/operations_data.json")
       .then(r => r.ok ? r.json() : Promise.reject())
       .then(d => setData(d))
       .catch(e => console.error("Failed to load data:", e));
@@ -186,7 +194,7 @@ export function useOperationsData() {
 **Server Component Example:**
 ```tsx
 export default async function ServerPage() {
-  const res = await fetch("https://api.petromac.com/api/data/operations", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/data/operations_data.json`, {
     next: { revalidate: 3600 } // Cache for 1 hour
   });
   const data = await res.json();
@@ -211,7 +219,7 @@ The application uses a **scoped service worker** that only applies to kiosk rout
 
 - **Service Worker**: `public/kiosk-sw.js`
 - **Scope**: `/intranet/kiosk/` only
-- **Registration**: Handled by `src/app/intranet/kiosk/layout.tsx`
+- **Registration**: Handled by `src/features/kiosk/components/KioskShell.tsx`
 - **Public Site**: No service worker registered
 
 ### Cache Strategy

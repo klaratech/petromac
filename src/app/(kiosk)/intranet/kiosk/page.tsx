@@ -14,7 +14,7 @@ function KioskContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fullText = 'Disruptive Conveyance Solutions';
-  const lastInteractionRef = useRef(Date.now());
+  const lastInteractionRef = useRef(0);
 
   useEffect(() => {
     const urlMode = searchParams.get('mode');
@@ -46,6 +46,7 @@ function KioskContent() {
     const updateInteraction = () => {
       lastInteractionRef.current = Date.now();
     };
+    updateInteraction();
     window.addEventListener('mousemove', updateInteraction);
     window.addEventListener('keydown', updateInteraction);
     window.addEventListener('click', updateInteraction);

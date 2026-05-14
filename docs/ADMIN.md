@@ -148,6 +148,6 @@ Team page (`/team`). Data is in `src/data/team.ts`.
 | Team | — | hand-edit `src/data/team.ts` | that file + `public/images/team/` |
 | Large media | graphics delivery | transcode/compress first | the asset file |
 
-After any push to `main`, CI builds and deploys automatically — Vercel for
-the public preview, and `deploy-prod.yml` builds the Docker images and
-redeploys the Hetzner box (`petromac.klaratech.it`). See [DEPLOY.md](../DEPLOY.md).
+After any push to `main`, CI runs and `deploy-prod.yml` builds the Docker
+images and redeploys the Hetzner box (`petromac.klaratech.it`). See
+[DEPLOY.md](../DEPLOY.md).

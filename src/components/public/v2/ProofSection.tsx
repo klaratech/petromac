@@ -17,7 +17,7 @@ export default function ProofSection() {
   useEffect(() => {
     async function loadStats() {
       try {
-        // Static JSON in /public/data — works on Vercel without backend.
+        // Static JSON in /public/data keeps proof stats independent from backend reachability.
         const res = await fetch("/data/operations_data.json", { cache: "force-cache" });
         if (!res.ok) throw new Error("Failed to load");
         const data: JobRecord[] = await res.json();

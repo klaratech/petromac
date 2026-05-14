@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useEffect, useRef, useState, FormEvent } from "react";
 import { buildClientApiUrl } from "@/lib/api";
 
 export default function ContactForm() {
@@ -11,7 +11,11 @@ export default function ContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-  const [formStartTime] = useState(Date.now());
+  const formStartTimeRef = useRef(0);
+
+  useEffect(() => {
+    formStartTimeRef.current = Date.now();
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,7 +25,7 @@ export default function ContactForm() {
     try {
       const formDataObj = new FormData(e.currentTarget);
       
-      // Add timing check to FormData
+      const formStartTime = formStartTimeRef.current || Date.now();
       const timeTaken = (Date.now() - formStartTime) / 1000;
       formDataObj.append("_timing", timeTaken.toString());
 
@@ -35,6 +39,7 @@ export default function ContactForm() {
       if (response.ok && result.ok) {
         setSubmitStatus("success");
         setFormData({ name: "", email: "", message: "" });
+        formStartTimeRef.current = Date.now();
       } else {
         setSubmitStatus("error");
       }

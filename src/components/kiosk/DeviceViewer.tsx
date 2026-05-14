@@ -3,12 +3,46 @@
 import { Canvas, useFrame } from '@react-three/fiber';
 import useOperationsData from '@/hooks/useOperationsData';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import { Suspense, useState, useRef, useEffect, useCallback } from 'react';
+import { Suspense, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import * as THREE from 'three';
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
+
+function DeviceModel({
+  model,
+  isUserInteracting,
+}: {
+  model: string;
+  isUserInteracting: boolean;
+}) {
+  const { scene } = useGLTF(model);
+  const ref = useRef<THREE.Group>(null);
+  const clonedScene = useMemo(() => scene.clone(true), [scene]);
+
+  useEffect(() => {
+    clonedScene.traverse((child) => {
+      const mesh = child as unknown as THREE.Mesh;
+      if (mesh.isMesh) {
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+      }
+    });
+  }, [clonedScene]);
+
+  useFrame(() => {
+    if (ref.current && !isUserInteracting) {
+      ref.current.rotation.y += 0.002;
+    }
+  });
+
+  return (
+    <group ref={ref}>
+      <primitive object={clonedScene} scale={6} />
+    </group>
+  );
+}
 
 export default function DeviceViewer({
   model,
@@ -23,6 +57,7 @@ export default function DeviceViewer({
   const [showSuccessMap, setShowSuccessMap] = useState(false);
   const { data: drilldownData } = useOperationsData({ enabled: showSuccessMap });
   const [fadingOut, setFadingOut] = useState(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cleanModel = model.split('?')[0];
   const entry = deviceSpecs[cleanModel] || {};
@@ -32,10 +67,22 @@ export default function DeviceViewer({
 
   const handleClose = useCallback(() => {
     setFadingOut(true);
-    setTimeout(() => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = setTimeout(() => {
       onClose();
+      closeTimeoutRef.current = null;
     }, 400);
   }, [onClose]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -49,35 +96,6 @@ export default function DeviceViewer({
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [showVideo, showSuccessMap, showSpecs, handleClose]);
-
-  // Data is loaded via useOperationsData hook; no manual fetch required.
-
-  const Model = () => {
-    const { scene } = useGLTF(model);
-    const ref = useRef<THREE.Group>(null);
-
-    useEffect(() => {
-      scene.traverse((child) => {
-        const mesh = child as unknown as THREE.Mesh;
-        if (mesh.isMesh) {
-          mesh.castShadow = true;
-          mesh.receiveShadow = true;
-        }
-      });
-    }, [scene]);
-
-    useFrame(() => {
-      if (ref.current && !isUserInteracting) {
-        ref.current.rotation.y += 0.002;
-      }
-    });
-
-    return (
-      <group ref={ref}>
-        <primitive object={scene} scale={6} />
-      </group>
-    );
-  };
 
   return (
     <AnimatePresence>
@@ -103,7 +121,7 @@ export default function DeviceViewer({
             <directionalLight position={[4, 4, 6]} intensity={0.15} castShadow />
             <directionalLight position={[-3, -3, -4]} intensity={0.1} />
             <Suspense fallback={null}>
-              <Model />
+              <DeviceModel model={model} isUserInteracting={isUserInteracting} />
               <OrbitControls
                 enablePan
                 enableZoom

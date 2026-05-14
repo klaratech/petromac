@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, IBM_Plex_Sans } from 'next/font/google';
 import './globals.css';
 import ErrorBoundary from '@/shared/ui/ErrorBoundary';
+import { getSiteUrl } from '@/lib/siteUrl';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -14,7 +15,7 @@ const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.petromac.com';
+const BASE_URL = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

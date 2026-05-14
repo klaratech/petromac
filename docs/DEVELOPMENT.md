@@ -9,11 +9,14 @@ This document describes how to develop, test, and deploy features for the Petrom
 git clone https://github.com/Klaratech/petromac.git
 cd petromac
 pnpm install
+cp .env.example .env.local
 cp .env.example .env.dev
-docker compose up --build
+pnpm run dev
 ```
 
 - Python scripts: set up virtualenv in `scripts/python`, install from `requirements.txt`
+- Use `docker compose up --build` when you need the frontend and FastAPI backend together.
+- `.env.local` is loaded by Next.js local development; `.env.dev` is loaded by Docker Compose and `pnpm run data`.
 
 ### Running Locally
 - Public site: http://localhost:3000
@@ -58,9 +61,9 @@ To update filters:
     chrome and additional kiosk-only controls.
   - `DrilldownMapKiosk.tsx` → Kiosk wrapper for the operations dashboard.
 - `src/lib/map/data.ts` → Static data fetchers (`/data/operations_data.json`,
-  `/data/country_labels.json`). Used to route through the FastAPI
-  backend at `/api/data/*`; switched to fetching the published JSON
-  directly so the frontend works on Vercel without the backend.
+  `/data/country_labels.json`). Backend `/api/data/*` routes remain as
+  passthrough/debug endpoints, but frontend map surfaces should fetch the
+  published JSON directly.
 - `src/features/success-stories/` → Success Stories feature (filters, parsing, services)
 - `src/shared/ui/` → Shared UI primitives
 
@@ -132,12 +135,12 @@ Follow these conventions when working with data:
 - These files are never deployed
 
 #### 2. Published Data (`public/data/`)
-- JSON/CSV/PDF artifacts generated for backend/frontend use
-- The backend exposes live data to the frontend via `/api/data/*`
+- JSON/CSV/PDF artifacts generated for frontend and backend use
+- Frontend map surfaces fetch JSON directly from `/data/*`
 - Use for:
   - Large datasets (operations_data.json ~3MB)
   - Map data (country_labels.json, world-110m.json)
-- **Fetch at runtime through the backend API** - do not import JSON files from here
+- **Fetch at runtime from `/data/*`** - do not import large JSON files from here
 
 Flipbook assets (PDFs + images) live under `public/flipbooks/` and are accessed via `/flipbooks/*` URLs.
 
@@ -156,13 +159,13 @@ For data in `public/data/`, always use fetch:
 const [data, setData] = useState(null);
 
 useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/data/operations`)
+  fetch("/data/operations_data.json")
     .then(r => r.json())
     .then(setData);
 }, []);
 
 // ✅ Server Component
-const res = await fetch(`${process.env.API_BASE_URL}/api/data/operations`, {
+const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/data/operations_data.json`, {
   next: { revalidate: 3600 }
 });
 const data = await res.json();
@@ -194,8 +197,8 @@ After making changes, verify all data fetches work:
 ```bash
 docker compose up --build
 # Open http://localhost:3000
-# Open DevTools → Network tab → Filter by "/api/data"
-# Verify all backend data requests return 200 OK (no 404s)
+# Open DevTools → Network tab → Filter by "/data/"
+# Verify published data requests return 200 OK (no 404s)
 ```
 
 Check these pages:

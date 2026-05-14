@@ -18,9 +18,8 @@ export function useCountryLabels(): UseCountryLabelsResult {
       setIsLoading(true);
       setError(null);
       
-      // Static JSON from the data pipeline. The backend's
-      // /api/data/country-labels route is just a passthrough — fetching
-      // the static file directly works on Vercel without a backend.
+      // Static JSON from the data pipeline. The backend route is only a
+      // passthrough, so fetch the deployed file directly.
       const labels = await fetchJsonWithValidation(
         '/data/country_labels.json',
         validateCountryLabels

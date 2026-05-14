@@ -5,9 +5,9 @@ The Petromac platform combines a **public-facing website**, an **intranet portal
 ## Components
 
 ### Public Website (Route Group: `(public)`)
-- Built with **Next.js 15.5+** (App Router) and **React 19**
+- Built with **Next.js 16** (App Router) and **React 19**
 - Styled with **Tailwind CSS 4** using Petromac brand theme
-- Pages: Home, About, Catalog, Track Record, Case Studies, Success Stories, Contact
+- Pages: Home, About, Team, Catalog, Track Record, Simulation, Contact, Privacy, and Terms
 - **Track Record** (`/track-record`) - Interactive global deployment map using shared DrilldownMapCore
 - Flipbooks for **Catalog** and **Success Stories** provide interactive PDF viewing
 
@@ -30,7 +30,7 @@ The Petromac platform combines a **public-facing website**, an **intranet portal
 ### Shared Map Components
 - **DrilldownMapCore** (`src/components/geo/DrilldownMapCore.tsx`) - Reusable map logic for both public and kiosk surfaces. The public `/track-record` page now imports it directly via `next/dynamic` (lazy-loaded), and computes its own hero stats from the same dataset.
 - **DrilldownMapKiosk** (`src/components/geo/DrilldownMapKiosk.tsx`) - Kiosk wrapper for the operations dashboard.
-- **Map Data Utilities** (`src/lib/map/data.ts`) - Typed fetchers that read the published JSON directly from `/data/operations_data.json` and `/data/country_labels.json`. Previously routed through `/api/data/*` on the FastAPI backend; the backend handlers were pure passthroughs to these files, so going direct removes the round-trip and keeps `/track-record` working on the Vercel-only deploy where the backend isn't reachable.
+- **Map Data Utilities** (`src/lib/map/data.ts`) - Typed fetchers that read the published JSON directly from `/data/operations_data.json` and `/data/country_labels.json`. Backend `/api/data/*` routes still exist as passthroughs, but the frontend should use the static `/data/*` paths for map data.
 
 ### Flipbook Module
 - Replaces the old PDF viewer/builder modals
@@ -57,7 +57,7 @@ Success Stories are implemented as a **single feature module**:
 - Python scripts process Excel data into JSON
 - Private sources stored in `data/private/` (gitignored, never deployed)
 - Published data artifacts stored in `public/data/`
-- The backend serves operations and country-label data to the frontend via `/api/data/*`
+- The frontend fetches published operations and country-label data directly from `/data/*`
 
 ### Email & Security
 - SMTP, PDF generation, recipient allowlists, origin validation, and email log state live in the backend service
@@ -87,7 +87,7 @@ Success Stories are implemented as a **single feature module**:
 #### Published Artifacts (`public/data/`)
 - **Bundled with the frontend image** and served by Next.js
 - Contains all data files consumed by the application
-- The backend reads operations and country-label JSON from the same artifacts and exposes them through `/api/data/*`
+- The backend can read the same operations and country-label JSON for passthrough/debug endpoints, but frontend map surfaces should read `/data/*` directly
 - Includes:
   - Large JSON datasets (operations_data.json ~3MB)
   - Map data (country_labels.json, world-110m.json)
@@ -106,11 +106,11 @@ Components should fetch data at runtime rather than importing:
 
 ```tsx
 // Client component
-const response = await fetch("https://api.petromac.com/api/data/operations");
+const response = await fetch("/data/operations_data.json");
 const data = await response.json();
 
 // Server component with caching
-const res = await fetch("https://api.petromac.com/api/data/operations", {
+const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/data/operations_data.json`, {
   next: { revalidate: 3600 }
 });
 ```

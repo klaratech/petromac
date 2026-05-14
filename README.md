@@ -1,159 +1,123 @@
-# Petromac Website & Intranet Site
+# Petromac Website & Intranet
 
-A Next.js-based application featuring:
-- Public-facing website for Petromac
-- Protected intranet site (kiosk + tools)
-- Interactive PDF flipbooks for catalog and success stories
+Next.js 16 + React 19 website for Petromac's public site, protected intranet, trade-show kiosk, flipbooks, and supporting FastAPI backend services.
 
-## Architecture
+## Stack
 
-### Tech Stack
-- **Frontend**: Next.js 15.5+ (App Router), React 19, TypeScript
-- **Styling**: Tailwind CSS 4 with Petromac brand theme
-- **Typography**: Inter (body), IBM Plex Sans (headings)
-- **3D Visualization**: Three.js, React Three Fiber
-- **Data Visualization**: D3.js
-- **Data Processing**: Python 3.11+ (polars, openpyxl, pdf2image, pillow)
-- **API Services**: FastAPI backend + Next.js frontend
-- **Deployment**: Hetzner (`klaratech-1`) + Cloudflare Tunnel; images on GHCR
-- **CI/CD**: GitHub Actions (build + push + SSH deploy; flipbook + data pipelines)
-- **Analytics**: Plausible (optional, privacy-first)
-- **PWA**: Kiosk-only service worker for offline functionality
+- **Frontend**: Next.js 16 App Router, React 19, TypeScript
+- **Styling**: Tailwind CSS 4 with Petromac brand tokens
+- **Typography**: Inter for body text, IBM Plex Sans for headings
+- **Maps and data visualization**: D3.js with static public data artifacts
+- **3D visualization**: Three.js and React Three Fiber
+- **Backend**: FastAPI for contact email, PDF generation, email logs/config, and data passthrough endpoints
+- **Data pipeline**: Python 3.11+ and Node scripts for operations JSON and flipbook generation
+- **Deployment**: Hetzner (`klaratech-1`) through Cloudflare Tunnel, container images on GHCR
+- **CI/CD**: GitHub Actions for builds, deploys, data, and flipbooks
+- **PWA**: Kiosk-scoped service worker only
 
-> See [docs/REPO_STRUCTURE.md](docs/REPO_STRUCTURE.md) for file layout
-> See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for architecture overview
-> See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for development workflow
-> See [docs/ADMIN.md](docs/ADMIN.md) for recurring content updates (operations data, flipbooks, patents, publications, team)
-> See [DEPLOY.md](DEPLOY.md) for production deployment model
-> See [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) for brand theme
-> See [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) for email configuration
-> See [docs/MS365_ENTRA_KIOSK_SETUP.md](docs/MS365_ENTRA_KIOSK_SETUP.md) for Microsoft staff sign-in setup
-> See [docs/FLIPBOOKS.md](docs/FLIPBOOKS.md) for flipbook build pipeline
-> See [docs/KIOSK.md](docs/KIOSK.md) for kiosk operations & offline caching
+## Routes
 
-### Shared Components
-- **Header/Footer**: Single implementations in `src/components/shared/` used across public and intranet
-- **Map**: `DrilldownMapCore` in `src/components/geo/` — imported directly on `/track-record` and via `DrilldownMapKiosk` on the kiosk dashboard
-- **Flipbook**: Reusable PDF flipbook component in `src/components/shared/pdf/`
+### Public Site
 
-## Application Structure
+- `/` - Homepage
+- `/about` - Company overview
+- `/about/patents` - Patents
+- `/about/publications` - Publications
+- `/team` - Team
+- `/catalog` - Product catalog flipbook
+- `/track-record` - Interactive global deployment map
+- `/success-stories/flipbook` - Success Stories flipbook with filters
+- `/simulation` - Athena planning and simulation page
+- `/contact` - Contact form
+- `/privacy` and `/terms` - Legal pages
 
-### Public Website (/)
-- **Homepage** (`/`)
-- **About** (`/about`)
-- **Catalog** (`/catalog`) + `/catalog/flipbook` (interactive flipbook)
-- **Track Record** (`/track-record`) - Interactive global deployment map (shared DrilldownMapCore)
-- **Case Studies** (`/case-studies`)
-- **Success Stories** (`/success-stories`) + `/success-stories/flipbook` (interactive flipbook)
-- **Contact** (`/contact`)
+### Intranet and Kiosk
 
-### Intranet (/intranet/*)
-Staff area for team workflows. Includes:
-- **Intranet Homepage** with Athena + Kiosk tiles
-- **Kiosk Application** with dashboards, product lines, success stories manager, data check tools
-- Optional **Microsoft staff sign-in** for team identity that persists into kiosk mode
+- `/intranet` - Staff entry point with Athena and kiosk links
+- `/intranet/email-log` - Staff email log/config view
+- `/intranet/kiosk` - Trade-show kiosk shell
+- `/intranet/kiosk/dashboard` - Operations dashboard
+- `/intranet/kiosk/productlines` - Product line explorer
+- `/intranet/kiosk/datacheck` - Data validation view
+- `/intranet/kiosk/successstories` - Kiosk success stories flipbook
+- `/intranet/kiosk/3d-viewer` and `/intranet/kiosk/lane` - Kiosk product/experience views
 
-### Flipbooks
-- Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.dev`)
-- Output bundle format under `public/flipbooks/<docKey>/` (manifest, pages, source.pdf, optional tags)
-- Component: `src/components/shared/pdf/Flipbook.tsx`
-- Automated regeneration with GitHub Actions workflow `.github/workflows/pdf-flipbooks-build.yml`
-
-### Success Stories
-- **Data Source**: Tags CSV at `public/flipbooks/success-stories/tags.csv` (auto-generated from `Success Stories_Summary.xlsx`)
-- **Options**: Derived from tags + normalization logic in `src/features/success-stories/services/successStories.shared.ts`
-- **Flipbook**: Interactive flipbook with filtering at `/success-stories/flipbook`
-
-### PWA & Offline Functionality
-- **Scope**: PWA functionality is limited to `/intranet/kiosk/*` only
-- **Service Worker**: `public/kiosk-sw.js` registered only within kiosk routes
-- **Cache Strategy**:
-  - Cache-first for media (videos, 3D models, images, PDFs)
-  - Network-first for data files (JSON, CSV)
-- **Public Site**: No service worker registered; remains a standard web application
-
-To test offline functionality:
-1. Visit `/intranet/kiosk/` routes
-2. Open DevTools → Application → Service Workers
-3. Enable "Offline" mode and verify cached assets load
-
-## Getting Started
-
-### Prerequisites
-- Node.js 20+
-- Python 3.11+
-- pnpm
-- Git
-
-### Local Development Setup
+## Local Development
 
 ```bash
-git clone https://github.com/Klaratech/petromac.git
-cd petromac
 pnpm install
+cp .env.example .env.local
 cp .env.example .env.dev
 pnpm run dev
 ```
 
-### Common Scripts
+- `pnpm run dev` serves the frontend at http://localhost:3000.
+- `docker compose up --build` runs the frontend and backend together.
+- `.env.local` is for local Next.js development.
+- `.env.dev` is loaded by Docker Compose and the data pipeline.
+
+## Common Scripts
+
 - `pnpm run lint`
 - `pnpm run typecheck`
-- `pnpm run data` (unified operations + flipbooks rebuild using env-configured source paths)
-- `pnpm run validate:successstories`
-- `pnpm run build:flipbooks`
+- `pnpm run build`
+- `pnpm run data` - rebuild operations JSON and flipbook assets from env-configured source paths
 - `pnpm run validate:flipbooks`
-- `pnpm run test:e2e` (run with a local server running)
+- `pnpm run validate:successstories`
+- `pnpm run test:e2e` - requires a local server
 
-## Kiosk
-Kiosk routes live under `/intranet/kiosk`. Offline caching is implemented via a kiosk-scoped Service Worker.
-See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for kiosk offline refresh steps and cache details.
+## Data and Flipbooks
 
-### E2E tests
-Install Playwright browsers once:
-`pnpm exec playwright install`
-Then run:
-`pnpm run test:e2e`
+- Runtime map data is published under `public/data/` and fetched directly from `/data/*`.
+- Raw source files live outside the deployed app, usually in OneDrive paths configured in `.env.dev`.
+- Generated flipbook bundles live under `public/flipbooks/<docKey>/`.
+- Product catalog is served at `/catalog`.
+- Success Stories is served at `/success-stories/flipbook`.
 
-For Python scripts:
-```bash
-cd scripts/python
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+Key source env vars:
+
+```env
+OPERATIONS_SOURCE_XLSX=
+FLIPBOOK_CATALOG_SOURCE_PDF=
+FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF=
+FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX=
 ```
 
-### Data Processing & Flipbooks
-- Preferred: run `pnpm run data` to rebuild operations JSON + flipbook assets in one command
-- Source files can be configured via `.env.dev` (raw sources do not need to be committed):
-  - `OPERATIONS_SOURCE_XLSX`
-  - `FLIPBOOK_CATALOG_SOURCE_PDF`
-  - `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF`
-  - `FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX`
-- Optional legacy commands:
-  - `python scripts/python/generate_json.py`
-  - `pnpm run build:flipbooks`
-  - `python scripts/update_flipbooks.py`
+## Services
 
-### GitHub Actions
-- `.github/workflows/data-build.yaml` - Operations data
-- `.github/workflows/pdf-flipbooks-build.yml` - Flipbooks
+- The browser calls `NEXT_PUBLIC_API_BASE_URL` for backend routes when needed.
+- Server-side frontend code uses `API_BASE_URL`.
+- Canonical URLs, Open Graph metadata, robots, and sitemap use `NEXT_PUBLIC_SITE_URL` first, with `NEXT_PUBLIC_BASE_URL` kept as a legacy alias.
+- Contact form and PDF email delivery are handled by the FastAPI backend under `/api/*`.
+- Microsoft Entra sign-in routes live in the Next.js app under `/auth/microsoft/*`.
 
-### Production Deploy (Hetzner + Cloudflare Tunnel)
+## Production Deploy
+
 - Server: `klaratech-1` (Hetzner)
 - App folder: `/root/apps/petromac/`
-- Frontend image: `ghcr.io/klaratech/petromac-frontend` on host port `3015` → container `3000`
-- Backend image: `ghcr.io/klaratech/petromac-backend` on host port `8012` → container `8000`
-- Hostname: `petromac.klaratech.it` (Cloudflare Tunnel: `klaratech-1`)
-- Server `.env` lives at `/root/apps/petromac/.env` and is **never** committed
-- See [DEPLOY.md](DEPLOY.md) for the full pipeline and rollback flow.
+- Frontend: `ghcr.io/klaratech/petromac-frontend`, host port `3015` to container `3000`
+- Backend: `ghcr.io/klaratech/petromac-backend`, host port `8012` to container `8000`
+- Public hostname: `petromac.klaratech.it`
+- Production env files: `/root/apps/petromac/.env-frontend` and `/root/apps/petromac/.env-backend`
 
-## Security
-- Microsoft Entra sign-in available for staff identity in intranet and kiosk
-- Contact form: HTML escaping, rate limiting (3 req/min), honeypot + timing bot checks, input length limits
-- Email APIs: recipient allowlists, origin validation, rate limiting (3 req/min)
-- PDF generation API: rate limiting (5 req/min), sanitized error responses
+See [DEPLOY.md](DEPLOY.md) for the full pipeline and rollback flow.
 
-## Resources
-- [Next.js Docs](https://nextjs.org/docs)
-- [React Docs](https://react.dev)
-- [Tailwind CSS Docs](https://tailwindcss.com/docs)
+## Documentation
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture overview
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) - Development workflow and data conventions
+- [docs/REPO_STRUCTURE.md](docs/REPO_STRUCTURE.md) - Repository structure
+- [docs/ADMIN.md](docs/ADMIN.md) - Recurring content updates
+- [docs/FLIPBOOKS.md](docs/FLIPBOOKS.md) - Flipbook build pipeline
+- [docs/KIOSK.md](docs/KIOSK.md) - Kiosk operations and offline caching
+- [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) - Brand theme notes
+- [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) - Email/SMTP configuration
+- [docs/MS365_ENTRA_KIOSK_SETUP.md](docs/MS365_ENTRA_KIOSK_SETUP.md) - Microsoft staff sign-in setup
+
+## Security Notes
+
+- Secrets are configured through environment variables only.
+- The contact form uses honeypot, timing, length validation, escaping, origin checks, and backend rate limiting.
+- PDF/email endpoints use recipient allowlists and backend rate limiting.
+- Security headers are configured in `next.config.ts`.
+- The kiosk service worker is scoped to `/intranet/kiosk/`; the public site does not register a service worker.

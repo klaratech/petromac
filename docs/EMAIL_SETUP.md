@@ -34,15 +34,15 @@ Before configuring SMTP, you need:
 ## Step 2: Configure Environment Variables
 
 Set the following variables in:
-1. `.env.dev` for local development
-2. `/opt/petromac/.env.prod` on EC2 for production
+1. `.env.dev` for local Docker/backend development
+2. `/root/apps/petromac/.env-backend` on `klaratech-1` for production
 
 ### Required Variables:
 
 #### For Contact Form:
 | Variable Name | Value | Description |
 |--------------|-------|-------------|
-| `SMTP_HOST` | `smtp-mail.outlook.com` | Office365 SMTP server |
+| `SMTP_HOST` | `smtp.office365.com` | Office365 SMTP server |
 | `SMTP_PORT` | `587` | SMTP server port (TLS) |
 | `SMTP_USER` | `info@petromac.co.nz` | Petromac email address |
 | `SMTP_PASS` | `[app-password]` | App password from Office365 |
@@ -54,7 +54,7 @@ Set the following variables in:
 #### Security Allowlists (Recommended):
 | Variable Name | Example Value | Description |
 |--------------|---------------|-------------|
-| `ALLOWED_ORIGINS` | `https://www.petromac.com` | Allowed origins/referrers for email endpoints |
+| `ALLOWED_ORIGINS` | `https://petromac.klaratech.it` | Allowed origins/referrers for email endpoints |
 | `ALLOWED_EMAIL_DOMAINS` | `petromac.com,petromac.co.nz` | Domains allowed to receive PDFs |
 | `ALLOWED_EMAIL_RECIPIENTS` | `info@petromac.co.nz,marketing@petromac.co.nz` | Explicit allowlist of recipient emails |
 
@@ -63,7 +63,7 @@ Set the following variables in:
 **Complete Environment Variables Setup:**
 ```env
 # Unified SMTP (used by contact form + PDF email endpoints)
-SMTP_HOST=smtp-mail.outlook.com
+SMTP_HOST=smtp.office365.com
 SMTP_PORT=587
 SMTP_USER=info@petromac.co.nz
 SMTP_PASS=[your-office365-app-password]
@@ -71,7 +71,7 @@ CONTACT_FROM_EMAIL=info@petromac.co.nz
 CONTACT_TO_EMAIL=info@petromac.co.nz
 
 # Email Endpoint Security
-ALLOWED_ORIGINS=https://www.petromac.com
+ALLOWED_ORIGINS=https://petromac.klaratech.it
 ALLOWED_EMAIL_DOMAINS=petromac.com,petromac.co.nz
 ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz
 ```
@@ -99,12 +99,12 @@ SMTP_PASS=your-app-password
 ## Step 3: Deploy
 
 After adding all environment variables:
-1. Restart `pnpm run dev` locally if you changed `.env.dev`
-2. Redeploy the EC2 app stack if you changed `/opt/petromac/.env.prod`
+1. Restart the local backend or Docker Compose stack if you changed `.env.dev`
+2. Redeploy/restart the production app stack if you changed `/root/apps/petromac/.env-backend`
 
 ---
 
-## Step 5: Test Email Functionality
+## Step 4: Test Email Functionality
 
 ### Test Contact Form:
 1. Visit your production site
@@ -174,7 +174,7 @@ After adding all environment variables:
 If you prefer a dedicated email service:
 1. Sign up for SendGrid (free tier: 100 emails/day) or Mailgun
 2. Get API credentials
-3. Update `src/app/(public)/contact/actions.ts` to use their API
+3. Update the backend email sender in `backend/app/main.py` or add a dedicated backend provider integration
 4. Set API credentials as environment variables in the active environment file
 
 ---
@@ -203,6 +203,6 @@ If you prefer a dedicated email service:
 ## Questions?
 
 If you encounter issues, check:
-1. App container logs on EC2: `docker logs --tail 120 petromac`
+1. Backend container logs on `klaratech-1`: `docker logs --tail 120 petromac-backend`
 2. Email provider's SMTP documentation
-3. `.env.dev` or `/opt/petromac/.env.prod` is configured correctly
+3. `.env.dev` or `/root/apps/petromac/.env-backend` is configured correctly

@@ -21,7 +21,9 @@ info@petromac.co.nz
 
 ## App Env
 
-Set these in local `.env.dev` and production `/opt/petromac/.env.prod`:
+Historical checklist. For current setup, prefer [EMAIL_SETUP.md](EMAIL_SETUP.md).
+
+Set these in local `.env.dev` and production `/root/apps/petromac/.env-backend`:
 
 ```env
 SMTP_HOST=smtp.office365.com
@@ -30,7 +32,7 @@ SMTP_USER=info@petromac.co.nz
 SMTP_PASS=your-ms365-password-or-app-password
 CONTACT_FROM_EMAIL=info@petromac.co.nz
 CONTACT_TO_EMAIL=info@petromac.co.nz
-ALLOWED_ORIGINS=https://www.petromac.com
+ALLOWED_ORIGINS=https://petromac.klaratech.it
 ALLOWED_EMAIL_DOMAINS=petromac.com,petromac.co.nz
 ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz,marketing@petromac.co.nz
 ```
@@ -62,7 +64,7 @@ ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz,marketing@petromac.co.nz
 5. Check EC2 logs if a send fails:
 
 ```bash
-docker logs --tail 120 petromac
+docker logs --tail 120 petromac-backend
 ```
 
 ## Common MS365 Failure Points

@@ -8,7 +8,11 @@ export function parseEnvList(value?: string) {
 }
 
 export function isOriginAllowed(req: NextRequest) {
-  const allowedOrigins = parseEnvList(process.env.ALLOWED_ORIGINS || process.env.NEXT_PUBLIC_BASE_URL);
+  const allowedOrigins = parseEnvList(
+    process.env.ALLOWED_ORIGINS ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_BASE_URL,
+  );
   if (allowedOrigins.length === 0) return true;
 
   const raw = req.headers.get('origin') || req.headers.get('referer');

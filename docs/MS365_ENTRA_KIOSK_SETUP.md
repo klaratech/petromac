@@ -127,7 +127,7 @@ This is enforced by the app after Microsoft sign-in succeeds.
 Set these in:
 
 - local `.env.dev`
-- EC2 `/opt/petromac/.env.prod`
+- production `/root/apps/petromac/.env-frontend`
 
 ```env
 ENTRA_TENANT_ID=your-tenant-id
