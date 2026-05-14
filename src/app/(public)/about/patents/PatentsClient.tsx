@@ -33,23 +33,23 @@ const DEVICES: Device[] = [
     summary:
       "The core Wireline Express conveyance technology — sensor transportation, guide devices, and the Lubrication Delivery system. The foundation of the open-hole gravity-descent record.",
     patents: [
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "US9,863,198", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US9863198B2.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "US10,364,627", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US10364627B2.pdf" },
-      { title: "Wellbore Logging Tool Assembly", number: "US10,612,333", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US10612333B2.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "US11,047,191", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11047191B1.pdf" },
-      { title: "Sensor Transportation Apparatus – \"Lubrication Delivery system\"", number: "US11,111,774", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11111774B2.pdf" },
-      { title: "Orientation apparatus and hole finder device for a wireline logging tool string", number: "US11,371,306", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11371306B2.pdf" },
-      { title: "Sensor transportation apparatus for a wireline logging tool string", number: "US11,873,692", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11873692B2.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "US9,863,198", jurisdiction: "USA", link: "/patent_pdfs/US9863198B2.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "US10,364,627", jurisdiction: "USA", link: "/patent_pdfs/US10364627B2.pdf" },
+      { title: "Wellbore Logging Tool Assembly", number: "US10,612,333", jurisdiction: "USA", link: "/patent_pdfs/US10612333B2.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "US11,047,191", jurisdiction: "USA", link: "/patent_pdfs/US11047191B1.pdf" },
+      { title: "Sensor Transportation Apparatus – \"Lubrication Delivery system\"", number: "US11,111,774", jurisdiction: "USA", link: "/patent_pdfs/US11111774B2.pdf" },
+      { title: "Orientation apparatus and hole finder device for a wireline logging tool string", number: "US11,371,306", jurisdiction: "USA", link: "/patent_pdfs/US11371306B2.pdf" },
+      { title: "Sensor transportation apparatus for a wireline logging tool string", number: "US11,873,692", jurisdiction: "USA", link: "/patent_pdfs/US11873692B2.pdf" },
       { title: "Sensor transportation apparatus for a wireline logging tool string", number: "US12,320,216", jurisdiction: "USA" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "UAE 7283", jurisdiction: "UAE", link: "https://www.petromac.co.nz/pdf/UAE-7283.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-169945", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-169945%20B.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-195422-A", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-195422-A.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP2920405", jurisdiction: "France", link: "https://www.petromac.co.nz/pdf/EP2920405B1.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP3726001", jurisdiction: "Denmark, Italy, Norway, UK", link: "https://www.petromac.co.nz/pdf/EP3726001B1.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "Eurasia 031097", jurisdiction: "Azerbaijan, Kazakhstan, Turkmenistan", link: "https://www.petromac.co.nz/pdf/EA031097B1.pdf" },
-      { title: "Sensor Transportation Apparatus and Guide Device", number: "ZL201380059792.3", jurisdiction: "China", link: "https://www.petromac.co.nz/pdf/CN104919132B.pdf" },
-      { title: "Sensor Transportation Device - \"Guide Device\"", number: "ZL201810053768.3", jurisdiction: "China", link: "https://www.petromac.co.nz/pdf/CN108104751B.pdf" },
-      { title: "Transport apparatus for transporting a wireline logging tool and guide device combination through a wellbore", number: "BR 112015010666.8", jurisdiction: "Brazil", link: "https://www.petromac.co.nz/pdf/BR%20taxi.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "UAE 7283", jurisdiction: "UAE", link: "/patent_pdfs/UAE-7283.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-169945", jurisdiction: "Malaysia", link: "/patent_pdfs/MY-169945%20B.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-195422-A", jurisdiction: "Malaysia", link: "/patent_pdfs/MY-195422-A.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP2920405", jurisdiction: "France", link: "/patent_pdfs/EP2920405B1.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "EP3726001", jurisdiction: "Denmark, Italy, Norway, UK", link: "/patent_pdfs/EP3726001B1.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "Eurasia 031097", jurisdiction: "Azerbaijan, Kazakhstan, Turkmenistan", link: "/patent_pdfs/EA031097B1.pdf" },
+      { title: "Sensor Transportation Apparatus and Guide Device", number: "ZL201380059792.3", jurisdiction: "China", link: "/patent_pdfs/CN104919132B.pdf" },
+      { title: "Sensor Transportation Device - \"Guide Device\"", number: "ZL201810053768.3", jurisdiction: "China", link: "/patent_pdfs/CN108104751B.pdf" },
+      { title: "Transport apparatus for transporting a wireline logging tool and guide device combination through a wellbore", number: "BR 112015010666.8", jurisdiction: "Brazil", link: "/patent_pdfs/BR%20taxi.pdf" },
     ],
   },
   {
@@ -58,13 +58,13 @@ const DEVICES: Device[] = [
     summary:
       "Universal hole finder for navigating restrictions, ledges, and washouts in high-deviation wells.",
     patents: [
-      { title: "Guide Device", number: "US11,371,296", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11371296B2.pdf" },
-      { title: "A Guide Device", number: "GB2583249", jurisdiction: "UK", link: "https://www.petromac.co.nz/pdf/GB2583249B.pdf" },
+      { title: "Guide Device", number: "US11,371,296", jurisdiction: "USA", link: "/patent_pdfs/US11371296B2.pdf" },
+      { title: "A Guide Device", number: "GB2583249", jurisdiction: "UK", link: "/patent_pdfs/GB2583249B.pdf" },
       { title: "A Guide Device", number: "UAE P9643", jurisdiction: "UAE" },
-      { title: "A Guide Device", number: "MY-203027-A", jurisdiction: "Malaysia", link: "https://www.petromac.co.nz/pdf/MY-203027-A.pdf" },
-      { title: "Un dispositivo guía para uso en equipos de sensores de guía en Aplicaciones de registro por cable de perforación", number: "NC2020/0008570", jurisdiction: "Colombia", link: "https://www.petromac.co.nz/pdf/NC202_0008570.pdf" },
-      { title: "A Guide Device", number: "CA3085434", jurisdiction: "Canada", link: "https://www.petromac.co.nz/pdf/CA3085434 Granted specification.pdf" },
-      { title: "Guide Device", number: "AU2019205752", jurisdiction: "Australia", link: "https://www.petromac.co.nz/pdf/AU2019205752B2.pdf" },
+      { title: "A Guide Device", number: "MY-203027-A", jurisdiction: "Malaysia", link: "/patent_pdfs/MY-203027-A.pdf" },
+      { title: "Un dispositivo guía para uso en equipos de sensores de guía en Aplicaciones de registro por cable de perforación", number: "NC2020/0008570", jurisdiction: "Colombia", link: "/patent_pdfs/NC202_0008570.pdf" },
+      { title: "A Guide Device", number: "CA3085434", jurisdiction: "Canada", link: "/patent_pdfs/CA3085434%20Granted%20specification.pdf" },
+      { title: "Guide Device", number: "AU2019205752", jurisdiction: "Australia", link: "/patent_pdfs/AU2019205752B2.pdf" },
     ],
   },
   {
@@ -73,8 +73,8 @@ const DEVICES: Device[] = [
     summary:
       "Cased-hole adaptation of the conveyance system for in-casing logging operations.",
     patents: [
-      { title: "Sensor Transportation Device", number: "US11,933,160", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11933160B1.pdf" },
-      { title: "Tool string transportation apparatus", number: "US11,970,914", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11970914.pdf" },
+      { title: "Sensor Transportation Device", number: "US11,933,160", jurisdiction: "USA", link: "/patent_pdfs/US11933160B1.pdf" },
+      { title: "Tool string transportation apparatus", number: "US11,970,914", jurisdiction: "USA", link: "/patent_pdfs/US11970914.pdf" },
       { title: "Sensor Transportation Device", number: "US12,352,155", jurisdiction: "USA" },
     ],
   },
@@ -84,12 +84,12 @@ const DEVICES: Device[] = [
     summary:
       "World-first open-hole roller centraliser. Improved leverage geometry for entering restrictions and maintaining centralisation across a wide casing range.",
     patents: [
-      { title: "Device for centering a sensor assembly in a bore", number: "US10,947,791", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US10947791B1.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "US11,913,291", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11913291B2.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "US12,281,525", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US12281525.pdf" },
+      { title: "Device for centering a sensor assembly in a bore", number: "US10,947,791", jurisdiction: "USA", link: "/patent_pdfs/US10947791B1.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "US11,913,291", jurisdiction: "USA", link: "/patent_pdfs/US11913291B2.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "US12,281,525", jurisdiction: "USA", link: "/patent_pdfs/US12%2C281%2C525.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "US12,560,033", jurisdiction: "USA" },
-      { title: "Device for centering sensor assembly in a bore", number: "SA 16064", jurisdiction: "Saudi Arabia", link: "https://www.petromac.co.nz/pdf/SA16064.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "GB2611986", jurisdiction: "UK", link: "https://www.petromac.co.nz/pdf/GB2611986.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "SA 16064", jurisdiction: "Saudi Arabia", link: "/patent_pdfs/SA16064.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "GB2611986", jurisdiction: "UK", link: "/patent_pdfs/GB2611986.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "NO349155", jurisdiction: "Norway" },
       { title: "Device for centering sensor assembly in a bore", number: "CN116034206", jurisdiction: "China" },
       { title: "Device for centering sensor assembly in a bore", number: "AU2021320591", jurisdiction: "Australia" },
@@ -101,8 +101,8 @@ const DEVICES: Device[] = [
     summary:
       "Synchronised rocker-arm mechanism for centralisation in small tubing and casing sizes where conventional centralisers lose leverage.",
     patents: [
-      { title: "A device for centering a sensor assembly in a bore", number: "US10,947,792", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US10947792B1.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "US12,104,443", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US12104443B2.pdf" },
+      { title: "A device for centering a sensor assembly in a bore", number: "US10,947,792", jurisdiction: "USA", link: "/patent_pdfs/US10947792B1.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "US12,104,443", jurisdiction: "USA", link: "/patent_pdfs/US12104443B2.pdf" },
     ],
   },
   {
@@ -111,7 +111,7 @@ const DEVICES: Device[] = [
     summary:
       "Field-adjustable centraliser geometry for varied wellbore conditions in a single run.",
     patents: [
-      { title: "Sensor transportation device", number: "US10,988,991", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US10988991B1.pdf" },
+      { title: "Sensor transportation device", number: "US10,988,991", jurisdiction: "USA", link: "/patent_pdfs/US10988991B1.pdf" },
     ],
   },
   {
@@ -120,7 +120,7 @@ const DEVICES: Device[] = [
     summary:
       "Parallelogram-linkage and compact-spring mechanisms for open-hole centralisation in larger boreholes.",
     patents: [
-      { title: "Device for centering a sensor assembly in a bore", number: "US11,136,880", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11136880B1.pdf" },
+      { title: "Device for centering a sensor assembly in a bore", number: "US11,136,880", jurisdiction: "USA", link: "/patent_pdfs/US11136880B1.pdf" },
     ],
   },
   {
@@ -129,7 +129,7 @@ const DEVICES: Device[] = [
     summary:
       "Co-pivot mechanism for centralisation in tight bores where pivot-on-same-side geometry constrains travel.",
     patents: [
-      { title: "Device for centering sensor assembly in a bore – \"Co-pivot Centraliser\"", number: "US11,713,627", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US11713627B1.pdf" },
+      { title: "Device for centering sensor assembly in a bore – \"Co-pivot Centraliser\"", number: "US11,713,627", jurisdiction: "USA", link: "/patent_pdfs/US11713627B1.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "US12,410,664", jurisdiction: "USA" },
     ],
   },
@@ -139,7 +139,7 @@ const DEVICES: Device[] = [
     summary:
       "Additional centralisation technologies — including bowspring-type devices — that fall outside the primary centraliser categories.",
     patents: [
-      { title: "A device for centering a sensor assembly in a wellbore", number: "US12,116,850", jurisdiction: "USA", link: "https://www.petromac.co.nz/pdf/US12116850B1.pdf" },
+      { title: "A device for centering a sensor assembly in a wellbore", number: "US12,116,850", jurisdiction: "USA", link: "/patent_pdfs/US12116850B1.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "US12,607,075", jurisdiction: "USA" },
     ],
   },

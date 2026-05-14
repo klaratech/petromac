@@ -43,6 +43,7 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, intran
 
 All docs live in `docs/`:
 
+- [docs/ADMIN.md](docs/ADMIN.md) — Recurring content updates (operations data, flipbooks, patents, publications, team)
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Architecture overview
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — Development workflow & data conventions
 - [docs/REPO_STRUCTURE.md](docs/REPO_STRUCTURE.md) — Full directory tree

@@ -1,5 +1,20 @@
 # TODO
 
+## Pending content
+
+- [ ] **9 patent PDFs outstanding.** The Patents page has 44 patents; 35 PDFs
+  are self-hosted in `public/patent_pdfs/`. The 9 most recently granted render
+  as plain text until their PDFs arrive from IP counsel. Expected filenames:
+  `US12320216.pdf`, `UAE-P9643.pdf`, `US12352155.pdf`, `US12560033.pdf`,
+  `NO349155.pdf`, `CN116034206.pdf`, `AU2021320591.pdf`, `US12410664.pdf`,
+  `US12607075.pdf` — drop them in `public/patent_pdfs/` and add the matching
+  `link:` field in `PatentsClient.tsx`.
+- [ ] Confirm with IP counsel: docx says "Co-pivot centraliser (PC8)" but the
+  site uses "CP8" per an earlier correction — which is right?
+
+> Recurring content updates (operations data, flipbooks, patents, publications,
+> team) are documented in [docs/ADMIN.md](docs/ADMIN.md).
+
 ## Phase 1 — Finalize Design & Assets
 
 - [x] Finalize home page design (May 2026 — hero accent, eyebrows, unified CTAs, brand-tinted Athena band, reach sentence, sentence case)

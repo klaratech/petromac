@@ -23,6 +23,7 @@ A Next.js-based application featuring:
 > See [docs/REPO_STRUCTURE.md](docs/REPO_STRUCTURE.md) for file layout
 > See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for architecture overview
 > See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for development workflow
+> See [docs/ADMIN.md](docs/ADMIN.md) for recurring content updates (operations data, flipbooks, patents, publications, team)
 > See [DEPLOY.md](DEPLOY.md) for production deployment model
 > See [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) for brand theme
 > See [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) for email configuration
