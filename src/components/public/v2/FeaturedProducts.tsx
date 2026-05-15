@@ -17,21 +17,21 @@ const products: Product[] = [
     description:
       "Flagship conveyance system — gravity descent in high-deviation open hole, including the world record at 79°.",
     image: "/images/wirelineexpress.png",
-    video: "/videos/WirelineExpress.mp4",
+    video: "/videos/transcoded/WirelineExpress.mp4",
   },
   {
     name: "Pathfinder",
     description:
       "Universal hole finder for navigating restrictions, ledges, and washouts in deviated wells.",
     image: "/images/pathfinder.png",
-    video: "/videos/pf.mp4",
+    video: "/videos/transcoded/pf.mp4",
   },
   {
     name: "Focus Centralizers",
     description:
       "Open and cased hole centralisation — HELIX, Rocker, CP-series, and more across the full casing range.",
     image: "/images/focus.png",
-    video: "/videos/helix.mp4",
+    video: "/videos/transcoded/helix.mp4",
   },
   // TODO: re-enable Thor once we have a dedicated Thor video and finalised
   // anti-differential-sticking copy. Placeholder thor.png + 'New' badge in
@@ -43,7 +43,7 @@ const products: Product[] = [
   //     "Anti-differential-sticking system for wireline logging in overbalanced wells.",
   //   image: "/images/thor.png",
   //   badge: "New",
-  //   // video: "/videos/thor.mp4",  ← when available
+  //   // video: "/videos/transcoded/thor.mp4",  ← when available
   // },
 ];
 

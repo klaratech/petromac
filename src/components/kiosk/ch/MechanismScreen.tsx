@@ -9,10 +9,10 @@
  * conventional-vs-Petromac comparison layout matching slides 3–7.
  *
  * Asset slots (drop files at these paths and the screen will pick them up):
- *   /public/videos/helix-mechanism.mp4           HELIX mechanism animation (slide 4)
- *   /public/videos/conventional-largecasings.mp4 Conventional mechanism, large casing (slide 3)
- *   /public/videos/rocker-mechanism.mp4          ROCKER mechanism animation (slide 7)
- *   /public/videos/conventional-smallcasings.mp4 Conventional mechanism, small tubing/casing (slide 6)
+ *   /public/videos/transcoded/helix-mechanism.mp4           HELIX mechanism animation (slide 4)
+ *   /public/videos/transcoded/conventional-largecasings.mp4 Conventional mechanism, large casing (slide 3)
+ *   /public/videos/transcoded/rocker-mechanism.mp4          ROCKER mechanism animation (slide 7)
+ *   /public/videos/transcoded/conventional-smallcasings.mp4 Conventional mechanism, small tubing/casing (slide 6)
  */
 
 interface Props {
@@ -25,14 +25,14 @@ const VIDEOS: Record<
   { conventional: string; petromac: string; conventionalLabel: string; petromacLabel: string }
 > = {
   Helix: {
-    conventional: '/videos/conventional-largecasings.mp4',
-    petromac: '/videos/helix-mechanism.mp4',
+    conventional: '/videos/transcoded/conventional-largecasings.mp4',
+    petromac: '/videos/transcoded/helix-mechanism.mp4',
     conventionalLabel: 'Conventional Mechanism',
     petromacLabel: 'HELIX Mechanism',
   },
   Rocker: {
-    conventional: '/videos/conventional-smallcasings.mp4',
-    petromac: '/videos/rocker-mechanism.mp4',
+    conventional: '/videos/transcoded/conventional-smallcasings.mp4',
+    petromac: '/videos/transcoded/rocker-mechanism.mp4',
     conventionalLabel: 'Conventional Mechanism',
     petromacLabel: 'ROCKER Mechanism',
   },

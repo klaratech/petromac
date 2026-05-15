@@ -156,6 +156,6 @@ ICOTA*.pptx
 # Office lockfiles
 ~$*
 
-# Raw video exports from the ICOTA deck — must be transcoded before commit.
-# Keep the small, web-optimized versions only.
-public/videos/DifferentialSticking_*.mp4
+# Full-resolution video masters — too large for git, transcoded before commit.
+# The web-optimized derivatives live in public/videos/transcoded/ and ARE committed.
+/public/videos/originals/

@@ -28,12 +28,12 @@ const LANE_LABEL: Record<Lane, string> = {
  */
 const LANE_VIDEOS: Record<Lane, string[]> = {
   oh: [
-    '/videos/pf.mp4',
-    '/videos/dice.mp4',
-    '/videos/WirelineExpress.mp4',
-    '/videos/dice.mp4',
+    '/videos/transcoded/pf.mp4',
+    '/videos/transcoded/dice.mp4',
+    '/videos/transcoded/WirelineExpress.mp4',
+    '/videos/transcoded/dice.mp4',
   ],
-  ch: ['/videos/helix.mp4', '/videos/dice.mp4'],
+  ch: ['/videos/transcoded/helix.mp4', '/videos/transcoded/dice.mp4'],
 };
 
 const IDLE_TIMEOUT_DEFAULT = 30000;        // 30 seconds

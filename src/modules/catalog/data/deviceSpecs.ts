@@ -23,19 +23,19 @@ export interface DeviceSpec {
 
 export const systemMedia: Record<string, SystemMedia> = {
   'Focus': {
-    video: '/videos/helix.mp4?v=20240517',
+    video: '/videos/transcoded/helix.mp4?v=20240517',
     logo: '/images/focus.png',
   },
   'Wireline Express': {
-    video: '/videos/WirelineExpress.mp4?v=20240519',
+    video: '/videos/transcoded/WirelineExpress.mp4?v=20240519',
     logo: '/images/wirelineexpress.png',
   },
   'Thor': {
-    video: '/videos/helix.mp4?v=20240517',
+    video: '/videos/transcoded/helix.mp4?v=20240517',
     logo: '/images/thor.png',
   },
   'PathFinder': {
-    video: '/videos/pf.mp4?v=20240519',
+    video: '/videos/transcoded/pf.mp4?v=20240519',
     logo: '/images/pathfinder.png',
   },
   // Cased-hole experience. The CH lane shows a single "Focus Centralizers"
@@ -43,16 +43,16 @@ export const systemMedia: Record<string, SystemMedia> = {
   // overlay + Rocker corner badge). Helix and Rocker are NOT separate tiles.
   'Focus Centralizers': {
     // TODO(rajesh): replace with the transcoded slide-2 Helix intro video
-    //   from ICOTA 2026 MaIn.pptx. Drop at /public/videos/kiosk/helix-intro.mp4
+    //   from ICOTA 2026 MaIn.pptx. Drop at /public/videos/transcoded/kiosk/helix-intro.mp4
     //   then update this path. For now we reuse the existing helix.mp4.
-    video: '/videos/helix.mp4?v=20240517',
+    video: '/videos/transcoded/helix.mp4?v=20240517',
     // TODO(graphics): dedicated Focus Centralizers brandmark.
     logo: '/images/focus.png',
   },
   // Other cased-hole product family — placeholder slot. The chooser shows it
   // as a tile but tapping opens a "Coming soon" screen until populated.
   'Other CH': {
-    video: '/videos/helix.mp4?v=20240517',
+    video: '/videos/transcoded/helix.mp4?v=20240517',
     logo: '/images/focus.png',
   },
 };

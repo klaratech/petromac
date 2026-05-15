@@ -31,10 +31,10 @@ export const APP_CONSTANTS = {
 
 // Video sources
 export const VIDEO_SOURCES = [
-  '/videos/dice.mp4?v=20250520',
-  '/videos/WirelineExpress.mp4?v=20250519',
-  '/videos/helix.mp4?v=20250519',
-  '/videos/pf.mp4?v=250519'
+  '/videos/transcoded/dice.mp4?v=20250520',
+  '/videos/transcoded/WirelineExpress.mp4?v=20250519',
+  '/videos/transcoded/helix.mp4?v=20250519',
+  '/videos/transcoded/pf.mp4?v=250519'
 ] as const;
 
 // External URLs

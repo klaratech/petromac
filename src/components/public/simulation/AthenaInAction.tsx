@@ -7,7 +7,7 @@
  *
  * ASSET PLACEHOLDER: the video frame below is a static mockup. When the
  * screen recording is ready, swap the placeholder block for a real
- * <video src="/videos/athena-demo.mp4" controls poster=...> element.
+ * <video src="/videos/transcoded/athena-demo.mp4" controls poster=...> element.
  * Brief: a ~60-90s click-through on one real well plan — load inputs →
  * run Hermes → read the tension/drag/risk output → change a configuration
  * choice → re-run → land on a go/no-go call. See docs/ADMIN.md for the

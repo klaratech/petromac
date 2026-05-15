@@ -29,7 +29,7 @@ export default function HeroV2() {
           poster="/images/sampling.jpg"
           className="absolute inset-0 w-full h-full object-cover hidden md:block"
         >
-          <source src="/videos/WirelineExpress.mp4" type="video/mp4" />
+          <source src="/videos/transcoded/WirelineExpress.mp4" type="video/mp4" />
         </video>
       </div>
 

@@ -21,10 +21,10 @@ const challenges: Challenge[] = [
     id: "stuck-tools",
     title: "Stuck Tools",
     image: "/images/sticking.jpg",
-    // Transcoded from DifferentialSticking_13May.mp4 (257 MB → 3.6 MB).
-    // 854x480 H.264 CRF 30, no audio, faststart. Source kept locally only
-    // (gitignored). Re-transcode any time the source updates.
-    video: "/videos/differential-sticking.mp4",
+    // Transcoded from public/videos/originals/DifferentialSticking.mp4 →
+    // 1280x720 H.264 CRF 30, no audio, faststart. Masters live in
+    // public/videos/originals/ (gitignored); re-transcode when they update.
+    video: "/videos/transcoded/differential-sticking.mp4",
     bullets: [
       "Conveyance past ledges and tight spots in high-deviation wells",
       "Pathfinder hole finder helps logging tools navigate restrictions",
@@ -35,7 +35,7 @@ const challenges: Challenge[] = [
     id: "incomplete-operations",
     title: "Incomplete Operations",
     image: "/images/sampling.jpg",
-    video: "/videos/pf.mp4",
+    video: "/videos/transcoded/pf.mp4",
     bullets: [
       "Reach total depth on the first attempt — no costly contingency runs",
       "Confidence to log full intervals even with risky access",
@@ -66,7 +66,7 @@ const challenges: Challenge[] = [
     id: "cased-hole-centralization",
     title: "Cased Hole Centralization",
     image: "/images/ledges.jpg",
-    video: "/videos/helix.mp4",
+    video: "/videos/transcoded/helix.mp4",
     bullets: [
       "HELIX maintains centralisation across the full casing range",
       "Improved leverage and lower drag than conventional centralisers",
