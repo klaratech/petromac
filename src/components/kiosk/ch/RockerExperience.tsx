@@ -65,10 +65,10 @@ export default function RockerExperience({ onBack, onClose }: Props) {
     return jobData ? (
       <DrilldownMapCore
         data={jobData}
-        // No Rocker records in the data pipeline yet — map will show empty
-        // until ops data is tagged. Filter by 'Rocker' so when records land
-        // they automatically appear here.
-        initialSystem="Rocker"
+        // Helix + Rocker both roll up to "Focus - CH" as the `System`; the
+        // Rocker-specific split lives on each record's `Subsystem` field
+        // (filtering by Subsystem can be added to the map later).
+        initialSystem="Focus - CH"
         showCloseButton
         onClose={() => setView('main')}
         showSuccessStoriesLink

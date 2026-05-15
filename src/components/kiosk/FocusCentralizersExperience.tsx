@@ -76,10 +76,10 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
       <FullScreenLayer>
         <DrilldownMapCore
           data={jobData}
-          // The map filters by system name on the operations dataset. Records
-          // are tagged "Helix" in the data pipeline, so pass that instead of
-          // the new "Focus Centralizers" tile name.
-          initialSystem="Helix"
+          // The map filters by `System`. Helix + Rocker both roll up to
+          // "Focus - CH" in the data pipeline; the finer Helix/Rocker split
+          // lives on each record's `Subsystem` field for future filtering.
+          initialSystem="Focus - CH"
           showCloseButton
           onClose={() => setView('main')}
           showSuccessStoriesLink

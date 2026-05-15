@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 from typing import Optional, Dict, Any
 import re
-from normalization_config import COUNTRY_NORMALIZATION, REGION_NORMALIZATION, SYSTEM_GROUPS, SUCCESS_VALUES, LOCATION_NORMALIZATION
+from normalization_config import COUNTRY_NORMALIZATION, REGION_NORMALIZATION, SYSTEM_GROUPS, SYSTEM_SUBSYSTEMS, SUCCESS_VALUES, LOCATION_NORMALIZATION
 
 # === LOGGING SETUP ===
 logging.basicConfig(
@@ -258,6 +258,19 @@ def normalize_success(value):
 def group_system(value):
     return SYSTEM_GROUPS.get(str(value).strip(), str(value).strip())
 
+@lru_cache(maxsize=500)
+def subsystem_of(value):
+    """Finer identity within a family (e.g. Helix vs Rocker inside Focus - CH).
+
+    Keyed off the RAW system value, so this must be derived BEFORE group_system
+    collapses it. Anything not a known Helix/Rocker variant falls back to its
+    grouped family name so every record carries a non-empty Subsystem.
+    """
+    raw = str(value).strip()
+    if raw in SYSTEM_SUBSYSTEMS:
+        return SYSTEM_SUBSYSTEMS[raw]
+    return group_system(raw)
+
 @lru_cache(maxsize=1000)
 def normalize_location(value):
     value = str(value).strip()
@@ -339,6 +352,12 @@ def load_clean_data() -> Optional[pl.DataFrame]:
             )
 
         if "System" in df.columns:
+            # Derive the finer Subsystem (Helix/Rocker) from the RAW value
+            # first, then collapse System to its rolled-up family name.
+            logging.info("Deriving subsystems...")
+            df = df.with_columns(
+                pl.col("System").map_elements(subsystem_of, return_dtype=pl.String).alias("Subsystem")
+            )
             logging.info("Grouping systems...")
             df = df.with_columns(
                 pl.col("System").map_elements(group_system, return_dtype=pl.String).alias("System")

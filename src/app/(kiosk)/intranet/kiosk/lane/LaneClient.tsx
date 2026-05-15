@@ -67,8 +67,8 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
     {
       key: 'formation-testing',
       label: 'Formation Testing',
-      // TODO(rajesh): build this experience out — follows the Helix pattern
-      // (track record, success stories, mechanism, logs).
+      // Track Record + Success Stories are wired to live data. Mechanism /
+      // Logs stay as "Coming soon" until product assets are delivered.
       open: {
         type: 'overlay',
         config: {
@@ -76,32 +76,38 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
           title: 'Formation Testing',
           subtitle: 'Differential Sticking',
           video: '/videos/transcoded/differential-sticking-subtitled.mp4',
+          // Operations data tags these jobs "Wireline Express - FT".
+          trackRecordSystem: 'Wireline Express - FT',
+          enableSuccessStories: true,
         },
       },
     },
     {
       key: 'high-deviation',
       label: 'High Deviation',
-      // TODO(rajesh): placeholders only for now — build the experience.
       open: {
         type: 'overlay',
         config: {
           laneLabel: 'Open Hole',
           title: 'High Deviation',
           video: '/videos/transcoded/WirelineExpress.mp4',
+          // Prefix-matches "Wireline Express" (also includes the "- FT" jobs).
+          trackRecordSystem: 'Wireline Express',
+          enableSuccessStories: true,
         },
       },
     },
     {
       key: 'data-quality',
       label: 'Data Quality',
-      // TODO(rajesh): build the experience out.
       open: {
         type: 'overlay',
         config: {
           laneLabel: 'Open Hole',
           title: 'Data Quality',
           video: '/videos/transcoded/WirelineExpress.mp4',
+          trackRecordSystem: 'Focus - OH',
+          enableSuccessStories: true,
         },
       },
     },
@@ -115,9 +121,8 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
           title: 'Pathfinder',
           subtitle: 'Pathfinder HT',
           video: '/videos/transcoded/pf-subtitled.mp4',
-          // Operations data is already tagged "PathFinder", so the track
-          // record map works out of the box for this one.
           trackRecordSystem: 'PathFinder',
+          enableSuccessStories: true,
         },
       },
     },

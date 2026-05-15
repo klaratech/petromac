@@ -22,7 +22,10 @@ LOCATION_NORMALIZATION = {
     # Add more if needed
 }
 
-# System groupings (e.g. variants grouped under logical families)
+# System groupings (e.g. variants grouped under logical families).
+# This is the rolled-up `System` value used everywhere (kiosk + public
+# track-record). The finer Helix/Rocker identity is preserved separately
+# via SYSTEM_SUBSYSTEMS below.
 SYSTEM_GROUPS = {
     "Wireline Express": "Wireline Express",
     "Wireline Express (In-Line)": "Wireline Express",
@@ -31,11 +34,29 @@ SYSTEM_GROUPS = {
     "Helix": "Focus - CH",
     "Rocker": "Focus - CH",
     "CA7": "Focus - CH",
+    "CX7": "Focus - CH",
+    "CX9": "Focus - CH",
+    "CX13": "Focus - CH",
     "CP8": "Focus - OH",
     "CP12": "Focus - OH",
     "Thor": "Thor",
     "RO17": "Other"
     # Add more or collapse groupings as needed
+}
+
+# Sub-system identity within a family — preserves the Helix vs Rocker
+# distinction even though both roll up to "Focus - CH" in SYSTEM_GROUPS.
+# Keyed by the RAW system value from the source sheet. Anything not listed
+# falls back to its grouped family name (see subsystem_of in generate_json.py).
+#   Helix centralisers: CX-series  |  Rocker centralisers: CRU / CRIL
+SYSTEM_SUBSYSTEMS = {
+    "Helix": "Helix",
+    "CX7": "Helix",
+    "CX9": "Helix",
+    "CX13": "Helix",
+    "Rocker": "Rocker",
+    "CRU": "Rocker",
+    "CRIL": "Rocker",
 }
 
 # Success value normalization
