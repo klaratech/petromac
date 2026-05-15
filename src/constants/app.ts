@@ -6,8 +6,6 @@ export const KIOSK_PRODUCTLINES_PATH = '/intranet/kiosk/productlines';
 // App-wide constants
 export const APP_CONSTANTS = {
   // Timeouts
-  IDLE_TIMEOUT: 30_000, // 30 seconds
-  IDLE_CHECK_INTERVAL: 10_000, // 10 seconds
   TYPING_SPEED: 50, // milliseconds per character
   BUTTON_SHOW_DELAY: 500, // milliseconds
 
@@ -28,14 +26,6 @@ export const APP_CONSTANTS = {
   COUNTRY_CHART_WIDTH: 320,
   YEARLY_STATS_HEIGHT: '45vh',
 } as const;
-
-// Video sources
-export const VIDEO_SOURCES = [
-  '/videos/transcoded/dice.mp4?v=20250520',
-  '/videos/transcoded/WirelineExpress.mp4?v=20250519',
-  '/videos/transcoded/helix.mp4?v=20250519',
-  '/videos/transcoded/pf.mp4?v=250519'
-] as const;
 
 // External URLs
 export const EXTERNAL_URLS = {

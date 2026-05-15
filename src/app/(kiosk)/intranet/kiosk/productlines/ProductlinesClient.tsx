@@ -75,7 +75,7 @@ export default function ProductlinesClient() {
     idleTimerRef.current = setTimeout(() => {
       setFading(true);
       setTimeout(() => {
-        router.push(`${KIOSK_HOME_PATH}?mode=video`);
+        router.push(KIOSK_HOME_PATH);
       }, 1000);
     }, timeout);
   }, [router, selectedSystem, videoPlaying]);
