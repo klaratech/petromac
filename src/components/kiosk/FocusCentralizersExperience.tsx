@@ -128,6 +128,7 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
         className="relative w-full h-full bg-black"
         onClick={handleTap}
         onTouchStart={handleTap}
+        onMouseMove={handleTap}
       >
         {media?.video ? (
           <video
@@ -148,28 +149,25 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
         {/* Subtle dark overlay so HUD copy stays readable over bright frames */}
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
-        {/* Top-right close */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          aria-label="Close"
-          className="absolute top-4 right-4 z-50 text-white text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60"
-        >
-          ✕
-        </button>
-
-        {/* Top-left product label */}
-        <div className="absolute top-6 left-6 z-40 pointer-events-none">
-          <p className="text-xs uppercase tracking-[0.4em] text-white/60">
-            Cased Hole
-          </p>
-          <h2 className="text-3xl font-extrabold text-white drop-shadow">
-            Focus Centralizers
-          </h2>
-          <p className="text-base text-white/70 mt-1">HELIX CX-9</p>
-        </div>
+        {/* Top-right close — appears with the HUD on hover / tap */}
+        <AnimatePresence>
+          {hudVisible && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              aria-label="Close"
+              className="absolute top-4 right-4 z-50 text-white text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60"
+            >
+              ✕
+            </motion.button>
+          )}
+        </AnimatePresence>
 
         {/* HUD button strip — small, top centre, kept clear of the native
             video controls along the bottom. */}
@@ -214,27 +212,35 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
           )}
         </AnimatePresence>
 
-        {/* Rocker corner badge — bottom-right */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setView('rocker');
-          }}
-          aria-label="Open Rocker"
-          className="absolute bottom-10 right-10 z-40 group flex items-center gap-3 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur text-white text-sm font-semibold tracking-[0.2em] uppercase shadow-lg transition-colors"
-        >
-          {/* TODO(graphics): swap for a small Rocker silhouette / icon */}
-          <span className="w-8 h-8 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
-            <Image
-              src="/images/focus.png"
-              alt=""
-              width={20}
-              height={20}
-              className="opacity-80"
-            />
-          </span>
-          <span>Rocker →</span>
-        </button>
+        {/* Rocker corner badge — bottom-right, appears with the HUD */}
+        <AnimatePresence>
+          {hudVisible && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setView('rocker');
+              }}
+              aria-label="Open Rocker"
+              className="absolute bottom-10 right-10 z-40 group flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur text-white text-xs font-semibold tracking-[0.2em] uppercase shadow-lg transition-colors"
+            >
+              {/* TODO(graphics): swap for a small Rocker silhouette / icon */}
+              <span className="w-6 h-6 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
+                <Image
+                  src="/images/focus.png"
+                  alt=""
+                  width={14}
+                  height={14}
+                  className="opacity-80"
+                />
+              </span>
+              <span>Rocker</span>
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
     </FullScreenLayer>
   );
