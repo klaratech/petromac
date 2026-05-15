@@ -105,7 +105,7 @@ export default function AboutPage() {
               <SidebarLink
                 href="/team"
                 title="Team"
-                description="Regional managers in market and the HQ engineering team."
+                description="Regional managers across the major oil & gas basins, plus the HQ engineering team."
               />
             </div>
           </aside>

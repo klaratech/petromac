@@ -18,9 +18,9 @@ export default function TeamPage() {
             Meet the team
           </h1>
           <p className="text-base md:text-lg text-slate-600 leading-relaxed">
-            Regional managers in market with the operators and service
-            companies they support, anchored by an engineering and operations
-            team out of headquarters.
+            Regional managers across the major oil and gas basins, working
+            directly with the operators and service companies they support —
+            anchored by an engineering and operations team at headquarters.
           </p>
         </header>
 
