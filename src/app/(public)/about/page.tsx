@@ -95,7 +95,7 @@ export default function AboutPage() {
               <SidebarLink
                 href="/about/patents"
                 title="Patents"
-                description="35 granted patents across 8 device families."
+                description="44 granted patents across 9 device categories."
               />
               <SidebarLink
                 href="/about/publications"

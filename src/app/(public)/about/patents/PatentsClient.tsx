@@ -40,7 +40,7 @@ const DEVICES: Device[] = [
       { title: "Sensor Transportation Apparatus – \"Lubrication Delivery system\"", number: "US11,111,774", jurisdiction: "USA", link: "/patent_pdfs/US11111774B2.pdf" },
       { title: "Orientation apparatus and hole finder device for a wireline logging tool string", number: "US11,371,306", jurisdiction: "USA", link: "/patent_pdfs/US11371306B2.pdf" },
       { title: "Sensor transportation apparatus for a wireline logging tool string", number: "US11,873,692", jurisdiction: "USA", link: "/patent_pdfs/US11873692B2.pdf" },
-      { title: "Sensor transportation apparatus for a wireline logging tool string", number: "US12,320,216", jurisdiction: "USA" },
+      { title: "Sensor transportation apparatus for a wireline logging tool string", number: "US12,320,216", jurisdiction: "USA", link: "/patent_pdfs/US12320216B2.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "UAE 7283", jurisdiction: "UAE", link: "/patent_pdfs/UAE-7283.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-169945", jurisdiction: "Malaysia", link: "/patent_pdfs/MY-169945%20B.pdf" },
       { title: "Sensor Transportation Apparatus and Guide Device", number: "MY-195422-A", jurisdiction: "Malaysia", link: "/patent_pdfs/MY-195422-A.pdf" },
@@ -60,7 +60,7 @@ const DEVICES: Device[] = [
     patents: [
       { title: "Guide Device", number: "US11,371,296", jurisdiction: "USA", link: "/patent_pdfs/US11371296B2.pdf" },
       { title: "A Guide Device", number: "GB2583249", jurisdiction: "UK", link: "/patent_pdfs/GB2583249B.pdf" },
-      { title: "A Guide Device", number: "UAE P9643", jurisdiction: "UAE" },
+      { title: "A Guide Device", number: "UAE P9643", jurisdiction: "UAE", link: "/patent_pdfs/UAE-P9643.pdf" },
       { title: "A Guide Device", number: "MY-203027-A", jurisdiction: "Malaysia", link: "/patent_pdfs/MY-203027-A.pdf" },
       { title: "Un dispositivo guía para uso en equipos de sensores de guía en Aplicaciones de registro por cable de perforación", number: "NC2020/0008570", jurisdiction: "Colombia", link: "/patent_pdfs/NC202_0008570.pdf" },
       { title: "A Guide Device", number: "CA3085434", jurisdiction: "Canada", link: "/patent_pdfs/CA3085434%20Granted%20specification.pdf" },
@@ -75,7 +75,7 @@ const DEVICES: Device[] = [
     patents: [
       { title: "Sensor Transportation Device", number: "US11,933,160", jurisdiction: "USA", link: "/patent_pdfs/US11933160B1.pdf" },
       { title: "Tool string transportation apparatus", number: "US11,970,914", jurisdiction: "USA", link: "/patent_pdfs/US11970914.pdf" },
-      { title: "Sensor Transportation Device", number: "US12,352,155", jurisdiction: "USA" },
+      { title: "Sensor Transportation Device", number: "US12,352,155", jurisdiction: "USA", link: "/patent_pdfs/US12352155B2.pdf" },
     ],
   },
   {
@@ -87,12 +87,12 @@ const DEVICES: Device[] = [
       { title: "Device for centering a sensor assembly in a bore", number: "US10,947,791", jurisdiction: "USA", link: "/patent_pdfs/US10947791B1.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "US11,913,291", jurisdiction: "USA", link: "/patent_pdfs/US11913291B2.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "US12,281,525", jurisdiction: "USA", link: "/patent_pdfs/US12%2C281%2C525.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "US12,560,033", jurisdiction: "USA" },
+      { title: "Device for centering sensor assembly in a bore", number: "US12,560,033", jurisdiction: "USA", link: "/patent_pdfs/US12560033.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "SA 16064", jurisdiction: "Saudi Arabia", link: "/patent_pdfs/SA16064.pdf" },
       { title: "Device for centering sensor assembly in a bore", number: "GB2611986", jurisdiction: "UK", link: "/patent_pdfs/GB2611986.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "NO349155", jurisdiction: "Norway" },
-      { title: "Device for centering sensor assembly in a bore", number: "CN116034206", jurisdiction: "China" },
-      { title: "Device for centering sensor assembly in a bore", number: "AU2021320591", jurisdiction: "Australia" },
+      { title: "Device for centering sensor assembly in a bore", number: "NO349155", jurisdiction: "Norway", link: "/patent_pdfs/NO349155.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "CN116034206", jurisdiction: "China", link: "/patent_pdfs/CN116034206A.pdf" },
+      { title: "Device for centering sensor assembly in a bore", number: "AU2021320591", jurisdiction: "Australia", link: "/patent_pdfs/AU2021320591B2.pdf" },
     ],
   },
   {
@@ -130,7 +130,7 @@ const DEVICES: Device[] = [
       "Co-pivot mechanism for centralisation in tight bores where pivot-on-same-side geometry constrains travel.",
     patents: [
       { title: "Device for centering sensor assembly in a bore – \"Co-pivot Centraliser\"", number: "US11,713,627", jurisdiction: "USA", link: "/patent_pdfs/US11713627B1.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "US12,410,664", jurisdiction: "USA" },
+      { title: "Device for centering sensor assembly in a bore", number: "US12,410,664", jurisdiction: "USA", link: "/patent_pdfs/US12410664.pdf" },
     ],
   },
   {
@@ -140,7 +140,7 @@ const DEVICES: Device[] = [
       "Additional centralisation technologies — including bowspring-type devices — that fall outside the primary centraliser categories.",
     patents: [
       { title: "A device for centering a sensor assembly in a wellbore", number: "US12,116,850", jurisdiction: "USA", link: "/patent_pdfs/US12116850B1.pdf" },
-      { title: "Device for centering sensor assembly in a bore", number: "US12,607,075", jurisdiction: "USA" },
+      { title: "Device for centering sensor assembly in a bore", number: "US12,607,075", jurisdiction: "USA", link: "/patent_pdfs/US12607075.pdf" },
     ],
   },
 ];
