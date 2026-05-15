@@ -12,11 +12,6 @@ const TITLES: Record<"privacy" | "terms", string> = {
   terms: TERMS_TITLE,
 };
 
-const ROUTES: Record<"privacy" | "terms", string> = {
-  privacy: "/privacy",
-  terms: "/terms",
-};
-
 /**
  * Slide-out drawer for the Privacy Policy and Terms of Use.
  *
@@ -129,38 +124,27 @@ export default function LegalDrawer({
               {title}
             </h2>
           </div>
-          <div className="flex flex-shrink-0 items-center gap-1">
-            <a
-              href={ROUTES[rendered]}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-brand"
-              title="Open as a full page"
+          <button
+            ref={closeRef}
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              aria-hidden="true"
             >
-              Open page ↗
-            </a>
-            <button
-              ref={closeRef}
-              onClick={onClose}
-              aria-label="Close"
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4 4l10 10M14 4L4 14"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-          </div>
+              <path
+                d="M4 4l10 10M14 4L4 14"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
         </div>
 
         {/* Scrollable body */}
