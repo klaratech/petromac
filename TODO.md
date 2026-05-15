@@ -25,8 +25,8 @@
 - [ ] Update asset manifest with final design requirements
 - [ ] Collect all optimized asset files from designers (images, videos, OG image)
   - [ ] Add `petromac-og.png` (1200×630) for Open Graph share image
-  - [ ] Add email-optimized PDFs (`email.pdf`, <3 MB each) for catalog and success stories
-  - [ ] Re-encode remaining videos with H.264 VBR — `intro-loop2.mp4` (56 MB), `helix.mp4` (25 MB), `pf.mp4` (24 MB). `cp12-placeholder.mp4` + `cp8-placeholder.mp4` (~156 MB) are unused and can be deleted outright.
+  - [x] Add email-optimized PDFs (`email.pdf`) for catalog and success stories — `build_flipbook.py` now generates them (Ghostscript, /ebook→/screen adaptive). `success-stories/email.pdf` is committed (~3 MB); run `pnpm run data:flipbooks` to generate `catalog/email.pdf`.
+  - [ ] Re-encode remaining videos with H.264 VBR — `intro-loop2.mp4` (56 MB) in `public/videos/transcoded/`. (`helix.mp4` / `pf.mp4` were re-encoded from HD masters May 2026.) `cp12-placeholder.mp4` + `cp8-placeholder.mp4` (~156 MB) are unused and can be deleted outright.
   - [ ] Apply Draco compression to GLB models (213 MB total, 30-50% reduction)
   - [ ] Compress flipbook page JPGs and consider WebP variants (58 MB total)
   - [ ] Convert large PNGs (tv-bg.png, thor.png) to WebP
@@ -35,7 +35,7 @@
   - [ ] Thor product video (the FeaturedProducts Thor card is commented out until graphics + messaging are finalised)
   - [ ] Rocker product image + GLB model (kiosk CH lane Rocker experience uses placeholder hero image and has no 3D model)
 - [ ] Place delivered files in correct directories
-- [ ] Wire up email-optimized PDFs in send-pdf API route (use `email.pdf` instead of `source.pdf`)
+- [x] Wire up email-optimized PDFs in send-pdf API route — backend now reads `email.pdf` (needs a backend redeploy to take effect)
 
 ## Phase 2 — Security Audit
 

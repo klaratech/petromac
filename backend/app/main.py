@@ -29,8 +29,18 @@ EMAIL_LOG_PATH = DATA_DIR / "email-log.jsonl"
 EMAIL_CONFIG_PATH = DATA_DIR / "email-config.json"
 OPERATIONS_DATA_PATH = PUBLIC_DIR / "data" / "operations_data.json"
 COUNTRY_LABELS_PATH = PUBLIC_DIR / "data" / "country_labels.json"
-CATALOG_PDF_PATH = PUBLIC_DIR / "flipbooks" / "catalog" / "source.pdf"
-SUCCESS_STORIES_PDF_PATH = PUBLIC_DIR / "flipbooks" / "success-stories" / "source.pdf"
+# Email the small, compressed copies (email.pdf) — the full source.pdf can be
+# 8-19 MB and bounces on many mail servers. email.pdf is built by
+# scripts/build_flipbook.py; fall back to source.pdf if it hasn't been
+# generated yet (run `pnpm run data:flipbooks`).
+def _emailable_pdf(doc_key: str) -> Path:
+    base = PUBLIC_DIR / "flipbooks" / doc_key
+    email_pdf = base / "email.pdf"
+    return email_pdf if email_pdf.exists() else base / "source.pdf"
+
+
+CATALOG_PDF_PATH = _emailable_pdf("catalog")
+SUCCESS_STORIES_PDF_PATH = _emailable_pdf("success-stories")
 
 SESSION_COOKIE_NAME = "petromac_staff_session"
 CONTACT_RATE_LIMIT = {"limit": 3, "window_ms": 60_000}

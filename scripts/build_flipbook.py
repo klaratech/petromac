@@ -1,5 +1,6 @@
 import argparse
 import shutil
+import subprocess
 from pathlib import Path
 from datetime import date
 import json
@@ -8,6 +9,42 @@ from pdf2image import convert_from_path
 from pypdf import PdfReader
 
 SUPPORTED_FORMATS = {"jpg", "jpeg", "png", "webp"}
+
+# If an /ebook-quality copy is still heavier than this, re-compress at
+# /screen quality so the emailed attachment stays small.
+EMAIL_PDF_AGGRESSIVE_THRESHOLD = 4 * 1024 * 1024  # 4 MB
+
+
+def build_email_pdf(source_pdf: Path, out_path: Path) -> bool:
+    """Compress the source PDF into a small, email-friendly copy via Ghostscript.
+
+    Tries /ebook quality first, drops to /screen if the result is still heavy.
+    Returns False (with a warning) if Ghostscript isn't installed — the
+    flipbook pages are still built either way.
+    """
+
+    def run_gs(setting: str) -> None:
+        subprocess.check_call([
+            "gs", "-sDEVICE=pdfwrite", "-dCompatibilityLevel=1.4",
+            f"-dPDFSETTINGS={setting}", "-dNOPAUSE", "-dQUIET", "-dBATCH",
+            "-dDetectDuplicateImages=true",
+            f"-sOutputFile={out_path}", str(source_pdf),
+        ])
+
+    try:
+        run_gs("/ebook")
+        if out_path.stat().st_size > EMAIL_PDF_AGGRESSIVE_THRESHOLD:
+            run_gs("/screen")
+    except FileNotFoundError:
+        print(
+            "⚠️  Ghostscript ('gs') not found — skipping email.pdf. "
+            "Install it (e.g. `brew install ghostscript`) and re-run."
+        )
+        return False
+
+    size_mb = out_path.stat().st_size / (1024 * 1024)
+    print(f"   email.pdf: {size_mb:.1f} MB")
+    return True
 
 
 def parse_args():
@@ -61,6 +98,10 @@ def build_flipbook():
 
     shutil.copyfile(source_pdf, out_dir / "source.pdf")
 
+    # Small, email-friendly copy for the "Email PDF" feature.
+    email_pdf_path = out_dir / "email.pdf"
+    has_email_pdf = build_email_pdf(source_pdf, email_pdf_path)
+
     pdf_reader = PdfReader(str(source_pdf))
     page_count = len(pdf_reader.pages)
 
@@ -97,6 +138,9 @@ def build_flipbook():
         "sourcePdf": "source.pdf",
         "updatedAt": date.today().isoformat(),
     }
+
+    if has_email_pdf:
+        manifest["emailPdf"] = "email.pdf"
 
     manifest_path = out_dir / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
