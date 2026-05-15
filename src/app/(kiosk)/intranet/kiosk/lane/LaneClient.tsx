@@ -12,6 +12,7 @@ import { useKioskVideos } from '@/hooks/useKioskVideo';
 import { KIOSK_HOME_PATH } from '@/constants/app';
 
 const IDLE_TIMEOUT = 60_000; // bounce back to splash if untouched
+const OVERLAY_AUTOHIDE = 5_000; // hide the overlay buttons after this idle gap
 
 type Lane = 'oh' | 'ch';
 
@@ -239,7 +240,29 @@ function LaneLoopContent() {
   const [fading, setFading] = useState(false);
   const [videoIdx, setVideoIdx] = useState(0);
   const [active, setActive] = useState<ActiveExperience | null>(null);
+  const [overlayVisible, setOverlayVisible] = useState(true);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const overlayTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Overlay buttons stay hidden over the video and surface on hover / tap,
+  // then fade out again after a few idle seconds.
+  const revealOverlay = useCallback(() => {
+    setOverlayVisible(true);
+    if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+    overlayTimerRef.current = setTimeout(
+      () => setOverlayVisible(false),
+      OVERLAY_AUTOHIDE,
+    );
+  }, []);
+
+  // Show briefly on arrival (and whenever an experience closes) so staff
+  // know the buttons are there, then auto-hide.
+  useEffect(() => {
+    if (!active) revealOverlay();
+    return () => {
+      if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+    };
+  }, [active, revealOverlay]);
 
   const goToSplash = useCallback(() => {
     setFading(true);
@@ -270,6 +293,9 @@ function LaneLoopContent() {
       className={`relative w-full h-screen bg-black overflow-hidden transition-opacity duration-500 ${
         fading ? 'opacity-0' : 'opacity-100'
       }`}
+      onMouseMove={revealOverlay}
+      onClick={revealOverlay}
+      onTouchStart={revealOverlay}
     >
       {/* Looping attractor playlist */}
       <video
@@ -285,19 +311,29 @@ function LaneLoopContent() {
       <div className="absolute inset-0 bg-black/35 z-0 pointer-events-none" />
 
       {/* Overlay button strip — right edge, vertical and deliberately
-          subtle so it stays clear of the burned-in video subtitles.
-          Same buttons for every clip in the lane (OH + CH). */}
-      <div className="absolute top-1/2 right-3 -translate-y-1/2 z-20 flex flex-col gap-2">
-        {overlayItems.map((item) => (
-          <button
-            key={item.key}
-            onClick={() => setActive(item.open)}
-            className="px-3 py-2 rounded-lg bg-black/25 hover:bg-black/70 backdrop-blur-sm border border-white/10 text-white/60 hover:text-white text-xs font-medium tracking-wide transition-colors"
+          subtle. Hidden over the video; surfaces on hover / tap and
+          auto-hides again. Same buttons for every clip in the lane. */}
+      <AnimatePresence>
+        {overlayVisible && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute top-1/2 right-3 -translate-y-1/2 z-20 flex flex-col gap-2"
           >
-            {item.label}
-          </button>
-        ))}
-      </div>
+            {overlayItems.map((item) => (
+              <button
+                key={item.key}
+                onClick={() => setActive(item.open)}
+                className="px-3 py-2 rounded-lg bg-black/25 hover:bg-black/70 backdrop-blur-sm border border-white/10 text-white/60 hover:text-white text-xs font-medium tracking-wide transition-colors"
+              >
+                {item.label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Active experience layer */}
       <AnimatePresence>
