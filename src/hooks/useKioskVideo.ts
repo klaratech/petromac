@@ -10,8 +10,8 @@ import { useEffect, useState } from 'react';
  * deployed alongside them in `/videos/kiosk-hd/`, the kiosk automatically
  * prefers those — they look sharper on the 60" trade-show screen.
  *
- * Resolution is per-file: a clip with no HD counterpart (e.g. `dice.mp4`)
- * silently keeps using its transcoded version.
+ * Resolution is per-file: a clip with no HD counterpart silently keeps
+ * using its transcoded version.
  *
  * See docs/ADMIN.md ("Kiosk HD videos") for how the kiosk-hd folder is managed.
  */

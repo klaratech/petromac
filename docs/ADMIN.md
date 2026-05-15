@@ -155,10 +155,13 @@ big 60" screen instead of the default web-optimised ones.
   if `kiosk-hd/` is empty.
 - If a file of the **same name** exists in `public/videos/kiosk-hd/`, the
   kiosk loop and the product experiences automatically prefer it. Resolution
-  is per-file: `dice.mp4` has no HD master, so it just keeps using the
+  is per-file: any clip without an HD counterpart just keeps using its
   transcoded copy while the others upgrade.
 - The matching is purely by filename — `kiosk-hd/helix-subtitled.mp4`
   overrides `transcoded/helix-subtitled.mp4`, and so on.
+- Current `kiosk-hd/` inventory: `dice.mp4`, `helix-subtitled.mp4`,
+  `pf-subtitled.mp4`, `differential-sticking-subtitled.mp4`,
+  `WirelineExpress.mp4`.
 
 **Rules:**
 
