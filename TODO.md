@@ -2,18 +2,23 @@
 
 ## Pending content
 
-- [ ] **9 patent PDFs outstanding.** The Patents page has 44 patents; 35 PDFs
-  are self-hosted in `public/patent_pdfs/`. The 9 most recently granted render
-  as plain text until their PDFs arrive from IP counsel. Expected filenames:
-  `US12320216.pdf`, `UAE-P9643.pdf`, `US12352155.pdf`, `US12560033.pdf`,
-  `NO349155.pdf`, `CN116034206.pdf`, `AU2021320591.pdf`, `US12410664.pdf`,
-  `US12607075.pdf` — drop them in `public/patent_pdfs/` and add the matching
-  `link:` field in `PatentsClient.tsx`.
 - [ ] Confirm with IP counsel: docx says "Co-pivot centraliser (PC8)" but the
   site uses "CP8" per an earlier correction — which is right?
 
 > Recurring content updates (operations data, flipbooks, patents, publications,
 > team) are documented in [docs/ADMIN.md](docs/ADMIN.md).
+
+## Data pipeline
+
+- [ ] Revisit the job-history update workflow. Today it's a manual Excel drop
+  (`data/private/raw/jobhistory.xlsx` → `pnpm run data` / `generate_json.py` →
+  commit `operations_data.json`). Friction points: `OPERATIONS_SOURCE_XLSX` is
+  not set in `.env.dev`, so `pnpm run data` skips operations unless run by hand;
+  source-spreadsheet formatting drift triggers fuzzy-match misses (e.g.
+  "Cote D'Ivoire"); and the published JSON is a large committed artifact.
+- [ ] Longer term: move job history off Excel to a database-backed source of
+  truth, with the site reading from an API or a generated export rather than a
+  hand-maintained spreadsheet.
 
 ## Phase 1 — Finalize Design & Assets
 
@@ -50,6 +55,11 @@
 
 ## Completed
 
+- [x] Operations data refresh through 2026 — rebuilt `operations_data.json` from the new job-history master (3,214 → 3,366 records, 2013–2026, Tanzania added); added a "Cote D'Ivoire" country-normalization entry
+- [x] Privacy & Terms — IP counsel amendments (analytics disclosure, sentence-case headings, clause edits) + slide-out drawer UX from the footer, standalone routes kept for direct links/SEO
+- [x] Contact page rework — form-primary + info-sidebar layout on the light theme; `ContactForm` split into a form-only component
+- [x] Team / About copy — replaced "regional managers in market" jargon with "across the major oil & gas basins"
+- [x] Patents — self-hosted the final 9 granted-patent PDFs; all 44 patents now linked; fixed the About page count (35 patents / 8 families → 44 / 9 categories)
 - [x] Kiosk OH / CH split workflow — lane chooser, FocusCentralizersExperience (Helix video loop + HUD), Rocker corner badge, MechanismScreen + LogsScreen, per-lane background video sequence on productlines
 - [x] Track Record page redesign — hero stats row, full-bleed map, brand-color intensity choropleth, legend, hover tooltips, right-side YearlyStats drawer (Esc-dismiss), Top-5 country chart, refined filter pills
 - [x] Patents page rebuild — collapsible summary table, regional jurisdiction grouping, keyboard + ARIA-accessible rows
