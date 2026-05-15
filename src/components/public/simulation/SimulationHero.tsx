@@ -13,16 +13,6 @@ export default function SimulationHero() {
         sizes="100vw"
         aria-hidden="true"
       />
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        className="absolute inset-0 hidden h-full w-full object-cover opacity-25 md:block"
-      >
-        <source src="/videos/WirelineExpress.mp4" type="video/mp4" />
-      </video>
       <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-slate-950/75 to-slate-950" />
 
       <div className="relative z-10 mx-auto max-w-4xl">
