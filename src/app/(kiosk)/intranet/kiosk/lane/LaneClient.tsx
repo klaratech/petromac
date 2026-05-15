@@ -11,6 +11,7 @@ import OverlayExperience, {
 import { useKioskVideos } from '@/hooks/useKioskVideo';
 
 const OVERLAY_AUTOHIDE = 5_000; // hide the overlay buttons after this idle gap
+const ACTIVE_IDLE_TIMEOUT = 5 * 60 * 1000; // close an open experience after 5 min idle
 
 type Lane = 'oh' | 'ch';
 
@@ -260,6 +261,31 @@ function LaneLoopContent() {
   }, [active, revealOverlay]);
 
   const closeExperience = useCallback(() => setActive(null), []);
+
+  // While an experience is open, bounce back to the lane loop after a few
+  // minutes of no interaction. Any mouse / touch / key activity resets the
+  // timer. When `active` returns to null the cleanup clears it.
+  useEffect(() => {
+    if (!active) return;
+
+    let timer: NodeJS.Timeout | undefined;
+    const reset = () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => setActive(null), ACTIVE_IDLE_TIMEOUT);
+    };
+    reset();
+    const events: (keyof WindowEventMap)[] = [
+      'mousemove',
+      'mousedown',
+      'touchstart',
+      'keydown',
+    ];
+    events.forEach((e) => window.addEventListener(e, reset));
+    return () => {
+      if (timer) clearTimeout(timer);
+      events.forEach((e) => window.removeEventListener(e, reset));
+    };
+  }, [active]);
 
   return (
     <div
