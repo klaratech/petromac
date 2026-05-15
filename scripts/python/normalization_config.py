@@ -6,6 +6,7 @@ COUNTRY_NORMALIZATION = {
     "USA": "United States of America",
     "Equatorial Guinea": "Eq. Guinea",
     "Ivory Coast": "Côte d'Ivoire",
+    "Cote D'Ivoire": "Côte d'Ivoire",
           # D3 uses the French name
     "Sao Tome & Principe": "São Tomé and Principe",
 }
