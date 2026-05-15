@@ -2,9 +2,6 @@
 
 ## Pending content
 
-- [ ] Confirm with IP counsel: docx says "Co-pivot centraliser (PC8)" but the
-  site uses "CP8" per an earlier correction — which is right?
-
 > Recurring content updates (operations data, flipbooks, patents, publications,
 > team) are documented in [docs/ADMIN.md](docs/ADMIN.md).
 
