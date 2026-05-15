@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import FocusCentralizersExperience from '@/components/kiosk/FocusCentralizersExperience';
 import RockerExperience from '@/components/kiosk/ch/RockerExperience';
@@ -9,9 +9,7 @@ import OverlayExperience, {
   type OverlayExperienceConfig,
 } from '@/components/kiosk/OverlayExperience';
 import { useKioskVideos } from '@/hooks/useKioskVideo';
-import { KIOSK_HOME_PATH } from '@/constants/app';
 
-const IDLE_TIMEOUT = 60_000; // bounce back to splash if untouched
 const OVERLAY_AUTOHIDE = 5_000; // hide the overlay buttons after this idle gap
 
 type Lane = 'oh' | 'ch';
@@ -228,7 +226,6 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
 };
 
 function LaneLoopContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const laneParam = searchParams.get('lane');
   const lane: Lane = isLane(laneParam) ? laneParam : 'oh';
@@ -237,11 +234,9 @@ function LaneLoopContent() {
   const playlist = useKioskVideos(LANE_PLAYLIST[lane]);
   const overlayItems = LANE_OVERLAY[lane];
 
-  const [fading, setFading] = useState(false);
   const [videoIdx, setVideoIdx] = useState(0);
   const [active, setActive] = useState<ActiveExperience | null>(null);
   const [overlayVisible, setOverlayVisible] = useState(true);
-  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const overlayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Overlay buttons stay hidden over the video and surface on hover / tap,
@@ -264,40 +259,17 @@ function LaneLoopContent() {
     };
   }, [active, revealOverlay]);
 
-  const goToSplash = useCallback(() => {
-    setFading(true);
-    setTimeout(() => router.push(`${KIOSK_HOME_PATH}?mode=video`), 800);
-  }, [router]);
-
-  const resetIdleTimer = useCallback(() => {
-    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    // Don't bounce to splash while an experience is open.
-    if (active) return;
-    idleTimerRef.current = setTimeout(goToSplash, IDLE_TIMEOUT);
-  }, [goToSplash, active]);
-
-  useEffect(() => {
-    resetIdleTimer();
-    const events = ['mousemove', 'mousedown', 'touchstart', 'keydown'];
-    events.forEach((e) => window.addEventListener(e, resetIdleTimer));
-    return () => {
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      events.forEach((e) => window.removeEventListener(e, resetIdleTimer));
-    };
-  }, [resetIdleTimer]);
-
   const closeExperience = useCallback(() => setActive(null), []);
 
   return (
     <div
-      className={`relative w-full h-screen bg-black overflow-hidden transition-opacity duration-500 ${
-        fading ? 'opacity-0' : 'opacity-100'
-      }`}
+      className="relative w-full h-screen bg-black overflow-hidden"
       onMouseMove={revealOverlay}
       onClick={revealOverlay}
       onTouchStart={revealOverlay}
     >
-      {/* Looping attractor playlist */}
+      {/* Looping attractor playlist — plays the lane's clips end to end and
+          repeats indefinitely; the kiosk stays in this lane. */}
       <video
         key={playlist[videoIdx]}
         src={playlist[videoIdx]}
