@@ -81,13 +81,9 @@ export default function ProofSection() {
         {/* Reach summary — replaces the placeholder logo strip. */}
         <div className="mt-16 pt-12 border-t border-slate-200">
           <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-            Used by{" "}
+            Deployed with{" "}
             <span className="font-semibold text-slate-900">
-              all three major wireline service companies
-            </span>{" "}
-            and deployed with{" "}
-            <span className="font-semibold text-slate-900">
-              major IOCs and NOCs
+              all major IOCs and NOCs
             </span>{" "}
             across{" "}
             <span className="font-semibold text-slate-900">

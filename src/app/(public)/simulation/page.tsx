@@ -15,16 +15,16 @@ export default function SimulationPage() {
       <SimulationHero />
       <AthenaInAction />
       <WhyPetromac />
-      <section id="contact" className="bg-gray-50 px-6 py-14 md:py-16">
+      <section id="contact" className="bg-slate-950 px-6 py-14 md:py-16">
         <div className="mx-auto max-w-2xl">
           <div className="mb-8">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
               Get started
             </p>
-            <h2 className="font-heading text-3xl font-bold text-slate-900 md:text-4xl">
+            <h2 className="font-heading text-3xl font-bold text-white md:text-4xl">
               Request a simulation
             </h2>
-            <p className="mt-3 text-lg leading-relaxed text-slate-600">
+            <p className="mt-3 text-lg leading-relaxed text-slate-400">
               Tell us about the well and tool string, and we&apos;ll set up an
               Athena run with you.
             </p>
