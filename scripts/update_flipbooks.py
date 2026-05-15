@@ -88,22 +88,26 @@ def build_flipbook(input_pdf: Path, output_dir: Path, title: str, tags: Path | N
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build flipbook bundles from local PDFs")
-    parser.add_argument("--success-pdf", required=True, help="Path to success stories PDF")
-    parser.add_argument("--catalog-pdf", required=True, help="Path to catalog PDF")
+    parser.add_argument("--success-pdf", default=None, help="Path to success stories PDF")
+    parser.add_argument("--catalog-pdf", default=None, help="Path to catalog PDF")
     parser.add_argument("--tags-xlsx", default=None, help="Path to success stories summary xlsx (preferred)")
     parser.add_argument("--tags", default=None, help="Path to success stories tags CSV (legacy fallback)")
     parser.add_argument("--skip-validate", action="store_true", help="Skip pnpm validation scripts")
 
     args = parser.parse_args()
 
-    success_pdf = Path(args.success_pdf)
-    catalog_pdf = Path(args.catalog_pdf)
+    # Either flipbook can be built on its own — pass whichever PDFs you have.
+    success_pdf = Path(args.success_pdf) if args.success_pdf else None
+    catalog_pdf = Path(args.catalog_pdf) if args.catalog_pdf else None
 
-    # Resolve tags: prefer xlsx, fall back to csv
+    if not success_pdf and not catalog_pdf:
+        parser.error("nothing to build — pass --success-pdf and/or --catalog-pdf")
+
+    # Resolve tags: prefer xlsx, fall back to csv (only relevant for success stories)
     tags_csv_path = None
     tmp_csv = None
 
-    if args.tags_xlsx:
+    if success_pdf and args.tags_xlsx:
         tags_xlsx = Path(args.tags_xlsx)
         if not tags_xlsx.exists():
             raise FileNotFoundError(f"Tags xlsx not found: {tags_xlsx}")
@@ -112,15 +116,17 @@ def main() -> None:
         tmp_csv.close()
         tags_csv_path = Path(tmp_csv.name)
         xlsx_to_tags_csv(tags_xlsx, tags_csv_path)
-    elif args.tags:
+    elif success_pdf and args.tags:
         tags_csv_path = Path(args.tags)
 
     try:
-        print("Building Success Stories flipbook...")
-        build_flipbook(success_pdf, DEFAULT_SUCCESS_OUT, "Success Stories", tags_csv_path)
+        if success_pdf:
+            print("Building Success Stories flipbook...")
+            build_flipbook(success_pdf, DEFAULT_SUCCESS_OUT, "Success Stories", tags_csv_path)
 
-        print("Building Catalog flipbook...")
-        build_flipbook(catalog_pdf, DEFAULT_CATALOG_OUT, "Product Catalog", None)
+        if catalog_pdf:
+            print("Building Catalog flipbook...")
+            build_flipbook(catalog_pdf, DEFAULT_CATALOG_OUT, "Product Catalog", None)
 
         if not args.skip_validate:
             print("Validating flipbooks...")

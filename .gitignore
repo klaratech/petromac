@@ -109,8 +109,16 @@ jspm_packages/
 /public/models/Step/
 /public/videos/WIP/
 
-# Private data (DO NOT COMMIT)
-/data/private/
+# Content-pipeline drop zone — files you drop here are inputs, never committed.
+# The structure + README are kept; everything dropped in is ignored.
+/sources/operations/*
+!/sources/operations/.gitkeep
+/sources/catalog/*
+!/sources/catalog/.gitkeep
+/sources/success-stories/*
+!/sources/success-stories/.gitkeep
+/sources/_archive/*
+!/sources/_archive/.gitkeep
 
 # Python scripts
 /__pycache__/

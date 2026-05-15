@@ -94,8 +94,8 @@ GITHUB_TOKEN=$YOUR_TOKEN python generate_json.py
 
 ```
 ┌─────────────────────────────────────┐
-│  data/private/raw/jobhistory.xlsx   │
-│  (Private, not in git)              │
+│  sources/operations/jobhistory.xlsx │
+│  (drop zone, not in git)            │
 └──────────────┬──────────────────────┘
                │
                ▼

@@ -7,6 +7,11 @@ flipbooks) or event-driven (a new patent is granted, a team member joins).
 Every update follows the same shape: **change the source → rebuild or edit →
 commit → push → CI deploys.** The specifics per content type are below.
 
+For operations data and flipbooks there's a **drop zone**: put the new file
+into the matching `sources/` folder (any filename), run one command, commit
+what changed under `public/`. The pipeline archives the input for you. See
+[sources/README.md](../sources/README.md).
+
 ---
 
 ## 1. Operations / job history data
@@ -19,16 +24,15 @@ numbers shown publicly need to be current.
 
 **Steps:**
 
-1. Put the latest `jobhistory.xlsx` where the pipeline expects it. The path
-   comes from `OPERATIONS_SOURCE_XLSX` in `.env.dev` (an OneDrive-synced
-   location — the raw file is never committed).
-2. Run `pnpm run data`. This rebuilds `public/data/operations_data.json`.
-3. Sanity-check the diff on that JSON file (`git diff --stat public/data/`).
+1. Drop the new job-history `.xlsx` into `sources/operations/` — any filename
+   is fine, no renaming needed.
+2. Run `pnpm run data:operations`. The pipeline picks the newest file in the
+   folder, rebuilds `public/data/operations_data.json`, then moves the input
+   into `sources/_archive/` (date-stamped).
+3. Sanity-check the diff (`git diff --stat public/data/`).
 4. Commit `public/data/operations_data.json` and push.
 
-**Alternative:** the `data-build.yaml` GitHub Action runs this weekly and can
-be triggered manually (Actions tab → "Data Build Pipeline" → Run workflow).
-It needs `OPERATIONS_SOURCE_XLSX_URL` configured as a repo secret.
+`pnpm run data` does this as part of a full run (operations + flipbooks).
 
 ---
 
@@ -37,23 +41,25 @@ It needs `OPERATIONS_SOURCE_XLSX_URL` configured as a repo secret.
 The interactive flipbooks at `/catalog` and `/success-stories/flipbook`.
 Generated bundles live in `public/flipbooks/{catalog,success-stories}/`.
 
-**When:** the catalog PDF is revised, or the Success Stories summary changes.
+**When:** the catalog PDF is revised, or the Success Stories PDF / summary
+changes.
 
 **Steps:**
 
-1. Update the source PDFs / tags xlsx in their OneDrive locations. Paths are
-   set in `.env.dev`: `FLIPBOOK_CATALOG_SOURCE_PDF`,
-   `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF`, `FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX`.
-2. Run `pnpm run data` (rebuilds operations JSON *and* flipbooks) or
-   `pnpm run build:flipbooks` (flipbooks only).
-3. Run `pnpm run validate:flipbooks && pnpm run validate:successstories`.
-4. Commit `public/flipbooks/**` and push.
-5. **If the kiosk needs the new content offline:** bump `VERSION` in
+1. Drop the files into their folders — any filename is fine:
+   - catalog PDF → `sources/catalog/`
+   - success-stories PDF **and** its tags `.xlsx` → `sources/success-stories/`
+2. Run `pnpm run data:flipbooks`. The pipeline builds whichever flipbooks have
+   a new PDF, validates the published bundles, and archives the inputs into
+   `sources/_archive/`.
+3. Commit `public/flipbooks/**` and push.
+4. **If the kiosk needs the new content offline:** bump `VERSION` in
    `public/kiosk-sw.js` (see [KIOSK.md](KIOSK.md)) so trade-show devices
    evict the stale cache on next online load.
 
-**Alternative:** the `pdf-flipbooks-build.yml` GitHub Action regenerates
-flipbooks automatically when the build scripts change.
+You can update just one flipbook — drop only a catalog PDF and success stories
+is left untouched, and vice versa. `pnpm run data` does flipbooks and
+operations together.
 
 ---
 
@@ -139,10 +145,10 @@ Team page (`/team`). Data is in `src/data/team.ts`.
 
 ## Quick reference
 
-| Content | Source | Rebuild | Commit |
+| Content | Drop into | Build | Commit |
 |---|---|---|---|
-| Operations data | `jobhistory.xlsx` (OneDrive) | `pnpm run data` | `public/data/operations_data.json` |
-| Flipbooks | source PDFs + tags (OneDrive) | `pnpm run data` | `public/flipbooks/**` |
+| Operations data | `sources/operations/` (`.xlsx`) | `pnpm run data:operations` | `public/data/operations_data.json` |
+| Flipbooks | `sources/catalog/`, `sources/success-stories/` (`.pdf` + `.xlsx`) | `pnpm run data:flipbooks` | `public/flipbooks/**` |
 | Patents | counsel's Word doc | hand-edit `PatentsClient.tsx` | that file + `public/patent_pdfs/` |
 | Publications | new paper | hand-edit `publications/page.tsx` | that file |
 | Team | — | hand-edit `src/data/team.ts` | that file + `public/images/team/` |

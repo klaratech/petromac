@@ -134,21 +134,23 @@ The repository supports interactive flipbooks for **Product Catalog** and **Succ
   - `/success-stories/flipbook` → Success Stories flipbook
 
 ### Update Workflow
-- Update source PDFs and/or the "Kiosk" sheet in `Success Stories_Summary.xlsx` (in OneDrive).
-- Run `pnpm run data` (or `pnpm run build:flipbooks`) and commit `public/flipbooks/**`.
+- Drop the new catalog / success-stories PDF (and the tags `.xlsx`) into `sources/catalog/` and `sources/success-stories/`.
+- Run `pnpm run data:flipbooks` and commit `public/flipbooks/**`.
 
 ## 📁 Data Organization
 
 ### Three-Tier Data Structure
 
-The repository uses a three-tier data organization to separate private sources, published artifacts, and TypeScript modules:
+The repository uses a three-tier data organization to separate pipeline inputs, published artifacts, and TypeScript modules:
 
-#### 1. `data/` - Private Sources & Intermediates (NEVER DEPLOYED)
-- **Purpose**: Private data sources and processing intermediates
-- **Git Status**: Entire directory is gitignored (except .gitkeep files)
+#### 1. `sources/` - Content-Pipeline Drop Zone (NEVER DEPLOYED)
+- **Purpose**: Raw inputs you drop in for the content pipeline
+- **Git Status**: Dropped files are gitignored; the folder structure + `sources/README.md` are tracked
 - **Contents**:
-  - `data/private/raw/` - Raw Excel uploads (e.g., `jobhistory.xlsx`)
-  - `data/private/intermediate/` - Python processing outputs, diagnostics, and temporary files
+  - `sources/operations/` - job-history `.xlsx`
+  - `sources/catalog/` - catalog `.pdf`
+  - `sources/success-stories/` - success-stories `.pdf` + tags `.xlsx`
+  - `sources/_archive/` - inputs the pipeline has already consumed (date-stamped)
 
 #### 2. `public/data/` - Published Artifacts
 - **Purpose**: Static data files served to clients

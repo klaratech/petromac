@@ -28,8 +28,9 @@ class Config:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     REPO_ROOT = os.path.dirname(os.path.dirname(BASE_DIR))
 
-    # File paths
-    EXCEL_PATH = os.getenv('EXCEL_PATH', os.path.join(REPO_ROOT, "data", "private", "raw", "jobhistory.xlsx"))
+    # File paths. The pipeline (scripts/node/data-pipeline.ts) passes EXCEL_PATH
+    # explicitly; the default is the drop-zone location for direct runs.
+    EXCEL_PATH = os.getenv('EXCEL_PATH', os.path.join(REPO_ROOT, "sources", "operations", "jobhistory.xlsx"))
     OUTPUT_FULL_JSON = os.path.join(REPO_ROOT, "public", "data", "operations_data.json")
     MASTER_COUNTRIES_JSON = os.path.join(BASE_DIR, "master_country_list.json")
     KNOWN_CITIES_JSON = os.path.join(BASE_DIR, "known_cities.json")

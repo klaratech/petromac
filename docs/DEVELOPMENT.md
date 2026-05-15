@@ -177,17 +177,16 @@ import data from "@/data/operations_data.json"; // NO!
 ### Python Script Output Targets
 
 When creating or modifying Python scripts:
+- ✅ Read pipeline inputs from: `sources/` (e.g. `sources/operations/`)
 - ✅ Write published data to: `public/data/`
-- ✅ Write diagnostics to: `data/private/intermediate/`
 - ✅ Write flipbook images to: `public/flipbooks/`
 - ❌ **Never** write to `scripts/python/` (creates duplicates)
 
 Example:
 ```python
 # Correct paths
-EXCEL_PATH = "data/private/raw/jobhistory.xlsx"
+EXCEL_PATH = "sources/operations/jobhistory.xlsx"
 OUTPUT_JSON = "public/data/operations_data.json"
-DIAGNOSTICS = "data/private/intermediate/validation.txt"
 ```
 
 ### Verifying Data Fetches

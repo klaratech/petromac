@@ -27,7 +27,7 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, intran
 
 - `public/data/` — Published JSON/CSV served via CDN (fetch at runtime, never import)
 - `public/flipbooks/` — Generated flipbook bundles (committed)
-- `data/private/` — Raw sources & intermediates (gitignored, never deployed)
+- `sources/` — Content-pipeline drop zone: drop a file into `sources/{operations,catalog,success-stories}/` and run `pnpm run data` (dropped files gitignored; see `sources/README.md`)
 - `src/data/` — Small typed TS modules only (e.g. `team.ts`)
 
 ## Key Conventions

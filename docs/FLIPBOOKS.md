@@ -5,11 +5,10 @@ The public site and kiosk both read from the same bundle paths.
 
 ## Folder layout
 
-Source inputs (configured via `.env.dev`, typically OneDrive paths):
+Source inputs — dropped into the `sources/` drop zone (any filename):
 
-- `FLIPBOOK_CATALOG_SOURCE_PDF` - Catalog PDF
-- `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF` - Success Stories PDF
-- `FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX` - Success Stories summary xlsx (sheet: "Kiosk")
+- `sources/catalog/` - Catalog PDF
+- `sources/success-stories/` - Success Stories PDF + the summary xlsx (sheet: "Kiosk")
 
 Generated outputs (checked in):
 
@@ -24,7 +23,8 @@ Current doc keys:
 - `success-stories`
 - `catalog`
 
-> Note: Source PDFs live outside the repo (OneDrive). The deployable source of truth is
+> Note: Source PDFs dropped into `sources/` are gitignored and get archived to
+> `sources/_archive/` after a build. The deployable source of truth is
 > `public/flipbooks/**`, which must be committed.
 
 ## Prerequisites (local build)
@@ -47,28 +47,19 @@ brew install poppler
 
 ## Update workflow (deterministic)
 
-1. Update source PDFs and/or the "Kiosk" sheet in `Success Stories_Summary.xlsx` (in OneDrive).
-2. Ensure `.env.dev` paths point to the correct files.
-3. Regenerate flipbooks:
+1. Drop the new files into the drop zone — any filename works:
+   - catalog PDF → `sources/catalog/`
+   - success-stories PDF + the "Kiosk"-sheet summary `.xlsx` → `sources/success-stories/`
+2. Regenerate flipbooks (builds whichever has a new PDF, validates the bundles,
+   and archives the inputs to `sources/_archive/`):
 
 ```bash
-pnpm run data
+pnpm run data:flipbooks
 ```
 
-Or build flipbooks only:
+   `pnpm run data` does flipbooks and operations together.
 
-```bash
-pnpm run build:flipbooks
-```
-
-4. Validate outputs:
-
-```bash
-pnpm run validate:flipbooks
-pnpm run validate:successstories
-```
-
-5. Commit the updated `public/flipbooks/**` outputs (including `source.pdf`).
+3. Commit the updated `public/flipbooks/**` outputs (including `source.pdf`).
 
 > There is no watch script in this repo; flipbooks are generated manually via the
 > commands above.
