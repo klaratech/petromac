@@ -34,8 +34,8 @@ The Petromac platform combines a **public-facing website**, an **intranet portal
 
 ### Flipbook Module
 - Replaces the old PDF viewer/builder modals
-- Source PDFs and tags xlsx sourced from OneDrive (paths in `.env.dev`)
-- Generated bundles in `public/flipbooks/<docKey>/` (manifest, pages, source.pdf, optional tags)
+- Source PDFs and tags xlsx dropped into `sources/catalog/` and `sources/success-stories/` (see `sources/README.md`)
+- Generated bundles in `public/flipbooks/<docKey>/` (manifest, pages, `source.pdf`, compressed `email.pdf`, optional tags)
 - Converted into images with Python (`scripts/build_flipbook.py` using pdf2image + pillow)
 - Interactive flipbooks built with **page-flip**
 - Routes:
@@ -54,8 +54,9 @@ Success Stories are implemented as a **single feature module**:
 **Key Design Decision**: Tags CSV is the single source of truth for filtering, with normalization rules applied for stable, predictable filter values.
 
 ### Data Pipeline
-- Python scripts process Excel data into JSON
-- Private sources stored in `data/private/` (gitignored, never deployed)
+- `scripts/node/data-pipeline.ts` scans the `sources/` drop zone, builds the published artifacts, and archives consumed inputs to `sources/_archive/`
+- Python scripts process Excel data into JSON; `scripts/build_flipbook.py` renders flipbook bundles
+- Pipeline inputs are dropped into `sources/` (gitignored, never deployed)
 - Published data artifacts stored in `public/data/`
 - The frontend fetches published operations and country-label data directly from `/data/*`
 
@@ -78,11 +79,10 @@ Success Stories are implemented as a **single feature module**:
 
 ### Three-Tier Data Organization
 
-#### Private Sources (`data/private/`)
-- **Never deployed or committed** (fully gitignored)
-- Contains raw Excel files (`jobhistory.xlsx`) and processing intermediates
-- Used by Python scripts during data generation
-- Diagnostics and temporary files stored in `data/private/intermediate/`
+#### Pipeline Inputs (`sources/`)
+- **Never deployed or committed** — dropped files are gitignored; only the folder structure + `sources/README.md` are tracked
+- `sources/operations/` (job-history `.xlsx`), `sources/catalog/` and `sources/success-stories/` (PDFs + tags `.xlsx`)
+- `pnpm run data` consumes the newest file in each folder and moves it to `sources/_archive/`
 
 #### Published Artifacts (`public/data/`)
 - **Bundled with the frontend image** and served by Next.js

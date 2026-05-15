@@ -139,24 +139,20 @@ All videos play at **fullscreen** resolution. Deliver as H.264 MP4 with these en
 - Bitrate: **Variable (VBR), target 2-4 Mbps** for live-action, 1-2 Mbps for animation/graphics
 - Audio: AAC 128 kbps stereo (or strip audio if muted in code — noted below)
 
-| File | Current Size | Target Size | Audio | Context | Notes |
-|------|-------------|-------------|-------|---------|-------|
-| `/videos/WirelineExpress.mp4` | **50 MB** | <15 MB | **Strip** (always muted) | Homepage hero + kiosk carousel + system demo | Desktop-only hero bg, but also plays with audio in kiosk carousel |
-| `/videos/intro-loop2.mp4` | **56 MB** | <15 MB | **Strip** (always muted) | Kiosk splash screen loop | Fullscreen loop, can be aggressively compressed |
-| `/videos/helix.mp4` | **24 MB** | <8 MB | Keep | System demo (Focus/Thor) + kiosk carousel | Plays with controls in modal |
-| `/videos/pf.mp4` | **23 MB** | <8 MB | Keep | System demo (PathFinder) + kiosk carousel | Plays with controls in modal |
-| `/videos/dice.mp4` | **4.1 MB** | <3 MB | Keep | Kiosk carousel rotation | Already smallest, light compression |
+**Folder layout (May 2026):** full-res masters live in `public/videos/originals/`
+(gitignored, never deployed); the web-ready clips the site references live in
+`public/videos/transcoded/` (committed). Every `<video>` on the site is
+`autoplay muted loop` — so transcoded clips carry **no audio track**.
 
-> **Note on WirelineExpress.mp4 audio:** It plays muted on the homepage hero, but the kiosk carousel plays it with audio. If there's meaningful audio, keep it. If not, strip it for the 50% size savings.
-
-**Unused videos (can be deleted):**
-
-| File | Size | Status |
-|------|------|--------|
-| `/videos/cp12-placeholder.mp4` | 78 MB | Not referenced in code |
-| `/videos/cp8-placeholder.mp4` | 78 MB | Not referenced in code |
-
-> These two placeholder files total 156 MB and are never loaded. Safe to delete.
+| File | Size | Status | Context |
+|------|------|--------|---------|
+| `transcoded/WirelineExpress.mp4` | ~15 MB | Re-encoded from HD master (May 2026), 720p, muted | Homepage hero + kiosk carousel + system demo |
+| `transcoded/helix.mp4` | ~8 MB | Re-encoded from HD master (May 2026), 720p, muted | System demo + kiosk carousel + Challenge selector |
+| `transcoded/pf.mp4` | ~6 MB | Re-encoded from HD master (May 2026), 720p, muted | System demo (PathFinder) + kiosk carousel + Challenge selector |
+| `transcoded/differential-sticking.mp4` | ~8 MB | Re-encoded from HD master (May 2026), 720p, muted | Homepage Challenge selector ("Stuck Tools") |
+| `transcoded/intro-loop2.mp4` | **56 MB** | **Still needs re-encoding** (H.264 VBR, strip audio) | Kiosk splash screen loop |
+| `transcoded/dice.mp4` | 4.1 MB | OK — light compression only | Kiosk carousel rotation |
+| `transcoded/helix-mechanism.mp4`, `rocker-mechanism.mp4`, `conventional-*.mp4` | <0.5 MB each | OK | Kiosk CH-lane mechanism screen |
 
 ---
 

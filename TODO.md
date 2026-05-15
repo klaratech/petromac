@@ -7,21 +7,30 @@
 
 ## Data pipeline
 
-- [ ] Revisit the job-history update workflow. Today it's a manual Excel drop
-  (`data/private/raw/jobhistory.xlsx` → `pnpm run data` / `generate_json.py` →
-  commit `operations_data.json`). Friction points: `OPERATIONS_SOURCE_XLSX` is
-  not set in `.env.dev`, so `pnpm run data` skips operations unless run by hand;
-  source-spreadsheet formatting drift triggers fuzzy-match misses (e.g.
-  "Cote D'Ivoire"); and the published JSON is a large committed artifact.
+- [x] Drop-zone content pipeline (May 2026) — `sources/` drop zone +
+  auto-detecting `scripts/node/data-pipeline.ts` for operations and flipbooks;
+  consumed inputs archived to `sources/_archive/`. See `sources/README.md`.
 - [ ] Longer term: move job history off Excel to a database-backed source of
   truth, with the site reading from an API or a generated export rather than a
   hand-maintained spreadsheet.
+- [ ] `data-build.yaml` GitHub Action still references the old
+  `OPERATIONS_SOURCE_XLSX_URL` secret mechanism — rework or disable it now that
+  the pipeline is drop-zone based.
+- [ ] `scripts/daily-operations-update.sh` cron still runs `pnpm data:operations`
+  — now a no-op unless something is in `sources/operations/`. Decide if the
+  daily automated job still has a purpose.
+
+## Known issues
+
+- [ ] Track Record map: Bolivia renders oddly (clear all filters to see it).
+  The map code, operations data, and `world-110m.json` geometry all check out —
+  it's a visual issue that needs eyes on the rendered map. Map components live
+  in `src/components/geo/` (`DrilldownMapCore`, `MapRenderer`).
 
 ## Phase 1 — Finalize Design & Assets
 
 - [x] Finalize home page design (May 2026 — hero accent, eyebrows, unified CTAs, brand-tinted Athena band, reach sentence, sentence case)
-- [x] Re-encode WirelineExpress.mp4 (50 MB → 3.7 MB, in-place transcode May 2026)
-- [x] Transcode DifferentialSticking source → differential-sticking.mp4 (257 MB → 3.6 MB)
+- [x] Video library reorg (May 2026) — `public/videos/` split into `originals/` (gitignored masters) + `transcoded/` (committed web clips); WirelineExpress, helix, pf, differential-sticking all re-encoded from HD masters to 720p muted. `intro-loop2.mp4` (56 MB) still needs re-encoding.
 - [ ] Update asset manifest with final design requirements
 - [ ] Collect all optimized asset files from designers (images, videos, OG image)
   - [ ] Add `petromac-og.png` (1200×630) for Open Graph share image

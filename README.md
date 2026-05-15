@@ -69,19 +69,10 @@ pnpm run dev
 ## Data and Flipbooks
 
 - Runtime map data is published under `public/data/` and fetched directly from `/data/*`.
-- Raw source files live outside the deployed app, usually in OneDrive paths configured in `.env.dev`.
-- Generated flipbook bundles live under `public/flipbooks/<docKey>/`.
+- Content updates go through the `sources/` drop zone — drop the job-history `.xlsx`, catalog `.pdf`, or success-stories `.pdf` + tags `.xlsx` into the matching `sources/` subfolder (any filename) and run `pnpm run data`. No env vars needed. See [sources/README.md](sources/README.md).
+- Generated flipbook bundles live under `public/flipbooks/<docKey>/` (pages, `source.pdf`, and a compressed `email.pdf`).
 - Product catalog is served at `/catalog`.
 - Success Stories is served at `/success-stories/flipbook`.
-
-Key source env vars:
-
-```env
-OPERATIONS_SOURCE_XLSX=
-FLIPBOOK_CATALOG_SOURCE_PDF=
-FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF=
-FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX=
-```
 
 ## Services
 

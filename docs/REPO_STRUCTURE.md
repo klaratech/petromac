@@ -114,13 +114,12 @@ website/
 ## 📖 Flipbook Module
 
 ### Overview
-The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. Source PDFs and tags xlsx are sourced from OneDrive (paths configured in `.env.dev`).
+The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. Source PDFs and the tags xlsx are dropped into the `sources/` drop zone (see [sources/README.md](../sources/README.md)).
 
 ### File Locations
-- **Source files**: Configured via `.env.dev` env vars (OneDrive paths)
-  - `FLIPBOOK_CATALOG_SOURCE_PDF`
-  - `FLIPBOOK_SUCCESS_STORIES_SOURCE_PDF`
-  - `FLIPBOOK_SUCCESS_STORIES_TAGS_XLSX`
+- **Source files**: dropped into `sources/` (gitignored), any filename
+  - `sources/catalog/` — catalog `.pdf`
+  - `sources/success-stories/` — success-stories `.pdf` + tags `.xlsx`
 
 - **Generated Bundles**:
   - `public/flipbooks/catalog/`
@@ -208,10 +207,10 @@ export default async function ServerPage() {
 ### Python Pipeline Output Targets
 
 All Python scripts in `scripts/python/` follow these output conventions:
+- **Pipeline inputs read from** → `sources/{operations,catalog,success-stories}/`
 - **Final published JSON** → `public/data/operations_data.json`
 - **Success Stories tags** → `public/flipbooks/success-stories/tags.csv`
 - **Flipbook bundles** → `public/flipbooks/{catalog|success-stories}/`
-- **Diagnostics & intermediates** → `data/private/intermediate/`
 - **Never output to** `scripts/python/` directory (avoid duplication)
 
 ## 🔧 PWA & Service Worker

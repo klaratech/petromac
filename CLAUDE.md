@@ -26,14 +26,15 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, intran
 ## Data Organization
 
 - `public/data/` — Published JSON/CSV served via CDN (fetch at runtime, never import)
-- `public/flipbooks/` — Generated flipbook bundles (committed)
+- `public/flipbooks/` — Generated flipbook bundles, incl. `email.pdf` (committed)
+- `public/videos/` — `originals/` holds full-res masters (gitignored, too large for git); `transcoded/` holds the web-ready clips the site references (committed)
 - `sources/` — Content-pipeline drop zone: drop a file into `sources/{operations,catalog,success-stories}/` and run `pnpm run data` (dropped files gitignored; see `sources/README.md`)
 - `src/data/` — Small typed TS modules only (e.g. `team.ts`)
 
 ## Key Conventions
 
 - Environment variables for all secrets (see `.env.example`)
-- Source PDFs/xlsx come from OneDrive paths configured in `.env.dev`
+- Content updates (operations xlsx, catalog/success-stories PDFs) are dropped into the `sources/` folders — no env vars, no renaming; run `pnpm run data` (see `sources/README.md`)
 - Flipbook tags CSV is the single source of truth for success stories filtering
 - Kiosk service worker (`public/kiosk-sw.js`) scoped to `/intranet/kiosk/` only
 - Security: rate limiting, HTML escaping, origin validation (URL hostname parsing), email allowlists
