@@ -143,6 +143,36 @@ Team page (`/team`). Data is in `src/data/team.ts`.
 
 ---
 
+## 7. Kiosk HD videos (`public/videos/kiosk-hd/`)
+
+**When:** you want the trade-show kiosk to play sharper 1080p clips on the
+big 60" screen instead of the default web-optimised ones.
+
+**How it works:**
+
+- The kiosk always works with the committed clips in
+  `public/videos/transcoded/` — that is the safe default and nothing breaks
+  if `kiosk-hd/` is empty.
+- If a file of the **same name** exists in `public/videos/kiosk-hd/`, the
+  kiosk loop and the product experiences automatically prefer it. Resolution
+  is per-file: `dice.mp4` has no HD master, so it just keeps using the
+  transcoded copy while the others upgrade.
+- The matching is purely by filename — `kiosk-hd/helix-subtitled.mp4`
+  overrides `transcoded/helix-subtitled.mp4`, and so on.
+
+**Rules:**
+
+- `kiosk-hd/` files **are committed** (unlike `originals/`) — they have to be
+  in git so the Docker build ships them to `petromac.klaratech.it`.
+- Still respect GitHub's 100 MB-per-file limit. Transcode masters to 1080p
+  H.264 (`-crf 20 -preset veryfast` is a good balance) rather than committing
+  raw graphics exports. Current files land in the 50–95 MB range.
+- After adding or replacing files here, bump `VERSION` in
+  `public/kiosk-sw.js` and re-prime the kiosk once online (see
+  [KIOSK.md](KIOSK.md)) so devices pick up the new media.
+
+---
+
 ## Quick reference
 
 | Content | Drop into | Build | Commit |
@@ -153,6 +183,7 @@ Team page (`/team`). Data is in `src/data/team.ts`.
 | Publications | new paper | hand-edit `publications/page.tsx` | that file |
 | Team | — | hand-edit `src/data/team.ts` | that file + `public/images/team/` |
 | Large media | graphics delivery | transcode/compress first | the asset file |
+| Kiosk HD videos | `public/videos/kiosk-hd/` (1080p, same filename as transcoded) | transcode masters first | the `.mp4` + bump `kiosk-sw.js` VERSION |
 
 After any push to `main`, CI runs and `deploy-prod.yml` builds the Docker
 images and redeploys the Hetzner box (`petromac.klaratech.it`). See

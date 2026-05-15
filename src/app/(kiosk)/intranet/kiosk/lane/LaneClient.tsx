@@ -1,55 +1,147 @@
 'use client';
 
-import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-  KIOSK_HOME_PATH,
-  KIOSK_PRODUCTLINES_PATH,
-} from '@/constants/app';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import FocusCentralizersExperience from '@/components/kiosk/FocusCentralizersExperience';
+import RockerExperience from '@/components/kiosk/ch/RockerExperience';
+import OverlayExperience, {
+  type OverlayExperienceConfig,
+} from '@/components/kiosk/OverlayExperience';
+import { useKioskVideos } from '@/hooks/useKioskVideo';
+import { KIOSK_HOME_PATH } from '@/constants/app';
 
-const IDLE_TIMEOUT = 60_000; // 60 seconds — bounce back to splash if untouched
+const IDLE_TIMEOUT = 60_000; // bounce back to splash if untouched
 
 type Lane = 'oh' | 'ch';
 
-interface LaneCard {
-  lane: Lane;
-  title: string;
-  subtitle: string;
-  bullets: string[];
-  /** Background image shown behind the gradient on the card. */
-  bg: string;
+function isLane(value: string | null): value is Lane {
+  return value === 'oh' || value === 'ch';
 }
 
-const LANES: LaneCard[] = [
-  {
-    lane: 'oh',
-    title: 'Open Hole',
-    subtitle: '',
-    bullets: [
-      'Wireline Express',
-      'WL Express Formation Testing',
-      'Pathfinder',
-      'Stick-slip Reduction',
-      'Thor WL Jar',
-    ],
-    bg: '/images/conveyance.jpg',
-  },
-  {
-    lane: 'ch',
-    title: 'Cased Hole',
-    subtitle: '',
-    bullets: [
-      'Focus Centralizers',
-      'Other',
-    ],
-    bg: '/images/sticking.jpg',
-  },
-];
+const LANE_LABEL: Record<Lane, string> = {
+  oh: 'Open Hole',
+  ch: 'Cased Hole',
+};
 
-export default function LaneClient() {
+/**
+ * Per-lane attractor playlist. Plays fullscreen, muted, on loop behind the
+ * overlay button strip. Subtitled clips are used where they exist; `dice.mp4`
+ * and `WirelineExpress.mp4` have no subtitled master so they play as-is.
+ */
+const LANE_PLAYLIST: Record<Lane, string[]> = {
+  oh: [
+    '/videos/transcoded/dice.mp4',
+    '/videos/transcoded/WirelineExpress.mp4',
+    '/videos/transcoded/pf-subtitled.mp4',
+    '/videos/transcoded/differential-sticking-subtitled.mp4',
+  ],
+  ch: [
+    '/videos/transcoded/dice.mp4',
+    '/videos/transcoded/helix-subtitled.mp4',
+  ],
+};
+
+/**
+ * What an overlay button opens. The CH lane reuses the existing experiences;
+ * the OH lane uses the generic `OverlayExperience` scaffold (Helix pattern).
+ */
+type ActiveExperience =
+  | { type: 'focus-centralizers' }
+  | { type: 'rocker' }
+  | { type: 'ch-other' }
+  | { type: 'overlay'; config: OverlayExperienceConfig };
+
+interface OverlayItem {
+  key: string;
+  label: string;
+  open: ActiveExperience;
+}
+
+/**
+ * Overlay buttons are the SAME for every clip in a lane — they don't change
+ * with whichever video happens to be playing.
+ */
+const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
+  oh: [
+    {
+      key: 'formation-testing',
+      label: 'Formation Testing',
+      // TODO(rajesh): build this experience out — follows the Helix pattern
+      // (track record, success stories, mechanism, logs).
+      open: {
+        type: 'overlay',
+        config: {
+          laneLabel: 'Open Hole',
+          title: 'Formation Testing',
+          subtitle: 'Differential Sticking',
+          video: '/videos/transcoded/differential-sticking-subtitled.mp4',
+        },
+      },
+    },
+    {
+      key: 'high-deviation',
+      label: 'High Deviation',
+      // TODO(rajesh): placeholders only for now — build the experience.
+      open: {
+        type: 'overlay',
+        config: {
+          laneLabel: 'Open Hole',
+          title: 'High Deviation',
+          video: '/videos/transcoded/WirelineExpress.mp4',
+        },
+      },
+    },
+    {
+      key: 'data-quality',
+      label: 'Data Quality',
+      // TODO(rajesh): build the experience out.
+      open: {
+        type: 'overlay',
+        config: {
+          laneLabel: 'Open Hole',
+          title: 'Data Quality',
+          video: '/videos/transcoded/WirelineExpress.mp4',
+        },
+      },
+    },
+    {
+      key: 'pathfinder',
+      label: 'Pathfinder',
+      open: {
+        type: 'overlay',
+        config: {
+          laneLabel: 'Open Hole',
+          title: 'Pathfinder',
+          subtitle: 'Pathfinder HT',
+          video: '/videos/transcoded/pf-subtitled.mp4',
+          // Operations data is already tagged "PathFinder", so the track
+          // record map works out of the box for this one.
+          trackRecordSystem: 'PathFinder',
+        },
+      },
+    },
+  ],
+  ch: [
+    { key: 'helix', label: 'Helix', open: { type: 'focus-centralizers' } },
+    { key: 'rocker', label: 'Rocker', open: { type: 'rocker' } },
+    { key: 'other', label: 'Other', open: { type: 'ch-other' } },
+  ],
+};
+
+function LaneLoopContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const laneParam = searchParams.get('lane');
+  const lane: Lane = isLane(laneParam) ? laneParam : 'oh';
+
+  // Prefers /videos/kiosk-hd/ clips when present, falls back to transcoded.
+  const playlist = useKioskVideos(LANE_PLAYLIST[lane]);
+  const overlayItems = LANE_OVERLAY[lane];
+
   const [fading, setFading] = useState(false);
+  const [videoIdx, setVideoIdx] = useState(0);
+  const [active, setActive] = useState<ActiveExperience | null>(null);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const goToSplash = useCallback(() => {
@@ -59,8 +151,10 @@ export default function LaneClient() {
 
   const resetIdleTimer = useCallback(() => {
     if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    // Don't bounce to splash while an experience is open.
+    if (active) return;
     idleTimerRef.current = setTimeout(goToSplash, IDLE_TIMEOUT);
-  }, [goToSplash]);
+  }, [goToSplash, active]);
 
   useEffect(() => {
     resetIdleTimer();
@@ -72,85 +166,119 @@ export default function LaneClient() {
     };
   }, [resetIdleTimer]);
 
-  const choose = (lane: Lane) => {
-    setFading(true);
-    setTimeout(() => {
-      router.push(`${KIOSK_PRODUCTLINES_PATH}?lane=${lane}`);
-    }, 400);
-  };
+  const closeExperience = useCallback(() => setActive(null), []);
 
   return (
     <div
-      className={`relative w-full h-screen flex flex-col items-center justify-center overflow-hidden transition-opacity duration-500 ${
+      className={`relative w-full h-screen bg-black overflow-hidden transition-opacity duration-500 ${
         fading ? 'opacity-0' : 'opacity-100'
       }`}
     >
-      {/* Background */}
-      <Image
-        src="/images/tv-bg.png"
-        alt=""
-        fill
-        priority
-        className="absolute inset-0 object-cover z-0"
+      {/* Looping attractor playlist */}
+      <video
+        key={playlist[videoIdx]}
+        src={playlist[videoIdx]}
+        autoPlay
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        onEnded={() => setVideoIdx((i) => (i + 1) % playlist.length)}
       />
-      <div className="absolute inset-0 bg-black/55 z-0" />
+      {/* Dim so overlay buttons stay readable over bright frames */}
+      <div className="absolute inset-0 bg-black/35 z-0 pointer-events-none" />
 
-      {/* Header */}
-      <div className="relative z-10 w-full text-center mb-10 px-8">
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
+      {/* Lane label — top-left */}
+      <div className="absolute top-6 left-6 z-20 pointer-events-none">
+        <p className="text-xs uppercase tracking-[0.4em] text-white/60">
           Petromac
+        </p>
+        <h1 className="text-3xl font-extrabold text-white drop-shadow">
+          {LANE_LABEL[lane]}
         </h1>
       </div>
 
-      {/* Lane cards */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 w-[90vw] max-w-[1400px]">
-        {LANES.map((card) => (
+      {/* Overlay button strip — right side, vertically centred. Same for
+          every clip in the lane. */}
+      <div className="absolute top-1/2 right-6 -translate-y-1/2 z-20 flex flex-col gap-3">
+        {overlayItems.map((item) => (
           <button
-            key={card.lane}
-            onClick={() => choose(card.lane)}
-            className="group relative h-[60vh] rounded-2xl overflow-hidden border border-white/15 bg-black/40 text-left shadow-2xl transition-transform hover:scale-[1.02] active:scale-100 focus:outline-none focus:ring-4 focus:ring-white/40"
-            aria-label={`Choose ${card.title}`}
+            key={item.key}
+            onClick={() => setActive(item.open)}
+            className="min-w-[200px] px-6 py-4 rounded-xl bg-black/55 hover:bg-black/75 backdrop-blur border border-white/20 text-white text-left text-lg font-semibold tracking-wide shadow-xl transition-colors"
           >
-            <Image
-              src={card.bg}
-              alt=""
-              fill
-              className="absolute inset-0 object-cover opacity-50 group-hover:opacity-70 transition-opacity"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-
-            <div className="relative h-full flex flex-col justify-end p-10">
-              <h2 className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg">
-                {card.title}
-              </h2>
-              {card.subtitle && (
-                <p className="text-lg md:text-xl text-white/80 mb-6">
-                  {card.subtitle}
-                </p>
-              )}
-              <ul className="space-y-1.5 text-base md:text-lg text-white/90">
-                {card.bullets.map((b) => (
-                  <li key={b} className="flex items-start gap-2">
-                    <span className="text-white/50 mt-1.5">▸</span>
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-              <span className="mt-8 inline-flex items-center self-start px-6 py-3 rounded-full bg-white text-black font-semibold tracking-wide shadow-lg group-hover:bg-white/90">
-                Explore →
-              </span>
-            </div>
+            {item.label}
           </button>
         ))}
       </div>
 
-      {/* Back to splash */}
+      {/* Back to splash — bottom-left */}
       <button
         onClick={goToSplash}
         className="absolute bottom-6 left-6 z-20 text-white/70 hover:text-white text-sm tracking-wide"
       >
         ← Back
       </button>
+
+      {/* Active experience layer */}
+      <AnimatePresence>
+        {active?.type === 'focus-centralizers' && (
+          <FocusCentralizersExperience key="fc" onClose={closeExperience} />
+        )}
+        {active?.type === 'rocker' && (
+          <RockerExperience
+            key="rocker"
+            onBack={closeExperience}
+            onClose={closeExperience}
+          />
+        )}
+        {active?.type === 'ch-other' && (
+          <ChOtherComingSoon key="ch-other" onClose={closeExperience} />
+        )}
+        {active?.type === 'overlay' && (
+          <OverlayExperience
+            key={active.config.title}
+            config={active.config}
+            onClose={closeExperience}
+          />
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+/** Placeholder for the cased-hole "Other" overlay button. */
+function ChOtherComingSoon({ onClose }: { onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+    >
+      <div className="text-center text-white max-w-xl px-8">
+        <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-4">
+          Cased Hole · Other
+        </p>
+        <h2 className="text-5xl font-extrabold mb-6">Coming soon</h2>
+        <p className="text-lg text-white/70 mb-10">
+          {/* TODO(rajesh): build the "Other" cased-hole experience. */}
+          Additional cased-hole product families will live here.
+        </p>
+        <button
+          onClick={onClose}
+          className="px-8 py-3 rounded-full bg-white text-black font-semibold tracking-wide"
+        >
+          Back
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function LaneClient() {
+  return (
+    <Suspense fallback={null}>
+      <LaneLoopContent />
+    </Suspense>
   );
 }

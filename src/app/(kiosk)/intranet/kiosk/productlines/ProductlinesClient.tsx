@@ -138,7 +138,9 @@ export default function ProductlinesClient() {
         {lane && (
           <div className="absolute top-6 left-6 z-20 flex items-center gap-3 text-white/80">
             <button
-              onClick={() => router.push(KIOSK_LANE_PATH)}
+              onClick={() =>
+                router.push(lane ? `${KIOSK_LANE_PATH}?lane=${lane}` : KIOSK_LANE_PATH)
+              }
               className="text-sm tracking-wide hover:text-white"
               aria-label="Back to application chooser"
             >

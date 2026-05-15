@@ -8,29 +8,38 @@ We pre-cache the kiosk shell and small data files, and runtime‑cache large med
 ## Routes & flow
 
 ```
-/intranet/kiosk                            splash (typed text → Touch to Begin)
-   └─► /intranet/kiosk/lane                Open Hole / Cased Hole chooser
-        └─► /intranet/kiosk/productlines?lane=oh|ch
-             ├─► OH lane tiles: Wireline Express, PathFinder, Focus, Thor
-             │     → SystemModal (video + Track Record + More Info)
-             └─► CH lane tiles: Focus Centralizers, Other CH
-                   → Focus Centralizers: dedicated experience
-                       Helix video on loop + HUD (Track Record /
-                       Success Stories / Mechanism / Logs) + Rocker
-                       corner badge → RockerExperience.
-                   → Other CH: "Coming soon" placeholder.
+/intranet/kiosk                            splash (typed text → Open Hole / Cased Hole buttons)
+   └─► /intranet/kiosk/lane?lane=oh|ch      per-lane looping video screen + right-side overlay
+        ├─► OH overlay: Formation Testing, High Deviation, Data Quality, Pathfinder
+        │     → OverlayExperience (looping video + HUD; Helix-pattern scaffold)
+        └─► CH overlay: Helix, Rocker, Other
+              → Helix  → FocusCentralizersExperience (Helix video loop + HUD
+                          + Rocker corner badge)
+              → Rocker → RockerExperience
+              → Other  → "Coming soon" placeholder
 
+/intranet/kiosk/productlines?lane=oh|ch     legacy tile grid (still works; no longer
+                                            in the main flow)
 /intranet/kiosk/dashboard                  operations map (DrilldownMapKiosk)
 /intranet/kiosk/successstories             flipbook with filters
 /intranet/kiosk/3d-viewer                  3D model viewer
 /intranet/kiosk/datacheck                  data validation tools
 ```
 
-The OH/CH split was introduced when the product portfolio grew past
-what a single carousel could comfortably show. Splash → chooser →
-filtered productlines is now the canonical entry path; direct deep
-links to `/intranet/kiosk/productlines` without a `lane` query still
-work and fall back to showing every system.
+The splash picks a lane directly (Open Hole / Cased Hole). Each lane lands
+on `/intranet/kiosk/lane?lane=…`, which loops that lane's attractor videos
+fullscreen with a persistent overlay button strip on the right — the same
+buttons regardless of which clip is playing. Tapping an overlay button opens
+that product's experience. The old `/lane` card chooser was retired and the
+`/productlines` tile grid is no longer in the funnel, though the route still
+works for direct links.
+
+### Video sources
+
+Lane loops and `OverlayExperience` resolve their clips through
+`useKioskVideo` — it prefers a 1080p master in `public/videos/kiosk-hd/`
+when one exists (matched by filename) and otherwise falls back to the
+committed `public/videos/transcoded/` clip. See [ADMIN.md](ADMIN.md) §7.
 
 ## Service Worker Cache Versioning
 The kiosk service worker lives at `public/kiosk-sw.js` and uses a version string:

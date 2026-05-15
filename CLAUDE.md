@@ -20,14 +20,14 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, intran
 - **Feature modules**: `src/features/` (success-stories filters/services, kiosk shell)
 - **Shared UI primitives**: `src/shared/ui/`
 - **API routes**: `src/app/api/` (email, PDF generation). Operations and country-label data are read from static JSON in `/public/data/` directly, not via `/api/data/*` — the FastAPI backend is Hetzner-only and Vercel needs to keep working without it
-- **Kiosk**: OH/CH lane split — `/intranet/kiosk` (splash) → `/intranet/kiosk/lane` (chooser) → `/intranet/kiosk/productlines?lane=oh|ch` (filtered tiles). The CH lane's `Focus Centralizers` tile opens a dedicated `FocusCentralizersExperience` (Helix video loop + HUD overlay + Rocker corner badge); other tiles open `SystemModal` as before.
+- **Kiosk**: OH/CH lane split — `/intranet/kiosk` (splash with Open Hole / Cased Hole buttons) → `/intranet/kiosk/lane?lane=oh|ch` (per-lane looping video screen with a persistent right-side overlay button strip). Tapping an overlay button opens that product's experience: CH `Helix` → `FocusCentralizersExperience` (Helix video loop + HUD + Rocker corner badge), CH `Rocker` → `RockerExperience`, CH `Other` → "Coming soon"; the four OH buttons open `OverlayExperience`, a config-driven Helix-pattern scaffold. The old `/lane` card chooser was retired; `/productlines?lane=oh|ch` (the `SystemModal` tile grid) still works for direct links but is no longer in the main flow. Kiosk videos resolve via `useKioskVideo` — prefers `public/videos/kiosk-hd/` (1080p), falls back to `public/videos/transcoded/`.
 - **Styling**: Tailwind CSS 4. Brand tokens (`brand`, `brandblack`, `brandgray`) still exist in `tailwind.config.ts` but the homepage v2 components have migrated to the `slate-*` scale for body text and dark headings — `brand` (#1E4A9A) remains the single brand color across the homepage and Track Record. Legacy `brandblack`/`brandgray` are still in use on error pages, the team page, and intranet surfaces. Fonts: Inter (body), IBM Plex Sans (headings).
 
 ## Data Organization
 
 - `public/data/` — Published JSON/CSV served via CDN (fetch at runtime, never import)
 - `public/flipbooks/` — Generated flipbook bundles, incl. `email.pdf` (committed)
-- `public/videos/` — `originals/` holds full-res masters (gitignored, too large for git); `transcoded/` holds the web-ready clips the site references (committed)
+- `public/videos/` — `originals/` holds full-res masters (gitignored, too large for git); `transcoded/` holds the web-ready clips the site references (committed); `kiosk-hd/` holds optional 1080p clips for the kiosk (committed — same filenames as `transcoded/`; the kiosk prefers these via `useKioskVideo`, see docs/ADMIN.md §7)
 - `sources/` — Content-pipeline drop zone: drop a file into `sources/{operations,catalog,success-stories}/` and run `pnpm run data` (dropped files gitignored; see `sources/README.md`)
 - `src/data/` — Small typed TS modules only (e.g. `team.ts`)
 

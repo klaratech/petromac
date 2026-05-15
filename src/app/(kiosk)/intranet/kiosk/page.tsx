@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { APP_CONSTANTS, KIOSK_LANE_PATH, VIDEO_SOURCES } from '@/constants/app';
 
+type Lane = 'oh' | 'ch';
+
 function KioskContent() {
   const [mode, setMode] = useState<'intro' | 'video'>('intro');
   const [typedText, setTypedText] = useState('');
@@ -68,9 +70,14 @@ function KioskContent() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleExplore = () => {
-    // Splash → OH/CH chooser → productlines (filtered by lane).
-    router.push(KIOSK_LANE_PATH);
+  // Splash → pick a lane → per-lane looping video screen with overlay nav.
+  const handleChoose = (lane: Lane) => {
+    router.push(`${KIOSK_LANE_PATH}?lane=${lane}`);
+  };
+
+  // Tapping the idle attractor video just returns to the lane chooser.
+  const handleAttractorTap = () => {
+    setMode('intro');
   };
 
   return (
@@ -89,12 +96,20 @@ function KioskContent() {
             <p className="text-xl h-6 font-medium tracking-wide">{typedText}</p>
 
             {showButton && (
-              <button
-                onClick={handleExplore}
-                className="mt-12 px-8 py-3 text-lg font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20 transition-opacity duration-1000"
-              >
-                Touch to Begin
-              </button>
+              <div className="mt-12 flex gap-6 transition-opacity duration-1000">
+                <button
+                  onClick={() => handleChoose('oh')}
+                  className="px-10 py-4 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20"
+                >
+                  Open Hole
+                </button>
+                <button
+                  onClick={() => handleChoose('ch')}
+                  className="px-10 py-4 text-xl font-semibold text-white bg-white/10 border border-white/30 rounded-full shadow-lg backdrop-blur hover:bg-white/20"
+                >
+                  Cased Hole
+                </button>
+              </div>
             )}
           </motion.div>
         )}
@@ -107,8 +122,8 @@ function KioskContent() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
             className="absolute inset-0 z-10"
-            onClick={handleExplore}
-            onTouchStart={handleExplore}
+            onClick={handleAttractorTap}
+            onTouchStart={handleAttractorTap}
           >
             <video
               key={VIDEO_SOURCES[videoIndex]}
