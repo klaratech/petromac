@@ -284,14 +284,15 @@ function LaneLoopContent() {
       {/* Dim so overlay buttons stay readable over bright frames */}
       <div className="absolute inset-0 bg-black/35 z-0 pointer-events-none" />
 
-      {/* Overlay button strip — bottom, horizontal. Same buttons for every
-          clip in the lane. */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-row gap-3">
+      {/* Overlay button strip — right edge, vertical and deliberately
+          subtle so it stays clear of the burned-in video subtitles.
+          Same buttons for every clip in the lane (OH + CH). */}
+      <div className="absolute top-1/2 right-3 -translate-y-1/2 z-20 flex flex-col gap-2">
         {overlayItems.map((item) => (
           <button
             key={item.key}
             onClick={() => setActive(item.open)}
-            className="px-5 py-3 rounded-xl bg-black/55 hover:bg-black/75 backdrop-blur border border-white/20 text-white text-center text-sm font-semibold tracking-wide shadow-xl transition-colors"
+            className="px-3 py-2 rounded-lg bg-black/25 hover:bg-black/70 backdrop-blur-sm border border-white/10 text-white/60 hover:text-white text-xs font-medium tracking-wide transition-colors"
           >
             {item.label}
           </button>
