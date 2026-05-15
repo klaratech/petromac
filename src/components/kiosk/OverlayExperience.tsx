@@ -193,6 +193,7 @@ export default function OverlayExperience({ config, onClose }: Props) {
           muted
           loop
           playsInline
+          controls
           className="absolute inset-0 w-full h-full object-cover"
         />
 
@@ -224,16 +225,16 @@ export default function OverlayExperience({ config, onClose }: Props) {
           )}
         </div>
 
-        {/* HUD button strip — bottom centre. Same structure as the Helix
-            (Focus Centralizers) experience. */}
+        {/* HUD button strip — small, top centre, kept clear of the native
+            video controls along the bottom. Matches the Helix experience. */}
         <AnimatePresence>
           {hudVisible && (
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: -16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 24 }}
+              exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.25 }}
-              className="absolute bottom-10 left-1/2 -translate-x-1/2 z-40 flex gap-3 px-3 py-3 rounded-2xl bg-black/55 backdrop-blur border border-white/15 shadow-2xl"
+              className="absolute top-4 left-1/2 -translate-x-1/2 z-40 flex gap-2 px-2 py-2 rounded-xl bg-black/35 backdrop-blur border border-white/10 shadow-xl"
             >
               <HudButton
                 label="Track Record"
@@ -330,7 +331,7 @@ function HudButton({
   return (
     <button
       onClick={onClick}
-      className="px-5 py-3 rounded-xl bg-white/90 hover:bg-white text-black font-semibold text-base tracking-wide shadow-md transition-colors"
+      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/25 text-white/85 hover:text-white text-xs font-medium tracking-wide transition-colors"
     >
       {label}
     </button>

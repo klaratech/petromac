@@ -118,38 +118,27 @@ export default function RockerExperience({ onBack, onClose }: Props) {
         </h2>
       </div>
 
-      {/* Top-right close + back */}
-      <div className="absolute top-4 right-4 z-50 flex gap-2">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onBack();
-          }}
-          className="px-4 py-2 rounded-full bg-black/40 hover:bg-black/60 text-white text-sm tracking-wide"
-        >
-          ← Helix
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          aria-label="Close"
-          className="w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white text-3xl font-bold"
-        >
-          ✕
-        </button>
-      </div>
+      {/* Top-right close */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-label="Close"
+        className="absolute top-4 right-4 z-50 w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white text-3xl font-bold"
+      >
+        ✕
+      </button>
 
-      {/* HUD button strip */}
+      {/* HUD button strip — small, top centre (matches the Helix experience) */}
       <AnimatePresence>
         {hudVisible && (
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 24 }}
+            exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.25 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 z-40 flex gap-3 px-3 py-3 rounded-2xl bg-black/55 backdrop-blur border border-white/15 shadow-2xl"
+            className="absolute top-4 left-1/2 -translate-x-1/2 z-40 flex gap-2 px-2 py-2 rounded-xl bg-black/35 backdrop-blur border border-white/10 shadow-xl"
           >
             <HudButton
               label="Track Record"
@@ -182,6 +171,29 @@ export default function RockerExperience({ onBack, onClose }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Helix corner badge — bottom-right. Mirrors the Rocker badge on the
+          Focus Centralizers (Helix) experience: same style, same spot. */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onBack();
+        }}
+        aria-label="Back to Helix"
+        className="absolute bottom-10 right-10 z-40 group flex items-center gap-3 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur text-white text-sm font-semibold tracking-[0.2em] uppercase shadow-lg transition-colors"
+      >
+        {/* TODO(graphics): swap for a small Helix silhouette / icon */}
+        <span className="w-8 h-8 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
+          <Image
+            src="/images/focus.png"
+            alt=""
+            width={20}
+            height={20}
+            className="opacity-80"
+          />
+        </span>
+        <span>← Helix</span>
+      </button>
     </div>
   );
 }
@@ -196,7 +208,7 @@ function HudButton({
   return (
     <button
       onClick={onClick}
-      className="px-5 py-3 rounded-xl bg-white/90 hover:bg-white text-black font-semibold text-base tracking-wide shadow-md transition-colors"
+      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/25 text-white/85 hover:text-white text-xs font-medium tracking-wide transition-colors"
     >
       {label}
     </button>
