@@ -1,6 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
 
+/**
+ * The three inputs Athena combines into a single recommendation.
+ * Hermes is the physics/modelling engine; AI checks and regional-manager
+ * experience drive the configuration side (which doesn't touch Hermes).
+ */
+const inputs = [
+  {
+    name: "Hermes™",
+    text: "Modelling engine for drag, tension, and sticking risk.",
+  },
+  {
+    name: "AI checks",
+    text: "Automated validation of the tool-string configuration.",
+  },
+  {
+    name: "Regional managers",
+    text: "Field experience from the people who run the jobs.",
+  },
+];
+
 export default function SimulationHero() {
   return (
     <section className="relative overflow-hidden bg-slate-950 px-6 py-14 md:py-16">
@@ -42,9 +62,30 @@ export default function SimulationHero() {
         </h1>
 
         <p className="mb-8 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl">
-          Athena brings Petromac engineering, Hermes&trade; simulation, and
-          field-backed configuration logic into the planning conversation.
+          Athena turns a well plan into a go / no-go call before the run starts
+          &mdash; not during it. Operators and wireline service companies use it
+          to weigh sticking risk and conveyance options while the job is still
+          on paper.
         </p>
+
+        {/* The three inputs behind every Athena recommendation */}
+        <div className="mb-8">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+            Three inputs, one recommendation
+          </p>
+          <div className="grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-3">
+            {inputs.map((item) => (
+              <div key={item.name} className="bg-slate-950/70 p-4">
+                <p className="font-heading text-sm font-bold text-white">
+                  {item.name}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                  {item.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
           <Link

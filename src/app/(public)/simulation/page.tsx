@@ -6,7 +6,7 @@ import ContactForm from "@/components/public/ContactForm";
 export const metadata = {
   title: "Athena - Wireline Planning Partner",
   description:
-    "Use Athena and Hermes simulation to predict sticking risk, evaluate conveyance options, and decide before the job starts.",
+    "Athena turns a well plan into a go/no-go call before the run starts — combining Hermes drag-and-tension modelling, AI configuration checks, and regional-manager experience.",
 };
 
 export default function SimulationPage() {

@@ -7,7 +7,7 @@ const points = [
   },
   {
     title: "Engineering-led",
-    text: "Hermes simulation is paired with Petromac field experience and configuration logic.",
+    text: "Built and pressure-tested by the engineers and regional managers who run wireline jobs — not a generic modelling tool.",
   },
   {
     title: "Operationally useful",
@@ -44,7 +44,7 @@ export default function WhyPetromac() {
                 href="/catalog"
                 className="inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold text-slate-700 transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2"
               >
-                Browse hardware
+                Browse the catalog
               </Link>
             </div>
           </div>

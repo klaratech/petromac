@@ -8,8 +8,10 @@
  * ASSET PLACEHOLDER: the video frame below is a static mockup. When the
  * screen recording is ready, swap the placeholder block for a real
  * <video src="/videos/athena-demo.mp4" controls poster=...> element.
- * Build → set parameters → run → read results/graphs → change & re-run,
- * ~60-90s. See docs/ADMIN.md for the transcode guidance.
+ * Brief: a ~60-90s click-through on one real well plan — load inputs →
+ * run Hermes → read the tension/drag/risk output → change a configuration
+ * choice → re-run → land on a go/no-go call. See docs/ADMIN.md for the
+ * transcode guidance.
  */
 
 const steps = [
@@ -23,7 +25,7 @@ const steps = [
   },
   {
     title: "Decide",
-    text: "Select the configuration, contingency trigger, and go/no-go boundary before execution.",
+    text: "Lock in the configuration, contingency triggers, and the go / no-go boundary before the run.",
   },
 ];
 
@@ -40,8 +42,8 @@ export default function AthenaInAction() {
             Simulate. Evaluate. Decide.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-slate-300">
-            Watch Athena turn a well plan into a go / no-go decision — in
-            about a minute.
+            A run through Athena on a real well plan — from inputs to
+            recommendation, in about a minute.
           </p>
         </div>
 
@@ -75,7 +77,7 @@ export default function AthenaInAction() {
               Screen recording placeholder
             </p>
             <p className="mt-1 max-w-md text-xs leading-relaxed text-slate-300 sm:mt-2 sm:text-sm">
-              Reserved for the actual Athena/Hermes planning walkthrough.
+              Reserved for the Athena planning walk-through.
             </p>
           </div>
         </div>
