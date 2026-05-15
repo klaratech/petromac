@@ -17,7 +17,7 @@ interface Props {
   onClose: () => void;  // close the entire CH experience
 }
 
-const HUD_AUTOHIDE_MS = 6000;
+const HUD_AUTOHIDE_MS = 4000;
 
 /**
  * RockerExperience — sister view to FocusCentralizersExperience for the
@@ -93,6 +93,7 @@ export default function RockerExperience({ onBack, onClose }: Props) {
       className="relative w-full h-full bg-black"
       onClick={handleTap}
       onTouchStart={handleTap}
+      onMouseMove={handleTap}
     >
       {/* Background — Rocker hero image (placeholder gradient until graphics) */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-black" />
@@ -108,27 +109,25 @@ export default function RockerExperience({ onBack, onClose }: Props) {
       />
       <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
-      {/* Top-left product label */}
-      <div className="absolute top-6 left-6 z-40 pointer-events-none">
-        <p className="text-xs uppercase tracking-[0.4em] text-white/60">
-          Cased Hole · Small casing
-        </p>
-        <h2 className="text-4xl font-extrabold text-white drop-shadow">
-          ROCKER
-        </h2>
-      </div>
-
-      {/* Top-right close */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}
-        aria-label="Close"
-        className="absolute top-4 right-4 z-50 w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white text-3xl font-bold"
-      >
-        ✕
-      </button>
+      {/* Top-right close — appears with the HUD on hover / tap */}
+      <AnimatePresence>
+        {hudVisible && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            aria-label="Close"
+            className="absolute top-4 right-4 z-50 w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white text-3xl font-bold"
+          >
+            ✕
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* HUD button strip — small, top centre (matches the Helix experience) */}
       <AnimatePresence>
@@ -172,28 +171,36 @@ export default function RockerExperience({ onBack, onClose }: Props) {
         )}
       </AnimatePresence>
 
-      {/* Helix corner badge — bottom-right. Mirrors the Rocker badge on the
-          Focus Centralizers (Helix) experience: same style, same spot. */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onBack();
-        }}
-        aria-label="Back to Helix"
-        className="absolute bottom-10 right-10 z-40 group flex items-center gap-3 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur text-white text-sm font-semibold tracking-[0.2em] uppercase shadow-lg transition-colors"
-      >
-        {/* TODO(graphics): swap for a small Helix silhouette / icon */}
-        <span className="w-8 h-8 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
-          <Image
-            src="/images/focus.png"
-            alt=""
-            width={20}
-            height={20}
-            className="opacity-80"
-          />
-        </span>
-        <span>← Helix</span>
-      </button>
+      {/* Helix corner badge — bottom-right, appears with the HUD. Mirrors
+          the Rocker badge on the Focus Centralizers (Helix) experience. */}
+      <AnimatePresence>
+        {hudVisible && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onBack();
+            }}
+            aria-label="Back to Helix"
+            className="absolute bottom-8 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-colors"
+          >
+            {/* TODO(graphics): swap for a small Helix silhouette / icon */}
+            <span className="w-5 h-5 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
+              <Image
+                src="/images/focus.png"
+                alt=""
+                width={12}
+                height={12}
+                className="opacity-80"
+              />
+            </span>
+            <span>Helix</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

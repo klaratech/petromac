@@ -62,7 +62,7 @@ interface Props {
   onClose: () => void;
 }
 
-const HUD_AUTOHIDE_MS = 6000;
+const HUD_AUTOHIDE_MS = 4000;
 
 export default function OverlayExperience({ config, onClose }: Props) {
   const router = useRouter();

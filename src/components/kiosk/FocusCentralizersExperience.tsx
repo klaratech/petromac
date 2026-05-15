@@ -23,7 +23,7 @@ interface Props {
   onClose: () => void;
 }
 
-const HUD_AUTOHIDE_MS = 6000;
+const HUD_AUTOHIDE_MS = 4000;
 
 /**
  * Cased-hole "Focus Centralizers" experience.
@@ -225,15 +225,15 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
                 setView('rocker');
               }}
               aria-label="Open Rocker"
-              className="absolute bottom-10 right-10 z-40 group flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur text-white text-xs font-semibold tracking-[0.2em] uppercase shadow-lg transition-colors"
+              className="absolute bottom-8 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-colors"
             >
               {/* TODO(graphics): swap for a small Rocker silhouette / icon */}
-              <span className="w-6 h-6 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
+              <span className="w-5 h-5 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
                 <Image
                   src="/images/focus.png"
                   alt=""
-                  width={14}
-                  height={14}
+                  width={12}
+                  height={12}
                   className="opacity-80"
                 />
               </span>
