@@ -7,8 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import type { JobRecord } from '@/types/JobRecord';
-import MechanismScreen from './MechanismScreen';
-import LogsScreen from './LogsScreen';
+import MechanismScreen, { ROCKER_MECHANISM } from './MechanismScreen';
+import LogsScreen, { ROCKER_LOGS } from './LogsScreen';
 
 type View = 'main' | 'track-record' | 'mechanism' | 'logs';
 
@@ -81,11 +81,11 @@ export default function RockerExperience({ onBack, onClose }: Props) {
   }
 
   if (view === 'mechanism') {
-    return <MechanismScreen system="Rocker" onBack={() => setView('main')} />;
+    return <MechanismScreen config={ROCKER_MECHANISM} onBack={() => setView('main')} />;
   }
 
   if (view === 'logs') {
-    return <LogsScreen system="Rocker" onBack={() => setView('main')} />;
+    return <LogsScreen config={ROCKER_LOGS} onBack={() => setView('main')} />;
   }
 
   return (

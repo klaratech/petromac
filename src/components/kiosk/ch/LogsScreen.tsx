@@ -4,26 +4,17 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 /**
- * LogsScreen — sub-view for the "Logs" HUD button on Helix / Rocker.
+ * LogsScreen — config-driven "Logs" sub-view.
  *
- * Each slide is either a single full-bleed image, or a left/right pair
- * (e.g. the leverage comparison from slide 5 split into conventional vs.
- * HELIX). Pager at the bottom lets the user step through slides.
+ * Used by the Cased Hole experiences (Helix / Rocker) and the Open Hole
+ * `OverlayExperience` scaffolds. Each slide is either a single full-bleed
+ * image or a left/right comparison pair; a pager steps through them.
  *
- * Asset slots (drop files at these paths and the screen will pick them up):
- *   /public/images/helix-cbl-setup.png        Ultrasonic-CBL set-up (slide 8)
- *   /public/images/leverage-conventional.png  Conventional leverage (slide 5, left half)
- *   /public/images/leverage-helix.png         HELIX leverage         (slide 5, right half)
- *   /public/images/helix-logs-{N}.png         Extra log-comparison slides for HELIX
- *   /public/images/rocker-logs-{N}.png        Log-comparison slides for ROCKER
+ * Missing images fall back to a "drop file here" placeholder so the screen
+ * stays usable while graphics assets are in progress.
  */
 
-interface Props {
-  system: 'Helix' | 'Rocker';
-  onBack: () => void;
-}
-
-type Slide =
+export type LogsSlide =
   | {
       type: 'single';
       src: string;
@@ -36,15 +27,31 @@ type Slide =
       right: { src: string; label: string; highlight?: boolean };
     };
 
-const SLIDES: Record<Props['system'], Slide[]> = {
-  Helix: [
+export interface LogsConfig {
+  /** Shown as the screen heading, e.g. "Helix", "Pathfinder". */
+  title: string;
+  slides: LogsSlide[];
+}
+
+interface Props {
+  config: LogsConfig;
+  onBack: () => void;
+}
+
+// ── Cased Hole presets (ported from the original Helix/Rocker maps) ──────────
+// Asset slots — drop files at these paths and the slides pick them up:
+//   /public/images/leverage-conventional.png  (slide 5, left)
+//   /public/images/leverage-helix.png         (slide 5, right)
+//   /public/images/helix-cbl-setup.png        (slide 8)
+//   /public/images/rocker-logs-{N}.png        (Rocker log comparisons)
+
+export const HELIX_LOGS: LogsConfig = {
+  title: 'Helix',
+  slides: [
     {
       type: 'pair',
       caption: 'Improved leverage to enter restrictions (slide 5)',
-      left: {
-        src: '/images/leverage-conventional.png',
-        label: 'Conventional',
-      },
+      left: { src: '/images/leverage-conventional.png', label: 'Conventional' },
       right: {
         src: '/images/leverage-helix.png',
         label: 'HELIX',
@@ -57,7 +64,11 @@ const SLIDES: Record<Props['system'], Slide[]> = {
       caption: 'Ultrasonic-CBL set-up with HELIX (slide 8)',
     },
   ],
-  Rocker: [
+};
+
+export const ROCKER_LOGS: LogsConfig = {
+  title: 'Rocker',
+  slides: [
     {
       type: 'single',
       src: '/images/rocker-logs-1.png',
@@ -66,10 +77,10 @@ const SLIDES: Record<Props['system'], Slide[]> = {
   ],
 };
 
-export default function LogsScreen({ system, onBack }: Props) {
-  const slides = SLIDES[system];
+export default function LogsScreen({ config, onBack }: Props) {
+  const slides = config.slides;
   const [index, setIndex] = useState(0);
-  const slide = slides[index];
+  const slide = slides[index] as LogsSlide | undefined;
 
   return (
     <div className="w-full h-full bg-black text-white flex flex-col">
@@ -78,7 +89,7 @@ export default function LogsScreen({ system, onBack }: Props) {
           <p className="text-xs uppercase tracking-[0.4em] text-white/50">
             Logs
           </p>
-          <h2 className="text-3xl font-extrabold">{system}</h2>
+          <h2 className="text-3xl font-extrabold">{config.title}</h2>
         </div>
         <button
           onClick={onBack}
@@ -89,15 +100,21 @@ export default function LogsScreen({ system, onBack }: Props) {
       </header>
 
       <div className="flex-1 relative bg-black">
-        {slide.type === 'single' ? (
+        {!slide ? (
+          <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">
+            No log slides configured yet.
+          </div>
+        ) : slide.type === 'single' ? (
           <SinglePane src={slide.src} alt={slide.caption} />
         ) : (
           <PairPane left={slide.left} right={slide.right} />
         )}
 
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/60 text-sm">
-          {slide.caption}
-        </div>
+        {slide && (
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/60 text-sm">
+            {slide.caption}
+          </div>
+        )}
       </div>
 
       {slides.length > 1 && (

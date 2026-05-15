@@ -1,46 +1,79 @@
 'use client';
 
 /**
- * MechanismScreen — sub-view for the Cased Hole experience.
+ * MechanismScreen — config-driven "Mechanism" sub-view.
  *
- * Shown when the user taps the "Mechanism" HUD button on either the Helix
- * (Focus Centralizers) or Rocker view. Once Rajesh delivers the videos
- * extracted from ICOTA 2026 MaIn.pptx, this component plays them with a
- * conventional-vs-Petromac comparison layout matching slides 3–7.
+ * Used by the Cased Hole experiences (Helix / Rocker) and the Open Hole
+ * `OverlayExperience` scaffolds. Renders a side-by-side comparison of
+ * conventional vs. Petromac mechanism clips.
  *
- * Asset slots (drop files at these paths and the screen will pick them up):
- *   /public/videos/transcoded/helix-mechanism.mp4           HELIX mechanism animation (slide 4)
- *   /public/videos/transcoded/conventional-largecasings.mp4 Conventional mechanism, large casing (slide 3)
- *   /public/videos/transcoded/rocker-mechanism.mp4          ROCKER mechanism animation (slide 7)
- *   /public/videos/transcoded/conventional-smallcasings.mp4 Conventional mechanism, small tubing/casing (slide 6)
+ * Each pane plays a looping video; if the file isn't present yet the pane
+ * shows a "drop file here" placeholder so the screen stays usable while
+ * graphics assets are in progress.
  */
 
+export interface MechanismPane {
+  label: string;
+  /** Video path under /public. */
+  src: string;
+  /** Outline the pane (use for the Petromac side of a comparison). */
+  highlight?: boolean;
+}
+
+export interface MechanismConfig {
+  /** Shown as the screen heading, e.g. "Helix", "Pathfinder". */
+  title: string;
+  /** Comparison panes — typically two (conventional vs. Petromac). */
+  panes: MechanismPane[];
+  /** Optional footer note, e.g. a slide reference. */
+  sourceNote?: string;
+}
+
 interface Props {
-  system: 'Helix' | 'Rocker';
+  config: MechanismConfig;
   onBack: () => void;
 }
 
-const VIDEOS: Record<
-  Props['system'],
-  { conventional: string; petromac: string; conventionalLabel: string; petromacLabel: string }
-> = {
-  Helix: {
-    conventional: '/videos/transcoded/conventional-largecasings.mp4',
-    petromac: '/videos/transcoded/helix-mechanism.mp4',
-    conventionalLabel: 'Conventional Mechanism',
-    petromacLabel: 'HELIX Mechanism',
-  },
-  Rocker: {
-    conventional: '/videos/transcoded/conventional-smallcasings.mp4',
-    petromac: '/videos/transcoded/rocker-mechanism.mp4',
-    conventionalLabel: 'Conventional Mechanism',
-    petromacLabel: 'ROCKER Mechanism',
-  },
+// ── Cased Hole presets (ported from the original Helix/Rocker maps) ──────────
+// Asset slots — drop files at these paths and the panes pick them up:
+//   /public/videos/transcoded/conventional-largecasings.mp4   (slide 3)
+//   /public/videos/transcoded/helix-mechanism.mp4             (slide 4)
+//   /public/videos/transcoded/conventional-smallcasings.mp4   (slide 6)
+//   /public/videos/transcoded/rocker-mechanism.mp4            (slide 7)
+
+export const HELIX_MECHANISM: MechanismConfig = {
+  title: 'Helix',
+  panes: [
+    {
+      label: 'Conventional Mechanism',
+      src: '/videos/transcoded/conventional-largecasings.mp4',
+    },
+    {
+      label: 'HELIX Mechanism',
+      src: '/videos/transcoded/helix-mechanism.mp4',
+      highlight: true,
+    },
+  ],
+  sourceNote: 'Source: ICOTA 2026 deck — slides 3 & 4.',
 };
 
-export default function MechanismScreen({ system, onBack }: Props) {
-  const v = VIDEOS[system];
+export const ROCKER_MECHANISM: MechanismConfig = {
+  title: 'Rocker',
+  panes: [
+    {
+      label: 'Conventional Mechanism',
+      src: '/videos/transcoded/conventional-smallcasings.mp4',
+    },
+    {
+      label: 'ROCKER Mechanism',
+      src: '/videos/transcoded/rocker-mechanism.mp4',
+      highlight: true,
+    },
+  ],
+  sourceNote: 'Source: ICOTA 2026 deck — slides 6 & 7.',
+};
 
+export default function MechanismScreen({ config, onBack }: Props) {
   return (
     <div className="w-full h-full bg-black text-white flex flex-col">
       <header className="flex items-center justify-between px-8 py-5 border-b border-white/10">
@@ -48,7 +81,7 @@ export default function MechanismScreen({ system, onBack }: Props) {
           <p className="text-xs uppercase tracking-[0.4em] text-white/50">
             Mechanism
           </p>
-          <h2 className="text-3xl font-extrabold">{system}</h2>
+          <h2 className="text-3xl font-extrabold">{config.title}</h2>
         </div>
         <button
           onClick={onBack}
@@ -58,23 +91,31 @@ export default function MechanismScreen({ system, onBack }: Props) {
         </button>
       </header>
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-8">
-        <MechanismPane label={v.conventionalLabel} src={v.conventional} />
-        <MechanismPane
-          label={v.petromacLabel}
-          src={v.petromac}
-          highlight
-        />
+      <div
+        className={`flex-1 grid grid-cols-1 gap-6 p-8 ${
+          config.panes.length > 1 ? 'md:grid-cols-2' : ''
+        }`}
+      >
+        {config.panes.map((pane) => (
+          <MechanismPaneView
+            key={`${pane.label}-${pane.src}`}
+            label={pane.label}
+            src={pane.src}
+            highlight={pane.highlight ?? false}
+          />
+        ))}
       </div>
 
-      <footer className="px-8 py-4 text-center text-white/50 text-sm">
-        Source: ICOTA 2026 deck — slides {system === 'Helix' ? '3 & 4' : '6 & 7'}.
-      </footer>
+      {config.sourceNote && (
+        <footer className="px-8 py-4 text-center text-white/50 text-sm">
+          {config.sourceNote}
+        </footer>
+      )}
     </div>
   );
 }
 
-function MechanismPane({
+function MechanismPaneView({
   label,
   src,
   highlight = false,

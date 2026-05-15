@@ -68,7 +68,8 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
       key: 'formation-testing',
       label: 'Formation Testing',
       // Track Record + Success Stories are wired to live data. Mechanism /
-      // Logs stay as "Coming soon" until product assets are delivered.
+      // Logs are real screens with asset-slot placeholders — drop files at
+      // the paths below and they fill in.
       open: {
         type: 'overlay',
         config: {
@@ -79,6 +80,30 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
           // Operations data tags these jobs "Wireline Express - FT".
           trackRecordSystem: 'Wireline Express - FT',
           enableSuccessStories: true,
+          mechanism: {
+            title: 'Formation Testing',
+            panes: [
+              {
+                label: 'Conventional',
+                src: '/videos/transcoded/conventional-formation-testing.mp4',
+              },
+              {
+                label: 'Petromac',
+                src: '/videos/transcoded/formation-testing-mechanism.mp4',
+                highlight: true,
+              },
+            ],
+          },
+          logs: {
+            title: 'Formation Testing',
+            slides: [
+              {
+                type: 'single',
+                src: '/images/formation-testing-logs-1.png',
+                caption: 'Formation testing log comparison',
+              },
+            ],
+          },
         },
       },
     },
@@ -94,6 +119,30 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
           // Prefix-matches "Wireline Express" (also includes the "- FT" jobs).
           trackRecordSystem: 'Wireline Express',
           enableSuccessStories: true,
+          mechanism: {
+            title: 'High Deviation',
+            panes: [
+              {
+                label: 'Conventional',
+                src: '/videos/transcoded/conventional-high-deviation.mp4',
+              },
+              {
+                label: 'Wireline Express',
+                src: '/videos/transcoded/high-deviation-mechanism.mp4',
+                highlight: true,
+              },
+            ],
+          },
+          logs: {
+            title: 'High Deviation',
+            slides: [
+              {
+                type: 'single',
+                src: '/images/high-deviation-logs-1.png',
+                caption: 'High deviation log comparison',
+              },
+            ],
+          },
         },
       },
     },
@@ -108,6 +157,30 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
           video: '/videos/transcoded/WirelineExpress.mp4',
           trackRecordSystem: 'Focus - OH',
           enableSuccessStories: true,
+          mechanism: {
+            title: 'Data Quality',
+            panes: [
+              {
+                label: 'Conventional',
+                src: '/videos/transcoded/conventional-data-quality.mp4',
+              },
+              {
+                label: 'Petromac',
+                src: '/videos/transcoded/data-quality-mechanism.mp4',
+                highlight: true,
+              },
+            ],
+          },
+          logs: {
+            title: 'Data Quality',
+            slides: [
+              {
+                type: 'single',
+                src: '/images/data-quality-logs-1.png',
+                caption: 'Data quality log comparison',
+              },
+            ],
+          },
         },
       },
     },
@@ -123,6 +196,30 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
           video: '/videos/transcoded/pf-subtitled.mp4',
           trackRecordSystem: 'PathFinder',
           enableSuccessStories: true,
+          mechanism: {
+            title: 'Pathfinder',
+            panes: [
+              {
+                label: 'Conventional',
+                src: '/videos/transcoded/conventional-holefinding.mp4',
+              },
+              {
+                label: 'Pathfinder HT',
+                src: '/videos/transcoded/pathfinder-mechanism.mp4',
+                highlight: true,
+              },
+            ],
+          },
+          logs: {
+            title: 'Pathfinder',
+            slides: [
+              {
+                type: 'single',
+                src: '/images/pathfinder-logs-1.png',
+                caption: 'Pathfinder log comparison',
+              },
+            ],
+          },
         },
       },
     },

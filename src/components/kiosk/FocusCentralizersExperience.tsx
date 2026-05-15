@@ -8,8 +8,8 @@ import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import type { JobRecord } from '@/types/JobRecord';
 import { systemMedia } from '@modules/catalog/data/deviceSpecs';
-import MechanismScreen from './ch/MechanismScreen';
-import LogsScreen from './ch/LogsScreen';
+import MechanismScreen, { HELIX_MECHANISM } from './ch/MechanismScreen';
+import LogsScreen, { HELIX_LOGS } from './ch/LogsScreen';
 import RockerExperience from './ch/RockerExperience';
 
 type View =
@@ -97,7 +97,7 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
   if (view === 'mechanism') {
     return (
       <FullScreenLayer>
-        <MechanismScreen system="Helix" onBack={() => setView('main')} />
+        <MechanismScreen config={HELIX_MECHANISM} onBack={() => setView('main')} />
       </FullScreenLayer>
     );
   }
@@ -105,7 +105,7 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
   if (view === 'logs') {
     return (
       <FullScreenLayer>
-        <LogsScreen system="Helix" onBack={() => setView('main')} />
+        <LogsScreen config={HELIX_LOGS} onBack={() => setView('main')} />
       </FullScreenLayer>
     );
   }

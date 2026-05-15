@@ -6,6 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
+import MechanismScreen, {
+  type MechanismConfig,
+} from '@/components/kiosk/ch/MechanismScreen';
+import LogsScreen, { type LogsConfig } from '@/components/kiosk/ch/LogsScreen';
 import type { JobRecord } from '@/types/JobRecord';
 
 /**
@@ -39,6 +43,16 @@ export interface OverlayExperienceConfig {
    * success-stories screen. Leave false/undefined for the placeholder.
    */
   enableSuccessStories?: boolean;
+  /**
+   * When set, the "Mechanism" button opens the real comparison screen.
+   * Leave undefined to show the placeholder.
+   */
+  mechanism?: MechanismConfig;
+  /**
+   * When set, the "Logs" button opens the real slide screen.
+   * Leave undefined to show the placeholder.
+   */
+  logs?: LogsConfig;
 }
 
 type View = 'main' | 'track-record' | 'success-stories' | 'mechanism' | 'logs';
@@ -130,27 +144,36 @@ export default function OverlayExperience({ config, onClose }: Props) {
   }
 
   if (view === 'mechanism') {
-    // TODO(rajesh): build the mechanism screen for this product.
     return (
       <FullScreenLayer>
-        <ComingSoon
-          eyebrow={`${config.laneLabel} · ${config.title}`}
-          heading="Mechanism"
-          onBack={() => setView('main')}
-        />
+        {config.mechanism ? (
+          <MechanismScreen
+            config={config.mechanism}
+            onBack={() => setView('main')}
+          />
+        ) : (
+          <ComingSoon
+            eyebrow={`${config.laneLabel} · ${config.title}`}
+            heading="Mechanism"
+            onBack={() => setView('main')}
+          />
+        )}
       </FullScreenLayer>
     );
   }
 
   if (view === 'logs') {
-    // TODO(rajesh): build the logs screen for this product.
     return (
       <FullScreenLayer>
-        <ComingSoon
-          eyebrow={`${config.laneLabel} · ${config.title}`}
-          heading="Logs"
-          onBack={() => setView('main')}
-        />
+        {config.logs ? (
+          <LogsScreen config={config.logs} onBack={() => setView('main')} />
+        ) : (
+          <ComingSoon
+            eyebrow={`${config.laneLabel} · ${config.title}`}
+            heading="Logs"
+            onBack={() => setView('main')}
+          />
+        )}
       </FullScreenLayer>
     );
   }
