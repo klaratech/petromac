@@ -19,11 +19,6 @@ function isLane(value: string | null): value is Lane {
   return value === 'oh' || value === 'ch';
 }
 
-const LANE_LABEL: Record<Lane, string> = {
-  oh: 'Open Hole',
-  ch: 'Cased Hole',
-};
-
 /**
  * Per-lane attractor playlist. Plays fullscreen, muted, on loop behind the
  * overlay button strip. Subtitled clips are used where they exist; `dice.mp4`
@@ -289,37 +284,19 @@ function LaneLoopContent() {
       {/* Dim so overlay buttons stay readable over bright frames */}
       <div className="absolute inset-0 bg-black/35 z-0 pointer-events-none" />
 
-      {/* Lane label — top-left */}
-      <div className="absolute top-6 left-6 z-20 pointer-events-none">
-        <p className="text-xs uppercase tracking-[0.4em] text-white/60">
-          Petromac
-        </p>
-        <h1 className="text-3xl font-extrabold text-white drop-shadow">
-          {LANE_LABEL[lane]}
-        </h1>
-      </div>
-
-      {/* Overlay button strip — right side, vertically centred. Same for
-          every clip in the lane. */}
-      <div className="absolute top-1/2 right-6 -translate-y-1/2 z-20 flex flex-col gap-3">
+      {/* Overlay button strip — bottom, horizontal. Same buttons for every
+          clip in the lane. */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-row gap-3">
         {overlayItems.map((item) => (
           <button
             key={item.key}
             onClick={() => setActive(item.open)}
-            className="min-w-[200px] px-6 py-4 rounded-xl bg-black/55 hover:bg-black/75 backdrop-blur border border-white/20 text-white text-left text-lg font-semibold tracking-wide shadow-xl transition-colors"
+            className="px-5 py-3 rounded-xl bg-black/55 hover:bg-black/75 backdrop-blur border border-white/20 text-white text-center text-sm font-semibold tracking-wide shadow-xl transition-colors"
           >
             {item.label}
           </button>
         ))}
       </div>
-
-      {/* Back to splash — bottom-left */}
-      <button
-        onClick={goToSplash}
-        className="absolute bottom-6 left-6 z-20 text-white/70 hover:text-white text-sm tracking-wide"
-      >
-        ← Back
-      </button>
 
       {/* Active experience layer */}
       <AnimatePresence>
