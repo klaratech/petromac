@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
@@ -11,10 +10,12 @@ import { systemMedia } from '@modules/catalog/data/deviceSpecs';
 import MechanismScreen, { HELIX_MECHANISM } from './ch/MechanismScreen';
 import LogsScreen, { HELIX_LOGS } from './ch/LogsScreen';
 import RockerExperience from './ch/RockerExperience';
+import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
 
 type View =
   | 'main'
   | 'track-record'
+  | 'success-stories'
   | 'mechanism'
   | 'logs'
   | 'rocker';
@@ -36,7 +37,6 @@ const HUD_AUTOHIDE_MS = 4000;
  *   with the same 4-button structure but a still image background.
  */
 export default function FocusCentralizersExperience({ onClose }: Props) {
-  const router = useRouter();
   const [view, setView] = useState<View>('main');
   const [hudVisible, setHudVisible] = useState(true);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -83,6 +83,7 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
           showCloseButton
           onClose={() => setView('main')}
           showSuccessStoriesLink
+          onSuccessStoriesClick={() => setView('success-stories')}
         />
       </FullScreenLayer>
     ) : (
@@ -90,6 +91,17 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
         <div className="w-full h-full flex items-center justify-center text-white/70">
           Loading track record…
         </div>
+      </FullScreenLayer>
+    );
+  }
+
+  if (view === 'success-stories') {
+    return (
+      <FullScreenLayer>
+        <SuccessStoriesFlipbook
+          onBack={() => setView('main')}
+          backLabel="Back"
+        />
       </FullScreenLayer>
     );
   }
@@ -185,13 +197,6 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
                 onClick={(e) => {
                   e.stopPropagation();
                   setView('track-record');
-                }}
-              />
-              <HudButton
-                label="Success Stories"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push('/intranet/kiosk/successstories');
                 }}
               />
               <HudButton

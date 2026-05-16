@@ -27,6 +27,10 @@ export interface DrilldownMapCoreProps {
   showCloseButton?: boolean;
   onClose?: () => void;
   showSuccessStoriesLink?: boolean;
+  /** Optional handler for the in-map "Success Stories" button. When provided
+   *  the button calls this instead of navigating to /success-stories/flipbook,
+   *  so kiosk experiences can open success stories as an inline sub-view. */
+  onSuccessStoriesClick?: () => void;
   /** When true, hides the small in-map deployments pill (e.g. on the
    *  public Track Record page where the page already has a hero stats
    *  row above the map). */
@@ -40,6 +44,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   showCloseButton = false,
   onClose,
   showSuccessStoriesLink = false,
+  onSuccessStoriesClick,
   hideInlineStats = false,
   className = 'relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white',
 }: DrilldownMapCoreProps) {
@@ -264,13 +269,24 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
             <span className="text-blue-600 font-bold">{countryCount}</span> countries
           </div>
           {showSuccessStoriesLink && (
-            <a
-              href="/success-stories/flipbook"
-              className="mt-1.5 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              aria-label="Success Stories"
-            >
-              Success Stories
-            </a>
+            onSuccessStoriesClick ? (
+              <button
+                type="button"
+                onClick={onSuccessStoriesClick}
+                className="mt-1.5 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Success Stories"
+              >
+                Success Stories
+              </button>
+            ) : (
+              <a
+                href="/success-stories/flipbook"
+                className="mt-1.5 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Success Stories"
+              >
+                Success Stories
+              </a>
+            )
           )}
         </div>
       )}

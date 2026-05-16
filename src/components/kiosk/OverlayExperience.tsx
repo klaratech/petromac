@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
@@ -10,6 +9,7 @@ import MechanismScreen, {
   type MechanismConfig,
 } from '@/components/kiosk/ch/MechanismScreen';
 import LogsScreen, { type LogsConfig } from '@/components/kiosk/ch/LogsScreen';
+import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
 import type { JobRecord } from '@/types/JobRecord';
 
 /**
@@ -39,8 +39,8 @@ export interface OverlayExperienceConfig {
    */
   trackRecordSystem?: string;
   /**
-   * When true, the "Success Stories" button routes to the shared kiosk
-   * success-stories screen. Leave false/undefined for the placeholder.
+   * When true, the in-map "Success Stories" link is shown and opens the
+   * flipbook as an inline sub-view. Leave false/undefined to hide it.
    */
   enableSuccessStories?: boolean;
   /**
@@ -65,7 +65,6 @@ interface Props {
 const HUD_AUTOHIDE_MS = 4000;
 
 export default function OverlayExperience({ config, onClose }: Props) {
-  const router = useRouter();
   const [view, setView] = useState<View>('main');
   const [hudVisible, setHudVisible] = useState(true);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -118,7 +117,8 @@ export default function OverlayExperience({ config, onClose }: Props) {
           initialSystem={config.trackRecordSystem}
           showCloseButton
           onClose={() => setView('main')}
-          showSuccessStoriesLink
+          showSuccessStoriesLink={config.enableSuccessStories ?? false}
+          onSuccessStoriesClick={() => setView('success-stories')}
         />
       </FullScreenLayer>
     ) : (
@@ -131,13 +131,11 @@ export default function OverlayExperience({ config, onClose }: Props) {
   }
 
   if (view === 'success-stories') {
-    // TODO(rajesh): wire to a product-filtered success stories view.
     return (
       <FullScreenLayer>
-        <ComingSoon
-          eyebrow={`${config.laneLabel} · ${config.title}`}
-          heading="Success Stories"
+        <SuccessStoriesFlipbook
           onBack={() => setView('main')}
+          backLabel="Back"
         />
       </FullScreenLayer>
     );
@@ -241,17 +239,6 @@ export default function OverlayExperience({ config, onClose }: Props) {
                 onClick={(e) => {
                   e.stopPropagation();
                   setView('track-record');
-                }}
-              />
-              <HudButton
-                label="Success Stories"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (config.enableSuccessStories) {
-                    router.push('/intranet/kiosk/successstories');
-                  } else {
-                    setView('success-stories');
-                  }
                 }}
               />
               <HudButton

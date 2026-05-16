@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
@@ -9,8 +8,9 @@ import useOperationsData from '@/hooks/useOperationsData';
 import type { JobRecord } from '@/types/JobRecord';
 import MechanismScreen, { ROCKER_MECHANISM } from './MechanismScreen';
 import LogsScreen, { ROCKER_LOGS } from './LogsScreen';
+import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
 
-type View = 'main' | 'track-record' | 'mechanism' | 'logs';
+type View = 'main' | 'track-record' | 'success-stories' | 'mechanism' | 'logs';
 
 interface Props {
   onBack: () => void;   // back to Helix / Focus Centralizers main
@@ -29,7 +29,6 @@ const HUD_AUTOHIDE_MS = 4000;
  *   /public/images/rocker-hero.webp   (full-bleed Rocker render)
  */
 export default function RockerExperience({ onBack, onClose }: Props) {
-  const router = useRouter();
   const [view, setView] = useState<View>('main');
   const [hudVisible, setHudVisible] = useState(true);
   const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -72,11 +71,18 @@ export default function RockerExperience({ onBack, onClose }: Props) {
         showCloseButton
         onClose={() => setView('main')}
         showSuccessStoriesLink
+        onSuccessStoriesClick={() => setView('success-stories')}
       />
     ) : (
       <div className="w-full h-full flex items-center justify-center text-white/70">
         Loading track record…
       </div>
+    );
+  }
+
+  if (view === 'success-stories') {
+    return (
+      <SuccessStoriesFlipbook onBack={() => setView('main')} backLabel="Back" />
     );
   }
 
@@ -144,13 +150,6 @@ export default function RockerExperience({ onBack, onClose }: Props) {
               onClick={(e) => {
                 e.stopPropagation();
                 setView('track-record');
-              }}
-            />
-            <HudButton
-              label="Success Stories"
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push('/intranet/kiosk/successstories');
               }}
             />
             <HudButton
