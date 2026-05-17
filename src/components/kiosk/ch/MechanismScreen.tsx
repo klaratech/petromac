@@ -36,14 +36,21 @@ export interface DimensionCallout {
   side: 'left' | 'right';
   /** Label rendered between the two bracket lines, e.g. `9.0"`. */
   label: string;
-  /** Distance from the edge (top + bottom) to each bracket arm, in % of the
-   *  bracket slab's height. Lower values = wider gap between the lines =
-   *  larger represented diameter. Defaults to 28 if omitted.
-   *
-   *  Tune per side so the lines visually align with the tool's arm-tip
-   *  positions at the matching diameter (e.g. LEFT 9.0" uses a wider gap
-   *  than RIGHT 5.8" on the same Helix slide). */
+  /** Symmetric shortcut — distance from both the top AND bottom edges to
+   *  each bracket line, in % of the column height. Lower values = wider
+   *  gap between the lines = larger represented diameter. Defaults to 28
+   *  if omitted. Use this when the tool's arm tips are top/bottom mirrored
+   *  (Helix conventional + HELIX slides). */
   spreadPct?: number;
+  /** Asymmetric override — distance from the TOP edge to the top line
+   *  (% of column height). When set, overrides the top half of `spreadPct`.
+   *  Use for slides where the arms aren't vertically mirrored (e.g. the
+   *  Rocker mid-rock frame, where one arm pair is up-left and the other
+   *  is down-right). */
+  topPct?: number;
+  /** Asymmetric override — distance from the BOTTOM edge to the bottom
+   *  line. Pairs with `topPct`. */
+  bottomPct?: number;
 }
 
 export interface Bullet {
@@ -227,15 +234,19 @@ export const ROCKER_MECHANISM: MechanismConfig = {
       ],
     },
     // 2. Annotated ROCKER — benefits. Rocker mechanism video plays between
-    //    the same 6.3"/3.3" brackets as slide 1's counterpoint.
+    //    the 6.3"/3.3" brackets. Unlike Helix, the rocker arms aren't
+    //    vertically mirrored in any given frame — one pair is up-left, the
+    //    other is down-right — so the brackets need independent top / bottom
+    //    positioning rather than a symmetric spread. Values are tuned to
+    //    the reference frame from rocker-mechanism.mp4.
     {
       type: 'annotated',
       label: 'ROCKER',
       image: '/images/rocker-mechanism-rocker.png',
       video: '/videos/transcoded/rocker-mechanism.mp4',
       callouts: [
-        { side: 'left', label: '6.3"', spreadPct: 12 },
-        { side: 'right', label: '3.3"', spreadPct: 30 },
+        { side: 'left', label: '6.3"', topPct: 35, bottomPct: 40 },
+        { side: 'right', label: '3.3"', topPct: 35, bottomPct: 22 },
       ],
       bullets: [
         { text: 'Rocker arm pivots around centreline' },
@@ -471,6 +482,8 @@ function AnnotatedSlide({
               side="left"
               label={leftCallout.label}
               spreadPct={leftCallout.spreadPct}
+              topPct={leftCallout.topPct}
+              bottomPct={leftCallout.bottomPct}
             />
           )}
 
@@ -479,6 +492,8 @@ function AnnotatedSlide({
               side="right"
               label={rightCallout.label}
               spreadPct={rightCallout.spreadPct}
+              topPct={rightCallout.topPct}
+              bottomPct={rightCallout.bottomPct}
             />
           )}
         </div>
@@ -526,12 +541,25 @@ function DimensionBracket({
   side,
   label,
   spreadPct = 28,
+  topPct,
+  bottomPct,
 }: {
   side: 'left' | 'right';
   label: string;
   spreadPct?: number | undefined;
+  topPct?: number | undefined;
+  bottomPct?: number | undefined;
 }) {
   const isLeft = side === 'left';
+  // topPct / bottomPct take precedence when set; otherwise fall back to the
+  // symmetric spreadPct so existing Helix callouts keep working unchanged.
+  const top = topPct ?? spreadPct;
+  const bottom = bottomPct ?? spreadPct;
+  // The label sits between the two lines: place it at the geometric centre
+  // of (top, 100 - bottom) so it stays vertically aligned with the lines
+  // even when they're asymmetric. (For symmetric brackets this collapses
+  // back to 50%.)
+  const labelTopPct = (top + (100 - bottom)) / 2;
   // Line spans ~5% → ~48% on the left (or 52% → 95% on the right) so each
   // line is ~43% of the column wide — long enough to visually point at the
   // tool, short enough not to cross the body in the middle.
@@ -544,18 +572,19 @@ function DimensionBracket({
       <div
         aria-hidden="true"
         className="absolute h-px bg-slate-800 pointer-events-none z-10"
-        style={{ top: `${spreadPct}%`, ...lineSpan }}
+        style={{ top: `${top}%`, ...lineSpan }}
       />
       <div
         aria-hidden="true"
         className="absolute h-px bg-slate-800 pointer-events-none z-10"
-        style={{ bottom: `${spreadPct}%`, ...lineSpan }}
+        style={{ bottom: `${bottom}%`, ...lineSpan }}
       />
       <span
         aria-hidden="true"
-        className={`absolute top-1/2 -translate-y-1/2 z-20 text-3xl font-semibold tabular-nums text-slate-900 pointer-events-none ${
+        className={`absolute -translate-y-1/2 z-20 text-3xl font-semibold tabular-nums text-slate-900 pointer-events-none ${
           isLeft ? 'left-1' : 'right-1'
         }`}
+        style={{ top: `${labelTopPct}%` }}
       >
         {label}
       </span>
