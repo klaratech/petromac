@@ -52,8 +52,14 @@ export interface MechanismAnnotatedSlide {
   type: 'annotated';
   /** Heading text — e.g. "Conventional centralizer". */
   label: string;
-  /** Image of the tool. The component draws SVG callouts on top. */
+  /** Image of the tool. The component draws SVG callouts on top. Also acts
+   *  as the `poster` for `video` when both are set. */
   image: string;
+  /** Optional mechanism video that plays in place of `image` between the
+   *  dimension brackets (autoplay, loop, playsInline). Use this to embed a
+   *  motion clip inside an annotated slide rather than spend a separate
+   *  slide on it. `image` is still used as the poster fallback. */
+  video?: string;
   /** Dimension callouts extending outward from the tool image. */
   callouts: DimensionCallout[];
   /** Bullet list to the right of the diagram. */
@@ -124,10 +130,13 @@ export const HELIX_MECHANISM: MechanismConfig = {
   title: 'Helix',
   slides: [
     // 1. Annotated conventional centraliser — limitations.
+    //    The conventional-mechanism video plays between the 9.0"/5.8"
+    //    brackets so motion + annotation share one slide.
     {
       type: 'annotated',
       label: 'Conventional centraliser',
       image: '/images/helix-mechanism-conventional.png',
+      video: '/videos/transcoded/conventional-largecasings.mp4',
       callouts: [
         { side: 'left', label: '9.0"' },
         { side: 'right', label: '5.8"' },
@@ -139,17 +148,13 @@ export const HELIX_MECHANISM: MechanismConfig = {
         { text: 'Limited range of casing sizes', highlight: 'red' },
       ],
     },
-    // 2. Conventional mechanism video — shows the same tool in motion.
-    {
-      type: 'video',
-      label: 'Conventional mechanism',
-      src: '/videos/transcoded/conventional-largecasings.mp4',
-    },
-    // 3. Annotated Helix — benefits.
+    // 2. Annotated HELIX — benefits. The HELIX-mechanism video plays
+    //    between the same 9.0"/5.8" brackets as slide 1's counterpoint.
     {
       type: 'annotated',
       label: 'HELIX',
       image: '/images/helix-mechanism-helix.png',
+      video: '/videos/transcoded/helix-mechanism.mp4',
       callouts: [
         { side: 'left', label: '9.0"' },
         { side: 'right', label: '5.8"' },
@@ -161,14 +166,7 @@ export const HELIX_MECHANISM: MechanismConfig = {
         { text: 'Effective mechanism in large range of casing sizes', highlight: 'blue' },
       ],
     },
-    // 4. HELIX mechanism video — Helix in motion, the counterpoint to slide 2.
-    {
-      type: 'video',
-      label: 'HELIX mechanism',
-      src: '/videos/transcoded/helix-mechanism.mp4',
-      highlight: true,
-    },
-    // 5. Lever-arm comparison — the takeaway: 80% less force.
+    // 3. Lever-arm comparison — the takeaway: 80% less force.
     {
       type: 'comparison',
       label: 'Lever arm comparison',
@@ -274,6 +272,7 @@ export default function MechanismScreen({ config, onBack }: Props) {
             key={slide.image}
             label={slide.label}
             image={slide.image}
+            video={slide.video}
             callouts={slide.callouts}
             bullets={slide.bullets}
             detailImage={slide.detailImage}
@@ -387,12 +386,14 @@ function VideoSlide({
 function AnnotatedSlide({
   label,
   image,
+  video,
   callouts,
   bullets,
   detailImage,
 }: {
   label: string;
   image: string;
+  video?: string | undefined;
   callouts: DimensionCallout[];
   bullets: Bullet[];
   detailImage?: string | undefined;
@@ -421,16 +422,33 @@ function AnnotatedSlide({
             />
           )}
 
-          {/* Tool image — bordered slot until graphics delivers the bare
-              centraliser render. */}
+          {/* Tool image OR mechanism video — between the dimension brackets.
+              When `video` is set the slide plays motion in place of the
+              static render; `image` becomes the poster so the slide stays
+              legible before the video buffers. */}
           <div className="relative w-3/4 h-1/2 flex items-center justify-center">
-            <AssetSlot
-              src={image}
-              alt={label}
-              priority
-              className="object-contain"
-              theme="light"
-            />
+            {video ? (
+              <video
+                src={video}
+                poster={image}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-contain"
+                onError={(e) => {
+                  (e.currentTarget as HTMLVideoElement).style.display = 'none';
+                }}
+              />
+            ) : (
+              <AssetSlot
+                src={image}
+                alt={label}
+                priority
+                className="object-contain"
+                theme="light"
+              />
+            )}
           </div>
         </div>
 
