@@ -45,7 +45,7 @@ committed `public/videos/transcoded/` clip. See [ADMIN.md](ADMIN.md) §7.
 The kiosk service worker lives at `public/kiosk-sw.js` and uses a version string:
 
 ```js
-const VERSION = 'v5';
+const VERSION = 'v9';
 ```
 
 **When you need to refresh cached content** (e.g., new videos/flipbooks or data files):
@@ -54,6 +54,13 @@ const VERSION = 'v5';
 3. On the kiosk device, reload the kiosk once while online.
 
 This forces the old caches to be evicted during SW `activate` and rebuilds fresh caches.
+
+### Range request handling (video seeking / offline playback)
+`<video>` elements send HTTP `Range` requests when buffering or seeking. The
+SW serves Range requests for cached media by slicing the full cached
+response into a `206 Partial Content`, so seeking and offline playback both
+work after priming. Non-media Range requests still fall through to the
+network. See `serveRangeFromCache()` in `public/kiosk-sw.js`.
 
 ## Offline Ready Checklist
 1. Connect the kiosk device to a stable network.
@@ -82,5 +89,6 @@ If content appears stale, clear site data for the kiosk domain and repeat.
 
 ## Notes
 - Next.js image optimization outputs (`/_next/image`) are cached for kiosk use.
-- Range requests for video are left to the network; offline playback still works
-  if the full file was cached previously.
+- Video Range requests are served from the cached full file as `206 Partial
+  Content` (see "Range request handling" above) — seeking and offline
+  playback both work as long as the full clip was cached during priming.

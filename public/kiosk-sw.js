@@ -2,7 +2,7 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v8';
+const VERSION = 'v9';
 
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;
@@ -76,10 +76,20 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // For Range requests (common for video), caching can be unreliable.
-  // Keep it simple: let the network handle Range requests when online;
-  // offline playback should still work if the full file was cached earlier.
-  if (request.headers.has('range')) return;
+  // Range requests (common for <video> playback / seeking). The SW caches
+  // FULL responses (no Range header on the initial fetch during priming),
+  // so when the video element later sends Range we can slice the cached
+  // full body and return a 206 Partial Content. That makes offline video
+  // playback actually work — previously we let the network handle Range
+  // requests and offline playback died on the first seek.
+  //
+  // Non-media Range requests still fall through to the network.
+  if (request.headers.has('range')) {
+    if (MEDIA_PATHS.some((path) => url.pathname.startsWith(path))) {
+      event.respondWith(serveRangeFromCache(request));
+    }
+    return;
+  }
 
   // Cache kiosk navigations (network-first, fallback to cache)
   if (request.mode === 'navigate' && url.pathname.startsWith('/intranet/kiosk')) {
@@ -114,6 +124,78 @@ self.addEventListener('fetch', (event) => {
     );
   }
 });
+
+/**
+ * Serve a Range request from the cached full media response. Falls through
+ * to network (then cache, if response is full + ok) if nothing is cached.
+ *
+ * The cache key is the URL with no Range header — the same key used by
+ * cacheFirst() when the full media file was first fetched.
+ */
+async function serveRangeFromCache(request) {
+  const cacheKey = new Request(request.url, { method: 'GET' });
+  const cache = await caches.open(RUNTIME_MEDIA);
+  const cached = await cache.match(cacheKey);
+
+  // Nothing cached — let the network handle it. If we get a full 200 back
+  // (rare for video), cache it so future Range requests can be served.
+  if (!cached) {
+    try {
+      const networkResp = await fetch(request);
+      if (networkResp && networkResp.ok && networkResp.status === 200) {
+        await cache.put(cacheKey, networkResp.clone());
+        await setMetadata(request.url);
+        await trimCache(cache, MAX_MEDIA_ENTRIES);
+      }
+      return networkResp;
+    } catch {
+      return new Response('', { status: 504, statusText: 'Offline' });
+    }
+  }
+
+  // Parse `bytes=START-END` (both optional, per RFC 7233 §2.1).
+  const rangeHeader = request.headers.get('range') || '';
+  const match = /^bytes=(\d*)-(\d*)$/.exec(rangeHeader);
+  const fullBuf = await cached.arrayBuffer();
+  const totalSize = fullBuf.byteLength;
+
+  if (!match) {
+    // Malformed Range — return the full 200 instead.
+    return new Response(fullBuf, {
+      status: 200,
+      headers: cached.headers,
+    });
+  }
+
+  const start = match[1] === '' ? 0 : parseInt(match[1], 10);
+  let end = match[2] === '' ? totalSize - 1 : parseInt(match[2], 10);
+  if (Number.isNaN(start) || Number.isNaN(end)) {
+    return new Response('', { status: 416, statusText: 'Range Not Satisfiable' });
+  }
+  if (end >= totalSize) end = totalSize - 1;
+  if (start > end || start < 0) {
+    return new Response('', {
+      status: 416,
+      statusText: 'Range Not Satisfiable',
+      headers: { 'Content-Range': `bytes */${totalSize}` },
+    });
+  }
+
+  const slice = fullBuf.slice(start, end + 1);
+  const headers = new Headers();
+  const contentType = cached.headers.get('content-type');
+  if (contentType) headers.set('Content-Type', contentType);
+  headers.set('Content-Length', String(slice.byteLength));
+  headers.set('Content-Range', `bytes ${start}-${end}/${totalSize}`);
+  headers.set('Accept-Ranges', 'bytes');
+  headers.set('Cache-Control', 'no-cache');
+
+  return new Response(slice, {
+    status: 206,
+    statusText: 'Partial Content',
+    headers,
+  });
+}
 
 async function cacheFirst(request, cacheName, maxEntries, maxAgeSeconds) {
   const cache = await caches.open(cacheName);

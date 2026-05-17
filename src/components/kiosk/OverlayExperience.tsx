@@ -16,8 +16,9 @@ import type { JobRecord } from '@/types/JobRecord';
  * Config for a generic kiosk product experience.
  *
  * This is the open-hole sibling of `FocusCentralizersExperience` — same shape
- * (looping video background + 4-button HUD + close), but driven by a config
- * object so new overlay buttons can be added without copy-pasting a component.
+ * (looping video background + 3-button HUD: Track Record / Mechanism /
+ * Case Studies + close), but driven by a config object so new overlay
+ * buttons can be added without copy-pasting a component.
  *
  * To "build out" an experience (per the Helix pattern), fill in the optional
  * fields below. Anything left undefined renders a clearly-marked placeholder
@@ -187,14 +188,14 @@ export default function OverlayExperience({ config, onClose }: Props) {
       >
         {/* Audio on — the user explicitly tapped an overlay button to reach
             this view, so the page has user activation and autoplay-with-sound
-            is allowed. */}
+            is allowed. No native `controls` — the kiosk shouldn't surface
+            browser-level video chrome. */}
         <video
           key={videoSrc}
           src={videoSrc}
           autoPlay
           loop
           playsInline
-          controls
           className="absolute inset-0 w-full h-full object-cover"
         />
 
@@ -226,8 +227,7 @@ export default function OverlayExperience({ config, onClose }: Props) {
           )}
         </div>
 
-        {/* HUD button strip — small, top centre, kept clear of the native
-            video controls along the bottom. Matches the Helix experience. */}
+        {/* HUD button strip — small, top centre. Matches the Helix experience. */}
         <AnimatePresence>
           {hudVisible && (
             <motion.div

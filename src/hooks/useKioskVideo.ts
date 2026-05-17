@@ -73,28 +73,32 @@ function initialResolve(transcodedPath: string): string {
 
 /**
  * Resolves a list of transcoded kiosk video paths, upgrading each to its HD
- * counterpart when available. Returns transcoded paths immediately, then
- * upgrades once probing completes.
+ * counterpart when available. Resolution is sticky for the lifetime of a
+ * `transcodedPaths` value: the hook returns either HD (cache already warm) or
+ * transcoded on first render, and never swaps the URL mid-playback.
+ *
+ * Why: when the resolved value changes, consumers re-render with a new key on
+ * the `<video>` element, which remounts the player and restarts the clip. The
+ * old strategy (probe → setResolved) caused a visible restart the moment the
+ * HD HEAD request returned. Instead we now warm the module-level cache in the
+ * background — the NEXT key change (e.g. the playlist advancing to the next
+ * clip) picks HD synchronously via `initialResolve`.
+ *
+ * Trade-off: the very first kiosk load after a hard refresh plays the first
+ * clip in transcoded SD. Every subsequent clip / experience open uses HD.
  */
 export function useKioskVideos(transcodedPaths: string[]): string[] {
   const key = transcodedPaths.join('|');
-  const [resolved, setResolved] = useState<string[]>(() =>
+  const [resolved] = useState<string[]>(() =>
     transcodedPaths.map(initialResolve),
   );
 
   useEffect(() => {
-    let cancelled = false;
-    Promise.all(
-      transcodedPaths.map(async (p) => {
-        const hd = hdCandidate(p);
-        return (await probeHd(hd)) ? hd : p;
-      }),
-    ).then((next) => {
-      if (!cancelled) setResolved(next);
+    // Probe HD candidates to warm the module cache. We do NOT setState here
+    // on purpose — that would remount the video element mid-playback.
+    transcodedPaths.forEach((p) => {
+      probeHd(hdCandidate(p)).catch(() => {});
     });
-    return () => {
-      cancelled = true;
-    };
     // `key` captures the contents of `transcodedPaths`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);

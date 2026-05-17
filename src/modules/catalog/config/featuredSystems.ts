@@ -9,10 +9,14 @@ export interface FeaturedSystem {
 }
 
 /**
- * Systems shown on the kiosk product-lines screen, grouped by Open Hole / Cased Hole.
+ * Systems shown on the legacy kiosk product-lines tile grid, grouped by
+ * Open Hole / Cased Hole.
  *
- * The kiosk flow is: splash → lane chooser → productlines?lane=oh|ch → modal.
- * The productlines page filters this list by the active lane.
+ * The main kiosk flow is now: splash → lane chooser → `/lane?lane=oh|ch`
+ * (looping attractor video + right-side overlay buttons) → tap an overlay
+ * to open that product's experience. `/productlines?lane=oh|ch` still
+ * renders this tile grid for direct links / fallback, but is no longer
+ * part of the main flow. See `docs/KIOSK.md`.
  */
 export const FEATURED_SYSTEMS: FeaturedSystem[] = [
   // Open hole

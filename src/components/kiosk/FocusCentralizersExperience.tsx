@@ -7,6 +7,7 @@ import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import type { JobRecord } from '@/types/JobRecord';
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
+import { useKioskVideo } from '@/hooks/useKioskVideo';
 import MechanismScreen, { HELIX_MECHANISM } from './ch/MechanismScreen';
 import LogsScreen, { HELIX_LOGS } from './ch/LogsScreen';
 import RockerExperience from './ch/RockerExperience';
@@ -30,11 +31,12 @@ const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
  * Cased-hole "Focus Centralizers" experience.
  *
  * - Helix intro video loops fullscreen in the background.
- * - HUD strip of 4 buttons (Track Record, Success Stories, Mechanism, Logs)
- *   appears on entry, fades out after 6s of no interaction. Tap anywhere
- *   to bring it back.
+ * - HUD strip of 3 buttons (Track Record, Mechanism, Case Studies) appears
+ *   on entry, fades out after HUD_AUTOHIDE_MS of no interaction. Tap
+ *   anywhere to bring it back. Success Stories opens inline from the
+ *   Track Record view rather than from the HUD.
  * - Bottom-right corner badge for ROCKER → opens the sister Rocker view
- *   with the same 4-button structure but a still image background.
+ *   with the same 3-button HUD over a still product layout.
  */
 export default function FocusCentralizersExperience({ onClose }: Props) {
   const [view, setView] = useState<View>('main');
@@ -46,6 +48,9 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
   });
 
   const media = systemMedia['Focus Centralizers'];
+  // Route the Helix video through useKioskVideo so the CH lane gets the
+  // same HD upgrade path (videos/kiosk-hd/<file>.mp4) as the lane attractor.
+  const videoSrc = useKioskVideo(media?.video ?? '');
 
   const scheduleHide = () => {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
@@ -152,12 +157,12 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
         {media?.video ? (
           // Audio on — user tapped the CH Helix overlay to reach this view,
           // so user activation is established and autoplay-with-sound is allowed.
+          // No native `controls` — kiosk uses its own HUD.
           <video
-            src={media.video}
+            src={videoSrc}
             autoPlay
             loop
             playsInline
-            controls
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (

@@ -327,10 +327,11 @@ function VideoSlide({
             : 'border-white/10'
         } bg-black/40`}
       >
+        {/* No `muted` / no `controls` — kiosk mechanism slides play with
+            their narration audio and rely on the experience HUD for nav. */}
         <video
           src={src}
           autoPlay
-          muted
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-contain"

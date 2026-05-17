@@ -1,22 +1,40 @@
 'use client';
 
 import { useMemo } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useStaffSession } from '@/hooks/useStaffSession';
 
 export default function StaffIdentityBadge() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { enabled, authenticated, user, isLoading } = useStaffSession();
 
-  const loginHref = useMemo(() => `/auth/microsoft/login?returnTo=${encodeURIComponent(pathname || '/intranet/kiosk')}`, [pathname]);
-  const logoutHref = useMemo(() => `/auth/microsoft/logout?returnTo=${encodeURIComponent(pathname || '/intranet/kiosk')}`, [pathname]);
+  // Preserve ?lane=oh|ch (and any other search params) on login / logout
+  // redirects — otherwise signing in mid-lane bounces you back to the splash.
+  const returnTo = useMemo(() => {
+    const path = pathname || '/intranet/kiosk';
+    const qs = searchParams?.toString() ?? '';
+    return qs ? `${path}?${qs}` : path;
+  }, [pathname, searchParams]);
+
+  const loginHref = useMemo(
+    () => `/auth/microsoft/login?returnTo=${encodeURIComponent(returnTo)}`,
+    [returnTo],
+  );
+  const logoutHref = useMemo(
+    () => `/auth/microsoft/logout?returnTo=${encodeURIComponent(returnTo)}`,
+    [returnTo],
+  );
 
   if (isLoading || !enabled) {
     return null;
   }
 
+  // z-30 keeps the badge above the lane attractor + overlay buttons (z-20)
+  // but BELOW the FullScreenLayer (z-50) that experiences open in — so the
+  // experience close X never gets covered by the badge.
   return (
-    <div className="pointer-events-auto absolute right-4 top-4 z-[60] max-w-sm rounded-xl border border-white/15 bg-black/70 px-4 py-3 text-white shadow-lg backdrop-blur">
+    <div className="pointer-events-auto absolute right-4 top-4 z-30 max-w-sm rounded-xl border border-white/15 bg-black/70 px-4 py-3 text-white shadow-lg backdrop-blur">
       {authenticated && user ? (
         <div className="space-y-1">
           <p className="text-[11px] uppercase tracking-[0.24em] text-white/60">Staff Mode</p>

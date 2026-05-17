@@ -11,7 +11,11 @@ export default function DrilldownMapKiosk() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const from = searchParams.get('from');
-  const redirectTo = from === 'carousel' ? '/?mode=carousel' : '/';
+  // Esc / exit-fullscreen returns inside the kiosk shell, not to the public
+  // homepage — the kiosk runs in fullscreen at trade shows and should never
+  // surface the marketing site by accident. The carousel branch still exists
+  // for the legacy 3D-viewer flow that boots from the public site.
+  const redirectTo = from === 'carousel' ? '/?mode=carousel' : '/intranet/kiosk';
 
   const [data, setData] = useState<JobRecord[] | null>(null);
   const [error, setError] = useState<string | null>(null);
