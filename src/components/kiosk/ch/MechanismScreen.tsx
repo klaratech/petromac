@@ -434,35 +434,37 @@ function AnnotatedSlide({
         {/* Diagram (2/3 of the card) */}
         <div className="col-span-2 relative flex items-center justify-center">
           {/* Tool image OR mechanism video — fills the diagram column so the
-              video plays as large as possible. Brackets overlay the column
-              edges on top. */}
-          <div className="relative w-full h-full flex items-center justify-center">
-            {video ? (
-              <video
-                src={video}
-                poster={image}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-contain"
-                onError={(e) => {
-                  (e.currentTarget as HTMLVideoElement).style.display = 'none';
-                }}
-              />
-            ) : (
-              <AssetSlot
-                src={image}
-                alt={label}
-                priority
-                className="object-contain"
-                theme="light"
-              />
-            )}
-          </div>
+              video plays as large as possible. `bg-white` paints the video's
+              letterbox/pillarbox area white so it blends into the slide card
+              (Android Chrome renders the unused area black by default).
+              Brackets render directly into the column on top — no slab. */}
+          {video ? (
+            <video
+              src={video}
+              poster={image}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-contain bg-white"
+              onError={(e) => {
+                (e.currentTarget as HTMLVideoElement).style.display = 'none';
+              }}
+            />
+          ) : (
+            <AssetSlot
+              src={image}
+              alt={label}
+              priority
+              className="object-contain"
+              theme="light"
+            />
+          )}
 
-          {/* Left dimension callout — overlays the diagram on top of the
-              video letterbox. Sits last so it stacks above. */}
+          {/* Dimension callouts — render directly against the column, not
+              inside an edge slab. The label sits at the column edge and the
+              two horizontal lines reach roughly half the column inward so
+              they visually "point at" the tool arms. */}
           {leftCallout && (
             <DimensionBracket
               side="left"
@@ -471,7 +473,6 @@ function AnnotatedSlide({
             />
           )}
 
-          {/* Right dimension callout */}
           {rightCallout && (
             <DimensionBracket
               side="right"
@@ -509,20 +510,16 @@ function AnnotatedSlide({
 }
 
 /**
- * Two horizontal bracket lines extending outward from one side of the tool,
- * with a diameter label vertically centred between them. Mimics the
- * dimension-callout treatment in the source ICOTA slide.
+ * Two horizontal dimension lines + a diameter label, rendered directly
+ * against the diagram column (no edge slab). The label sits at the very
+ * edge; each line extends across roughly half the column so the brackets
+ * read as pointers at the tool arms, matching the ICOTA source slide.
  *
- * The bracket is positioned absolutely against its parent — anchor by `side`
- * and use the top/bottom of the parent for the bracket arms. The slab is
- * narrow (~16%) so the underlying tool image / mechanism video fills the
- * full column width; the bracket overlays the column edges.
- *
- * `spreadPct` controls how close the bracket arms sit to the edges:
- *   - smaller value → arms closer to the edges → wider visible gap →
- *     "larger diameter" feel (use for 9.0")
- *   - larger value → arms closer to centre → narrower visible gap →
- *     "smaller diameter" feel (use for 5.8")
+ * `spreadPct` controls how close each line sits to the top / bottom edge:
+ *   - smaller value → lines closer to the edges → wider visible gap →
+ *     "larger diameter" feel (use for 9.0" / 6.3")
+ *   - larger value → lines closer to centre → narrower visible gap →
+ *     "smaller diameter" feel (use for 5.8" / 3.3")
  */
 function DimensionBracket({
   side,
@@ -533,28 +530,35 @@ function DimensionBracket({
   label: string;
   spreadPct?: number | undefined;
 }) {
-  const sideClass = side === 'left' ? 'left-0' : 'right-0';
+  const isLeft = side === 'left';
+  // Line spans ~5% → ~48% on the left (or 52% → 95% on the right) so each
+  // line is ~43% of the column wide — long enough to visually point at the
+  // tool, short enough not to cross the body in the middle.
+  const lineSpan: React.CSSProperties = isLeft
+    ? { left: '5%', right: '52%' }
+    : { left: '52%', right: '5%' };
+
   return (
-    <div
-      className={`absolute ${sideClass} top-0 bottom-0 w-[16%] pointer-events-none z-10`}
-      aria-hidden="true"
-    >
+    <>
       <div
-        className="absolute left-0 right-0 h-px bg-slate-800"
-        style={{ top: `${spreadPct}%` }}
+        aria-hidden="true"
+        className="absolute h-px bg-slate-800 pointer-events-none z-10"
+        style={{ top: `${spreadPct}%`, ...lineSpan }}
       />
       <div
-        className="absolute left-0 right-0 h-px bg-slate-800"
-        style={{ bottom: `${spreadPct}%` }}
+        aria-hidden="true"
+        className="absolute h-px bg-slate-800 pointer-events-none z-10"
+        style={{ bottom: `${spreadPct}%`, ...lineSpan }}
       />
       <span
-        className={`absolute top-1/2 -translate-y-1/2 text-3xl font-semibold tabular-nums text-slate-900 ${
-          side === 'left' ? 'left-1' : 'right-1'
+        aria-hidden="true"
+        className={`absolute top-1/2 -translate-y-1/2 z-20 text-3xl font-semibold tabular-nums text-slate-900 pointer-events-none ${
+          isLeft ? 'left-1' : 'right-1'
         }`}
       >
         {label}
       </span>
-    </div>
+    </>
   );
 }
 
