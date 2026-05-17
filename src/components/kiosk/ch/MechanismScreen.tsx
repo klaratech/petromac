@@ -200,14 +200,22 @@ export const HELIX_MECHANISM: MechanismConfig = {
 export const ROCKER_MECHANISM: MechanismConfig = {
   title: 'Rocker',
   slides: [
+    // 1. Annotated conventional small-casing centraliser — limitations.
+    //    The conventional-smallcasings mechanism video plays between the
+    //    6.3"/3.3" brackets. The force-section schematic stays in the
+    //    right column above the bullets via `detailImage`.
+    //
+    //    spreadPct ratio: 30/12 represents the same 3.3"/6.3" diameter
+    //    ratio (~0.52) the Helix slides do for 5.8"/9.0".
     {
       type: 'annotated',
       label: 'Conventional centraliser',
       image: '/images/rocker-mechanism-conventional.png',
+      video: '/videos/transcoded/conventional-smallcasings.mp4',
       detailImage: '/images/rocker-mechanism-conventional-detail.png',
       callouts: [
-        { side: 'left', label: '6.3"' },
-        { side: 'right', label: '3.3"' },
+        { side: 'left', label: '6.3"', spreadPct: 12 },
+        { side: 'right', label: '3.3"', spreadPct: 30 },
       ],
       bullets: [
         { text: 'Arms independent of each other' },
@@ -217,13 +225,16 @@ export const ROCKER_MECHANISM: MechanismConfig = {
         { text: 'Mechanism fails in smaller holes', highlight: 'red' },
       ],
     },
+    // 2. Annotated ROCKER — benefits. Rocker mechanism video plays between
+    //    the same 6.3"/3.3" brackets as slide 1's counterpoint.
     {
       type: 'annotated',
       label: 'ROCKER',
       image: '/images/rocker-mechanism-rocker.png',
+      video: '/videos/transcoded/rocker-mechanism.mp4',
       callouts: [
-        { side: 'left', label: '6.3"' },
-        { side: 'right', label: '3.3"' },
+        { side: 'left', label: '6.3"', spreadPct: 12 },
+        { side: 'right', label: '3.3"', spreadPct: 30 },
       ],
       bullets: [
         { text: 'Rocker arm pivots around centreline' },
