@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 /**
- * LogsScreen — config-driven "Logs" sub-view.
+ * LogsScreen — config-driven "Case Studies" sub-view.
  *
  * Used by the Cased Hole experiences (Helix / Rocker) and the Open Hole
  * `OverlayExperience` scaffolds. Each slide is either a single full-bleed
@@ -12,6 +12,10 @@ import { useState } from 'react';
  *
  * Missing images fall back to a "drop file here" placeholder so the screen
  * stays usable while graphics assets are in progress.
+ *
+ * Note on naming: the file, type and constants keep the historical `Logs`
+ * naming for minimal churn — the displayed label was renamed to "Case
+ * Studies" in May 2026.
  */
 
 export type LogsSlide =
@@ -87,7 +91,7 @@ export default function LogsScreen({ config, onBack }: Props) {
       <header className="flex items-center justify-between px-8 py-5 border-b border-white/10">
         <div>
           <p className="text-xs uppercase tracking-[0.4em] text-white/50">
-            Logs
+            Case Studies
           </p>
           <h2 className="text-3xl font-extrabold">{config.title}</h2>
         </div>

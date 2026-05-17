@@ -70,7 +70,7 @@ website/
 ├── public/                               # Static assets served by Next.js
 │   ├── kiosk-sw.js                       # 🔧 Kiosk-only service worker
 │   ├── data/                             # Data files (JSON/CSV for maps, ops)
-│   │   ├── world-110m.json               # Local topojson for offline map
+│   │   ├── world-50m.json                # Local topojson for offline map (natural-earth 50m)
 │   │   └── *.json                        # Operations and map data
 │   ├── flipbooks/                        # Generated flipbook bundles
 │   │   ├── catalog/
@@ -158,7 +158,7 @@ The repository uses a three-tier data organization to separate pipeline inputs, 
 - **Contents**:
   - `operations_data.json` - Processed operations data (3MB+)
   - `country_labels.json` - Country name mappings for map
-  - `world-110m.json` - TopoJSON for offline map rendering
+  - `world-50m.json` - TopoJSON for offline map rendering (natural-earth 50m via world-atlas@2)
   - Flipbook assets live under `public/flipbooks/` (see [FLIPBOOKS.md](FLIPBOOKS.md))
 
 #### 3. `src/data/` - TypeScript Data Modules

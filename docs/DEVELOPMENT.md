@@ -137,7 +137,7 @@ Follow these conventions when working with data:
 - Frontend map surfaces fetch JSON directly from `/data/*`
 - Use for:
   - Large datasets (operations_data.json ~3MB)
-  - Map data (country_labels.json, world-110m.json)
+  - Map data (country_labels.json, world-50m.json)
 - **Fetch at runtime from `/data/*`** - do not import large JSON files from here
 
 Flipbook assets (PDFs + images) live under `public/flipbooks/` and are accessed via `/flipbooks/*` URLs.

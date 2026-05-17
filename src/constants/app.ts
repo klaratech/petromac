@@ -29,7 +29,10 @@ export const APP_CONSTANTS = {
 
 // External URLs
 export const EXTERNAL_URLS = {
-  WORLD_MAP_DATA: '/data/world-110m.json',
+  // Natural-earth 50m via world-atlas@2 — smoother country outlines than the
+  // 110m generalization (notably fixes Bolivia's coarse south-east border).
+  // 739 KB vs 106 KB; cached aggressively by the service worker.
+  WORLD_MAP_DATA: '/data/world-50m.json',
 } as const;
 
 // Device types

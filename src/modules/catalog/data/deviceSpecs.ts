@@ -42,10 +42,12 @@ export const systemMedia: Record<string, SystemMedia> = {
   // tile which opens the Helix-centric experience (looping video + HUD
   // overlay + Rocker corner badge). Helix and Rocker are NOT separate tiles.
   'Focus Centralizers': {
+    // Uses the subtitled Helix clip so the kiosk gets narration + on-screen
+    // captions in the Focus Centralizers experience.
     // TODO(rajesh): replace with the transcoded slide-2 Helix intro video
     //   from ICOTA 2026 MaIn.pptx. Drop at /public/videos/transcoded/kiosk/helix-intro.mp4
-    //   then update this path. For now we reuse the existing helix.mp4.
-    video: '/videos/transcoded/helix.mp4?v=20240517',
+    //   then update this path. For now we reuse helix-subtitled.mp4.
+    video: '/videos/transcoded/helix-subtitled.mp4?v=20240517',
     // TODO(graphics): dedicated Focus Centralizers brandmark.
     logo: '/images/focus.png',
   },

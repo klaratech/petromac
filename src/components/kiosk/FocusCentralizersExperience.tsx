@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import type { JobRecord } from '@/types/JobRecord';
-import { systemMedia } from '@modules/catalog/data/deviceSpecs';
+import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import MechanismScreen, { HELIX_MECHANISM } from './ch/MechanismScreen';
 import LogsScreen, { HELIX_LOGS } from './ch/LogsScreen';
 import RockerExperience from './ch/RockerExperience';
@@ -24,7 +24,7 @@ interface Props {
   onClose: () => void;
 }
 
-const HUD_AUTOHIDE_MS = 4000;
+const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
 
 /**
  * Cased-hole "Focus Centralizers" experience.
@@ -107,9 +107,16 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
   }
 
   if (view === 'mechanism') {
+    // Inject the live Helix spec sheet so the Specifications button in the
+    // Mechanism header opens with real data.
+    const helixSpec = deviceSpecs['/models/helix.glb'];
+    const configWithSpecs = {
+      ...HELIX_MECHANISM,
+      specs: helixSpec?.specs,
+    };
     return (
       <FullScreenLayer>
-        <MechanismScreen config={HELIX_MECHANISM} onBack={() => setView('main')} />
+        <MechanismScreen config={configWithSpecs} onBack={() => setView('main')} />
       </FullScreenLayer>
     );
   }
@@ -143,10 +150,11 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
         onMouseMove={handleTap}
       >
         {media?.video ? (
+          // Audio on — user tapped the CH Helix overlay to reach this view,
+          // so user activation is established and autoplay-with-sound is allowed.
           <video
             src={media.video}
             autoPlay
-            muted
             loop
             playsInline
             controls
@@ -207,7 +215,7 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
                 }}
               />
               <HudButton
-                label="Logs"
+                label="Case Studies"
                 onClick={(e) => {
                   e.stopPropagation();
                   setView('logs');

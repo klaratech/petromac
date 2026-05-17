@@ -10,7 +10,7 @@ import OverlayExperience, {
 } from '@/components/kiosk/OverlayExperience';
 import { useKioskVideos } from '@/hooks/useKioskVideo';
 
-const OVERLAY_AUTOHIDE = 5_000; // hide the overlay buttons after this idle gap
+const OVERLAY_AUTOHIDE = 4_000; // hide the overlay buttons after this idle gap (was 5_000; -20% May 2026)
 const ACTIVE_IDLE_TIMEOUT = 5 * 60 * 1000; // close an open experience after 5 min idle
 
 type Lane = 'oh' | 'ch';
@@ -20,14 +20,14 @@ function isLane(value: string | null): value is Lane {
 }
 
 /**
- * Per-lane attractor playlist. Plays fullscreen, muted, on loop behind the
- * overlay button strip. Subtitled clips are used where they exist; `dice.mp4`
- * and `WirelineExpress.mp4` have no subtitled master so they play as-is.
+ * Per-lane attractor playlist. Plays fullscreen with audio, on loop behind
+ * the overlay button strip. All clips carry their narration / subtitled
+ * audio track. `dice.mp4` is an intro sting with a silent audio track.
  */
 const LANE_PLAYLIST: Record<Lane, string[]> = {
   oh: [
     '/videos/transcoded/dice.mp4',
-    '/videos/transcoded/WirelineExpress.mp4',
+    '/videos/transcoded/WirelineExpress-subtitled.mp4',
     '/videos/transcoded/pf-subtitled.mp4',
     '/videos/transcoded/differential-sticking-subtitled.mp4',
   ],
@@ -77,13 +77,15 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
           enableSuccessStories: true,
           mechanism: {
             title: 'Formation Testing',
-            panes: [
+            slides: [
               {
-                label: 'Conventional',
+                type: 'video',
+                label: 'Conventional mechanism',
                 src: '/videos/transcoded/conventional-formation-testing.mp4',
               },
               {
-                label: 'Petromac',
+                type: 'video',
+                label: 'Petromac mechanism',
                 src: '/videos/transcoded/formation-testing-mechanism.mp4',
                 highlight: true,
               },
@@ -110,19 +112,21 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
         config: {
           laneLabel: 'Open Hole',
           title: 'High Deviation',
-          video: '/videos/transcoded/WirelineExpress.mp4',
+          video: '/videos/transcoded/WirelineExpress-subtitled.mp4',
           // Prefix-matches "Wireline Express" (also includes the "- FT" jobs).
           trackRecordSystem: 'Wireline Express',
           enableSuccessStories: true,
           mechanism: {
             title: 'High Deviation',
-            panes: [
+            slides: [
               {
-                label: 'Conventional',
+                type: 'video',
+                label: 'Conventional mechanism',
                 src: '/videos/transcoded/conventional-high-deviation.mp4',
               },
               {
-                label: 'Wireline Express',
+                type: 'video',
+                label: 'Wireline Express mechanism',
                 src: '/videos/transcoded/high-deviation-mechanism.mp4',
                 highlight: true,
               },
@@ -149,18 +153,21 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
         config: {
           laneLabel: 'Open Hole',
           title: 'Data Quality',
-          video: '/videos/transcoded/WirelineExpress.mp4',
-          trackRecordSystem: 'Focus - OH',
+          video: '/videos/transcoded/WirelineExpress-subtitled.mp4',
+          // Prefix-matches "Wireline Express" (also includes the "- FT" jobs).
+          trackRecordSystem: 'Wireline Express',
           enableSuccessStories: true,
           mechanism: {
             title: 'Data Quality',
-            panes: [
+            slides: [
               {
-                label: 'Conventional',
+                type: 'video',
+                label: 'Conventional mechanism',
                 src: '/videos/transcoded/conventional-data-quality.mp4',
               },
               {
-                label: 'Petromac',
+                type: 'video',
+                label: 'Petromac mechanism',
                 src: '/videos/transcoded/data-quality-mechanism.mp4',
                 highlight: true,
               },
@@ -193,13 +200,15 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
           enableSuccessStories: true,
           mechanism: {
             title: 'Pathfinder',
-            panes: [
+            slides: [
               {
-                label: 'Conventional',
+                type: 'video',
+                label: 'Conventional mechanism',
                 src: '/videos/transcoded/conventional-holefinding.mp4',
               },
               {
-                label: 'Pathfinder HT',
+                type: 'video',
+                label: 'Pathfinder HT mechanism',
                 src: '/videos/transcoded/pathfinder-mechanism.mp4',
                 highlight: true,
               },
@@ -295,12 +304,15 @@ function LaneLoopContent() {
       onTouchStart={revealOverlay}
     >
       {/* Looping attractor playlist — plays the lane's clips end to end and
-          repeats indefinitely; the kiosk stays in this lane. */}
+          repeats indefinitely; the kiosk stays in this lane.
+          Audio is enabled (narration / subtitled clips). The kiosk runs Chrome
+          with `--autoplay-policy=no-user-gesture-required` so the first load
+          can play with sound; subsequent loads inherit user activation from
+          the splash → lane navigation. */}
       <video
         key={playlist[videoIdx]}
         src={playlist[videoIdx]}
         autoPlay
-        muted
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
         onEnded={() => setVideoIdx((i) => (i + 1) % playlist.length)}

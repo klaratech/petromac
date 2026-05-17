@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import type { JobRecord } from '@/types/JobRecord';
+import { deviceSpecs } from '@modules/catalog/data/deviceSpecs';
 import MechanismScreen, { ROCKER_MECHANISM } from './MechanismScreen';
 import LogsScreen, { ROCKER_LOGS } from './LogsScreen';
 import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
@@ -17,16 +18,17 @@ interface Props {
   onClose: () => void;  // close the entire CH experience
 }
 
-const HUD_AUTOHIDE_MS = 4000;
+const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
 
 /**
  * RockerExperience — sister view to FocusCentralizersExperience for the
- * smaller-casing Rocker tool. Same 4-button HUD; instead of a looping
- * video the background is a still product image until graphics delivers
- * a Rocker animation.
+ * smaller-casing Rocker tool. Same 3-button HUD + Helix corner badge.
+ * There's no intro video for Rocker — the main view is a clean side-by-side
+ * of the two tool variants (Rocker / Rocker Inline) on a dark backdrop.
  *
- * Asset slot:
- *   /public/images/rocker-hero.webp   (full-bleed Rocker render)
+ * Asset slots:
+ *   /public/images/rocker.png         (Rocker tool render — left panel)
+ *   /public/images/rocker-inline.png  (Rocker Inline tool render — right panel)
  */
 export default function RockerExperience({ onBack, onClose }: Props) {
   const [view, setView] = useState<View>('main');
@@ -87,7 +89,12 @@ export default function RockerExperience({ onBack, onClose }: Props) {
   }
 
   if (view === 'mechanism') {
-    return <MechanismScreen config={ROCKER_MECHANISM} onBack={() => setView('main')} />;
+    const rockerSpec = deviceSpecs['/models/rocker.glb'];
+    const configWithSpecs = {
+      ...ROCKER_MECHANISM,
+      specs: rockerSpec?.specs,
+    };
+    return <MechanismScreen config={configWithSpecs} onBack={() => setView('main')} />;
   }
 
   if (view === 'logs') {
@@ -101,19 +108,34 @@ export default function RockerExperience({ onBack, onClose }: Props) {
       onTouchStart={handleTap}
       onMouseMove={handleTap}
     >
-      {/* Background — Rocker hero image (placeholder gradient until graphics) */}
+      {/* Background — dark gradient + soft radial highlight behind the tools */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-black" />
-      <Image
-        src="/images/rocker-hero.webp"
-        alt=""
-        fill
-        priority
-        className="absolute inset-0 object-contain object-center opacity-90"
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).style.display = 'none';
-        }}
-      />
-      <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06)_0%,transparent_55%)] pointer-events-none" />
+
+      {/* Top-left eyebrow — identifies the screen since there's no narration. */}
+      <div className="absolute top-6 left-6 z-30 pointer-events-none">
+        <p className="text-xs uppercase tracking-[0.4em] text-white/60">
+          Cased Hole
+        </p>
+        <h2 className="text-3xl font-extrabold text-white drop-shadow">
+          Rocker
+        </h2>
+      </div>
+
+      {/* Two-tool layout — Rocker on the left, Rocker Inline on the right.
+          Top + bottom padding leaves the HUD strip and corner badge clear. */}
+      <div className="absolute inset-0 px-10 pt-28 pb-24 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 z-10">
+        <ToolPanel
+          src="/images/rocker.png"
+          alt="Rocker"
+          label="Rocker"
+        />
+        <ToolPanel
+          src="/images/rocker-inline.png"
+          alt="Rocker Inline"
+          label="Rocker Inline"
+        />
+      </div>
 
       {/* Top-right close — appears with the HUD on hover / tap */}
       <AnimatePresence>
@@ -160,7 +182,7 @@ export default function RockerExperience({ onBack, onClose }: Props) {
               }}
             />
             <HudButton
-              label="Logs"
+              label="Case Studies"
               onClick={(e) => {
                 e.stopPropagation();
                 setView('logs');
@@ -218,5 +240,46 @@ function HudButton({
     >
       {label}
     </button>
+  );
+}
+
+/**
+ * ToolPanel — one of the two tool renders on the Rocker main view.
+ * Centred image with a subtle frame and a small uppercase label underneath.
+ * Falls back to a "drop file" placeholder if the asset is missing.
+ */
+function ToolPanel({
+  src,
+  alt,
+  label,
+}: {
+  src: string;
+  alt: string;
+  label: string;
+}) {
+  return (
+    <div className="relative flex flex-col items-center justify-center">
+      <div className="relative w-full flex-1 min-h-0">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          priority
+          sizes="(min-width: 768px) 45vw, 90vw"
+          className="object-contain drop-shadow-[0_25px_25px_rgba(0,0,0,0.35)]"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = 'none';
+          }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center text-white/40 text-xs text-center px-4 -z-10">
+          Drop tool render at
+          <br />
+          <code className="text-white/60">{src}</code>
+        </div>
+      </div>
+      <div className="mt-4 px-4 py-1.5 rounded-full bg-white/8 border border-white/15 backdrop-blur-sm text-white/85 text-xs uppercase tracking-[0.3em]">
+        {label}
+      </div>
+    </div>
   );
 }

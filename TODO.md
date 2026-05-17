@@ -22,15 +22,25 @@
 
 ## Known issues
 
-- [ ] Track Record map: Bolivia renders oddly (clear all filters to see it).
-  The map code, operations data, and `world-110m.json` geometry all check out —
-  it's a visual issue that needs eyes on the rendered map. Map components live
-  in `src/components/geo/` (`DrilldownMapCore`, `MapRenderer`).
+- [x] Track Record map: Bolivia renders oddly (May 2026) — root cause was
+  natural-earth-110m's coarse generalization of Bolivia's Andean border
+  (the polygon stitched correctly with 60 points, but the simplification
+  produced a visible notch on the south-east edge). Fixed by swapping
+  `world-110m.json` for `world-50m.json` from `world-atlas@2`: Bolivia goes
+  from 64 raw arc points to 421, and every other country gets a smoother
+  outline as a bonus. File size goes from ~106 KB to ~739 KB; precached by
+  the kiosk service worker. Wired via `EXTERNAL_URLS.WORLD_MAP_DATA` in
+  `src/constants/app.ts`; SW cache version bumped to v8 in
+  `public/kiosk-sw.js`. `world-110m.json` is kept in `public/data/` for now
+  as a fallback / for the data pipeline; safe to delete in a follow-up.
 
 ## Phase 1 — Finalize Design & Assets
 
 - [x] Finalize home page design (May 2026 — hero accent, eyebrows, unified CTAs, brand-tinted Athena band, reach sentence, sentence case)
-- [x] Video library reorg (May 2026) — `public/videos/` split into `originals/` (gitignored masters) + `transcoded/` (committed web clips); WirelineExpress, helix, pf, differential-sticking all re-encoded from HD masters to 720p muted. `intro-loop2.mp4` (56 MB) still needs re-encoding.
+- [x] Video library reorg (May 2026) — `public/videos/` split into `originals/` (gitignored masters) + `transcoded/` (committed web clips); WirelineExpress, helix, pf, differential-sticking all re-encoded from HD masters to 720p. The kiosk now plays the `-subtitled` variants which carry audio (narration + on-screen captions); the non-subtitled clips remain for the public homepage. `intro-loop2.mp4` (56 MB) still needs re-encoding.
+- [x] `WirelineExpress-subtitled.mp4` master ingested (May 2026) — 88 MB 540p with audio dropped into `public/videos/originals/`, transcoded to 1280×720 / ~330 kbps + 128 kbps AAC at `public/videos/transcoded/WirelineExpress-subtitled.mp4` (8.7 MB). Wired into the OH lane attractor playlist and the High Deviation + Data Quality experience videos.
+- [x] `dice.mp4` leading black frame trimmed (May 2026) — first 2.12 s of black removed; re-encoded from the 4K master with audio kept. Both 720p `transcoded/dice.mp4` (~970 KB) and 1080p `kiosk-hd/dice.mp4` (~2.4 MB) updated.
+- [x] Kiosk audio (May 2026) — `muted` removed from the lane attractor and experience overlay `<video>` tags; relies on the kiosk Chrome running with `--autoplay-policy=no-user-gesture-required` for first-load attractor audio. Mechanism / "conventional-*" short clips (helix-mechanism, rocker-mechanism, conventional-smallcasings) are still silent — they have no audio master.
 - [ ] Update asset manifest with final design requirements
 - [ ] Collect all optimized asset files from designers (images, videos, OG image)
   - [ ] Add `petromac-og.png` (1200×630) for Open Graph share image
@@ -41,8 +51,13 @@
   - [ ] Convert large PNGs (tv-bg.png, thor.png) to WebP
   - [ ] Optimize favicon (currently 58 KB, target < 5 KB)
   - [ ] Helix product image (currently uses focus.png placeholder on the homepage FeaturedProducts card and as the kiosk "Focus Centralizers" tile logo)
+  - [ ] Helix mechanism slideshow renders (3 slides). All assets are rendered with annotations baked in by graphics where applicable; the kiosk overlays the dimension brackets on the annotated slides via SVG.
+    - `/public/images/helix-mechanism-conventional.png` — slide 1, bare 3D render of the conventional centraliser (no annotations).
+    - `/public/images/helix-mechanism-helix.png` — slide 2, bare 3D render of the Helix tool (no annotations).
+    - `/public/images/helix-mechanism-lever-conventional.png` — slide 3 top row, conventional centraliser inside a casing with the short-lever arrow baked in.
+    - `/public/images/helix-mechanism-lever-helix.png` — slide 3 bottom row, Helix inside a casing with the long-lever bracket baked in.
   - [ ] Thor product video (the FeaturedProducts Thor card is commented out until graphics + messaging are finalised)
-  - [ ] Rocker product image + GLB model (kiosk CH lane Rocker experience uses placeholder hero image and has no 3D model)
+  - [x] Rocker product images (May 2026) — `rocker.png` (Rocker, 1455×975) and `rocker-inline.png` (Rocker Inline, 1920×1756, resized down from a 3840px master) dropped into `public/images/` and wired into a side-by-side panel layout on the Rocker experience main view. Rocker GLB model still pending.
 - [ ] Place delivered files in correct directories
 - [x] Wire up email-optimized PDFs in send-pdf API route — backend now reads `email.pdf` (needs a backend redeploy to take effect)
 
@@ -50,6 +65,13 @@
 
 - [ ] Full security audit (dependencies, headers, API routes, input validation, auth)
 - [ ] Add Cloudflare Turnstile to the contact form (parked May 2026 — revisit when ready). Standards specify Turnstile; Petromac currently uses honeypot + timing only.
+
+## Backlog (lower priority)
+
+- [ ] Kiosk CH lane "Other" experience — the third CH overlay button currently
+  opens a "Coming soon" placeholder (`src/app/(kiosk)/intranet/kiosk/lane/
+  LaneClient.tsx`, `ChOtherComingSoon`). Deprioritized May 2026 — build this
+  out last, once Helix / Rocker content and assets are finalised.
 
 ## Service-provider follow-ups
 

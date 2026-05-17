@@ -62,7 +62,7 @@ interface Props {
   onClose: () => void;
 }
 
-const HUD_AUTOHIDE_MS = 4000;
+const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
 
 export default function OverlayExperience({ config, onClose }: Props) {
   const [view, setView] = useState<View>('main');
@@ -98,7 +98,8 @@ export default function OverlayExperience({ config, onClose }: Props) {
 
   // ── Sub-views ────────────────────────────────────────────────────────────
   if (view === 'track-record') {
-    // TODO(rajesh): tag operations data with this product so the map fills in.
+    // Placeholder for configs that haven't been wired to a system yet. All
+    // current OH overlays set `trackRecordSystem` — see LaneClient.
     if (!config.trackRecordSystem) {
       return (
         <FullScreenLayer>
@@ -168,7 +169,7 @@ export default function OverlayExperience({ config, onClose }: Props) {
         ) : (
           <ComingSoon
             eyebrow={`${config.laneLabel} · ${config.title}`}
-            heading="Logs"
+            heading="Case Studies"
             onBack={() => setView('main')}
           />
         )}
@@ -184,11 +185,13 @@ export default function OverlayExperience({ config, onClose }: Props) {
         onClick={handleTap}
         onTouchStart={handleTap}
       >
+        {/* Audio on — the user explicitly tapped an overlay button to reach
+            this view, so the page has user activation and autoplay-with-sound
+            is allowed. */}
         <video
           key={videoSrc}
           src={videoSrc}
           autoPlay
-          muted
           loop
           playsInline
           controls
@@ -249,7 +252,7 @@ export default function OverlayExperience({ config, onClose }: Props) {
                 }}
               />
               <HudButton
-                label="Logs"
+                label="Case Studies"
                 onClick={(e) => {
                   e.stopPropagation();
                   setView('logs');

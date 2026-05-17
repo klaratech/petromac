@@ -58,16 +58,25 @@ This forces the old caches to be evicted during SW `activate` and rebuilds fresh
 ## Offline Ready Checklist
 1. Connect the kiosk device to a stable network.
 2. Visit these routes once to prime caches:
-   - `/intranet/kiosk`
+   - `/intranet/kiosk`                           (splash)
+   - `/intranet/kiosk/lane?lane=oh`              (let the OH attractor playlist loop once;
+                                                  then tap each overlay button to prime
+                                                  its experience video + Track Record + flipbook)
+   - `/intranet/kiosk/lane?lane=ch`              (same — open Helix and Rocker experiences once)
    - `/intranet/kiosk/dashboard`
-   - `/intranet/kiosk/productlines`
    - `/intranet/kiosk/successstories`
 3. Wait for all videos/models/flipbooks to load at least once.
 4. Toggle DevTools → Application → Service Workers → Offline and refresh.
 5. Confirm:
+   - Lane attractor loops play
+   - Helix / Rocker / OH overlay experiences open with video
    - Map loads
    - Success Stories flipbook loads
    - Videos/models are cached
+
+> The legacy `/intranet/kiosk/productlines` tile grid still works for direct
+> links but is no longer in the main flow, so it isn't part of the priming
+> routine.
 
 If content appears stale, clear site data for the kiosk domain and repeat.
 

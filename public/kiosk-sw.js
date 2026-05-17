@@ -2,7 +2,7 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v7';
+const VERSION = 'v8';
 
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;
@@ -38,7 +38,7 @@ const PRECACHE_ASSETS = [
   '/flipbooks/success-stories/manifest.json',
   '/flipbooks/success-stories/tags.csv',
   '/flipbooks/catalog/manifest.json',
-  '/data/world-110m.json',
+  '/data/world-50m.json',
 ];
 
 self.addEventListener('install', (event) => {

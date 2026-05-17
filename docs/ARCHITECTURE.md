@@ -90,7 +90,7 @@ Success Stories are implemented as a **single feature module**:
 - The backend can read the same operations and country-label JSON for passthrough/debug endpoints, but frontend map surfaces should read `/data/*` directly
 - Includes:
   - Large JSON datasets (operations_data.json ~3MB)
-  - Map data (country_labels.json, world-110m.json)
+  - Map data (country_labels.json, world-50m.json)
   - Flipbook assets live under `public/flipbooks/`
 
 #### TypeScript Modules (`src/data/`)
