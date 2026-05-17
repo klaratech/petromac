@@ -89,7 +89,7 @@ Success Stories are implemented as a **single feature module**:
 - Contains all data files consumed by the application
 - The backend can read the same operations and country-label JSON for passthrough/debug endpoints, but frontend map surfaces should read `/data/*` directly
 - Includes:
-  - Large JSON datasets (operations_data.json ~3MB)
+  - Operations data — slim `operations_data.json` (~600 KB, 6 columns) for every map surface and full `operations_full.json` (~3.5 MB, 33 columns) for the staff diagnostic at `/intranet/kiosk/datacheck`. See `src/types/JobRecord.ts` for the slim schema and the full-column inventory.
   - Map data (country_labels.json, world-50m.json)
   - Flipbook assets live under `public/flipbooks/`
 

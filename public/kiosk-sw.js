@@ -2,7 +2,7 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v9';
+const VERSION = 'v10';
 
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;

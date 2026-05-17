@@ -25,7 +25,7 @@ Next.js 15 (App Router) + React 19 + TypeScript website with public site, intran
 
 ## Data Organization
 
-- `public/data/` — Published JSON/CSV served via CDN (fetch at runtime, never import)
+- `public/data/` — Published JSON/CSV served via CDN (fetch at runtime, never import). Operations data ships as two artifacts: `operations_data.json` (slim, 6 columns: Country / System / Subsystem / Year / Successful / PathFinder Run (Y/N) — what every map surface reads, ~600 KB) and `operations_full.json` (all 33 columns from the source xlsx, ~3.5 MB, only fetched by the staff diagnostic at `/intranet/kiosk/datacheck`). Full schema is documented at the top of `src/types/JobRecord.ts`. Add a column to the slim file when a new filter or display needs it.
 - `public/flipbooks/` — Generated flipbook bundles, incl. `email.pdf` (committed)
 - `public/videos/` — `originals/` holds full-res masters (gitignored, too large for git); `transcoded/` holds the web-ready clips the site references (committed); `kiosk-hd/` holds optional 1080p clips for the kiosk (committed — same filenames as `transcoded/`; the kiosk prefers these via `useKioskVideo`, see docs/ADMIN.md §7)
 - `sources/` — Content-pipeline drop zone: drop a file into `sources/{operations,catalog,success-stories}/` and run `pnpm run data` (dropped files gitignored; see `sources/README.md`)

@@ -31,7 +31,12 @@ class Config:
     # File paths. The pipeline (scripts/node/data-pipeline.ts) passes EXCEL_PATH
     # explicitly; the default is the drop-zone location for direct runs.
     EXCEL_PATH = os.getenv('EXCEL_PATH', os.path.join(REPO_ROOT, "sources", "operations", "jobhistory.xlsx"))
+    # Slim 6-column artifact every map surface fetches (`/data/operations_data.json`).
     OUTPUT_FULL_JSON = os.path.join(REPO_ROOT, "public", "data", "operations_data.json")
+    # Full 33-column artifact only `/intranet/kiosk/datacheck` fetches.
+    OUTPUT_DIAG_JSON = os.path.join(REPO_ROOT, "public", "data", "operations_full.json")
+    # Fields included in the slim artifact — keep in sync with src/types/JobRecord.ts.
+    SLIM_FIELDS = ('Country', 'System', 'Subsystem', 'Year', 'Successful', 'PathFinder Run (Y/N)')
     MASTER_COUNTRIES_JSON = os.path.join(BASE_DIR, "master_country_list.json")
     KNOWN_CITIES_JSON = os.path.join(BASE_DIR, "known_cities.json")
 
@@ -422,13 +427,27 @@ def main():
         metrics = generate_metrics(df)
         logging.info(f"Processing metrics: {metrics}")
 
-        # Convert to records and save
+        # Convert to records and save BOTH files:
+        # - operations_data.json : 6-column slim (every map surface)
+        # - operations_full.json : 33-column full (staff datacheck)
         full_records = df.to_dicts()
 
-        with open(OUTPUT_FULL_JSON, "w") as f:
-            json.dump(full_records, f, indent=2)
+        slim_records = [
+            {k: row.get(k, "") for k in Config.SLIM_FIELDS}
+            for row in full_records
+        ]
 
-        logging.info(f"Wrote {len(full_records)} records to {OUTPUT_FULL_JSON}")
+        with open(OUTPUT_FULL_JSON, "w") as f:
+            json.dump(slim_records, f, indent=2)
+        logging.info(
+            f"Wrote {len(slim_records)} slim records ({len(Config.SLIM_FIELDS)} cols) to {OUTPUT_FULL_JSON}"
+        )
+
+        with open(Config.OUTPUT_DIAG_JSON, "w") as f:
+            json.dump(full_records, f, indent=2)
+        logging.info(
+            f"Wrote {len(full_records)} full records to {Config.OUTPUT_DIAG_JSON}"
+        )
 
         # Push to GitHub with retry
         success = push_to_github_with_retry(OUTPUT_FULL_JSON, TARGET_FULL_JSON)

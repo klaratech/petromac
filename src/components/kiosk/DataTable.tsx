@@ -15,7 +15,12 @@ const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep
 /* Operation type imported from useOperationsData hook */
 
 export default function DataTableFull() {
-  const { data: rawData } = useOperationsData<Operation>();
+  // Staff diagnostic — wants every column from the source xlsx, so points at
+  // the full artifact. The public map surfaces and the kiosk dashboard read
+  // the 6-column slim file (default URL on the hook).
+  const { data: rawData } = useOperationsData<Operation>({
+    url: '/data/operations_full.json',
+  });
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
 
   const data = useMemo<Operation[]>(

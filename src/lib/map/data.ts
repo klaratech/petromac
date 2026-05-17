@@ -3,14 +3,23 @@ import type { JobRecord } from '@/types/JobRecord';
 /**
  * Fetch operations data published by the data pipeline.
  *
- * Reads the static JSON in /public/data directly. The FastAPI
- * /api/data/operations endpoint is only a passthrough to this same file,
- * so static fetches keep map surfaces independent from backend reachability.
+ * Reads the slim JSON in /public/data — just the six fields every map
+ * surface consumes. The full 33-column artifact is at
+ * `/data/operations_full.json` and only fetched by the staff diagnostic
+ * (`/intranet/kiosk/datacheck`).
+ *
+ * The FastAPI /api/data/operations endpoint is just a passthrough to this
+ * same file, so static fetches keep map surfaces independent from backend
+ * reachability.
+ *
+ * No explicit cache option — we let the browser honour the server's
+ * Cache-Control (`public, max-age=300, stale-while-revalidate=86400`, set
+ * in next.config.ts). The previous `force-cache` was needed when the
+ * server shipped `no-store`; now the server cooperates and revalidation
+ * happens naturally.
  */
 export async function fetchOperationsData(): Promise<JobRecord[]> {
-  const response = await fetch('/data/operations_data.json', {
-    cache: 'force-cache',
-  });
+  const response = await fetch('/data/operations_data.json');
 
   if (!response.ok) {
     throw new Error(`Failed to load operations data: ${response.status}`);
@@ -24,9 +33,7 @@ export async function fetchOperationsData(): Promise<JobRecord[]> {
  * the static JSON from /public/data instead of via the backend route.
  */
 export async function fetchCountryLabels(): Promise<Record<string, string>> {
-  const response = await fetch('/data/country_labels.json', {
-    cache: 'force-cache',
-  });
+  const response = await fetch('/data/country_labels.json');
 
   if (!response.ok) {
     throw new Error(`Failed to load country labels: ${response.status}`);

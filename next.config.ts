@@ -25,15 +25,28 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       {
-        // operations_data.json is ~3.5 MB and powers Track Record on every
-        // public visit. The previous `no-store` made every navigation
-        // re-download the full payload. With max-age=300 +
-        // stale-while-revalidate=86400, browsers serve from cache for 5
-        // minutes, then revalidate in the background (Next.js sets an ETag
-        // on /public assets, so the revalidation is usually a 304). The
-        // data only changes when the pipeline regenerates the file
-        // (occasional manual run), so this is safe.
+        // operations_data.json (slim, ~600 KB) is fetched by Track Record
+        // on every public visit and by the kiosk dashboard. The previous
+        // `no-store` re-downloaded the full payload on every navigation.
+        // With max-age=300 + stale-while-revalidate=86400, browsers serve
+        // from cache for 5 minutes, then revalidate in the background
+        // (Next.js sets an ETag on /public assets, so the revalidation is
+        // usually a 304). The data only changes when the pipeline
+        // regenerates the file (occasional manual run), so this is safe.
         source: '/data/operations_data.json',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
+        // operations_full.json (~3.5 MB) is the same data with all 33
+        // columns from the source xlsx — only fetched by the staff
+        // diagnostic at /intranet/kiosk/datacheck. Same cache policy as
+        // the slim file (it's behind the intranet anyway).
+        source: '/data/operations_full.json',
         headers: [
           {
             key: 'Cache-Control',
