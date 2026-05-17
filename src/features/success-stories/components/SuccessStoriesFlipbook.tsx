@@ -169,14 +169,27 @@ export default function SuccessStoriesFlipbook({
     }
   };
 
+  const hasActiveFilter = Boolean(
+    filters.areas?.length || filters.companies?.length || filters.techs?.length,
+  );
+
+  const subtitle = isLoadingData
+    ? 'Loading stories…'
+    : allowedPages.length === 0
+    ? 'No stories match the current filters.'
+    : hasActiveFilter
+    ? `Showing ${allowedPages.length} of ${totalStories} stories that match your filters.`
+    : `${totalStories} stories across every region we operate in.`;
+
   return (
-    <main className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8">
+    <main className="bg-slate-50 min-h-screen">
+      <section className="container mx-auto px-4 pt-10 md:pt-12 pb-6 md:pb-8">
+        {/* Back nav — small, sits above the headline */}
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 px-4 py-2 mb-4 text-gray-700 hover:text-gray-900 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mb-4"
           >
             <BackArrow />
             {backLabel}
@@ -184,38 +197,24 @@ export default function SuccessStoriesFlipbook({
         ) : backHref ? (
           <Link
             href={backHref}
-            className="inline-flex items-center gap-2 px-4 py-2 mb-4 text-gray-700 hover:text-gray-900 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mb-4"
           >
             <BackArrow />
             {backLabel}
           </Link>
         ) : null}
 
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Filter Success Stories</h2>
-          <SuccessStoriesFilters filters={filters} options={options} onChange={setFilters} />
-          {(filters.areas?.length || filters.companies?.length || filters.techs?.length) && (
-            <button
-              onClick={() => setFilters({})}
-              className="mt-4 text-sm text-blue-600 hover:text-blue-800 underline"
-            >
-              Clear all filters
-            </button>
-          )}
-        </div>
+        {/* Headline row — Track Record style: big bold title with brand-navy
+            accent word, primary actions aligned right on wide screens. */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-8">
+          <div className="max-w-3xl">
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.05]">
+              Success <span className="text-brand">Stories</span>.
+            </h1>
+            <p className="mt-4 text-base md:text-lg text-slate-600">{subtitle}</p>
+          </div>
 
-        <div className="flex flex-col gap-4 mb-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Success Stories</h1>
-            <p className="text-gray-600 mt-1">
-              {isLoadingData
-                ? 'Loading data...'
-                : allowedPages.length === 0
-                ? 'No stories match the selected filters'
-                : `Showing ${allowedPages.length} of ${totalStories} success stories`}
-            </p>
-        </div>
-        <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap items-center gap-3 self-start md:self-end">
             <EmailPdfButton
               pdfType="success-stories"
               pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.successStories)}/source.pdf`}
@@ -226,41 +225,80 @@ export default function SuccessStoriesFlipbook({
             <button
               onClick={handleDownload}
               disabled={selectedPages.length === 0 || isDownloading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm disabled:bg-blue-300"
+              className="
+                inline-flex items-center gap-2 whitespace-nowrap
+                px-6 py-3 rounded-full font-semibold text-white
+                bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20
+                ring-1 ring-blue-900/10
+                transition-all hover:translate-y-[-1px] hover:shadow-xl
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-50
+                disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed
+              "
             >
-              {isDownloading ? 'Preparing PDF...' : 'Download PDF'}
+              {isDownloading ? 'Preparing PDF…' : 'Download PDF'}
             </button>
           </div>
         </div>
+      </section>
 
-        {downloadError && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
-            {downloadError}
-          </div>
-        )}
-
-        {loadError ? (
-          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center min-h-[400px]">
-            <p className="text-red-600">Failed to load data: {loadError}</p>
-          </div>
-        ) : isLoadingData || !manifest ? (
-          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center min-h-[700px]">
-            <p className="text-gray-600">Loading success stories data...</p>
-          </div>
-        ) : allowedPages.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center min-h-[400px]">
-            <div className="text-center">
-              <p className="text-gray-600 text-lg mb-2">No stories match your filters</p>
+      {/* Filter card */}
+      <section className="container mx-auto px-4 pb-6">
+        <div className="rounded-2xl bg-white border border-slate-200 shadow-sm px-6 py-5">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-500 font-medium">
+              Filter stories
+            </p>
+            {hasActiveFilter && (
               <button
                 onClick={() => setFilters({})}
-                className="text-blue-600 hover:text-blue-800 underline"
+                className="text-xs font-medium text-brand hover:text-brand/80 transition-colors"
               >
-                Clear filters to see all stories
+                Clear all
               </button>
-            </div>
+            )}
+          </div>
+          <SuccessStoriesFilters filters={filters} options={options} onChange={setFilters} />
+        </div>
+      </section>
+
+      {downloadError && (
+        <section className="container mx-auto px-4 pb-4">
+          <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+            {downloadError}
+          </div>
+        </section>
+      )}
+
+      {/* Flipbook frame — same rounded-2xl white card the rest of the page uses */}
+      <section className="container mx-auto px-4 pb-12 md:pb-16">
+        {loadError ? (
+          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8 flex flex-col items-center justify-center min-h-[400px] text-center">
+            <h3 className="text-lg font-semibold text-red-600 mb-2">
+              Couldn&apos;t load success stories
+            </h3>
+            <p className="text-slate-600 max-w-md">{loadError}</p>
+          </div>
+        ) : isLoadingData || !manifest ? (
+          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8 flex items-center justify-center min-h-[600px] text-slate-500" role="status">
+            Loading success stories…
+          </div>
+        ) : allowedPages.length === 0 ? (
+          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8 flex flex-col items-center justify-center min-h-[400px] text-center">
+            <p className="text-slate-900 text-lg font-semibold mb-2">
+              No stories match your filters
+            </p>
+            <p className="text-slate-500 text-sm mb-6">
+              Try clearing one of the filter dimensions, or start fresh.
+            </p>
+            <button
+              onClick={() => setFilters({})}
+              className="px-5 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand/90 transition-colors"
+            >
+              Clear all filters
+            </button>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-6 md:p-8">
             <FlipbookErrorBoundary>
               <Flipbook
                 pages={pageUrls}
@@ -273,7 +311,7 @@ export default function SuccessStoriesFlipbook({
             </FlipbookErrorBoundary>
           </div>
         )}
-      </div>
+      </section>
     </main>
   );
 }
