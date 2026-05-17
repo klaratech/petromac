@@ -105,11 +105,6 @@ export default function CircularGallery({
   const forcedModel = forceSingleModel && models.length === 1 ? models[0].file : null;
   const activeModel = selectedModel ?? forcedModel;
 
-  // Preload models
-  useEffect(() => {
-    models.forEach((m) => useGLTF.preload(m.file));
-  }, [models]);
-
   const handleModelClick = (file: string) => {
     setIsZooming(true);
     if (zoomTimeoutRef.current) {

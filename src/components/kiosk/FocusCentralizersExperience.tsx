@@ -112,12 +112,13 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
   }
 
   if (view === 'mechanism') {
-    // Inject the live Helix spec sheet so the Specifications button in the
-    // Mechanism header opens with real data.
+    // Inject the live Helix spec sheet + load-capacity graph so the
+    // Specifications button in the Mechanism header opens with real data.
     const helixSpec = deviceSpecs['/models/helix.glb'];
     const configWithSpecs = {
       ...HELIX_MECHANISM,
-      specs: helixSpec?.specs,
+      ...(helixSpec?.specs ? { specs: helixSpec.specs } : {}),
+      ...(helixSpec?.graph ? { specsGraph: helixSpec.graph } : {}),
     };
     return (
       <FullScreenLayer>

@@ -14,6 +14,10 @@ export interface DeviceMedia {
 
 export interface DeviceSpec {
   specs: Record<string, string>;
+  /** Optional graph image (load-capacity curve, performance plot, etc.) shown
+   *  beneath the spec table inside the kiosk Specifications modal. Sized to
+   *  fit the modal — a cropped page from the product catalog works well. */
+  graph?: string;
   media: DeviceMedia;
   system: string;
   subsystem: string;
@@ -152,19 +156,31 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
     lane: 'oh',
   },
   '/models/helix.glb': {
+    // Sourced from product catalog p.54 (CX9 Helix Centralser tech specs +
+    // materials + load-capacity graph). Insertion order is preserved by the
+    // 2-column grid in SpecsModal — technical specs first, materials second.
     specs: {
-      Name: 'CX-9 Helix Centraliser',
-      Material: '17-4 PH Stainless Steel',
-      Length: '25"',
+      Name: 'CX9 Helix Centraliser',
+      Model: 'CX9',
       Weight: '40 lbs',
-      OD: '5.625" (collapsed)',
-      'Max OD': '9.00"',
-      'Casing Sizes': '7” to 9-5/8” casing',
-      'Operating Temp': 'Up to 400°F',
-      'Pressure Rating': '30,000 psi',
+      Length: '25" (0.64 m)',
+      Volume: '0.08 ft³',
+      'Min Casing Size': '7" – #38 (ID 5.92")',
+      'Max Casing Size': '9-5/8" – #32.3 (ID 9.00")',
+      'Load Carry Capability': '190 – 225 lbs',
       'Drag Coefficient (Dynamic)': '3%',
-      'Carry Load': '190–225 lbs',
+      'Drag Force': '6 lbs',
+      'Temperature Rating': '400°F',
+      'Pressure Rating': '30,000 psi',
+      'Collapsed OD': '5-⅝"',
+      'Taxi Bore': '3-⅝"',
+      Body: '17-4 PH SS, heat treated H1075',
+      Bearings: 'Custom bush bearing',
+      Grease: 'Lubriplate 930AA',
+      Attachment: 'Alloy steel grub screw, ¼" hex, UNC thread, dog end',
+      'SWL (Shear set screws)': '17,000 lbs',
     },
+    graph: '/images/helix-load-capacity.png',
     media: {
       model: '/models/helix.glb',
       image: '/images/helix.png',
@@ -174,7 +190,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
     // Rocker is the secondary tool accessed via a corner badge inside the
     // same experience.
     system: 'Focus Centralizers',
-    subsystem: 'Helix CX-9',
+    subsystem: 'Helix CX9',
     lane: 'ch',
   },
   '/models/pathfinderht.glb': {

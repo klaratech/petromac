@@ -10,6 +10,7 @@ import { deviceSpecs } from '@modules/catalog/data/deviceSpecs';
 import MechanismScreen, { ROCKER_MECHANISM } from './MechanismScreen';
 import LogsScreen, { ROCKER_LOGS } from './LogsScreen';
 import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
+import { AssetSlot } from '@/components/kiosk/AssetSlot';
 
 type View = 'main' | 'track-record' | 'success-stories' | 'mechanism' | 'logs';
 
@@ -63,28 +64,34 @@ export default function RockerExperience({ onBack, onClose }: Props) {
   };
 
   if (view === 'track-record') {
-    return jobData ? (
-      <DrilldownMapCore
-        data={jobData}
-        // Helix + Rocker both roll up to "Focus - CH" as the `System`; the
-        // Rocker-specific split lives on each record's `Subsystem` field
-        // (filtering by Subsystem can be added to the map later).
-        initialSystem="Focus - CH"
-        showCloseButton
-        onClose={() => setView('main')}
-        showSuccessStoriesLink
-        onSuccessStoriesClick={() => setView('success-stories')}
-      />
-    ) : (
-      <div className="w-full h-full flex items-center justify-center text-white/70">
-        Loading track record…
-      </div>
+    return (
+      <FullScreenLayer>
+        {jobData ? (
+          <DrilldownMapCore
+            data={jobData}
+            // Helix + Rocker both roll up to "Focus - CH" as the `System`; the
+            // Rocker-specific split lives on each record's `Subsystem` field
+            // (filtering by Subsystem can be added to the map later).
+            initialSystem="Focus - CH"
+            showCloseButton
+            onClose={() => setView('main')}
+            showSuccessStoriesLink
+            onSuccessStoriesClick={() => setView('success-stories')}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white/70">
+            Loading track record…
+          </div>
+        )}
+      </FullScreenLayer>
     );
   }
 
   if (view === 'success-stories') {
     return (
-      <SuccessStoriesFlipbook onBack={() => setView('main')} backLabel="Back" />
+      <FullScreenLayer>
+        <SuccessStoriesFlipbook onBack={() => setView('main')} backLabel="Back" />
+      </FullScreenLayer>
     );
   }
 
@@ -92,16 +99,30 @@ export default function RockerExperience({ onBack, onClose }: Props) {
     const rockerSpec = deviceSpecs['/models/rocker.glb'];
     const configWithSpecs = {
       ...ROCKER_MECHANISM,
-      specs: rockerSpec?.specs,
+      ...(rockerSpec?.specs ? { specs: rockerSpec.specs } : {}),
+      ...(rockerSpec?.graph ? { specsGraph: rockerSpec.graph } : {}),
     };
-    return <MechanismScreen config={configWithSpecs} onBack={() => setView('main')} />;
+    return (
+      <FullScreenLayer>
+        <MechanismScreen config={configWithSpecs} onBack={() => setView('main')} />
+      </FullScreenLayer>
+    );
   }
 
   if (view === 'logs') {
-    return <LogsScreen config={ROCKER_LOGS} onBack={() => setView('main')} />;
+    return (
+      <FullScreenLayer>
+        <LogsScreen config={ROCKER_LOGS} onBack={() => setView('main')} />
+      </FullScreenLayer>
+    );
   }
 
+  // Main view — wrap in FullScreenLayer so this works whether opened from
+  // FocusCentralizersExperience (which already wraps us) or directly from
+  // the CH lane attractor (LaneClient renders us inline). Without this, the
+  // lane's right-side overlay strip (z-20) showed through.
   return (
+    <FullScreenLayer>
     <div
       className="relative w-full h-full bg-black"
       onClick={handleTap}
@@ -223,6 +244,23 @@ export default function RockerExperience({ onBack, onClose }: Props) {
         )}
       </AnimatePresence>
     </div>
+    </FullScreenLayer>
+  );
+}
+
+/** Shared full-screen wrapper so all RockerExperience views render at the
+ *  same fixed z-50 layer — covers the lane attractor + overlay strip when
+ *  Rocker is opened directly from the CH lane. */
+function FullScreenLayer({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 bg-black"
+    >
+      {children}
+    </motion.div>
   );
 }
 
@@ -260,22 +298,13 @@ function ToolPanel({
   return (
     <div className="relative flex flex-col items-center justify-center">
       <div className="relative w-full flex-1 min-h-0">
-        <Image
+        <AssetSlot
           src={src}
           alt={alt}
-          fill
           priority
           sizes="(min-width: 768px) 45vw, 90vw"
           className="object-contain drop-shadow-[0_25px_25px_rgba(0,0,0,0.35)]"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = 'none';
-          }}
         />
-        <div className="absolute inset-0 flex items-center justify-center text-white/40 text-xs text-center px-4 -z-10">
-          Drop tool render at
-          <br />
-          <code className="text-white/60">{src}</code>
-        </div>
       </div>
       <div className="mt-4 px-4 py-1.5 rounded-full bg-white/8 border border-white/15 backdrop-blur-sm text-white/85 text-xs uppercase tracking-[0.3em]">
         {label}

@@ -12,8 +12,8 @@
  * spec sheet (pulled from `deviceSpecs.ts` and passed in via `config.specs`).
  */
 
-import Image from 'next/image';
 import { useState } from 'react';
+import { AssetSlot } from '@/components/kiosk/AssetSlot';
 
 // ── Slide types ──────────────────────────────────────────────────────────────
 
@@ -92,6 +92,9 @@ export interface MechanismConfig {
   /** Spec sheet — opened via the "Specifications" header button. Pass the
    *  `specs` object from `deviceSpecs.ts` for the relevant device. */
   specs?: Record<string, string>;
+  /** Optional graph image (load-capacity, performance curve, etc.) shown
+   *  beneath the spec table in SpecsModal. Pass `deviceSpec.graph` here. */
+  specsGraph?: string;
   /** Optional footer note, e.g. a slide reference. */
   sourceNote?: string;
 }
@@ -120,6 +123,7 @@ interface Props {
 export const HELIX_MECHANISM: MechanismConfig = {
   title: 'Helix',
   slides: [
+    // 1. Annotated conventional centraliser — limitations.
     {
       type: 'annotated',
       label: 'Conventional centraliser',
@@ -135,6 +139,13 @@ export const HELIX_MECHANISM: MechanismConfig = {
         { text: 'Limited range of casing sizes', highlight: 'red' },
       ],
     },
+    // 2. Conventional mechanism video — shows the same tool in motion.
+    {
+      type: 'video',
+      label: 'Conventional mechanism',
+      src: '/videos/transcoded/conventional-largecasings.mp4',
+    },
+    // 3. Annotated Helix — benefits.
     {
       type: 'annotated',
       label: 'HELIX',
@@ -150,6 +161,14 @@ export const HELIX_MECHANISM: MechanismConfig = {
         { text: 'Effective mechanism in large range of casing sizes', highlight: 'blue' },
       ],
     },
+    // 4. HELIX mechanism video — Helix in motion, the counterpoint to slide 2.
+    {
+      type: 'video',
+      label: 'HELIX mechanism',
+      src: '/videos/transcoded/helix-mechanism.mp4',
+      highlight: true,
+    },
+    // 5. Lever-arm comparison — the takeaway: 80% less force.
     {
       type: 'comparison',
       label: 'Lever arm comparison',
@@ -299,7 +318,11 @@ export default function MechanismScreen({ config, onBack }: Props) {
       )}
 
       {specsOpen && config.specs && (
-        <SpecsModal specs={config.specs} onClose={() => setSpecsOpen(false)} />
+        <SpecsModal
+          specs={config.specs}
+          graph={config.specsGraph}
+          onClose={() => setSpecsOpen(false)}
+        />
       )}
     </div>
   );
@@ -401,21 +424,13 @@ function AnnotatedSlide({
           {/* Tool image — bordered slot until graphics delivers the bare
               centraliser render. */}
           <div className="relative w-3/4 h-1/2 flex items-center justify-center">
-            <Image
+            <AssetSlot
               src={image}
               alt={label}
-              fill
               priority
               className="object-contain"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.display = 'none';
-              }}
+              theme="light"
             />
-            <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-xs text-center px-4 -z-10 border border-dashed border-slate-300 rounded">
-              Drop tool render at
-              <br />
-              <code className="text-slate-600">{image}</code>
-            </div>
           </div>
         </div>
 
@@ -424,20 +439,12 @@ function AnnotatedSlide({
         <div className="col-span-1 flex flex-col gap-4">
           {detailImage && (
             <div className="relative w-full h-36 shrink-0">
-              <Image
+              <AssetSlot
                 src={detailImage}
                 alt={`${label} — detail`}
-                fill
                 className="object-contain"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = 'none';
-                }}
+                theme="light"
               />
-              <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-[10px] text-center px-2 -z-10 border border-dashed border-slate-300 rounded">
-                Drop detail at
-                <br />
-                <code className="text-slate-600">{detailImage}</code>
-              </div>
             </div>
           )}
           <BulletList bullets={bullets} className="flex-1" />
@@ -518,22 +525,14 @@ function ComparisonSlide({
               key={row.image}
               className="relative flex-1 rounded-xl overflow-hidden border border-slate-200 bg-slate-50"
             >
-              <Image
+              <AssetSlot
                 src={row.image}
                 alt={row.rowLabel ?? ''}
-                fill
                 className="object-contain"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = 'none';
-                }}
+                theme="light"
               />
-              <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-xs text-center px-4 -z-10">
-                Drop row image at
-                <br />
-                <code className="text-slate-600">{row.image}</code>
-              </div>
               {row.rowLabel && (
-                <div className="absolute top-2 left-3 px-2 py-0.5 rounded bg-white/90 text-[10px] uppercase tracking-[0.18em] text-slate-700">
+                <div className="absolute top-2 left-3 px-2 py-0.5 rounded bg-white/90 text-[10px] uppercase tracking-[0.18em] text-slate-700 z-10">
                   {row.rowLabel}
                 </div>
               )}
@@ -599,9 +598,11 @@ function bulletToneClasses(highlight?: 'red' | 'blue') {
 
 function SpecsModal({
   specs,
+  graph,
   onClose,
 }: {
   specs: Record<string, string>;
+  graph?: string | undefined;
   onClose: () => void;
 }) {
   return (
@@ -613,7 +614,7 @@ function SpecsModal({
       aria-label="Specifications"
     >
       <div
-        className="relative w-full max-w-3xl mx-4 rounded-2xl bg-white text-slate-900 shadow-2xl overflow-hidden"
+        className="relative w-full max-w-5xl mx-4 rounded-2xl bg-white text-slate-900 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
@@ -632,18 +633,36 @@ function SpecsModal({
           </button>
         </header>
 
-        <dl className="px-6 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 max-h-[60vh] overflow-y-auto">
-          {Object.entries(specs)
-            .filter(([k]) => k !== 'Name')
-            .map(([k, v]) => (
-              <div key={k} className="flex items-baseline justify-between gap-4 py-2 border-b border-slate-100">
-                <dt className="text-sm text-slate-500">{k}</dt>
-                <dd className="text-sm font-medium text-slate-900 text-right">
-                  {v}
-                </dd>
-              </div>
-            ))}
-        </dl>
+        {/* Body — two columns on wider screens: spec table left, graph right.
+            Falls back to a single column when there's no graph. */}
+        <div className={`flex-1 min-h-0 overflow-y-auto px-6 py-4 grid gap-6 ${graph ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]' : 'grid-cols-1'}`}>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-x-8 gap-y-2 self-start">
+            {Object.entries(specs)
+              .filter(([k]) => k !== 'Name')
+              .map(([k, v]) => (
+                <div key={k} className="flex items-baseline justify-between gap-4 py-2 border-b border-slate-100">
+                  <dt className="text-sm text-slate-500">{k}</dt>
+                  <dd className="text-sm font-medium text-slate-900 text-right">
+                    {v}
+                  </dd>
+                </div>
+              ))}
+          </dl>
+
+          {graph && (
+            <div className="flex flex-col gap-2 self-start lg:sticky lg:top-0">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                Load capacity
+              </p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={graph}
+                alt="Load capacity graph"
+                className="w-full h-auto rounded border border-slate-200"
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 ## Why this matters
 The kiosk Service Worker is designed for trade‑show use where connectivity can be poor.
 We pre-cache the kiosk shell and small data files, and runtime‑cache large media
-(videos/models/flipbooks) with limits and expiry to keep storage bounded and reliable.
+(videos/flipbooks/images) with limits and expiry to keep storage bounded and reliable.
 
 ## Routes & flow
 
@@ -22,7 +22,7 @@ We pre-cache the kiosk shell and small data files, and runtime‑cache large med
                                             in the main flow)
 /intranet/kiosk/dashboard                  operations map (DrilldownMapKiosk)
 /intranet/kiosk/successstories             flipbook with filters
-/intranet/kiosk/3d-viewer                  3D model viewer
+/intranet/kiosk/3d-viewer                  deferred 3D model viewer
 /intranet/kiosk/datacheck                  data validation tools
 ```
 
@@ -72,14 +72,14 @@ network. See `serveRangeFromCache()` in `public/kiosk-sw.js`.
    - `/intranet/kiosk/lane?lane=ch`              (same — open Helix and Rocker experiences once)
    - `/intranet/kiosk/dashboard`
    - `/intranet/kiosk/successstories`
-3. Wait for all videos/models/flipbooks to load at least once.
+3. Wait for all videos and flipbooks to load at least once.
 4. Toggle DevTools → Application → Service Workers → Offline and refresh.
 5. Confirm:
    - Lane attractor loops play
    - Helix / Rocker / OH overlay experiences open with video
    - Map loads
    - Success Stories flipbook loads
-   - Videos/models are cached
+   - Videos and flipbooks are cached
 
 > The legacy `/intranet/kiosk/productlines` tile grid still works for direct
 > links but is no longer in the main flow, so it isn't part of the priming

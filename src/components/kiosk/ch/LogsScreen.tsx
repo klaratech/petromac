@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
+import { AssetSlot } from '@/components/kiosk/AssetSlot';
 
 /**
  * LogsScreen — config-driven "Case Studies" sub-view.
@@ -151,19 +151,13 @@ export default function LogsScreen({ config, onBack }: Props) {
 function SinglePane({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <Image
+      <AssetSlot
         key={src}
         src={src}
         alt={alt}
-        fill
         className="object-contain"
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).style.display = 'none';
-        }}
+        theme="dark"
       />
-      <div className="absolute inset-0 flex items-center justify-center text-white/40 text-sm px-8 text-center -z-10">
-        Drop file at <code className="text-white/70 mx-1">{src}</code>
-      </div>
     </div>
   );
 }
@@ -204,20 +198,14 @@ function ComparisonImage({
           : 'border-white/10'
       } bg-black/40`}
     >
-      <Image
+      <AssetSlot
         key={src}
         src={src}
         alt={label}
-        fill
         className="object-contain"
-        onError={(e) => {
-          (e.currentTarget as HTMLImageElement).style.display = 'none';
-        }}
+        theme="dark"
       />
-      <div className="absolute inset-0 flex items-center justify-center text-white/40 text-xs px-4 text-center -z-10">
-        Drop file at <code className="text-white/70 mx-1">{src}</code>
-      </div>
-      <div className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 text-xs uppercase tracking-[0.2em]">
+      <div className="absolute bottom-3 left-3 z-10 px-3 py-1 rounded-full bg-black/60 text-xs uppercase tracking-[0.2em]">
         {label}
       </div>
     </div>
