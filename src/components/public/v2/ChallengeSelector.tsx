@@ -3,7 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+
+// NOTE: this used to import framer-motion for the card expand + detail-panel
+// animations. framer-motion is ~5 MB of dep and sat in the public common
+// chunk just because this one file imported it. Now the detail-panel
+// height animation uses the grid-template-rows: 0fr ↔ 1fr trick (modern
+// browsers transition that smoothly), and the card snaps to col-span-2
+// without a layout-FLIP. The kiosk still uses framer-motion for genuine
+// motion work, but it's no longer in the public bundle.
 
 interface Challenge {
   id: string;
@@ -109,9 +116,8 @@ export default function ChallengeSelector() {
           {challenges.map((c) => {
             const isExpanded = expanded === c.id;
             return (
-              <motion.div
+              <div
                 key={c.id}
-                layout
                 role="button"
                 tabIndex={0}
                 aria-expanded={isExpanded}
@@ -155,39 +161,46 @@ export default function ChallengeSelector() {
                   </h3>
                 </div>
 
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      <div className="p-5 bg-slate-50">
-                        <ul className="space-y-2 mb-4">
-                          {c.bullets.map((b, i) => (
-                            <li key={i} className="flex gap-2 text-sm text-slate-600">
-                              <span className="text-brand font-bold mt-0.5">✓</span>
-                              <span>{b}</span>
-                            </li>
-                          ))}
-                        </ul>
-                        <Link
-                          href="/success-stories/flipbook"
-                          className="inline-flex items-center text-brand font-semibold text-sm hover:text-brand/80 transition-colors"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Learn more
-                          <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </Link>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                {/* Expandable detail panel — CSS grid-template-rows: 0fr ↔ 1fr
+                    trick. Modern browsers transition this smoothly so we can
+                    animate height-auto without JS. The inner div needs
+                    overflow-hidden so its content stays clipped at 0fr. */}
+                <div
+                  className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+                    isExpanded
+                      ? "grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-0"
+                  }`}
+                  aria-hidden={!isExpanded}
+                >
+                  <div className="overflow-hidden">
+                    <div className="p-5 bg-slate-50">
+                      <ul className="space-y-2 mb-4">
+                        {c.bullets.map((b, i) => (
+                          <li key={i} className="flex gap-2 text-sm text-slate-600">
+                            <span className="text-brand font-bold mt-0.5">✓</span>
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <Link
+                        href="/success-stories/flipbook"
+                        className="inline-flex items-center text-brand font-semibold text-sm hover:text-brand/80 transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                        // When the panel is collapsed, take the link out of the
+                        // tab order so keyboard users don't focus an invisible
+                        // anchor.
+                        tabIndex={isExpanded ? 0 : -1}
+                      >
+                        Learn more
+                        <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
