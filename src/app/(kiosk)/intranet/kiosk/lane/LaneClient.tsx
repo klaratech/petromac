@@ -248,6 +248,11 @@ function LaneLoopContent() {
   const [active, setActive] = useState<ActiveExperience | null>(null);
   const [overlayVisible, setOverlayVisible] = useState(true);
   const overlayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // Ref to the lane attractor <video> so we can pause it when an experience
+  // is open — running two video decoders in parallel on the Android tablet
+  // is wasted CPU, and the attractor's audio would bleed under the
+  // experience's own clip.
+  const attractorRef = useRef<HTMLVideoElement | null>(null);
 
   // Overlay buttons stay hidden over the video and surface on hover / tap,
   // then fade out again after a few idle seconds.
@@ -270,6 +275,25 @@ function LaneLoopContent() {
   }, [active, revealOverlay]);
 
   const closeExperience = useCallback(() => setActive(null), []);
+
+  // Pause / resume the lane attractor video as the experience layer opens
+  // and closes. Frees the second video decoder on the Android tablet and
+  // silences the attractor's audio while the experience plays.
+  //
+  // videoIdx is in the deps so the pause re-applies if the playlist
+  // advances mid-experience (the <video> remounts via `key={playlist[idx]}`
+  // and would otherwise autoplay the fresh element).
+  useEffect(() => {
+    const v = attractorRef.current;
+    if (!v) return;
+    if (active) {
+      v.pause();
+    } else {
+      // play() can reject if user activation has lapsed — swallow it; the
+      // browser will keep showing the last frame and a tap will resume.
+      v.play().catch(() => {});
+    }
+  }, [active, videoIdx]);
 
   // While an experience is open, bounce back to the lane loop after a few
   // minutes of no interaction. Any mouse / touch / key activity resets the
@@ -310,6 +334,7 @@ function LaneLoopContent() {
           can play with sound; subsequent loads inherit user activation from
           the splash → lane navigation. */}
       <video
+        ref={attractorRef}
         key={playlist[videoIdx]}
         src={playlist[videoIdx]}
         autoPlay
