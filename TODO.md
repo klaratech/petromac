@@ -52,11 +52,9 @@
   - [ ] Optimize favicon (currently 58 KB, target < 5 KB)
   - [ ] Helix product image (currently uses focus.png placeholder on the homepage FeaturedProducts card and as the kiosk "Focus Centralizers" tile logo)
   - [ ] ChallengeSelector card thumbnails — `public/images/conveyance.jpg`, `ledges.jpg`, `orientation.jpg`, `sampling.jpg`, `sticking.jpg` are all dev placeholders (black 800×480 canvas with the topic word stencilled in the top-left). Three cards (`Stuck Tools`, `Incomplete Operations`, `Cased Hole Centralization`) have a video that covers the poster after a brief flash; three cards (`Sticking Risk`, `Data Quality`, `High Deviations`) have no video so the placeholder is permanent. Hero already swapped to `hero-poster.jpg` (a frame from WirelineExpress.mp4, May 2026); apply the same treatment per card or replace with real photos.
-  - [ ] Helix mechanism slideshow renders (3 slides). All assets are rendered with annotations baked in by graphics where applicable; the kiosk overlays the dimension brackets on the annotated slides via SVG.
+  - [ ] Helix mechanism slideshow renders (slides 1 & 2 only — slide 3 wired to existing /images/leverage-*.png, May 2026). The kiosk overlays SVG dimension brackets on the annotated slides; the embedded mechanism video plays between the brackets when supplied.
     - `/public/images/helix-mechanism-conventional.png` — slide 1, bare 3D render of the conventional centraliser (no annotations).
     - `/public/images/helix-mechanism-helix.png` — slide 2, bare 3D render of the Helix tool (no annotations).
-    - `/public/images/helix-mechanism-lever-conventional.png` — slide 3 top row, conventional centraliser inside a casing with the short-lever arrow baked in.
-    - `/public/images/helix-mechanism-lever-helix.png` — slide 3 bottom row, Helix inside a casing with the long-lever bracket baked in.
   - [ ] Rocker mechanism slideshow renders (2 slides):
     - `/public/images/rocker-mechanism-conventional.png` — slide 1 primary, bare 3D render of the small-casing conventional centraliser (no annotations; the kiosk draws the 6.3"/3.3" dimension brackets).
     - `/public/images/rocker-mechanism-conventional-detail.png` — slide 1 detail (small thumbnail in the right column), force-section schematic with the red/blue arrows baked in.

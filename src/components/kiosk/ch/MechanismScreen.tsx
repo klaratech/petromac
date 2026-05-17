@@ -36,6 +36,14 @@ export interface DimensionCallout {
   side: 'left' | 'right';
   /** Label rendered between the two bracket lines, e.g. `9.0"`. */
   label: string;
+  /** Distance from the edge (top + bottom) to each bracket arm, in % of the
+   *  bracket slab's height. Lower values = wider gap between the lines =
+   *  larger represented diameter. Defaults to 28 if omitted.
+   *
+   *  Tune per side so the lines visually align with the tool's arm-tip
+   *  positions at the matching diameter (e.g. LEFT 9.0" uses a wider gap
+   *  than RIGHT 5.8" on the same Helix slide). */
+  spreadPct?: number;
 }
 
 export interface Bullet {
@@ -132,14 +140,19 @@ export const HELIX_MECHANISM: MechanismConfig = {
     // 1. Annotated conventional centraliser — limitations.
     //    The conventional-mechanism video plays between the 9.0"/5.8"
     //    brackets so motion + annotation share one slide.
+    //
+    //    spreadPct is tuned to the casing diameter — the left bracket sits
+    //    further from centre (representing the wider 9.0" casing wall), the
+    //    right bracket sits closer in (5.8" wall). Ratio approximates
+    //    5.8 / 9.0 ≈ 0.65.
     {
       type: 'annotated',
       label: 'Conventional centraliser',
       image: '/images/helix-mechanism-conventional.png',
       video: '/videos/transcoded/conventional-largecasings.mp4',
       callouts: [
-        { side: 'left', label: '9.0"' },
-        { side: 'right', label: '5.8"' },
+        { side: 'left', label: '9.0"', spreadPct: 12 },
+        { side: 'right', label: '5.8"', spreadPct: 26 },
       ],
       bullets: [
         { text: 'Pivot point on SAME side' },
@@ -148,16 +161,16 @@ export const HELIX_MECHANISM: MechanismConfig = {
         { text: 'Limited range of casing sizes', highlight: 'red' },
       ],
     },
-    // 2. Annotated HELIX — benefits. The HELIX-mechanism video plays
-    //    between the same 9.0"/5.8" brackets as slide 1's counterpoint.
+    // 2. Annotated HELIX — benefits. Same 9.0"/5.8" brackets as slide 1's
+    //    counterpoint; the HELIX-mechanism video plays between them.
     {
       type: 'annotated',
       label: 'HELIX',
       image: '/images/helix-mechanism-helix.png',
       video: '/videos/transcoded/helix-mechanism.mp4',
       callouts: [
-        { side: 'left', label: '9.0"' },
-        { side: 'right', label: '5.8"' },
+        { side: 'left', label: '9.0"', spreadPct: 12 },
+        { side: 'right', label: '5.8"', spreadPct: 26 },
       ],
       bullets: [
         { text: 'Pivot point on OPPOSITE side' },
@@ -167,12 +180,15 @@ export const HELIX_MECHANISM: MechanismConfig = {
       ],
     },
     // 3. Lever-arm comparison — the takeaway: 80% less force.
+    //    The artwork lives in /images/leverage-{conventional,helix}.png and
+    //    already has the red short-lever arrow + green long-lever bracket
+    //    baked in. (Previously these were the first Case Studies slide.)
     {
       type: 'comparison',
       label: 'Lever arm comparison',
       rows: [
-        { image: '/images/helix-mechanism-lever-conventional.png', rowLabel: 'Conventional' },
-        { image: '/images/helix-mechanism-lever-helix.png', rowLabel: 'HELIX' },
+        { image: '/images/leverage-conventional.png', rowLabel: 'Conventional' },
+        { image: '/images/leverage-helix.png', rowLabel: 'HELIX' },
       ],
       bullets: [
         { text: 'Helix enters restrictions with 80% less force', highlight: 'blue' },
@@ -406,27 +422,10 @@ function AnnotatedSlide({
       <div className="flex-1 m-2 rounded-2xl bg-white text-slate-900 grid grid-cols-3 gap-6 px-8 py-10">
         {/* Diagram (2/3 of the card) */}
         <div className="col-span-2 relative flex items-center justify-center">
-          {/* Left dimension callout */}
-          {leftCallout && (
-            <DimensionBracket
-              side="left"
-              label={leftCallout.label}
-            />
-          )}
-
-          {/* Right dimension callout */}
-          {rightCallout && (
-            <DimensionBracket
-              side="right"
-              label={rightCallout.label}
-            />
-          )}
-
-          {/* Tool image OR mechanism video — between the dimension brackets.
-              When `video` is set the slide plays motion in place of the
-              static render; `image` becomes the poster so the slide stays
-              legible before the video buffers. */}
-          <div className="relative w-3/4 h-1/2 flex items-center justify-center">
+          {/* Tool image OR mechanism video — fills the diagram column so the
+              video plays as large as possible. Brackets overlay the column
+              edges on top. */}
+          <div className="relative w-full h-full flex items-center justify-center">
             {video ? (
               <video
                 src={video}
@@ -450,6 +449,25 @@ function AnnotatedSlide({
               />
             )}
           </div>
+
+          {/* Left dimension callout — overlays the diagram on top of the
+              video letterbox. Sits last so it stacks above. */}
+          {leftCallout && (
+            <DimensionBracket
+              side="left"
+              label={leftCallout.label}
+              spreadPct={leftCallout.spreadPct}
+            />
+          )}
+
+          {/* Right dimension callout */}
+          {rightCallout && (
+            <DimensionBracket
+              side="right"
+              label={rightCallout.label}
+              spreadPct={rightCallout.spreadPct}
+            />
+          )}
         </div>
 
         {/* Right column — optional detail image stacked above the bullets.
@@ -485,29 +503,42 @@ function AnnotatedSlide({
  * dimension-callout treatment in the source ICOTA slide.
  *
  * The bracket is positioned absolutely against its parent — anchor by `side`
- * and use the top/bottom of the parent for the bracket arms.
+ * and use the top/bottom of the parent for the bracket arms. The slab is
+ * narrow (~16%) so the underlying tool image / mechanism video fills the
+ * full column width; the bracket overlays the column edges.
+ *
+ * `spreadPct` controls how close the bracket arms sit to the edges:
+ *   - smaller value → arms closer to the edges → wider visible gap →
+ *     "larger diameter" feel (use for 9.0")
+ *   - larger value → arms closer to centre → narrower visible gap →
+ *     "smaller diameter" feel (use for 5.8")
  */
 function DimensionBracket({
   side,
   label,
+  spreadPct = 28,
 }: {
   side: 'left' | 'right';
   label: string;
+  spreadPct?: number | undefined;
 }) {
   const sideClass = side === 'left' ? 'left-0' : 'right-0';
-  // Bracket arms span ~25% of the container width on each side, leaving the
-  // middle ~50% for the tool image. Top and bottom arms sit ~30% from the
-  // top/bottom of the diagram area.
   return (
     <div
-      className={`absolute ${sideClass} top-0 bottom-0 w-1/4 pointer-events-none`}
+      className={`absolute ${sideClass} top-0 bottom-0 w-[16%] pointer-events-none z-10`}
       aria-hidden="true"
     >
-      <div className="absolute left-0 right-0 top-[28%] h-px bg-slate-800" />
-      <div className="absolute left-0 right-0 bottom-[28%] h-px bg-slate-800" />
+      <div
+        className="absolute left-0 right-0 h-px bg-slate-800"
+        style={{ top: `${spreadPct}%` }}
+      />
+      <div
+        className="absolute left-0 right-0 h-px bg-slate-800"
+        style={{ bottom: `${spreadPct}%` }}
+      />
       <span
-        className={`absolute top-1/2 -translate-y-1/2 text-3xl font-semibold tabular-nums ${
-          side === 'left' ? 'left-2' : 'right-2'
+        className={`absolute top-1/2 -translate-y-1/2 text-3xl font-semibold tabular-nums text-slate-900 ${
+          side === 'left' ? 'left-1' : 'right-1'
         }`}
       >
         {label}

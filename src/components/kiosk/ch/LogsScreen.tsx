@@ -52,20 +52,12 @@ interface Props {
 export const HELIX_LOGS: LogsConfig = {
   title: 'Helix',
   slides: [
-    {
-      type: 'pair',
-      caption: 'Improved leverage to enter restrictions (slide 5)',
-      left: { src: '/images/leverage-conventional.png', label: 'Conventional' },
-      right: {
-        src: '/images/leverage-helix.png',
-        label: 'HELIX',
-        highlight: true,
-      },
-    },
+    // The leverage comparison that used to live here moved to the Helix
+    // mechanism slideshow (slide 3 — see HELIX_MECHANISM in MechanismScreen).
     {
       type: 'single',
       src: '/images/helix-cbl-setup.png',
-      caption: 'Ultrasonic-CBL set-up with HELIX (slide 8)',
+      caption: 'Ultrasonic-CBL set-up with HELIX',
     },
   ],
 };
