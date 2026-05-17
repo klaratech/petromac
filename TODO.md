@@ -56,6 +56,10 @@
     - `/public/images/helix-mechanism-helix.png` — slide 2, bare 3D render of the Helix tool (no annotations).
     - `/public/images/helix-mechanism-lever-conventional.png` — slide 3 top row, conventional centraliser inside a casing with the short-lever arrow baked in.
     - `/public/images/helix-mechanism-lever-helix.png` — slide 3 bottom row, Helix inside a casing with the long-lever bracket baked in.
+  - [ ] Rocker mechanism slideshow renders (2 slides):
+    - `/public/images/rocker-mechanism-conventional.png` — slide 1 primary, bare 3D render of the small-casing conventional centraliser (no annotations; the kiosk draws the 6.3"/3.3" dimension brackets).
+    - `/public/images/rocker-mechanism-conventional-detail.png` — slide 1 detail (small thumbnail in the right column), force-section schematic with the red/blue arrows baked in.
+    - `/public/images/rocker-mechanism-rocker.png` — slide 2, bare 3D render of the Rocker tool (no annotations).
   - [ ] Thor product video (the FeaturedProducts Thor card is commented out until graphics + messaging are finalised)
   - [x] Rocker product images (May 2026) — `rocker.png` (Rocker, 1455×975) and `rocker-inline.png` (Rocker Inline, 1920×1756, resized down from a 3840px master) dropped into `public/images/` and wired into a side-by-side panel layout on the Rocker experience main view. Rocker GLB model still pending.
 - [ ] Place delivered files in correct directories

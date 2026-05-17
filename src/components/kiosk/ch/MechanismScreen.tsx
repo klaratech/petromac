@@ -58,6 +58,10 @@ export interface MechanismAnnotatedSlide {
   callouts: DimensionCallout[];
   /** Bullet list to the right of the diagram. */
   bullets: Bullet[];
+  /** Optional secondary diagram shown above the bullets in the right column —
+   *  used for things like the Rocker conventional-centralizer force section
+   *  view. The dimension callouts do NOT apply to this image. */
+  detailImage?: string;
 }
 
 /** A two-row comparison slide — typically conventional on top, Petromac on
@@ -101,12 +105,17 @@ interface Props {
 // Asset slots — drop bare renders at these paths and the slides pick them up;
 // inline annotations (dimension brackets, arrows) are either drawn by the
 // component or already baked into the artwork by graphics.
-//   /public/images/helix-mechanism-conventional.png  (annotated slide 1)
-//   /public/images/helix-mechanism-helix.png         (annotated slide 2)
+//
+// Helix slideshow:
+//   /public/images/helix-mechanism-conventional.png        (annotated slide 1)
+//   /public/images/helix-mechanism-helix.png               (annotated slide 2)
 //   /public/images/helix-mechanism-lever-conventional.png  (comparison slide 3, top)
 //   /public/images/helix-mechanism-lever-helix.png         (comparison slide 3, bottom)
-//   /public/videos/transcoded/conventional-smallcasings.mp4  (Rocker slide 1)
-//   /public/videos/transcoded/rocker-mechanism.mp4           (Rocker slide 2)
+//
+// Rocker slideshow:
+//   /public/images/rocker-mechanism-conventional.png         (annotated slide 1, tool render)
+//   /public/images/rocker-mechanism-conventional-detail.png  (annotated slide 1, force-section detail)
+//   /public/images/rocker-mechanism-rocker.png               (annotated slide 2)
 
 export const HELIX_MECHANISM: MechanismConfig = {
   title: 'Helix',
@@ -159,15 +168,36 @@ export const ROCKER_MECHANISM: MechanismConfig = {
   title: 'Rocker',
   slides: [
     {
-      type: 'video',
-      label: 'Conventional mechanism',
-      src: '/videos/transcoded/conventional-smallcasings.mp4',
+      type: 'annotated',
+      label: 'Conventional centraliser',
+      image: '/images/rocker-mechanism-conventional.png',
+      detailImage: '/images/rocker-mechanism-conventional-detail.png',
+      callouts: [
+        { side: 'left', label: '6.3"' },
+        { side: 'right', label: '3.3"' },
+      ],
+      bullets: [
+        { text: 'Arms independent of each other' },
+        { text: 'In smaller holes, arm angle is very shallow' },
+        { text: 'Minimal slider movement' },
+        { text: 'Inefficient centralization' },
+        { text: 'Mechanism fails in smaller holes', highlight: 'red' },
+      ],
     },
     {
-      type: 'video',
-      label: 'ROCKER mechanism',
-      src: '/videos/transcoded/rocker-mechanism.mp4',
-      highlight: true,
+      type: 'annotated',
+      label: 'ROCKER',
+      image: '/images/rocker-mechanism-rocker.png',
+      callouts: [
+        { side: 'left', label: '6.3"' },
+        { side: 'right', label: '3.3"' },
+      ],
+      bullets: [
+        { text: 'Rocker arm pivots around centreline' },
+        { text: 'Large slider movement' },
+        { text: 'Synchronised arm assemblies' },
+        { text: 'Effective mechanism in small casing sizes', highlight: 'blue' },
+      ],
     },
   ],
 };
@@ -227,6 +257,7 @@ export default function MechanismScreen({ config, onBack }: Props) {
             image={slide.image}
             callouts={slide.callouts}
             bullets={slide.bullets}
+            detailImage={slide.detailImage}
           />
         ) : (
           <ComparisonSlide
@@ -334,11 +365,13 @@ function AnnotatedSlide({
   image,
   callouts,
   bullets,
+  detailImage,
 }: {
   label: string;
   image: string;
   callouts: DimensionCallout[];
   bullets: Bullet[];
+  detailImage?: string | undefined;
 }) {
   const leftCallout = callouts.find((c) => c.side === 'left');
   const rightCallout = callouts.find((c) => c.side === 'right');
@@ -385,8 +418,29 @@ function AnnotatedSlide({
           </div>
         </div>
 
-        {/* Bullet list (1/3 of the card) */}
-        <BulletList bullets={bullets} />
+        {/* Right column — optional detail image stacked above the bullets.
+            When no detail image, bullets get the full column height. */}
+        <div className="col-span-1 flex flex-col gap-4">
+          {detailImage && (
+            <div className="relative w-full h-36 shrink-0">
+              <Image
+                src={detailImage}
+                alt={`${label} — detail`}
+                fill
+                className="object-contain"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = 'none';
+                }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-[10px] text-center px-2 -z-10 border border-dashed border-slate-300 rounded">
+                Drop detail at
+                <br />
+                <code className="text-slate-600">{detailImage}</code>
+              </div>
+            </div>
+          )}
+          <BulletList bullets={bullets} className="flex-1" />
+        </div>
       </div>
 
       {/* Slide label pill — keeps the same affordance as VideoSlide */}
@@ -487,7 +541,7 @@ function ComparisonSlide({
         </div>
 
         {/* Bullets */}
-        <BulletList bullets={bullets} />
+        <BulletList bullets={bullets} className="col-span-1" />
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
@@ -506,9 +560,15 @@ function ComparisonSlide({
  *   'blue' → benefits / takeaways (brand navy #1E4A9A)
  *   undefined → neutral (slate-900)
  */
-function BulletList({ bullets }: { bullets: Bullet[] }) {
+function BulletList({
+  bullets,
+  className = '',
+}: {
+  bullets: Bullet[];
+  className?: string;
+}) {
   return (
-    <ul className="col-span-1 flex flex-col justify-center gap-6">
+    <ul className={`flex flex-col justify-center gap-6 ${className}`}>
       {bullets.map((b) => {
         const tone = bulletToneClasses(b.highlight);
         return (
