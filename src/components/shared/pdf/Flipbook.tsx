@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PageFlip } from "page-flip";
 
 type FlipbookProps = {
@@ -42,11 +42,6 @@ export default function Flipbook({
     ? Math.max(240, Math.min(width, maxSpreadWidth))
     : Math.max(320, Math.min(width, Math.floor(maxSpreadWidth / 2)));
   const pageHeight = Math.round(pageWidth * aspectRatio);
-  const instanceKey = useMemo(() => {
-    const first = pages[0] ?? "";
-    const last = pages[pages.length - 1] ?? "";
-    return `${pages.length}-${first}-${last}-${pageWidth}-${pageHeight}-${isMobile}`;
-  }, [pages, pageWidth, pageHeight, isMobile]);
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -69,26 +64,45 @@ export default function Flipbook({
 
   useEffect(() => {
     if (!bookRef.current) return;
+    // Hold initialization until the wrapper has been measured.
+    // Initialising at the fallback `width` and then re-initialising the
+    // moment the ResizeObserver fires used to cause a visible race —
+    // sometimes the "1 of N" header rendered with an empty book underneath
+    // (the destroy/recreate happened mid-load), and sometimes PageFlip's
+    // destroy() threw during the second pass and bubbled all the way up to
+    // the global error boundary at src/app/error.tsx ("page 500 / Try
+    // Again"). Waiting for a real measurement turns those into one clean
+    // init.
+    if (containerWidth == null) return;
 
     let cancelled = false;
     setIsLoading(true);
 
-    // Create all page elements
-    const pageElements: HTMLDivElement[] = [];
-    pages.forEach((src) => {
-      const pageElement = document.createElement("div");
-      pageElement.className = "page";
-      pageElement.setAttribute("data-density", "hard");
-      
-      const img = document.createElement("img");
-      img.src = src;
-      img.style.width = "100%";
-      img.style.height = "100%";
-      img.style.objectFit = "contain";
-      
-      pageElement.appendChild(img);
-      pageElements.push(pageElement);
-    });
+    // Create all page elements. Wrapped in try/catch defensively — a
+    // malformed page URL or DOM error here used to take down the whole
+    // tree.
+    let pageElements: HTMLDivElement[] = [];
+    try {
+      pageElements = pages.map((src) => {
+        const pageElement = document.createElement("div");
+        pageElement.className = "page";
+        pageElement.setAttribute("data-density", "hard");
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "contain";
+
+        pageElement.appendChild(img);
+        return pageElement;
+      });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Error building flipbook page elements:", error);
+      setIsLoading(false);
+      return;
+    }
 
     // Wait a tick for DOM to update
     const rafId = window.requestAnimationFrame(() => {
@@ -96,7 +110,12 @@ export default function Flipbook({
 
       try {
         if (flipRef.current) {
-          flipRef.current.destroy();
+          try {
+            flipRef.current.destroy();
+          } catch {
+            // page-flip occasionally throws when destroying mid-animation;
+            // we don't care — we're rebuilding anyway.
+          }
           flipRef.current = null;
         }
 
@@ -130,7 +149,7 @@ export default function Flipbook({
         (flipInstance as any).on("flip", (e: any) => {
           setCurrentPage(e.data);
         });
-        
+
         setCurrentPage(0);
         setIsLoading(false);
       } catch (error) {
@@ -153,7 +172,7 @@ export default function Flipbook({
         flipRef.current = null;
       }
     };
-  }, [pages, pageWidth, pageHeight, isMobile, instanceKey]);
+  }, [pages, pageWidth, pageHeight, isMobile, containerWidth]);
 
   const goToNextPage = () => {
     if (flipRef.current) {
@@ -194,10 +213,13 @@ export default function Flipbook({
         </div>
       )}
       
-      {/* Flipbook Container */}
-      <div 
-        key={instanceKey}
-        ref={bookRef} 
+      {/* Flipbook Container — no `key` here on purpose. The effect above
+          already destroys and rebuilds the PageFlip when its deps change;
+          keying the div as well used to cause an unmount race where
+          destroy() ran against a detached DOM element and sometimes
+          bubbled an error up to the global error boundary. */}
+      <div
+        ref={bookRef}
         className="flipbook-container"
         style={{
           boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",

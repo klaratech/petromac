@@ -7,6 +7,7 @@ import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
 import { useDebounce } from '@/hooks/useDebounce';
 import { buildClientApiUrl } from '@/lib/api';
 import SuccessStoriesFilters from './SuccessStoriesFilters';
+import FlipbookErrorBoundary from './FlipbookErrorBoundary';
 import {
   loadSuccessStoriesData,
 } from '../services/successStories.service';
@@ -260,14 +261,16 @@ export default function SuccessStoriesFlipbook({
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <Flipbook
-              pages={pageUrls}
-              pageNumbers={pageNumbers}
-              width={600}
-              height={800}
-              selectedPages={selectedPages}
-              onToggleSelect={handleToggleSelection}
-            />
+            <FlipbookErrorBoundary>
+              <Flipbook
+                pages={pageUrls}
+                pageNumbers={pageNumbers}
+                width={600}
+                height={800}
+                selectedPages={selectedPages}
+                onToggleSelect={handleToggleSelection}
+              />
+            </FlipbookErrorBoundary>
           </div>
         )}
       </div>
