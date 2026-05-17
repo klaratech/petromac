@@ -141,18 +141,19 @@ export const HELIX_MECHANISM: MechanismConfig = {
     //    The conventional-mechanism video plays between the 9.0"/5.8"
     //    brackets so motion + annotation share one slide.
     //
-    //    spreadPct is tuned to the casing diameter — the left bracket sits
-    //    further from centre (representing the wider 9.0" casing wall), the
-    //    right bracket sits closer in (5.8" wall). Ratio approximates
-    //    5.8 / 9.0 ≈ 0.65.
+    //    spreadPct values are tuned to where the tool's arm tips actually
+    //    land in the rendered video, NOT a strict diameter ratio. The 9.0"
+    //    arm tips sit ~27% from each edge (a touch wider than 5.8" because
+    //    those arms reach further). On a tablet the user can compare to the
+    //    ICOTA source slide and we'll dial these values further if needed.
     {
       type: 'annotated',
       label: 'Conventional centraliser',
       image: '/images/helix-mechanism-conventional.png',
       video: '/videos/transcoded/conventional-largecasings.mp4',
       callouts: [
-        { side: 'left', label: '9.0"', spreadPct: 12 },
-        { side: 'right', label: '5.8"', spreadPct: 26 },
+        { side: 'left', label: '9.0"', spreadPct: 27 },
+        { side: 'right', label: '5.8"', spreadPct: 32 },
       ],
       bullets: [
         { text: 'Pivot point on SAME side' },
@@ -169,8 +170,8 @@ export const HELIX_MECHANISM: MechanismConfig = {
       image: '/images/helix-mechanism-helix.png',
       video: '/videos/transcoded/helix-mechanism.mp4',
       callouts: [
-        { side: 'left', label: '9.0"', spreadPct: 12 },
-        { side: 'right', label: '5.8"', spreadPct: 26 },
+        { side: 'left', label: '9.0"', spreadPct: 27 },
+        { side: 'right', label: '5.8"', spreadPct: 32 },
       ],
       bullets: [
         { text: 'Pivot point on OPPOSITE side' },
