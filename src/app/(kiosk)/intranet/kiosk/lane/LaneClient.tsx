@@ -145,47 +145,9 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
         },
       },
     },
-    {
-      key: 'data-quality',
-      label: 'Data Quality',
-      open: {
-        type: 'overlay',
-        config: {
-          laneLabel: 'Open Hole',
-          title: 'Data Quality',
-          video: '/videos/transcoded/WirelineExpress-subtitled.mp4',
-          // Prefix-matches "Wireline Express" (also includes the "- FT" jobs).
-          trackRecordSystem: 'Wireline Express',
-          enableSuccessStories: true,
-          mechanism: {
-            title: 'Data Quality',
-            slides: [
-              {
-                type: 'video',
-                label: 'Conventional mechanism',
-                src: '/videos/transcoded/conventional-data-quality.mp4',
-              },
-              {
-                type: 'video',
-                label: 'Petromac mechanism',
-                src: '/videos/transcoded/data-quality-mechanism.mp4',
-                highlight: true,
-              },
-            ],
-          },
-          logs: {
-            title: 'Data Quality',
-            slides: [
-              {
-                type: 'single',
-                src: '/images/data-quality-logs-1.png',
-                caption: 'Data quality log comparison',
-              },
-            ],
-          },
-        },
-      },
-    },
+    // Data Quality dropped May 2026 — overlapped with High Deviation
+    // (same trackRecordSystem: 'Wireline Express'), leaving OH at three
+    // buttons to match the CH lane strip.
     {
       key: 'pathfinder',
       label: 'Pathfinder',
@@ -248,25 +210,47 @@ function LaneLoopContent() {
   const [active, setActive] = useState<ActiveExperience | null>(null);
   const [overlayVisible, setOverlayVisible] = useState(true);
   const overlayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // Pointer-inside is a ref (not state) so we can read the latest value
+  // inside revealOverlay without re-creating the callback on every change.
+  const pointerInsideRef = useRef(false);
   // Ref to the lane attractor <video> so we can pause it when an experience
   // is open — running two video decoders in parallel on the Android tablet
   // is wasted CPU, and the attractor's audio would bleed under the
   // experience's own clip.
   const attractorRef = useRef<HTMLVideoElement | null>(null);
 
-  // Overlay buttons stay hidden over the video and surface on hover / tap,
-  // then fade out again after a few idle seconds.
-  const revealOverlay = useCallback(() => {
-    setOverlayVisible(true);
+  // Skip the auto-hide timer while the cursor is over the lane. On
+  // desktop this keeps the strip visible the whole time you're hovering;
+  // on touch (where mouseenter / mouseleave don't fire reliably for taps)
+  // the timer still runs as before.
+  const scheduleAutoHide = useCallback(() => {
     if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+    if (pointerInsideRef.current) return;
     overlayTimerRef.current = setTimeout(
       () => setOverlayVisible(false),
       OVERLAY_AUTOHIDE,
     );
   }, []);
 
+  // Overlay buttons stay hidden over the video and surface on hover / tap.
+  const revealOverlay = useCallback(() => {
+    setOverlayVisible(true);
+    scheduleAutoHide();
+  }, [scheduleAutoHide]);
+
+  const handleMouseEnter = useCallback(() => {
+    pointerInsideRef.current = true;
+    setOverlayVisible(true);
+    if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    pointerInsideRef.current = false;
+    scheduleAutoHide();
+  }, [scheduleAutoHide]);
+
   // Show briefly on arrival (and whenever an experience closes) so staff
-  // know the buttons are there, then auto-hide.
+  // know the buttons are there, then auto-hide (unless mouse is hovering).
   useEffect(() => {
     if (!active) revealOverlay();
     return () => {
@@ -323,6 +307,8 @@ function LaneLoopContent() {
   return (
     <div
       className="relative w-full h-screen bg-black overflow-hidden"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onMouseMove={revealOverlay}
       onClick={revealOverlay}
       onTouchStart={revealOverlay}
