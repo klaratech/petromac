@@ -48,7 +48,7 @@ export const systemMedia: Record<string, SystemMedia> = {
   'Focus Centralizers': {
     // Uses the subtitled Helix clip so the kiosk gets narration + on-screen
     // captions in the Focus Centralizers experience. Routed through
-    // useKioskVideo in FocusCentralizersExperience so the kiosk-hd 1080p
+    // useKioskVideo in HelixExperience so the kiosk-hd 1080p
     // variant is picked up automatically when present.
     video: '/videos/transcoded/helix-subtitled.mp4?v=20240517',
     // Focus Centralizers brandmark — reuses focus.png intentionally; a

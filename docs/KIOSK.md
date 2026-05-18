@@ -13,7 +13,7 @@ We pre-cache the kiosk shell and small data files, and runtime‑cache large med
         ├─► OH overlay: Formation Testing, High Deviation, Data Quality, Pathfinder
         │     → OverlayExperience (looping video + HUD; Helix-pattern scaffold)
         └─► CH overlay: Helix, Rocker, Other
-              → Helix  → FocusCentralizersExperience (Helix video loop + HUD
+              → Helix  → HelixExperience (Helix video loop + HUD
                           + Rocker corner badge)
               → Rocker → RockerExperience
               → Other  → "Coming soon" placeholder

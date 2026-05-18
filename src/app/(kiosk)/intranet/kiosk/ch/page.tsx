@@ -2,12 +2,12 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import FocusCentralizersExperience from '@/components/kiosk/FocusCentralizersExperience';
+import HelixExperience from '@/components/kiosk/HelixExperience';
 import { KIOSK_HOME_PATH } from '@/constants/app';
 
 /**
  * Cased Hole entry point — collapsed into a single page that mounts the
- * Helix (FocusCentralizersExperience) view directly.
+ * Helix experience view directly.
  *
  * The old CH lane attractor (`/intranet/kiosk/lane?lane=ch`) was a near-
  * identical preview of this same Helix video with a different button
@@ -51,7 +51,7 @@ export default function CasedHolePage() {
   }, [router]);
 
   return (
-    <FocusCentralizersExperience
+    <HelixExperience
       onClose={() => router.push(KIOSK_HOME_PATH)}
     />
   );

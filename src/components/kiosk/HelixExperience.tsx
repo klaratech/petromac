@@ -18,7 +18,11 @@ interface Props {
 const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
 
 /**
- * Cased-hole "Focus Centralizers" experience.
+ * HelixExperience — cased-hole Helix view.
+ *
+ * Lives under the "Focus Centralizers" product family in systemMedia
+ * (Helix + Rocker both belong to that family), but this component is
+ * specifically the Helix entry point. Splash → Cased Hole lands here.
  *
  * - Helix intro video loops fullscreen in the background.
  * - HUD strip of 2 buttons (Mechanism, Case Studies) appears on entry,
@@ -29,7 +33,7 @@ const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
  * - Bottom-right corner badge for ROCKER → opens the sister Rocker view
  *   with the same 2-button HUD over a still product layout.
  */
-export default function FocusCentralizersExperience({ onClose }: Props) {
+export default function HelixExperience({ onClose }: Props) {
   const [view, setView] = useState<View>('main');
   const { hudVisible, handleTap } = useAutoHideHud(
     view === 'main',

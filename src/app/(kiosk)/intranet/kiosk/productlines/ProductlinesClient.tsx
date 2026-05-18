@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SystemModal from '@/components/kiosk/SystemModal';
-import FocusCentralizersExperience from '@/components/kiosk/FocusCentralizersExperience';
+import HelixExperience from '@/components/kiosk/HelixExperience';
 import {
   FEATURED_SYSTEMS,
   featuredSystems,
@@ -182,7 +182,7 @@ export default function ProductlinesClient() {
         {/* CH lane "Focus Centralizers" tile gets the dedicated Helix-centric
             experience (looping video + HUD overlay + Rocker corner badge). */}
         {selectedSystem === 'Focus Centralizers' && (
-          <FocusCentralizersExperience
+          <HelixExperience
             onClose={() => setSelectedSystem(null)}
           />
         )}

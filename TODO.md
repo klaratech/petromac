@@ -65,7 +65,7 @@
   - [ ] OH overlay mechanism + Case Studies content (LaneClient OH configs):
     - Mechanism videos at `/public/videos/transcoded/conventional-formation-testing.mp4` + `formation-testing-mechanism.mp4` (Formation Testing), `conventional-high-deviation.mp4` + `high-deviation-mechanism.mp4` (High Deviation), `conventional-holefinding.mp4` + `pathfinder-mechanism.mp4` (Pathfinder).
     - Case-study log images at `/public/images/formation-testing-logs-1.png`, `high-deviation-logs-1.png`, `pathfinder-logs-1.png`.
-  - [ ] Corner-badge silhouettes — `FocusCentralizersExperience` and `RockerExperience` reuse `/images/focus.png` for the small Rocker / Helix badge in the bottom-right corner. Dedicated tool silhouettes (≈12×12 px usable) would read better than the recycled focus logo.
+  - [ ] Corner-badge silhouettes — `HelixExperience` and `RockerExperience` reuse `/images/focus.png` for the small Rocker / Helix badge in the bottom-right corner. Dedicated tool silhouettes (≈12×12 px usable) would read better than the recycled focus logo.
   - [ ] `kiosk-hd/WirelineExpress-subtitled.mp4` — the OH lane attractor swapped to the `-subtitled` variant in May 2026 but the kiosk-hd folder still only has the silent `WirelineExpress.mp4`. Drop a 1080p subtitled master so `useKioskVideo` picks it up for the trade-show display.
   - [ ] Thor product video (the FeaturedProducts Thor card is commented out until graphics + messaging are finalised)
   - [x] Rocker product images (May 2026) — `rocker.png` (Rocker, 1455×975) and `rocker-inline.png` (Rocker Inline, 1920×1756, resized down from a 3840px master) dropped into `public/images/` and wired into a side-by-side panel layout on the Rocker experience main view. Rocker GLB model still pending (`/public/models/rocker.glb`).
@@ -99,7 +99,7 @@
 - [x] Contact page rework — form-primary + info-sidebar layout on the light theme; `ContactForm` split into a form-only component
 - [x] Team / About copy — replaced "regional managers in market" jargon with "across the major oil & gas basins"
 - [x] Patents — self-hosted the final 9 granted-patent PDFs; all 44 patents now linked; fixed the About page count (35 patents / 8 families → 44 / 9 categories)
-- [x] Kiosk OH / CH split workflow — lane chooser, FocusCentralizersExperience (Helix video loop + HUD), Rocker corner badge, MechanismScreen + LogsScreen, per-lane background video sequence on productlines
+- [x] Kiosk OH / CH split workflow — lane chooser, HelixExperience (Helix video loop + HUD), Rocker corner badge, MechanismScreen + LogsScreen, per-lane background video sequence on productlines
 - [x] Track Record page redesign — hero stats row, full-bleed map, brand-color intensity choropleth, legend, hover tooltips, right-side YearlyStats drawer (Esc-dismiss), Top-5 country chart, refined filter pills
 - [x] Patents page rebuild — collapsible summary table, regional jurisdiction grouping, keyboard + ARIA-accessible rows
 - [x] Cross-links between `/about/patents` and `/about/publications`

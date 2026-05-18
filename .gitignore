@@ -167,3 +167,8 @@ ICOTA*.pptx
 # Full-resolution video masters — too large for git, transcoded before commit.
 # The web-optimized derivatives live in public/videos/transcoded/ and ARE committed.
 /public/videos/originals/
+
+# Playwright run artifacts — error contexts, last-run pointer, traces, etc.
+# These are generated on each `pnpm test:e2e` run; not source.
+/test-results/
+/playwright-report/

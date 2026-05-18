@@ -11,7 +11,7 @@ import LogsScreen, { type LogsConfig } from '@/components/kiosk/ch/LogsScreen';
 /**
  * Config for a generic kiosk product experience.
  *
- * Open-hole sibling of `FocusCentralizersExperience` — same shape: looping
+ * Open-hole sibling of `HelixExperience` — same shape: looping
  * video background + 2-button HUD (Mechanism · Case Studies) + close.
  * Driven by a config object so new overlay buttons can be added without
  * copy-pasting a component. Track Record + Success Stories live INSIDE

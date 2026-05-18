@@ -18,7 +18,7 @@ interface Props {
 const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
 
 /**
- * RockerExperience — sister view to FocusCentralizersExperience for the
+ * RockerExperience — sister view to HelixExperience for the
  * smaller-casing Rocker tool. Same 2-button HUD (Mechanism · Case Studies)
  * + Helix corner badge. There's no intro video for Rocker — the main view
  * is a clean side-by-side of the two tool variants (Rocker / Rocker
@@ -59,7 +59,7 @@ export default function RockerExperience({ onBack, onClose }: Props) {
   }
 
   // Main view — wrap in FullScreenLayer so this works whether opened from
-  // FocusCentralizersExperience (which already wraps us) or directly from
+  // HelixExperience (which already wraps us) or directly from
   // the CH lane attractor (LaneClient renders us inline). Without this, the
   // lane's right-side overlay strip (z-20) showed through.
   return (
