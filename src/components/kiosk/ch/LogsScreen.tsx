@@ -29,6 +29,27 @@ export interface AnnotationCircle {
   rPct?: number;
 }
 
+/** A single annotation block — title, optional bullets, and the circles on
+ *  the image that this block points at. The block's `tone` colors both
+ *  the title text and the strokes of its circles, so a slide with both a
+ *  "poor" zone (red) and an "excellent" zone (blue) reads cleanly. */
+export interface LogAnnotation {
+  /** Optional eyebrow shown above the title, e.g. "Key takeaway". */
+  eyebrow?: string;
+  /** Headline / main statement, e.g. "Excellent Centralization in 9-5/8"
+   *  and 7" casings with CX9". */
+  title: string;
+  /** Optional bullet list shown under the title. */
+  bullets?: string[];
+  /** Visual tone — colors the title and the corresponding circle strokes.
+   *  'red'  → limitations / poor outcome
+   *  'blue' → benefits / good outcome (brand navy)
+   *  undefined → neutral (white / navy circles) */
+  tone?: 'red' | 'blue';
+  /** Circle markers on the image that this annotation refers to. */
+  circles: AnnotationCircle[];
+}
+
 export type LogsSlide =
   | {
       type: 'single';
@@ -43,22 +64,14 @@ export type LogsSlide =
     }
   | {
       /** Annotated log — image on the left with transparent circles overlaid
-       *  at specific spots; a text label sits in a card to the right that
-       *  describes what the circles are pointing at. Used for ICOTA-style
-       *  log call-outs where multiple drops / spikes / events share a single
-       *  takeaway. */
+       *  at specific spots; a stack of text cards sits on the right and each
+       *  card calls out a different set of circles. Used for ICOTA-style log
+       *  call-outs where a single strip shows multiple distinct outcomes
+       *  (e.g. poor centralisation up top, excellent down below). */
       type: 'annotated';
       src: string;
       caption: string;
-      annotation: {
-        /** Single text block describing what the circles are pointing to,
-         *  e.g. "4 drops in HTEN of ONLY 60lbs from CX9 on IBC & Sonic". */
-        text: string;
-        /** Optional shorter eyebrow above the text, e.g. "Key takeaway". */
-        eyebrow?: string;
-        /** Circle markers placed on top of the image. */
-        circles: AnnotationCircle[];
-      };
+      annotations: LogAnnotation[];
     };
 
 export interface LogsConfig {
@@ -75,6 +88,7 @@ interface Props {
 // ── Cased Hole presets (ported from the original Helix/Rocker maps) ──────────
 // Asset slots — drop files at these paths and the slides pick them up:
 //   /public/images/kiosk-images/Helix_Log1.jpg  (annotated slide 1)
+//   /public/images/kiosk-images/Helix_Log2.png  (annotated slide 2)
 //   /public/images/helix-cbl-setup.png          (CBL slide)
 //   /public/images/rocker-logs-{N}.png          (Rocker log comparisons)
 //
@@ -90,23 +104,64 @@ export const HELIX_LOGS: LogsConfig = {
     //
     // Slide 1 — PEMEX CIBIX-35 log strip. Four leftward drops in the red
     // HTEN curve, each only ~60 lbs, demonstrate how cleanly the CX9 Helix
-    // runs through IBC + Sonic ledges. The circle positions are
-    // approximate (% of the image bounding box) — easy to dial in from a
-    // tablet once we're standing in front of the kiosk.
+    // runs through IBC + Sonic ledges. Circle positions are approximate
+    // (% of the image bounding box) — easy to dial in from a tablet once
+    // we're standing in front of the kiosk.
     {
       type: 'annotated',
       src: '/images/kiosk-images/Helix_Log1.jpg',
       caption: 'PEMEX CIBIX-35 — HELIX run',
-      annotation: {
-        eyebrow: 'Key takeaway',
-        text: '4 drops in HTEN of ONLY 60 lbs from CX9 on IBC & Sonic',
-        circles: [
-          { xPct: 80, yPct: 49 },
-          { xPct: 72, yPct: 67 },
-          { xPct: 71, yPct: 79 },
-          { xPct: 69, yPct: 90 },
-        ],
-      },
+      annotations: [
+        {
+          eyebrow: 'Key takeaway',
+          title: '4 drops in HTEN of ONLY 60 lbs from CX9 on IBC & Sonic',
+          tone: 'blue',
+          circles: [
+            { xPct: 80, yPct: 49 },
+            { xPct: 72, yPct: 67 },
+            { xPct: 71, yPct: 79 },
+            { xPct: 69, yPct: 90 },
+          ],
+        },
+      ],
+    },
+    // Slide 2 — ENI BlackTip P5 log strip. Two contrasting outcomes on the
+    // same well: poor centralisation in the upper 13-3/8" with conventional
+    // centralisers, then excellent centralisation in the deeper 9-5/8" and
+    // 7" sections after switching to CX9. Two annotation blocks — red zone
+    // up top, blue zone in the middle + bottom.
+    {
+      type: 'annotated',
+      src: '/images/kiosk-images/Helix_Log2.png',
+      caption: 'ENI BlackTip P5 — HELIX run',
+      annotations: [
+        {
+          tone: 'red',
+          title: 'Poor centralization in 13-3/8" casing with conventional centralizers',
+          bullets: [
+            'Large difference between Min and Max TT’s',
+            'Erratic & poor sonic data',
+          ],
+          circles: [
+            // Sonic track, upper 13-3/8" zone — wider radius so it reads
+            // as "this whole noisy region", not a pinpoint.
+            { xPct: 65, yPct: 22, rPct: 7 },
+          ],
+        },
+        {
+          tone: 'blue',
+          title: 'Excellent centralization in 9-5/8" and 7" casings with CX9',
+          bullets: [
+            'Difference between Min and Max TT’s < 10 µs',
+          ],
+          circles: [
+            // Sonic track, 9-5/8" zone.
+            { xPct: 65, yPct: 44, rPct: 5 },
+            // Sonic track, 7" zone.
+            { xPct: 65, yPct: 62, rPct: 5 },
+          ],
+        },
+      ],
     },
     {
       type: 'single',
@@ -162,7 +217,7 @@ export default function LogsScreen({ config, onBack }: Props) {
           <AnnotatedPane
             src={slide.src}
             alt={slide.caption}
-            annotation={slide.annotation}
+            annotations={slide.annotations}
           />
         )}
 
@@ -266,28 +321,25 @@ function ComparisonImage({
 
 /**
  * AnnotatedPane — log image on the left with SVG circles overlaid at
- * configured % positions, and a side-mounted text card on the right that
- * describes what the circles are pointing at. Replaces the
- * "single-callout-with-N-arrows" pattern from the slide deck source.
+ * configured % positions, and a vertical stack of text cards on the right.
+ * Each card calls out a different annotation block; the block's `tone`
+ * colors both the card title and the strokes of its circles so the
+ * visual association reads at a glance.
  *
- * The circles are drawn into the image's bounding box (an SVG with
- * `preserveAspectRatio="none"` 0..100 coordinate space) so the positions
- * stay locked to the image as it letterboxes inside its column. Stroke
- * is the brand navy with a thin white halo so it reads on both the
- * white log strip and the darker table header at the top.
+ * The circles are drawn into the image's bounding box (SVG viewBox
+ * `0 0 100 100` with `preserveAspectRatio="none"`) so positions stay locked
+ * to the image as it letterboxes inside its column. Each circle is drawn
+ * twice — a white halo underneath the tone-colored stroke — so it reads
+ * against both the white log strip and the darker table header up top.
  */
 function AnnotatedPane({
   src,
   alt,
-  annotation,
+  annotations,
 }: {
   src: string;
   alt: string;
-  annotation: {
-    text: string;
-    eyebrow?: string | undefined;
-    circles: AnnotationCircle[];
-  };
+  annotations: LogAnnotation[];
 }) {
   return (
     <div className="w-full h-full grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-6 p-8">
@@ -303,56 +355,95 @@ function AnnotatedPane({
         />
 
         {/* Annotation overlay — pointer-events-none so taps still register
-            on the lane underneath if anything were interactive. */}
+            on the lane underneath if anything were interactive. Flatten the
+            annotations into a single circle list so each block can carry
+            its own stroke colour. */}
         <svg
           aria-hidden="true"
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
           className="absolute inset-0 w-full h-full pointer-events-none"
         >
-          {annotation.circles.map((c, i) => {
-            const r = c.rPct ?? 3.5;
-            return (
-              <g key={`${c.xPct}-${c.yPct}-${i}`}>
-                {/* White halo underneath the navy stroke — keeps the
-                    circle visible on top of the red HTEN curve. */}
-                <circle
-                  cx={c.xPct}
-                  cy={c.yPct}
-                  r={r}
-                  fill="none"
-                  stroke="white"
-                  strokeWidth={1.5}
-                  vectorEffect="non-scaling-stroke"
-                />
-                <circle
-                  cx={c.xPct}
-                  cy={c.yPct}
-                  r={r}
-                  fill="none"
-                  stroke="#1E4A9A"
-                  strokeWidth={2.5}
-                  vectorEffect="non-scaling-stroke"
-                />
-              </g>
-            );
-          })}
+          {annotations.flatMap((a, ai) =>
+            a.circles.map((c, ci) => {
+              const r = c.rPct ?? 3.5;
+              const stroke = toneStroke(a.tone);
+              return (
+                <g key={`a${ai}-c${ci}-${c.xPct}-${c.yPct}`}>
+                  <circle
+                    cx={c.xPct}
+                    cy={c.yPct}
+                    r={r}
+                    fill="none"
+                    stroke="white"
+                    strokeWidth={1.5}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <circle
+                    cx={c.xPct}
+                    cy={c.yPct}
+                    r={r}
+                    fill="none"
+                    stroke={stroke}
+                    strokeWidth={2.5}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </g>
+              );
+            })
+          )}
         </svg>
       </div>
 
-      {/* Side-mounted text card */}
-      <div className="flex items-center">
-        <div className="w-full rounded-2xl border border-white/15 bg-white/5 p-6">
-          {annotation.eyebrow && (
-            <p className="text-[10px] uppercase tracking-[0.3em] text-white/50 mb-3">
-              {annotation.eyebrow}
-            </p>
-          )}
-          <p className="text-xl md:text-2xl font-semibold leading-snug text-white">
-            {annotation.text}
-          </p>
-        </div>
+      {/* Side-mounted text cards — stacked vertically and evenly spaced. */}
+      <div className="flex flex-col justify-center gap-4">
+        {annotations.map((a, i) => (
+          <AnnotationCard key={`${a.title}-${i}`} annotation={a} />
+        ))}
       </div>
     </div>
   );
+}
+
+function AnnotationCard({ annotation }: { annotation: LogAnnotation }) {
+  const titleClass = annotation.tone === 'red'
+    ? 'text-red-400'
+    : annotation.tone === 'blue'
+      ? 'text-[#7FA8E6]'
+      : 'text-white';
+  return (
+    <div className="rounded-2xl border border-white/15 bg-white/5 p-5">
+      {annotation.eyebrow && (
+        <p className="text-[10px] uppercase tracking-[0.3em] text-white/50 mb-2">
+          {annotation.eyebrow}
+        </p>
+      )}
+      <p className={`text-lg md:text-xl font-semibold leading-snug ${titleClass}`}>
+        {annotation.title}
+      </p>
+      {annotation.bullets && annotation.bullets.length > 0 && (
+        <ul className="mt-3 flex flex-col gap-1.5">
+          {annotation.bullets.map((b) => (
+            <li
+              key={b}
+              className="flex items-start gap-2 text-sm md:text-base text-white/85"
+            >
+              <span
+                className="mt-2 inline-block w-1 h-1 rounded-full bg-white/60 shrink-0"
+                aria-hidden="true"
+              />
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/** Stroke color for an annotation's circles. Red for limitation zones,
+ *  brand navy for benefit zones, neutral navy when unspecified. */
+function toneStroke(tone?: 'red' | 'blue'): string {
+  if (tone === 'red') return '#DC2626'; // tailwind red-600
+  return '#1E4A9A';
 }
