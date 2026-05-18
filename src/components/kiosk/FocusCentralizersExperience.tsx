@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import type { JobRecord } from '@/types/JobRecord';
@@ -175,107 +174,88 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
         {/* Subtle dark overlay so HUD copy stays readable over bright frames */}
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
-        {/* Top-right close — appears with the HUD on hover / tap */}
-        <AnimatePresence>
-          {hudVisible && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                onClose();
-              }}
-              aria-label="Close"
-              className="absolute top-4 right-4 z-50 text-white text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60"
-            >
-              ✕
-            </motion.button>
-          )}
-        </AnimatePresence>
+        {/* Top-right close — fades with the HUD via CSS opacity. */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          aria-label="Close"
+          className={`absolute top-4 right-4 z-50 text-white text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 transition-opacity duration-250 ${
+            hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          ✕
+        </button>
 
-        {/* HUD button strip — small, top centre, kept clear of the native
-            video controls along the bottom. */}
-        <AnimatePresence>
-          {hudVisible && (
-            <motion.div
-              initial={{ opacity: 0, y: -16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.25 }}
-              className="absolute top-4 left-1/2 -translate-x-1/2 z-40 flex gap-2 px-2 py-2 rounded-xl bg-black/35 backdrop-blur border border-white/10 shadow-xl"
-            >
-              <HudButton
-                label="Track Record"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setView('track-record');
-                }}
-              />
-              <HudButton
-                label="Mechanism"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setView('mechanism');
-                }}
-              />
-              <HudButton
-                label="Case Studies"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setView('logs');
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* HUD button strip — bumped bg-black/65 (was bg-black/35 +
+            backdrop-blur) to keep contrast without the per-frame composite
+            cost of backdrop-filter. */}
+        <div
+          className={`absolute top-4 left-1/2 -translate-x-1/2 z-40 flex gap-2 px-2 py-2 rounded-xl bg-black/65 border border-white/10 shadow-xl transition-opacity duration-250 ${
+            hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <HudButton
+            label="Track Record"
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('track-record');
+            }}
+          />
+          <HudButton
+            label="Mechanism"
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('mechanism');
+            }}
+          />
+          <HudButton
+            label="Case Studies"
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('logs');
+            }}
+          />
+        </div>
 
-        {/* Rocker corner badge — bottom-right, appears with the HUD */}
-        <AnimatePresence>
-          {hudVisible && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                setView('rocker');
-              }}
-              aria-label="Open Rocker"
-              className="absolute bottom-8 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 backdrop-blur text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-colors"
-            >
-              {/* TODO(graphics): swap for a small Rocker silhouette / icon */}
-              <span className="w-5 h-5 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
-                <Image
-                  src="/images/focus.png"
-                  alt=""
-                  width={12}
-                  height={12}
-                  className="opacity-80"
-                />
-              </span>
-              <span>Rocker</span>
-            </motion.button>
-          )}
-        </AnimatePresence>
+        {/* Rocker corner badge — fades with the HUD. */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setView('rocker');
+          }}
+          aria-label="Open Rocker"
+          className={`absolute bottom-8 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-opacity duration-250 ${
+            hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          {/* Corner-badge silhouette pending — tracked in TODO.md. */}
+          <span className="w-5 h-5 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
+            <Image
+              src="/images/focus.png"
+              alt=""
+              width={12}
+              height={12}
+              className="opacity-80"
+            />
+          </span>
+          <span>Rocker</span>
+        </button>
       </div>
     </FullScreenLayer>
   );
 }
 
-/** Shared full-screen wrapper so all views render at the same z-layer. */
+/** Shared full-screen wrapper so all views render at the same z-layer.
+ *  No fade-in motion — the lane attractor underneath is already paused
+ *  by LaneClient when an experience opens, so the snap to z-50 over black
+ *  is the dramatic reveal on its own. */
 function FullScreenLayer({ children }: { children: React.ReactNode }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black"
-    >
+    <div className="fixed inset-0 z-50 bg-black">
       {children}
-    </motion.div>
+    </div>
   );
 }
 

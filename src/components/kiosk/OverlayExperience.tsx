@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
@@ -206,100 +205,83 @@ export default function OverlayExperience({ config, onClose }: Props) {
         {/* Subtle dark overlay so HUD copy stays readable over bright frames */}
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
-        {/* Top-right close — fades in/out with the HUD (CH parity) */}
-        <AnimatePresence>
-          {hudVisible && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                onClose();
-              }}
-              aria-label="Close"
-              className="absolute top-4 right-4 z-50 text-white text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60"
-            >
-              ✕
-            </motion.button>
-          )}
-        </AnimatePresence>
+        {/* Top-right close — fades in/out with the HUD (CH parity).
+            Always mounted; CSS opacity transition + pointer-events-none
+            when hidden, so the looping video can shine on idle. */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          aria-label="Close"
+          className={`absolute top-4 right-4 z-50 text-white text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 transition-opacity duration-250 ${
+            hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          ✕
+        </button>
 
-        {/* Top-left product label — also fades with the HUD so the looping
-            video can shine on its own when the user idles. */}
-        <AnimatePresence>
-          {hudVisible && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="absolute top-6 left-6 z-40 pointer-events-none"
-            >
-              <p className="text-xs uppercase tracking-[0.4em] text-white/60">
-                {config.laneLabel}
-              </p>
-              <h2 className="text-3xl font-extrabold text-white drop-shadow">
-                {config.title}
-              </h2>
-              {config.subtitle && (
-                <p className="text-base text-white/70 mt-1">{config.subtitle}</p>
-              )}
-            </motion.div>
+        {/* Top-left product label — same fade-with-HUD treatment. */}
+        <div
+          className={`absolute top-6 left-6 z-40 pointer-events-none transition-opacity duration-250 ${
+            hudVisible ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <p className="text-xs uppercase tracking-[0.4em] text-white/60">
+            {config.laneLabel}
+          </p>
+          <h2 className="text-3xl font-extrabold text-white drop-shadow">
+            {config.title}
+          </h2>
+          {config.subtitle && (
+            <p className="text-base text-white/70 mt-1">{config.subtitle}</p>
           )}
-        </AnimatePresence>
+        </div>
 
-        {/* HUD button strip — small, top centre. Matches the Helix experience. */}
-        <AnimatePresence>
-          {hudVisible && (
-            <motion.div
-              initial={{ opacity: 0, y: -16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.25 }}
-              className="absolute top-4 left-1/2 -translate-x-1/2 z-40 flex gap-2 px-2 py-2 rounded-xl bg-black/35 backdrop-blur border border-white/10 shadow-xl"
-            >
-              <HudButton
-                label="Track Record"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setView('track-record');
-                }}
-              />
-              <HudButton
-                label="Mechanism"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setView('mechanism');
-                }}
-              />
-              <HudButton
-                label="Case Studies"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setView('logs');
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* HUD button strip — bumped bg-black/65 to compensate for the
+            dropped backdrop-blur; readable over bright frames without the
+            per-frame composite cost. */}
+        <div
+          className={`absolute top-4 left-1/2 -translate-x-1/2 z-40 flex gap-2 px-2 py-2 rounded-xl bg-black/65 border border-white/10 shadow-xl transition-opacity duration-250 ${
+            hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <HudButton
+            label="Track Record"
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('track-record');
+            }}
+          />
+          <HudButton
+            label="Mechanism"
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('mechanism');
+            }}
+          />
+          <HudButton
+            label="Case Studies"
+            onClick={(e) => {
+              e.stopPropagation();
+              setView('logs');
+            }}
+          />
+        </div>
       </div>
     </FullScreenLayer>
   );
 }
 
-/** Shared full-screen wrapper so all views render at the same z-layer. */
+/** Shared full-screen wrapper so all views render at the same z-layer.
+ *  Plain `fixed inset-0` div — no fade-in motion. Snap is fine here: the
+ *  underlying lane attractor is paused before this mounts and the dramatic
+ *  z-50 cover frames the experience on its own. */
 function FullScreenLayer({ children }: { children: React.ReactNode }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black"
-    >
+    <div className="fixed inset-0 z-50 bg-black">
       {children}
-    </motion.div>
+    </div>
   );
 }
 

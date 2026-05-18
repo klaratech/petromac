@@ -705,7 +705,7 @@ function SpecsModal({
 }) {
   return (
     <div
-      className="absolute inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="absolute inset-0 z-50 flex items-center justify-center bg-black/85"
       onClick={onClose}
       role="dialog"
       aria-modal="true"

@@ -34,7 +34,7 @@ export default function StaffIdentityBadge() {
   // but BELOW the FullScreenLayer (z-50) that experiences open in — so the
   // experience close X never gets covered by the badge.
   return (
-    <div className="pointer-events-auto absolute right-4 top-4 z-30 max-w-sm rounded-xl border border-white/15 bg-black/70 px-4 py-3 text-white shadow-lg backdrop-blur">
+    <div className="pointer-events-auto absolute right-4 top-4 z-30 max-w-sm rounded-xl border border-white/15 bg-black/80 px-4 py-3 text-white shadow-lg">
       {authenticated && user ? (
         <div className="space-y-1">
           <p className="text-[11px] uppercase tracking-[0.24em] text-white/60">Staff Mode</p>

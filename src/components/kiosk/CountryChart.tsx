@@ -32,7 +32,7 @@ const CountryChart = memo(function CountryChart({
       className="
         absolute z-40
         bottom-4 left-4
-        bg-white/95 backdrop-blur-md text-slate-900
+        bg-white text-slate-900
         border border-slate-200 rounded-xl shadow-lg
         px-4 py-3
         w-[280px] md:w-[320px]

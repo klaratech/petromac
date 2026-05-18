@@ -2,7 +2,6 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import FocusCentralizersExperience from '@/components/kiosk/FocusCentralizersExperience';
 import RockerExperience from '@/components/kiosk/ch/RockerExperience';
 import OverlayExperience, {
@@ -332,53 +331,53 @@ function LaneLoopContent() {
       <div className="absolute inset-0 bg-black/35 z-0 pointer-events-none" />
 
       {/* Overlay button strip — right edge, vertical and deliberately
-          subtle. Hidden over the video; surfaces on hover / tap and
-          auto-hides again. Same buttons for every clip in the lane. */}
-      <AnimatePresence>
-        {overlayVisible && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute top-1/2 right-3 -translate-y-1/2 z-20 flex flex-col gap-2"
+          subtle. Always mounted, fades in/out via CSS opacity. When
+          collapsed it also disables pointer events so the user can
+          click through to the lane attractor. No backdrop-blur — the
+          mirror encoder paid for that per-frame composite. The
+          slightly bumped bg-black/40 keeps the buttons readable over
+          bright frames without it. */}
+      <div
+        className={`absolute top-1/2 right-3 -translate-y-1/2 z-20 flex flex-col gap-2 transition-opacity duration-300 ${
+          overlayVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {overlayItems.map((item) => (
+          <button
+            key={item.key}
+            onClick={() => setActive(item.open)}
+            className="px-3 py-2 rounded-lg bg-black/40 hover:bg-black/70 border border-white/10 text-white/70 hover:text-white text-xs font-medium tracking-wide transition-colors"
           >
-            {overlayItems.map((item) => (
-              <button
-                key={item.key}
-                onClick={() => setActive(item.open)}
-                className="px-3 py-2 rounded-lg bg-black/25 hover:bg-black/70 backdrop-blur-sm border border-white/10 text-white/60 hover:text-white text-xs font-medium tracking-wide transition-colors"
-              >
-                {item.label}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {item.label}
+          </button>
+        ))}
+      </div>
 
-      {/* Active experience layer */}
-      <AnimatePresence>
-        {active?.type === 'focus-centralizers' && (
-          <FocusCentralizersExperience key="fc" onClose={closeExperience} />
-        )}
-        {active?.type === 'rocker' && (
-          <RockerExperience
-            key="rocker"
-            onBack={closeExperience}
-            onClose={closeExperience}
-          />
-        )}
-        {active?.type === 'ch-other' && (
-          <ChOtherComingSoon key="ch-other" onClose={closeExperience} />
-        )}
-        {active?.type === 'overlay' && (
-          <OverlayExperience
-            key={active.config.title}
-            config={active.config}
-            onClose={closeExperience}
-          />
-        )}
-      </AnimatePresence>
+      {/* Active experience layer — conditional render, no transition
+          wrapper. The FullScreenLayer inside each experience handles
+          its own mount (snap to fixed inset-0 z-50 bg-black). Snap is
+          fine here; the experience overlay is dramatic enough on its
+          own. */}
+      {active?.type === 'focus-centralizers' && (
+        <FocusCentralizersExperience key="fc" onClose={closeExperience} />
+      )}
+      {active?.type === 'rocker' && (
+        <RockerExperience
+          key="rocker"
+          onBack={closeExperience}
+          onClose={closeExperience}
+        />
+      )}
+      {active?.type === 'ch-other' && (
+        <ChOtherComingSoon key="ch-other" onClose={closeExperience} />
+      )}
+      {active?.type === 'overlay' && (
+        <OverlayExperience
+          key={active.config.title}
+          config={active.config}
+          onClose={closeExperience}
+        />
+      )}
     </div>
   );
 }
@@ -386,12 +385,7 @@ function LaneLoopContent() {
 /** Placeholder for the cased-hole "Other" overlay button. */
 function ChOtherComingSoon({ onClose }: { onClose: () => void }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
-    >
+    <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
       <div className="text-center text-white max-w-xl px-8">
         <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-4">
           Cased Hole · Other
@@ -409,7 +403,7 @@ function ChOtherComingSoon({ onClose }: { onClose: () => void }) {
           Back
         </button>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
