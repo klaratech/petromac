@@ -1,6 +1,10 @@
 // Kiosk routes
 export const KIOSK_HOME_PATH = '/intranet/kiosk';
+// OH still uses the lane attractor; CH lands directly in the Helix
+// experience via its own route. The `/lane?lane=ch` URL redirects to
+// KIOSK_CH_PATH for backward compatibility.
 export const KIOSK_LANE_PATH = '/intranet/kiosk/lane';
+export const KIOSK_CH_PATH = '/intranet/kiosk/ch';
 export const KIOSK_PRODUCTLINES_PATH = '/intranet/kiosk/productlines';
 
 // App-wide constants

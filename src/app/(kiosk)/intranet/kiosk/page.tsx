@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { APP_CONSTANTS, KIOSK_LANE_PATH } from '@/constants/app';
+import {
+  APP_CONSTANTS,
+  KIOSK_CH_PATH,
+  KIOSK_LANE_PATH,
+} from '@/constants/app';
 
 type Lane = 'oh' | 'ch';
 
@@ -33,9 +37,17 @@ export default function HomeClient() {
     return () => clearInterval(interval);
   }, []);
 
-  // Splash → pick a lane → per-lane looping video screen with overlay nav.
+  // Splash → pick a lane. OH still goes to the looping lane attractor with
+  // an overlay button strip (4 products); CH lands directly in the Helix
+  // experience because the old CH lane was just a near-identical preview
+  // of the same Helix video. Rocker is one corner-badge tap away inside
+  // the Helix experience.
   const handleChoose = (lane: Lane) => {
-    router.push(`${KIOSK_LANE_PATH}?lane=${lane}`);
+    if (lane === 'ch') {
+      router.push(KIOSK_CH_PATH);
+    } else {
+      router.push(`${KIOSK_LANE_PATH}?lane=${lane}`);
+    }
   };
 
   return (

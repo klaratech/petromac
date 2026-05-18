@@ -1,21 +1,27 @@
 'use client';
 
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import FocusCentralizersExperience from '@/components/kiosk/FocusCentralizersExperience';
-import RockerExperience from '@/components/kiosk/ch/RockerExperience';
+import { useRouter, useSearchParams } from 'next/navigation';
 import OverlayExperience, {
   type OverlayExperienceConfig,
 } from '@/components/kiosk/OverlayExperience';
 import { useKioskVideos } from '@/hooks/useKioskVideo';
+import { KIOSK_CH_PATH } from '@/constants/app';
 
 const OVERLAY_AUTOHIDE = 4_000; // hide the overlay buttons after this idle gap (was 5_000; -20% May 2026)
 const ACTIVE_IDLE_TIMEOUT = 5 * 60 * 1000; // close an open experience after 5 min idle
 
-type Lane = 'oh' | 'ch';
+/**
+ * The lane attractor is now OH-only — CH collapsed into its own route
+ * (`/intranet/kiosk/ch`) that mounts the Helix experience directly. The
+ * type stays string-narrow in case OH ever sprouts a sibling, but `'ch'`
+ * is no longer a valid runtime value here; if it shows up in the query
+ * param we redirect to KIOSK_CH_PATH below.
+ */
+type Lane = 'oh';
 
 function isLane(value: string | null): value is Lane {
-  return value === 'oh' || value === 'ch';
+  return value === 'oh';
 }
 
 /**
@@ -30,21 +36,13 @@ const LANE_PLAYLIST: Record<Lane, string[]> = {
     '/videos/transcoded/pf-subtitled.mp4',
     '/videos/transcoded/differential-sticking-subtitled.mp4',
   ],
-  ch: [
-    '/videos/transcoded/dice.mp4',
-    '/videos/transcoded/helix-subtitled.mp4',
-  ],
 };
 
 /**
- * What an overlay button opens. The CH lane reuses the existing experiences;
- * the OH lane uses the generic `OverlayExperience` scaffold (Helix pattern).
+ * What an overlay button opens. OH uses the generic `OverlayExperience`
+ * scaffold (Helix pattern) for every product tile.
  */
-type ActiveExperience =
-  | { type: 'focus-centralizers' }
-  | { type: 'rocker' }
-  | { type: 'ch-other' }
-  | { type: 'overlay'; config: OverlayExperienceConfig };
+type ActiveExperience = { type: 'overlay'; config: OverlayExperienceConfig };
 
 interface OverlayItem {
   key: string;
@@ -189,16 +187,20 @@ const LANE_OVERLAY: Record<Lane, OverlayItem[]> = {
       },
     },
   ],
-  ch: [
-    { key: 'helix', label: 'Helix', open: { type: 'focus-centralizers' } },
-    { key: 'rocker', label: 'Rocker', open: { type: 'rocker' } },
-    { key: 'other', label: 'Other', open: { type: 'ch-other' } },
-  ],
 };
 
 function LaneLoopContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const laneParam = searchParams.get('lane');
+
+  // Backward-compat redirect: anyone still hitting `/lane?lane=ch` from a
+  // bookmark or shortcut bounces over to the new CH route. Falls back to
+  // OH for any other unknown value so the screen never sits blank.
+  useEffect(() => {
+    if (laneParam === 'ch') router.replace(KIOSK_CH_PATH);
+  }, [laneParam, router]);
+
   const lane: Lane = isLane(laneParam) ? laneParam : 'oh';
 
   // Prefers /videos/kiosk-hd/ clips when present, falls back to transcoded.
@@ -354,23 +356,8 @@ function LaneLoopContent() {
       </div>
 
       {/* Active experience layer — conditional render, no transition
-          wrapper. The FullScreenLayer inside each experience handles
-          its own mount (snap to fixed inset-0 z-50 bg-black). Snap is
-          fine here; the experience overlay is dramatic enough on its
-          own. */}
-      {active?.type === 'focus-centralizers' && (
-        <FocusCentralizersExperience key="fc" onClose={closeExperience} />
-      )}
-      {active?.type === 'rocker' && (
-        <RockerExperience
-          key="rocker"
-          onBack={closeExperience}
-          onClose={closeExperience}
-        />
-      )}
-      {active?.type === 'ch-other' && (
-        <ChOtherComingSoon key="ch-other" onClose={closeExperience} />
-      )}
+          wrapper. The FullScreenLayer inside OverlayExperience handles
+          its own mount (snap to fixed inset-0 z-50 bg-black). */}
       {active?.type === 'overlay' && (
         <OverlayExperience
           key={active.config.title}
@@ -378,31 +365,6 @@ function LaneLoopContent() {
           onClose={closeExperience}
         />
       )}
-    </div>
-  );
-}
-
-/** Placeholder for the cased-hole "Other" overlay button. */
-function ChOtherComingSoon({ onClose }: { onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
-      <div className="text-center text-white max-w-xl px-8">
-        <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-4">
-          Cased Hole · Other
-        </p>
-        <h2 className="text-5xl font-extrabold mb-6">Coming soon</h2>
-        <p className="text-lg text-white/70 mb-10">
-          {/* "Other" CH experience is tracked in TODO.md (Backlog) — last
-              priority until Helix / Rocker content is locked in. */}
-          Additional cased-hole product families will live here.
-        </p>
-        <button
-          onClick={onClose}
-          className="px-8 py-3 rounded-full bg-white text-black font-semibold tracking-wide"
-        >
-          Back
-        </button>
-      </div>
     </div>
   );
 }
