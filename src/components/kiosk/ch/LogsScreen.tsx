@@ -129,185 +129,22 @@ interface Props {
   onBack: () => void;
 }
 
-// ── Cased Hole presets (ported from the original Helix/Rocker maps) ──────────
-// Asset slots — drop files at these paths and the slides pick them up.
-// All Helix log images now ship with annotations baked in by graphics; the
-// LogsScreen render doesn't draw SVG circles on top of them. Slide captions
-// at the bottom are dropped on purpose — those used to show client + well
-// names ("PEMEX CIBIX-35", "Aramco KHRS-300", etc.) and we can't expose
-// that level of detail to a kiosk audience.
+// Configs (HELIX_LOGS, ROCKER_LOGS) moved to ./ch-configs.ts so the
+// heavier view code in this file (DrilldownMapCore + SuccessStoriesFlipbook
+// imports) can be `dynamic()`-loaded by HelixExperience / RockerExperience
+// without dragging the configs into the experience's initial bundle.
 //
-//   /public/images/kiosk-images/Helix_Log1.png    (slide 1)
-//   /public/images/kiosk-images/Helix_Log2.png    (slide 2)
-//   /public/images/kiosk-images/Helix_Log3-1.png  (slide 3, main strip)
-//   /public/images/kiosk-images/Helix_Log3-2.png  (slide 3, ECCE histogram inset)
-//   /public/images/kiosk-images/Helix_Log4.png    (slide 4)
-//   /public/images/kiosk-images/Helix_Log5-1.png  (slide 5, main strip)
-//   /public/images/kiosk-images/Helix_Log5-2.png  (slide 5, AvDrag histogram)
-//   /public/images/kiosk-images/Helix_Log5-3.png  (slide 5, ECCE histogram)
-//   /public/images/helix-cbl-setup.png            (CBL slide)
-//   /public/images/rocker-logs-{N}.png            (Rocker log comparisons)
+// Slide captions on annotated Helix slides are deliberately dropped —
+// they used to show client + well names which we can't expose to a kiosk
+// audience.
 //
-// (The Helix lever-arm comparison images moved to the Mechanism slideshow
-//  and now live under /public/images/kiosk-images/leverage-{conventional,
-//  helix}.png — see HELIX_MECHANISM in MechanismScreen.)
-
-export const HELIX_LOGS: LogsConfig = {
-  title: 'Helix',
-  // Helix + Rocker both roll up to "Focus - CH" in the operations pipeline.
-  trackRecord: {
-    system: 'Focus - CH',
-    enableSuccessStories: true,
-  },
-  slides: [
-    // Slide 0 — Track Record map. The drill-down map used to be its own
-    // HUD button; folded in here so users page through map → logs in a
-    // single flow. Country chart / yearly stats render on top of the map.
-    { type: 'map' },
-    // Slide 1 — log strip showing four leftward drops in the red HTEN
-    // curve, each only ~60 lbs. Demonstrates how cleanly the CX9 Helix
-    // runs through IBC + Sonic ledges.
-    {
-      type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log1.png',
-      annotations: [
-        {
-          title: '4 drops in HTEN of ONLY 60 lbs from CX9 on IBC & Sonic',
-          tone: 'blue',
-          circles: [],
-        },
-      ],
-    },
-    // Slide 2 — two contrasting outcomes on the same well: poor central-
-    // isation up in 13-3/8" with conventional centralisers, then excellent
-    // centralisation in the deeper 9-5/8" and 7" sections after switching
-    // to CX9. Circles + arrows baked into the image; this config carries
-    // the two side cards (red + blue).
-    {
-      type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log2.png',
-      annotations: [
-        {
-          tone: 'red',
-          title: 'Poor centralization in 13-3/8" casing with conventional centralizers',
-          bullets: [
-            'Large difference between Min and Max TT’s',
-            'Erratic & poor sonic data',
-          ],
-          circles: [],
-        },
-        {
-          tone: 'blue',
-          title: 'Excellent centralization in 9-5/8" and 7" casings with CX9',
-          bullets: [
-            'Difference between Min and Max TT’s < 10 µs',
-          ],
-          circles: [],
-        },
-      ],
-    },
-    // Slide 3 — excellent ECCE all the way out to 85° deviation in 9-5/8"
-    // casing, with the ECCE histogram inset below the bullets. The Mean
-    // call-out on the histogram is now baked into Helix_Log3-2.png so we
-    // don't draw any overlay circles on it from this side.
-    {
-      type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log3-1.png',
-      annotations: [
-        {
-          tone: 'blue',
-          title: 'CX9: Ultrasonic to 85° deviation in 9-5/8"',
-          bullets: [
-            'Excellent ECCE even where DLS is high',
-            'Excellent ECCE from vertical to 85° deviation',
-            'Average ECCE of 0.07" (limit is 0.38")',
-          ],
-          circles: [],
-          detail: {
-            src: '/images/kiosk-images/Helix_Log3-2.png',
-            alt: 'ECCE distribution histogram with mean call-out',
-          },
-        },
-      ],
-    },
-    // Slide 4 — Ultrasonic / Sonic CX9 run pushed all the way to 90°
-    // deviation across both 7" and 9-5/8" casings. Annotations baked
-    // into Helix_Log4.png.
-    {
-      type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log4.png',
-      annotations: [
-        {
-          tone: 'blue',
-          title: 'CX9: Ultrasonic / Sonic to 90° deviation in 9-5/8" / 7"',
-          bullets: [
-            'Excellent ECCE with high DLS where the well is building',
-            'Excellent ECCE at high deviations',
-            'ECCE well within limit of 7" and 9-5/8" tolerance levels',
-            'TT overlaying TTSL in both 7" and 9-5/8" over the whole deviation from 0 to 90°',
-          ],
-          circles: [],
-        },
-      ],
-    },
-    // Slide 5 — CX13 Ultrasonic run pushed to 77° in 13-3/8". Two side
-    // cards each carry their own supporting histogram: the ECCE
-    // distribution (LUP1:ECCE mean 0.0654, well below the 13-3/8"
-    // tolerance) and the AvDrag distribution (mean 0.157, very tight).
-    // Both histograms have the Mean call-out baked into the image, so
-    // no SVG overlays from this side.
-    {
-      type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log5-1.png',
-      annotations: [
-        {
-          tone: 'blue',
-          title: 'Very low ECCE, mainly unaffected by DLS',
-          bullets: ['Average of 0.06'],
-          circles: [],
-          detail: {
-            src: '/images/kiosk-images/Helix_Log5-3.png',
-            alt: 'LUP1:ECCE distribution histogram with mean call-out',
-          },
-        },
-        {
-          tone: 'blue',
-          title: 'Very stable drag of 0.15',
-          bullets: ['Getting to 80° deviation is easily achievable'],
-          circles: [],
-          detail: {
-            src: '/images/kiosk-images/Helix_Log5-2.png',
-            alt: 'AvDrag distribution histogram with mean call-out',
-          },
-        },
-      ],
-    },
-    {
-      type: 'single',
-      src: '/images/helix-cbl-setup.png',
-      caption: 'Ultrasonic-CBL set-up with HELIX',
-    },
-  ],
-};
-
-export const ROCKER_LOGS: LogsConfig = {
-  title: 'Rocker',
-  // Helix + Rocker share the "Focus - CH" rollup in the operations data;
-  // a Subsystem-level Helix/Rocker split lives on each record for future
-  // filtering but the map filters by System.
-  trackRecord: {
-    system: 'Focus - CH',
-    enableSuccessStories: true,
-  },
-  slides: [
-    { type: 'map' },
-    {
-      type: 'single',
-      src: '/images/rocker-logs-1.png',
-      caption: 'Rocker log comparison',
-    },
-  ],
-};
+// Asset slots referenced from ch-configs:
+//   /public/images/kiosk-images/Helix_Log1.png      (slide 1)
+//   /public/images/kiosk-images/Helix_Log2.png      (slide 2)
+//   /public/images/kiosk-images/Helix_Log3-{1,2}.png  (slide 3)
+//   /public/images/kiosk-images/Helix_Log4.png      (slide 4)
+//   /public/images/kiosk-images/Helix_Log5-{1,2,3}.png  (slide 5)
+//   /public/images/rocker-logs-{N}.png              (Rocker log comparisons)
 
 export default function LogsScreen({ config, onBack }: Props) {
   const slides = config.slides;
@@ -573,8 +410,12 @@ function AnnotatedPane({
   alt: string;
   annotations: LogAnnotation[];
 }) {
+  // Tap-to-zoom for detail histograms. One zoom at a time across all
+  // annotation cards on this slide. Tap anywhere in the lightbox to dismiss.
+  const [zoomedDetail, setZoomedDetail] = useState<{ src: string; alt: string } | null>(null);
+
   return (
-    <div className="w-full h-full grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-6 p-8">
+    <div className="relative w-full h-full grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-6 p-8">
       {/* Image column — AssetSlot fills the relative parent; circles ride
           on top in a same-bounding-box SVG. */}
       <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white">
@@ -627,17 +468,50 @@ function AnnotatedPane({
         </svg>
       </div>
 
-      {/* Side-mounted text cards — stacked vertically and evenly spaced. */}
-      <div className="flex flex-col justify-center gap-4">
+      {/* Side-mounted text cards — stacked vertically and constrained to
+          the slide height so two-card stacks (e.g. slide 5: ECCE + drag
+          histograms) fit without scrolling. Each card flexes inside the
+          column; detail histograms render as thumbnails with tap-to-zoom. */}
+      <div className="flex flex-col justify-center gap-3 overflow-hidden">
         {annotations.map((a, i) => (
-          <AnnotationCard key={`${a.title}-${i}`} annotation={a} />
+          <AnnotationCard
+            key={`${a.title}-${i}`}
+            annotation={a}
+            onZoomDetail={setZoomedDetail}
+          />
         ))}
       </div>
+
+      {/* Tap-to-zoom lightbox — fullscreen black backdrop, image at native
+          aspect. Single tap anywhere dismisses. Sits ABOVE the slide pager
+          (z-30) and slide caption so it covers them too. */}
+      {zoomedDetail && (
+        <div
+          className="absolute inset-0 z-[60] flex items-center justify-center bg-black/95 cursor-zoom-out"
+          onClick={() => setZoomedDetail(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Detail image (zoomed)"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={zoomedDetail.src}
+            alt={zoomedDetail.alt}
+            className="max-w-[92vw] max-h-[88vh] w-auto h-auto object-contain"
+          />
+        </div>
+      )}
     </div>
   );
 }
 
-function AnnotationCard({ annotation }: { annotation: LogAnnotation }) {
+function AnnotationCard({
+  annotation,
+  onZoomDetail,
+}: {
+  annotation: LogAnnotation;
+  onZoomDetail: (_detail: { src: string; alt: string }) => void;
+}) {
   const titleClass = annotation.tone === 'red'
     ? 'text-red-400'
     : annotation.tone === 'blue'
@@ -645,24 +519,24 @@ function AnnotationCard({ annotation }: { annotation: LogAnnotation }) {
       : 'text-white';
   const stroke = toneStroke(annotation.tone);
   return (
-    <div className="rounded-2xl border border-white/15 bg-white/5 p-5">
+    <div className="rounded-2xl border border-white/15 bg-white/5 p-4 min-h-0 flex flex-col">
       {annotation.eyebrow && (
-        <p className="text-[10px] uppercase tracking-[0.3em] text-white/50 mb-2">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-white/50 mb-1.5">
           {annotation.eyebrow}
         </p>
       )}
-      <p className={`text-lg md:text-xl font-semibold leading-snug ${titleClass}`}>
+      <p className={`text-base md:text-lg font-semibold leading-snug ${titleClass}`}>
         {annotation.title}
       </p>
       {annotation.bullets && annotation.bullets.length > 0 && (
-        <ul className="mt-3 flex flex-col gap-1.5">
+        <ul className="mt-2 flex flex-col gap-1">
           {annotation.bullets.map((b) => (
             <li
               key={b}
-              className="flex items-start gap-2 text-sm md:text-base text-white/85"
+              className="flex items-start gap-2 text-xs md:text-sm text-white/85"
             >
               <span
-                className="mt-2 inline-block w-1 h-1 rounded-full bg-white/60 shrink-0"
+                className="mt-1.5 inline-block w-1 h-1 rounded-full bg-white/60 shrink-0"
                 aria-hidden="true"
               />
               <span>{b}</span>
@@ -671,49 +545,64 @@ function AnnotationCard({ annotation }: { annotation: LogAnnotation }) {
         </ul>
       )}
       {annotation.detail && (
-        <div className="relative mt-4 rounded-lg overflow-hidden bg-white aspect-[16/10]">
-          <AssetSlot
-            key={annotation.detail.src}
-            src={annotation.detail.src}
-            alt={annotation.detail.alt}
-            className="object-contain"
-            theme="light"
-          />
-          {annotation.detail.circles && annotation.detail.circles.length > 0 && (
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              className="absolute inset-0 w-full h-full pointer-events-none"
-            >
-              {annotation.detail.circles.map((c, i) => {
-                const r = c.rPct ?? 4;
-                return (
-                  <g key={`detail-${i}-${c.xPct}-${c.yPct}`}>
-                    <circle
-                      cx={c.xPct}
-                      cy={c.yPct}
-                      r={r}
-                      fill="none"
-                      stroke="white"
-                      strokeWidth={1.5}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    <circle
-                      cx={c.xPct}
-                      cy={c.yPct}
-                      r={r}
-                      fill="none"
-                      stroke={stroke}
-                      strokeWidth={2.5}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </g>
-                );
-              })}
-            </svg>
-          )}
-        </div>
+        <button
+          type="button"
+          onClick={() =>
+            annotation.detail &&
+            onZoomDetail({ src: annotation.detail.src, alt: annotation.detail.alt })
+          }
+          aria-label={`Zoom ${annotation.detail.alt}`}
+          // Compact thumbnail — keeps two-card stacks fitting on the
+          // slide without scroll. Tap opens the full-size lightbox.
+          className="relative mt-3 rounded-lg overflow-hidden bg-white max-h-[140px] focus:outline-none focus:ring-2 focus:ring-brand cursor-zoom-in"
+        >
+          <div className="relative w-full h-[140px]">
+            <AssetSlot
+              key={annotation.detail.src}
+              src={annotation.detail.src}
+              alt={annotation.detail.alt}
+              className="object-contain"
+              theme="light"
+            />
+            {annotation.detail.circles && annotation.detail.circles.length > 0 && (
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="absolute inset-0 w-full h-full pointer-events-none"
+              >
+                {annotation.detail.circles.map((c, i) => {
+                  const r = c.rPct ?? 4;
+                  return (
+                    <g key={`detail-${i}-${c.xPct}-${c.yPct}`}>
+                      <circle
+                        cx={c.xPct}
+                        cy={c.yPct}
+                        r={r}
+                        fill="none"
+                        stroke="white"
+                        strokeWidth={1.5}
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <circle
+                        cx={c.xPct}
+                        cy={c.yPct}
+                        r={r}
+                        fill="none"
+                        stroke={stroke}
+                        strokeWidth={2.5}
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </g>
+                  );
+                })}
+              </svg>
+            )}
+          </div>
+          <span className="absolute bottom-1 right-2 text-[10px] text-slate-500 pointer-events-none">
+            Tap to zoom
+          </span>
+        </button>
       )}
     </div>
   );

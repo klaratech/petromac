@@ -260,31 +260,51 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
       )}
 
       {/* Inline stats pill (hidden on the public Track Record page where
-          the page already has a hero stats row above the map). */}
+          the page already has a hero stats row above the map). Two big
+          stat tiles — easier to read across a trade-show booth than the
+          previous one-line text. */}
       {!hideInlineStats && (
-        <div className="absolute top-4 left-4 z-40 bg-white/95 backdrop-blur-md text-slate-900 border border-slate-200 rounded-lg shadow px-4 py-2.5">
-          <div className="text-sm font-medium" role="status" aria-live="polite">
-            <span className="text-blue-600 font-bold">{totalDeployments}</span> deployments
-            in{' '}
-            <span className="text-blue-600 font-bold">{countryCount}</span> countries
+        <div
+          className="absolute top-4 left-4 z-40 bg-white/95 text-slate-900 border border-slate-200 rounded-xl shadow-lg px-4 py-3 min-w-[220px]"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex items-stretch gap-4">
+            <div className="flex flex-col items-center justify-center min-w-[80px]">
+              <span className="text-3xl font-extrabold tabular-nums text-brand leading-none">
+                {totalDeployments}
+              </span>
+              <span className="mt-1 text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                Deployments
+              </span>
+            </div>
+            <div className="w-px bg-slate-200" aria-hidden="true" />
+            <div className="flex flex-col items-center justify-center min-w-[80px]">
+              <span className="text-3xl font-extrabold tabular-nums text-brand leading-none">
+                {countryCount}
+              </span>
+              <span className="mt-1 text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                Countries
+              </span>
+            </div>
           </div>
           {showSuccessStoriesLink && (
             onSuccessStoriesClick ? (
               <button
                 type="button"
                 onClick={onSuccessStoriesClick}
-                className="mt-1.5 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-3 w-full px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-full hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                 aria-label="Success Stories"
               >
-                Success Stories
+                Success Stories →
               </button>
             ) : (
               <a
                 href="/success-stories/flipbook"
-                className="mt-1.5 inline-block px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-3 block text-center px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-full hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                 aria-label="Success Stories"
               >
-                Success Stories
+                Success Stories →
               </a>
             )
           )}

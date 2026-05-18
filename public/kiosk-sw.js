@@ -2,16 +2,27 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v13';
+const VERSION = 'v14';
 
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;
-const RUNTIME_MEDIA = `kiosk-media-${VERSION}`;
+// Media caches split by asset type. The old shared bucket of 60 entries
+// was overwhelmed by the catalog + success-stories flipbooks (which
+// alone are ~110 page images) and could evict videos/models/images out
+// from under the kiosk. Per-type buckets each have a budget that fits
+// the actual asset graph so a flipbook open doesn't churn out a video.
+const RUNTIME_VIDEOS = `kiosk-videos-${VERSION}`;
+const RUNTIME_MODELS = `kiosk-models-${VERSION}`;
+const RUNTIME_FLIPBOOKS = `kiosk-flipbooks-${VERSION}`;
+const RUNTIME_IMAGES = `kiosk-images-${VERSION}`;
 const RUNTIME_DATA = `kiosk-data-${VERSION}`;
 const META_CACHE = `kiosk-meta-${VERSION}`;
 
 const MAX_STATIC_ENTRIES = 80;
-const MAX_MEDIA_ENTRIES = 60;
+const MAX_VIDEO_ENTRIES = 24;     // ~12 transcoded + ~12 kiosk-hd masters
+const MAX_MODEL_ENTRIES = 16;     // GLB files per product family
+const MAX_FLIPBOOK_ENTRIES = 240; // success-stories (~48) + catalog (~64) + headroom
+const MAX_IMAGE_ENTRIES = 80;     // kiosk-images/, system logos, posters
 const MAX_DATA_ENTRIES = 40;
 
 const MAX_MEDIA_AGE_SECONDS = 60 * 60 * 24 * 30; // 30 days
@@ -20,10 +31,23 @@ const MAX_DATA_AGE_SECONDS = 60 * 60 * 24 * 7; // 7 days
 // If kiosk uses Next/Image, cache its optimized outputs as well.
 const NEXT_IMAGE_PATH = '/_next/image';
 
-const MEDIA_PATHS = ['/videos/', '/models/', '/flipbooks/', '/images/'];
+// Per-prefix routing into the split media caches.
+const MEDIA_BUCKETS = [
+  { prefix: '/videos/', cache: RUNTIME_VIDEOS, max: MAX_VIDEO_ENTRIES },
+  { prefix: '/models/', cache: RUNTIME_MODELS, max: MAX_MODEL_ENTRIES },
+  { prefix: '/flipbooks/', cache: RUNTIME_FLIPBOOKS, max: MAX_FLIPBOOK_ENTRIES },
+  { prefix: '/images/', cache: RUNTIME_IMAGES, max: MAX_IMAGE_ENTRIES },
+];
 
 // Kiosk shell routes to precache so first-ever offline load can still boot.
-const KIOSK_SHELL_ROUTES = ['/intranet/kiosk', '/intranet/kiosk/'];
+// /intranet/kiosk/ch is the CH entry point (lands directly in the Helix
+// experience) — without it here, an offline kiosk that bookmarked /ch
+// would 404 on the navigation before the SW can intercept.
+const KIOSK_SHELL_ROUTES = [
+  '/intranet/kiosk',
+  '/intranet/kiosk/',
+  '/intranet/kiosk/ch',
+];
 
 // Adjust if your manifest is kiosk-scoped rather than root-scoped.
 const MANIFEST_URL = '/manifest.json';
@@ -84,9 +108,10 @@ self.addEventListener('fetch', (event) => {
   // requests and offline playback died on the first seek.
   //
   // Non-media Range requests still fall through to the network.
+  const mediaBucket = MEDIA_BUCKETS.find((b) => url.pathname.startsWith(b.prefix));
   if (request.headers.has('range')) {
-    if (MEDIA_PATHS.some((path) => url.pathname.startsWith(path))) {
-      event.respondWith(serveRangeFromCache(request));
+    if (mediaBucket) {
+      event.respondWith(serveRangeFromCache(request, mediaBucket));
     }
     return;
   }
@@ -117,10 +142,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache media assets (videos, models, flipbooks, images)
-  if (MEDIA_PATHS.some((path) => url.pathname.startsWith(path))) {
+  // Cache media assets — routed into per-type buckets so an aggressive
+  // flipbook precache (hundreds of page images) can't evict
+  // videos/models/images out from under the rest of the kiosk.
+  if (mediaBucket) {
     event.respondWith(
-      cacheFirst(request, RUNTIME_MEDIA, MAX_MEDIA_ENTRIES, MAX_MEDIA_AGE_SECONDS)
+      cacheFirst(request, mediaBucket.cache, mediaBucket.max, MAX_MEDIA_AGE_SECONDS)
     );
   }
 });
@@ -132,9 +159,9 @@ self.addEventListener('fetch', (event) => {
  * The cache key is the URL with no Range header — the same key used by
  * cacheFirst() when the full media file was first fetched.
  */
-async function serveRangeFromCache(request) {
+async function serveRangeFromCache(request, bucket) {
   const cacheKey = new Request(request.url, { method: 'GET' });
-  const cache = await caches.open(RUNTIME_MEDIA);
+  const cache = await caches.open(bucket.cache);
   const cached = await cache.match(cacheKey);
 
   // Nothing cached — let the network handle it. If we get a full 200 back
@@ -145,7 +172,7 @@ async function serveRangeFromCache(request) {
       if (networkResp && networkResp.ok && networkResp.status === 200) {
         await cache.put(cacheKey, networkResp.clone());
         await setMetadata(request.url);
-        await trimCache(cache, MAX_MEDIA_ENTRIES);
+        await trimCache(cache, bucket.max);
       }
       return networkResp;
     } catch {

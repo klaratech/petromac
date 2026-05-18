@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
 import { deviceSpecs } from '@modules/catalog/data/deviceSpecs';
-import MechanismScreen, { ROCKER_MECHANISM } from './MechanismScreen';
-import LogsScreen, { ROCKER_LOGS } from './LogsScreen';
+import MechanismScreen from './MechanismScreen';
+import LogsScreen from './LogsScreen';
+import { ROCKER_MECHANISM, ROCKER_LOGS } from './ch-configs';
 import { AssetSlot } from '@/components/kiosk/AssetSlot';
 
 type View = 'main' | 'mechanism' | 'logs';

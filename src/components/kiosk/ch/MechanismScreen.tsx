@@ -100,108 +100,18 @@ interface Props {
   onBack: () => void;
 }
 
-// ── Cased Hole presets ───────────────────────────────────────────────────────
+// Configs (HELIX_MECHANISM, ROCKER_MECHANISM) moved to ./ch-configs.ts so
+// the heavier screen code in this file can be dynamic()-imported by
+// HelixExperience / RockerExperience without dragging the configs along.
+//
 // Asset slots — drop bare renders at these paths and the slides pick them up;
-// inline annotations (dimension brackets, arrows) are either drawn by the
-// component or already baked into the artwork by graphics.
-//
-// Helix slideshow:
-//   /public/images/helix-mechanism-conventional.png         (annotated slide 1)
-//   /public/images/helix-mechanism-helix.png                 (annotated slide 2)
-//   /public/images/kiosk-images/leverage-conventional.png    (comparison slide 3, top)
-//   /public/images/kiosk-images/leverage-helix.png           (comparison slide 3, bottom)
-//
-// Rocker slideshow:
-//   /public/images/rocker-mechanism-conventional.png         (annotated slide 1, tool render)
-//   /public/images/rocker-mechanism-conventional-detail.png  (annotated slide 1, force-section detail)
-//   /public/images/rocker-mechanism-rocker.png               (annotated slide 2)
-
-export const HELIX_MECHANISM: MechanismConfig = {
-  title: 'Helix',
-  slides: [
-    // 1. Annotated conventional centraliser — limitations. The
-    //    conventional-largecasings video plays inside the slide.
-    {
-      type: 'annotated',
-      label: 'Conventional centraliser',
-      image: '/images/helix-mechanism-conventional.png',
-      video: '/videos/transcoded/conventional-largecasings.mp4',
-      bullets: [
-        { text: 'Pivot point on SAME side' },
-        { text: 'Minimal slider movement' },
-        { text: 'Arm angle not optimised' },
-        { text: 'Limited range of casing sizes', highlight: 'red' },
-      ],
-    },
-    // 2. Annotated HELIX — benefits. helix-mechanism video plays inside the
-    //    slide as the counterpoint to slide 1.
-    {
-      type: 'annotated',
-      label: 'HELIX',
-      image: '/images/helix-mechanism-helix.png',
-      video: '/videos/transcoded/helix-mechanism.mp4',
-      bullets: [
-        { text: 'Pivot point on OPPOSITE side' },
-        { text: 'Ensures arm angle is optimised' },
-        { text: 'Large slider movement' },
-        { text: 'Effective mechanism in large range of casing sizes', highlight: 'blue' },
-      ],
-    },
-    // 3. Lever-arm comparison — the takeaway: 80% less force.
-    //    The artwork lives in /images/leverage-{conventional,helix}.png and
-    //    already has the red short-lever arrow + green long-lever bracket
-    //    baked in. (Previously these were the first Case Studies slide.)
-    {
-      type: 'comparison',
-      label: 'Lever arm comparison',
-      rows: [
-        { image: '/images/kiosk-images/leverage-conventional.png', rowLabel: 'Conventional' },
-        { image: '/images/kiosk-images/leverage-helix.png', rowLabel: 'HELIX' },
-      ],
-      bullets: [
-        { text: 'Helix enters restrictions with 80% less force', highlight: 'blue' },
-      ],
-    },
-  ],
-};
-
-export const ROCKER_MECHANISM: MechanismConfig = {
-  title: 'Rocker',
-  slides: [
-    // 1. Annotated conventional small-casing centraliser — limitations. The
-    //    conventional-smallcasings video plays inside the slide. The force-
-    //    section schematic stays in the right column above the bullets via
-    //    `detailImage`.
-    {
-      type: 'annotated',
-      label: 'Conventional centraliser',
-      image: '/images/rocker-mechanism-conventional.png',
-      video: '/videos/transcoded/conventional-smallcasings.mp4',
-      detailImage: '/images/rocker-mechanism-conventional-detail.png',
-      bullets: [
-        { text: 'Arms independent of each other' },
-        { text: 'In smaller holes, arm angle is very shallow' },
-        { text: 'Minimal slider movement' },
-        { text: 'Inefficient centralization' },
-        { text: 'Mechanism fails in smaller holes', highlight: 'red' },
-      ],
-    },
-    // 2. Annotated ROCKER — benefits. rocker-mechanism video plays inside
-    //    the slide as the counterpoint to slide 1.
-    {
-      type: 'annotated',
-      label: 'ROCKER',
-      image: '/images/rocker-mechanism-rocker.png',
-      video: '/videos/transcoded/rocker-mechanism.mp4',
-      bullets: [
-        { text: 'Rocker arm pivots around centreline' },
-        { text: 'Large slider movement' },
-        { text: 'Synchronised arm assemblies' },
-        { text: 'Effective mechanism in small casing sizes', highlight: 'blue' },
-      ],
-    },
-  ],
-};
+// inline annotations (dimension brackets, arrows) are baked into the artwork.
+//   /public/images/helix-mechanism-conventional.png
+//   /public/images/helix-mechanism-helix.png
+//   /public/images/kiosk-images/leverage-{conventional,helix}.png
+//   /public/images/rocker-mechanism-conventional.png
+//   /public/images/rocker-mechanism-conventional-detail.png
+//   /public/images/rocker-mechanism-rocker.png
 
 // ── Main component ──────────────────────────────────────────────────────────
 

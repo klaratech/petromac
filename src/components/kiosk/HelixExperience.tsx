@@ -5,9 +5,10 @@ import Image from 'next/image';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
-import MechanismScreen, { HELIX_MECHANISM } from './ch/MechanismScreen';
-import LogsScreen, { HELIX_LOGS } from './ch/LogsScreen';
+import MechanismScreen from './ch/MechanismScreen';
+import LogsScreen from './ch/LogsScreen';
 import RockerExperience from './ch/RockerExperience';
+import { HELIX_MECHANISM, HELIX_LOGS } from './ch/ch-configs';
 
 type View = 'main' | 'mechanism' | 'logs' | 'rocker';
 
