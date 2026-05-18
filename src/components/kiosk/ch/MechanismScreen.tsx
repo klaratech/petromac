@@ -268,36 +268,38 @@ export default function MechanismScreen({ config, onBack }: Props) {
             bullets={slide.bullets}
           />
         )}
-      </div>
 
-      {slides.length > 1 && (
-        <footer className="flex items-center justify-between gap-3 py-4 px-8 border-t border-white/10">
-          <span className="text-white/50 text-xs uppercase tracking-[0.2em]">
-            {config.sourceNote ?? ''}
-          </span>
-          <div className="flex items-center gap-3">
-            <button
+        {/* Pager — large round arrow buttons on the left + right middle
+            edges of the slide area. Disabled (faded) at the boundaries
+            rather than removed so the layout doesn't shift between slides.
+            Page indicator + sourceNote sit in a bottom-centre pill. */}
+        {slides.length > 1 && (
+          <>
+            <SlideNavButton
+              direction="prev"
               onClick={() => setIndex((i) => Math.max(0, i - 1))}
               disabled={index === 0}
-              className="px-4 py-2 rounded bg-white/10 hover:bg-white/20 disabled:opacity-30"
-            >
-              ← Prev
-            </button>
-            <span className="text-white/60 text-sm tabular-nums">
-              {index + 1} / {slides.length}
-            </span>
-            <button
+            />
+            <SlideNavButton
+              direction="next"
               onClick={() =>
                 setIndex((i) => Math.min(slides.length - 1, i + 1))
               }
               disabled={index === slides.length - 1}
-              className="px-4 py-2 rounded bg-white/10 hover:bg-white/20 disabled:opacity-30"
-            >
-              Next →
-            </button>
-          </div>
-        </footer>
-      )}
+            />
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
+              {config.sourceNote && (
+                <span className="px-3 py-1.5 rounded-full bg-black/55 text-white/55 text-[10px] uppercase tracking-[0.2em]">
+                  {config.sourceNote}
+                </span>
+              )}
+              <span className="px-3 py-1.5 rounded-full bg-black/60 text-white/70 text-xs tabular-nums">
+                {index + 1} / {slides.length}
+              </span>
+            </div>
+          </>
+        )}
+      </div>
 
       {specsOpen && config.specs && (
         <SpecsModal
@@ -654,5 +656,32 @@ function SpecsModal({
         </div>
       )}
     </div>
+  );
+}
+
+// ── Pager ───────────────────────────────────────────────────────────────────
+
+/** Large round arrow button pinned to the left or right middle edge of the
+ *  slide area. Mirrors the same affordance used in LogsScreen (case
+ *  studies pager) so the two slideshows feel consistent. */
+function SlideNavButton({
+  direction,
+  onClick,
+  disabled,
+}: {
+  direction: 'prev' | 'next';
+  onClick: () => void;
+  disabled: boolean;
+}) {
+  const sideClass = direction === 'prev' ? 'left-4' : 'right-4';
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={direction === 'prev' ? 'Previous slide' : 'Next slide'}
+      className={`absolute top-1/2 -translate-y-1/2 z-30 ${sideClass} w-14 h-14 rounded-full bg-black/55 hover:bg-black/75 border border-white/15 text-white text-3xl flex items-center justify-center shadow-lg transition disabled:opacity-25 disabled:cursor-not-allowed`}
+    >
+      {direction === 'prev' ? '‹' : '›'}
+    </button>
   );
 }

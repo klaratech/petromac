@@ -100,10 +100,10 @@ interface Props {
 
 // ── Cased Hole presets (ported from the original Helix/Rocker maps) ──────────
 // Asset slots — drop files at these paths and the slides pick them up:
-//   /public/images/kiosk-images/Helix_Log1.jpg    (annotated slide 1)
-//   /public/images/kiosk-images/Helix_Log2.png    (annotated slide 2)
-//   /public/images/kiosk-images/Helix_Log3-1.jpg  (annotated slide 3, main strip)
-//   /public/images/kiosk-images/Helix_Log3-2.png  (annotated slide 3, ECCE histogram inset)
+//   /public/images/kiosk-images/Helix_Log1.png    (slide 1 — annotations baked into image)
+//   /public/images/kiosk-images/Helix_Log2.png    (slide 2 — annotations baked into image)
+//   /public/images/kiosk-images/Helix_Log3-1.jpg  (slide 3, main strip)
+//   /public/images/kiosk-images/Helix_Log3-2.png  (slide 3, ECCE histogram inset)
 //   /public/images/helix-cbl-setup.png            (CBL slide)
 //   /public/images/rocker-logs-{N}.png            (Rocker log comparisons)
 //
@@ -119,32 +119,25 @@ export const HELIX_LOGS: LogsConfig = {
     //
     // Slide 1 — PEMEX CIBIX-35 log strip. Four leftward drops in the red
     // HTEN curve, each only ~60 lbs, demonstrate how cleanly the CX9 Helix
-    // runs through IBC + Sonic ledges. Circle positions are approximate
-    // (% of the image bounding box) — easy to dial in from a tablet once
-    // we're standing in front of the kiosk.
+    // runs through IBC + Sonic ledges. The annotation circles are baked
+    // into Helix_Log1.png so the slide just renders the image + side card.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log1.jpg',
+      src: '/images/kiosk-images/Helix_Log1.png',
       caption: 'PEMEX CIBIX-35 — HELIX run',
       annotations: [
         {
-          eyebrow: 'Key takeaway',
           title: '4 drops in HTEN of ONLY 60 lbs from CX9 on IBC & Sonic',
           tone: 'blue',
-          circles: [
-            { xPct: 80, yPct: 49 },
-            { xPct: 72, yPct: 67 },
-            { xPct: 71, yPct: 79 },
-            { xPct: 69, yPct: 90 },
-          ],
+          circles: [],
         },
       ],
     },
     // Slide 2 — ENI BlackTip P5 log strip. Two contrasting outcomes on the
-    // same well: poor centralisation in the upper 13-3/8" with conventional
+    // same well: poor centralisation up in the 13-3/8" with conventional
     // centralisers, then excellent centralisation in the deeper 9-5/8" and
-    // 7" sections after switching to CX9. Two annotation blocks — red zone
-    // up top, blue zone in the middle + bottom.
+    // 7" sections after switching to CX9. Circles are baked into the
+    // image; this config carries the two side cards (red + blue).
     {
       type: 'annotated',
       src: '/images/kiosk-images/Helix_Log2.png',
@@ -157,11 +150,7 @@ export const HELIX_LOGS: LogsConfig = {
             'Large difference between Min and Max TT’s',
             'Erratic & poor sonic data',
           ],
-          circles: [
-            // Sonic track, upper 13-3/8" zone — wider radius so it reads
-            // as "this whole noisy region", not a pinpoint.
-            { xPct: 65, yPct: 22, rPct: 7 },
-          ],
+          circles: [],
         },
         {
           tone: 'blue',
@@ -169,12 +158,7 @@ export const HELIX_LOGS: LogsConfig = {
           bullets: [
             'Difference between Min and Max TT’s < 10 µs',
           ],
-          circles: [
-            // Sonic track, 9-5/8" zone.
-            { xPct: 65, yPct: 44, rPct: 5 },
-            // Sonic track, 7" zone.
-            { xPct: 65, yPct: 62, rPct: 5 },
-          ],
+          circles: [],
         },
       ],
     },
@@ -269,37 +253,66 @@ export default function LogsScreen({ config, onBack }: Props) {
           />
         )}
 
+        {/* Pager — large round arrow buttons fixed at the left + right
+            middle edges of the slide area. Disabled (faded out) at the
+            boundaries instead of removed, so the layout doesn't shift
+            when paging. Page indicator pill sits next to the caption. */}
+        {slides.length > 1 && (
+          <>
+            <SlideNavButton
+              direction="prev"
+              onClick={() => setIndex((i) => Math.max(0, i - 1))}
+              disabled={index === 0}
+            />
+            <SlideNavButton
+              direction="next"
+              onClick={() =>
+                setIndex((i) => Math.min(slides.length - 1, i + 1))
+              }
+              disabled={index === slides.length - 1}
+            />
+          </>
+        )}
+
         {slide && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/60 text-sm">
-            {slide.caption}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3">
+            <div className="px-4 py-2 rounded-full bg-black/60 text-sm">
+              {slide.caption}
+            </div>
+            {slides.length > 1 && (
+              <div className="px-3 py-1.5 rounded-full bg-black/60 text-white/70 text-xs tabular-nums">
+                {index + 1} / {slides.length}
+              </div>
+            )}
           </div>
         )}
       </div>
-
-      {slides.length > 1 && (
-        <footer className="flex items-center justify-center gap-3 py-4 border-t border-white/10">
-          <button
-            onClick={() => setIndex((i) => Math.max(0, i - 1))}
-            disabled={index === 0}
-            className="px-4 py-2 rounded bg-white/10 hover:bg-white/20 disabled:opacity-30"
-          >
-            ← Prev
-          </button>
-          <span className="text-white/60 text-sm tabular-nums">
-            {index + 1} / {slides.length}
-          </span>
-          <button
-            onClick={() =>
-              setIndex((i) => Math.min(slides.length - 1, i + 1))
-            }
-            disabled={index === slides.length - 1}
-            className="px-4 py-2 rounded bg-white/10 hover:bg-white/20 disabled:opacity-30"
-          >
-            Next →
-          </button>
-        </footer>
-      )}
     </div>
+  );
+}
+
+/** Large round arrow button pinned to the left or right middle edge of a
+ *  slide area. Used by both the Case Studies (LogsScreen) and Mechanism
+ *  (MechanismScreen) pagers. */
+function SlideNavButton({
+  direction,
+  onClick,
+  disabled,
+}: {
+  direction: 'prev' | 'next';
+  onClick: () => void;
+  disabled: boolean;
+}) {
+  const sideClass = direction === 'prev' ? 'left-4' : 'right-4';
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={direction === 'prev' ? 'Previous slide' : 'Next slide'}
+      className={`absolute top-1/2 -translate-y-1/2 z-30 ${sideClass} w-14 h-14 rounded-full bg-black/55 hover:bg-black/75 border border-white/15 text-white text-3xl flex items-center justify-center shadow-lg transition disabled:opacity-25 disabled:cursor-not-allowed`}
+    >
+      {direction === 'prev' ? '‹' : '›'}
+    </button>
   );
 }
 
