@@ -228,10 +228,26 @@ export const ROCKER_LOGS: LogsConfig = {
   },
   slides: [
     { type: 'map' },
+    // Slide 1 — Rocker run with USIT in a 4-1/2" liner. Excellent
+    // centralisation taken all the way out to 70° deviation; the
+    // headline is the centralisation result (blue), with a red sub-
+    // bullet flagging the 0.15" tolerance ceiling.
     {
-      type: 'single',
-      src: '/images/rocker-logs-1.png',
-      caption: 'Rocker log comparison',
+      type: 'annotated',
+      src: '/images/kiosk-images/Rocker_Log1.png',
+      annotations: [
+        {
+          eyebrow: 'Rocker: USIT in 4-1/2" Liner',
+          tone: 'blue',
+          title: 'Excellent Centralization to 70° deviation',
+          bullets: [
+            'Rockers not overloaded',
+            'Average Centralization < 0.1"',
+            { text: 'Limit of 0.15"', indent: true, tone: 'red' },
+          ],
+          circles: [],
+        },
+      ],
     },
   ],
 };

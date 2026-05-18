@@ -39,6 +39,20 @@ export interface AnnotationCircle {
   rPct?: number;
 }
 
+/** A bullet inside a LogAnnotation. Strings render as plain bullets; the
+ *  object form lets a single bullet override the parent annotation's
+ *  tone (e.g. a red "limit" line under a blue benefit statement) and/or
+ *  indent under the previous bullet (sub-sub-bullet). */
+export type LogBullet =
+  | string
+  | {
+      text: string;
+      /** When true, the bullet renders nested under the previous one. */
+      indent?: boolean;
+      /** Color override for THIS bullet only. */
+      tone?: 'red' | 'blue';
+    };
+
 /** A single annotation block — title, optional bullets, and the circles on
  *  the image that this block points at. The block's `tone` colors both
  *  the title text and the strokes of its circles, so a slide with both a
@@ -50,7 +64,7 @@ export interface LogAnnotation {
    *  and 7" casings with CX9". */
   title: string;
   /** Optional bullet list shown under the title. */
-  bullets?: string[];
+  bullets?: LogBullet[];
   /** Visual tone — colors the title and the corresponding circle strokes.
    *  'red'  → limitations / poor outcome
    *  'blue' → benefits / good outcome (brand navy)
@@ -530,18 +544,37 @@ function AnnotationCard({
       </p>
       {annotation.bullets && annotation.bullets.length > 0 && (
         <ul className="mt-2 flex flex-col gap-1">
-          {annotation.bullets.map((b) => (
-            <li
-              key={b}
-              className="flex items-start gap-2 text-xs md:text-sm text-white/85"
-            >
-              <span
-                className="mt-1.5 inline-block w-1 h-1 rounded-full bg-white/60 shrink-0"
-                aria-hidden="true"
-              />
-              <span>{b}</span>
-            </li>
-          ))}
+          {annotation.bullets.map((b, i) => {
+            const text = typeof b === 'string' ? b : b.text;
+            const indent = typeof b === 'object' && b.indent;
+            const bulletTone = typeof b === 'object' ? b.tone : undefined;
+            const textColor =
+              bulletTone === 'red'
+                ? 'text-red-400'
+                : bulletTone === 'blue'
+                  ? 'text-[#7FA8E6]'
+                  : 'text-white/85';
+            const dotColor =
+              bulletTone === 'red'
+                ? 'bg-red-400'
+                : bulletTone === 'blue'
+                  ? 'bg-[#7FA8E6]'
+                  : 'bg-white/60';
+            return (
+              <li
+                key={`${i}-${text}`}
+                className={`flex items-start gap-2 text-xs md:text-sm ${textColor} ${
+                  indent ? 'pl-5' : ''
+                }`}
+              >
+                <span
+                  className={`mt-1.5 inline-block w-1 h-1 rounded-full shrink-0 ${dotColor}`}
+                  aria-hidden="true"
+                />
+                <span>{text}</span>
+              </li>
+            );
+          })}
         </ul>
       )}
       {annotation.detail && (
