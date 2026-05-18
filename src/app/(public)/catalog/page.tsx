@@ -36,14 +36,7 @@ export default function CatalogPage() {
             <a
               href={`${getFlipbookBasePath(FLIPBOOK_KEYS.catalog)}/source.pdf`}
               download
-              className="
-                inline-flex items-center gap-2 whitespace-nowrap
-                px-6 py-3 rounded-full font-semibold text-sm text-white
-                bg-brand hover:bg-brand/90
-                shadow-lg shadow-blue-900/20 ring-1 ring-blue-900/10
-                transition-all hover:translate-y-[-1px] hover:shadow-xl
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100
-              "
+              className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20 ring-1 ring-blue-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />

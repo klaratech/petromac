@@ -253,15 +253,7 @@ export default function SuccessStoriesFlipbook({
             <button
               onClick={handleDownload}
               disabled={selectedPages.length === 0 || isDownloading}
-              className="
-                inline-flex items-center gap-2 whitespace-nowrap
-                px-6 py-3 rounded-full font-semibold text-sm text-white
-                bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20
-                ring-1 ring-blue-900/10
-                transition-all hover:translate-y-[-1px] hover:shadow-xl
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-50
-                disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed
-              "
+              className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20 ring-1 ring-blue-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />

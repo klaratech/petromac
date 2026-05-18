@@ -72,15 +72,7 @@ export function EmailPdfButton({
       <button
         onClick={handleReveal}
         disabled={revealed || disabled}
-        className="
-          inline-flex items-center gap-2 whitespace-nowrap
-          px-6 py-3 rounded-full font-semibold text-sm text-white
-          bg-emerald-600 hover:bg-emerald-700
-          shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-900/10
-          transition-all hover:translate-y-[-1px] hover:shadow-xl
-          focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-50
-          disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed
-        "
+        className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed"
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2" />
