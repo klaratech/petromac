@@ -104,6 +104,10 @@ export const HELIX_LOGS: LogsConfig = {
   trackRecord: {
     system: 'Focus - CH',
     enableSuccessStories: true,
+    // Helix + Rocker both belong to the Focus-CH cased-hole product
+    // family, so the in-map Success Stories link opens the flipbook
+    // pre-filtered to that tech tag.
+    successStoriesFilters: { techs: ['Focus-CH'] },
   },
   slides: [
     // Slide 0 — Track Record map.
@@ -225,6 +229,10 @@ export const ROCKER_LOGS: LogsConfig = {
   trackRecord: {
     system: 'Focus - CH',
     enableSuccessStories: true,
+    // Helix + Rocker both belong to the Focus-CH cased-hole product
+    // family, so the in-map Success Stories link opens the flipbook
+    // pre-filtered to that tech tag.
+    successStoriesFilters: { techs: ['Focus-CH'] },
   },
   slides: [
     { type: 'map' },

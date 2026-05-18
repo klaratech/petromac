@@ -6,6 +6,7 @@ import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
 import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
 import type { JobRecord } from '@/types/JobRecord';
+import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 
 /**
  * LogsScreen — config-driven "Case Studies" pager.
@@ -135,6 +136,10 @@ export interface LogsConfig {
     /** Show the "Success Stories" link inside the map. Clicking it opens
      *  SuccessStoriesFlipbook as an inline takeover of LogsScreen. */
     enableSuccessStories?: boolean;
+    /** Optional pre-selected Success Stories filters applied when the
+     *  user opens the flipbook from this map (so the Helix/Rocker map
+     *  lands on the Focus-CH-tagged stories rather than the full deck). */
+    successStoriesFilters?: SuccessStoriesFilters;
   };
 }
 
@@ -175,12 +180,18 @@ export default function LogsScreen({ config, onBack }: Props) {
   });
 
   // Success Stories takes over the whole sub-view when triggered from
-  // inside the map slide. Returns to the same slide index on Back.
+  // inside the map slide. Returns to the same slide index on Back. The
+  // map's trackRecord config can carry an optional initial filter set
+  // (e.g. CH map → Focus-CH tech tag) so the flipbook opens with the
+  // relevant stories already filtered.
   if (showSuccessStories) {
     return (
       <SuccessStoriesFlipbook
         onBack={() => setShowSuccessStories(false)}
         backLabel="Back"
+        {...(config.trackRecord?.successStoriesFilters
+          ? { initialFilters: config.trackRecord.successStoriesFilters }
+          : {})}
       />
     );
   }

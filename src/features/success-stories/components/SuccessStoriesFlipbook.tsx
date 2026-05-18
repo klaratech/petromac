@@ -50,14 +50,20 @@ interface SuccessStoriesFlipbookProps {
   backHref?: string;
   onBack?: () => void;
   backLabel: string;
+  /** Optional pre-selected filter state — used when opening the flipbook
+   *  from a context where the relevant filter is obvious (e.g. the kiosk
+   *  Helix/Rocker Case Studies map opens Success Stories pre-filtered to
+   *  techs: ['Focus-CH']). */
+  initialFilters?: FiltersState;
 }
 
 export default function SuccessStoriesFlipbook({
   backHref,
   onBack,
   backLabel,
+  initialFilters,
 }: SuccessStoriesFlipbookProps) {
-  const [filters, setFilters] = useState<FiltersState>({});
+  const [filters, setFilters] = useState<FiltersState>(initialFilters ?? {});
   const [csvData, setCsvData] = useState<SuccessStoryRow[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
