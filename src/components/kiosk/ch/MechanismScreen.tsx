@@ -30,29 +30,6 @@ export interface MechanismVideoSlide {
   caption?: string;
 }
 
-/** A line callout extending outward from one edge of the diagram, e.g.
- *  the "9.0"" / "5.8"" dimension brackets on the conventional centralizer. */
-export interface DimensionCallout {
-  side: 'left' | 'right';
-  /** Label rendered between the two bracket lines, e.g. `9.0"`. */
-  label: string;
-  /** Symmetric shortcut — distance from both the top AND bottom edges to
-   *  each bracket line, in % of the column height. Lower values = wider
-   *  gap between the lines = larger represented diameter. Defaults to 28
-   *  if omitted. Use this when the tool's arm tips are top/bottom mirrored
-   *  (Helix conventional + HELIX slides). */
-  spreadPct?: number;
-  /** Asymmetric override — distance from the TOP edge to the top line
-   *  (% of column height). When set, overrides the top half of `spreadPct`.
-   *  Use for slides where the arms aren't vertically mirrored (e.g. the
-   *  Rocker mid-rock frame, where one arm pair is up-left and the other
-   *  is down-right). */
-  topPct?: number;
-  /** Asymmetric override — distance from the BOTTOM edge to the bottom
-   *  line. Pairs with `topPct`. */
-  bottomPct?: number;
-}
-
 export interface Bullet {
   text: string;
   /** When set, renders the bullet in a highlight tone:
@@ -62,26 +39,24 @@ export interface Bullet {
   highlight?: 'red' | 'blue';
 }
 
-/** An annotated diagram with dimension callouts and a bullet list. */
+/** An annotated diagram (tool render or looping video) with a bullet list. */
 export interface MechanismAnnotatedSlide {
   type: 'annotated';
   /** Heading text — e.g. "Conventional centralizer". */
   label: string;
-  /** Image of the tool. The component draws SVG callouts on top. Also acts
-   *  as the `poster` for `video` when both are set. */
+  /** Image of the tool. Also acts as the `poster` for `video` when both
+   *  are set. */
   image: string;
-  /** Optional mechanism video that plays in place of `image` between the
-   *  dimension brackets (autoplay, loop, playsInline). Use this to embed a
-   *  motion clip inside an annotated slide rather than spend a separate
-   *  slide on it. `image` is still used as the poster fallback. */
+  /** Optional mechanism video that plays in place of `image` (autoplay,
+   *  loop, playsInline). Use this to embed a motion clip inside an
+   *  annotated slide rather than spend a separate slide on it. `image`
+   *  is still used as the poster fallback. */
   video?: string;
-  /** Dimension callouts extending outward from the tool image. */
-  callouts: DimensionCallout[];
   /** Bullet list to the right of the diagram. */
   bullets: Bullet[];
   /** Optional secondary diagram shown above the bullets in the right column —
    *  used for things like the Rocker conventional-centralizer force section
-   *  view. The dimension callouts do NOT apply to this image. */
+   *  view. */
   detailImage?: string;
 }
 
@@ -144,24 +119,13 @@ interface Props {
 export const HELIX_MECHANISM: MechanismConfig = {
   title: 'Helix',
   slides: [
-    // 1. Annotated conventional centraliser — limitations.
-    //    The conventional-mechanism video plays between the 9.0"/5.8"
-    //    brackets so motion + annotation share one slide.
-    //
-    //    spreadPct values are tuned to where the tool's arm tips actually
-    //    land in the rendered video, NOT a strict diameter ratio. The 9.0"
-    //    arm tips sit ~27% from each edge (a touch wider than 5.8" because
-    //    those arms reach further). On a tablet the user can compare to the
-    //    ICOTA source slide and we'll dial these values further if needed.
+    // 1. Annotated conventional centraliser — limitations. The
+    //    conventional-largecasings video plays inside the slide.
     {
       type: 'annotated',
       label: 'Conventional centraliser',
       image: '/images/helix-mechanism-conventional.png',
       video: '/videos/transcoded/conventional-largecasings.mp4',
-      callouts: [
-        { side: 'left', label: '9.0"', spreadPct: 27 },
-        { side: 'right', label: '5.8"', spreadPct: 32 },
-      ],
       bullets: [
         { text: 'Pivot point on SAME side' },
         { text: 'Minimal slider movement' },
@@ -169,17 +133,13 @@ export const HELIX_MECHANISM: MechanismConfig = {
         { text: 'Limited range of casing sizes', highlight: 'red' },
       ],
     },
-    // 2. Annotated HELIX — benefits. Same 9.0"/5.8" brackets as slide 1's
-    //    counterpoint; the HELIX-mechanism video plays between them.
+    // 2. Annotated HELIX — benefits. helix-mechanism video plays inside the
+    //    slide as the counterpoint to slide 1.
     {
       type: 'annotated',
       label: 'HELIX',
       image: '/images/helix-mechanism-helix.png',
       video: '/videos/transcoded/helix-mechanism.mp4',
-      callouts: [
-        { side: 'left', label: '9.0"', spreadPct: 27 },
-        { side: 'right', label: '5.8"', spreadPct: 32 },
-      ],
       bullets: [
         { text: 'Pivot point on OPPOSITE side' },
         { text: 'Ensures arm angle is optimised' },
@@ -208,23 +168,16 @@ export const HELIX_MECHANISM: MechanismConfig = {
 export const ROCKER_MECHANISM: MechanismConfig = {
   title: 'Rocker',
   slides: [
-    // 1. Annotated conventional small-casing centraliser — limitations.
-    //    The conventional-smallcasings mechanism video plays between the
-    //    6.3"/3.3" brackets. The force-section schematic stays in the
-    //    right column above the bullets via `detailImage`.
-    //
-    //    spreadPct ratio: 30/12 represents the same 3.3"/6.3" diameter
-    //    ratio (~0.52) the Helix slides do for 5.8"/9.0".
+    // 1. Annotated conventional small-casing centraliser — limitations. The
+    //    conventional-smallcasings video plays inside the slide. The force-
+    //    section schematic stays in the right column above the bullets via
+    //    `detailImage`.
     {
       type: 'annotated',
       label: 'Conventional centraliser',
       image: '/images/rocker-mechanism-conventional.png',
       video: '/videos/transcoded/conventional-smallcasings.mp4',
       detailImage: '/images/rocker-mechanism-conventional-detail.png',
-      callouts: [
-        { side: 'left', label: '6.3"', spreadPct: 12 },
-        { side: 'right', label: '3.3"', spreadPct: 30 },
-      ],
       bullets: [
         { text: 'Arms independent of each other' },
         { text: 'In smaller holes, arm angle is very shallow' },
@@ -233,21 +186,13 @@ export const ROCKER_MECHANISM: MechanismConfig = {
         { text: 'Mechanism fails in smaller holes', highlight: 'red' },
       ],
     },
-    // 2. Annotated ROCKER — benefits. Rocker mechanism video plays between
-    //    the 6.3"/3.3" brackets. Unlike Helix, the rocker arms aren't
-    //    vertically mirrored in any given frame — one pair is up-left, the
-    //    other is down-right — so the brackets need independent top / bottom
-    //    positioning rather than a symmetric spread. Values are tuned to
-    //    the reference frame from rocker-mechanism.mp4.
+    // 2. Annotated ROCKER — benefits. rocker-mechanism video plays inside
+    //    the slide as the counterpoint to slide 1.
     {
       type: 'annotated',
       label: 'ROCKER',
       image: '/images/rocker-mechanism-rocker.png',
       video: '/videos/transcoded/rocker-mechanism.mp4',
-      callouts: [
-        { side: 'left', label: '6.3"', topPct: 35, bottomPct: 40 },
-        { side: 'right', label: '3.3"', topPct: 35, bottomPct: 22 },
-      ],
       bullets: [
         { text: 'Rocker arm pivots around centreline' },
         { text: 'Large slider movement' },
@@ -312,7 +257,6 @@ export default function MechanismScreen({ config, onBack }: Props) {
             label={slide.label}
             image={slide.image}
             video={slide.video}
-            callouts={slide.callouts}
             bullets={slide.bullets}
             detailImage={slide.detailImage}
           />
@@ -421,39 +365,32 @@ function VideoSlide({
 }
 
 /**
- * AnnotatedSlide — light-themed card showing a tool image with SVG dimension
- * callouts and a bullet list. Mimics the look of the ICOTA 2026 conventional-
- * centraliser slide: two horizontal callout brackets on the left and right
- * (with diameter labels), plus a vertically-centred bullet list to the right.
+ * AnnotatedSlide — light-themed card showing a tool image (or looping
+ * mechanism video) on the left 2/3 with a bullet list on the right. Earlier
+ * versions overlaid dimension brackets (9.0"/5.8", 6.3"/3.3") on top of the
+ * diagram; those were removed in favour of a cleaner motion-only card.
  */
 function AnnotatedSlide({
   label,
   image,
   video,
-  callouts,
   bullets,
   detailImage,
 }: {
   label: string;
   image: string;
   video?: string | undefined;
-  callouts: DimensionCallout[];
   bullets: Bullet[];
   detailImage?: string | undefined;
 }) {
-  const leftCallout = callouts.find((c) => c.side === 'left');
-  const rightCallout = callouts.find((c) => c.side === 'right');
-
   return (
     <div className="w-full h-full p-6 flex">
       <div className="flex-1 m-2 rounded-2xl bg-white text-slate-900 grid grid-cols-3 gap-6 px-8 py-10">
-        {/* Diagram (2/3 of the card) */}
+        {/* Diagram (2/3 of the card) — tool image OR mechanism video. The
+            video fills the column so motion plays as large as possible.
+            `bg-white` paints any letterbox/pillarbox area white so it blends
+            into the slide card (Android Chrome paints it black otherwise). */}
         <div className="col-span-2 relative flex items-center justify-center">
-          {/* Tool image OR mechanism video — fills the diagram column so the
-              video plays as large as possible. `bg-white` paints the video's
-              letterbox/pillarbox area white so it blends into the slide card
-              (Android Chrome renders the unused area black by default).
-              Brackets render directly into the column on top — no slab. */}
           {video ? (
             <video
               src={video}
@@ -474,30 +411,6 @@ function AnnotatedSlide({
               priority
               className="object-contain"
               theme="light"
-            />
-          )}
-
-          {/* Dimension callouts — render directly against the column, not
-              inside an edge slab. The label sits at the column edge and the
-              two horizontal lines reach roughly half the column inward so
-              they visually "point at" the tool arms. */}
-          {leftCallout && (
-            <DimensionBracket
-              side="left"
-              label={leftCallout.label}
-              spreadPct={leftCallout.spreadPct}
-              topPct={leftCallout.topPct}
-              bottomPct={leftCallout.bottomPct}
-            />
-          )}
-
-          {rightCallout && (
-            <DimensionBracket
-              side="right"
-              label={rightCallout.label}
-              spreadPct={rightCallout.spreadPct}
-              topPct={rightCallout.topPct}
-              bottomPct={rightCallout.bottomPct}
             />
           )}
         </div>
@@ -526,73 +439,6 @@ function AnnotatedSlide({
         </div>
       </div>
     </div>
-  );
-}
-
-/**
- * Two horizontal dimension lines + a diameter label, rendered directly
- * against the diagram column (no edge slab). The label sits at the very
- * edge; each line extends across roughly half the column so the brackets
- * read as pointers at the tool arms, matching the ICOTA source slide.
- *
- * `spreadPct` controls how close each line sits to the top / bottom edge:
- *   - smaller value → lines closer to the edges → wider visible gap →
- *     "larger diameter" feel (use for 9.0" / 6.3")
- *   - larger value → lines closer to centre → narrower visible gap →
- *     "smaller diameter" feel (use for 5.8" / 3.3")
- */
-function DimensionBracket({
-  side,
-  label,
-  spreadPct = 28,
-  topPct,
-  bottomPct,
-}: {
-  side: 'left' | 'right';
-  label: string;
-  spreadPct?: number | undefined;
-  topPct?: number | undefined;
-  bottomPct?: number | undefined;
-}) {
-  const isLeft = side === 'left';
-  // topPct / bottomPct take precedence when set; otherwise fall back to the
-  // symmetric spreadPct so existing Helix callouts keep working unchanged.
-  const top = topPct ?? spreadPct;
-  const bottom = bottomPct ?? spreadPct;
-  // The label sits between the two lines: place it at the geometric centre
-  // of (top, 100 - bottom) so it stays vertically aligned with the lines
-  // even when they're asymmetric. (For symmetric brackets this collapses
-  // back to 50%.)
-  const labelTopPct = (top + (100 - bottom)) / 2;
-  // Line spans ~5% → ~48% on the left (or 52% → 95% on the right) so each
-  // line is ~43% of the column wide — long enough to visually point at the
-  // tool, short enough not to cross the body in the middle.
-  const lineSpan: React.CSSProperties = isLeft
-    ? { left: '5%', right: '52%' }
-    : { left: '52%', right: '5%' };
-
-  return (
-    <>
-      <div
-        aria-hidden="true"
-        className="absolute h-px bg-slate-800 pointer-events-none z-10"
-        style={{ top: `${top}%`, ...lineSpan }}
-      />
-      <div
-        aria-hidden="true"
-        className="absolute h-px bg-slate-800 pointer-events-none z-10"
-        style={{ bottom: `${bottom}%`, ...lineSpan }}
-      />
-      <span
-        aria-hidden="true"
-        className={`absolute -translate-y-1/2 z-20 text-3xl font-semibold tabular-nums text-slate-900 pointer-events-none ${
-          isLeft ? 'left-1' : 'right-1'
-        }`}
-        style={{ top: `${labelTopPct}%` }}
-      >
-        {label}
-      </span>
-    </>
   );
 }
 
