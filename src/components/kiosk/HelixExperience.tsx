@@ -95,8 +95,12 @@ export default function HelixExperience({ onClose }: Props) {
     return (
       <FullScreenLayer>
         <RockerExperience
+          // Both back-affordances inside Rocker (Helix corner badge AND
+          // the top-right ✕) close the Rocker sub-view back to the
+          // Helix main view rather than bouncing all the way out to the
+          // splash. Only the Helix top-right ✕ exits to splash.
           onBack={() => setView('main')}
-          onClose={onClose}
+          onClose={() => setView('main')}
         />
       </FullScreenLayer>
     );
