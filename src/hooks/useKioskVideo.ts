@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { getKioskDisplayMode } from './useKioskDisplay';
 
 /**
  * Kiosk video source resolver.
@@ -12,6 +13,12 @@ import { useEffect, useState } from 'react';
  *
  * Resolution is per-file: a clip with no HD counterpart silently keeps
  * using its transcoded version.
+ *
+ * SD-only mode: when the kiosk URL carries `?sd=1` (see useKioskDisplay)
+ * the HD probe is skipped entirely and every clip stays on its 720p
+ * transcoded path. Use this on Fire Stick / weaker devices that stutter
+ * on 1080p H.264 (or when mirroring from a tablet that's CPU-bound on
+ * the encode side).
  *
  * See docs/ADMIN.md ("Kiosk HD videos") for how the kiosk-hd folder is managed.
  */
@@ -89,11 +96,22 @@ function initialResolve(transcodedPath: string): string {
  */
 export function useKioskVideos(transcodedPaths: string[]): string[] {
   const key = transcodedPaths.join('|');
-  const [resolved] = useState<string[]>(() =>
-    transcodedPaths.map(initialResolve),
-  );
+  const [resolved] = useState<string[]>(() => {
+    // ?sd=1 — never upgrade to kiosk-hd; stay on the 720p transcoded clips.
+    // The flag is module-level cached so it's a synchronous read here.
+    const { sdMode } = getKioskDisplayMode();
+    if (sdMode) return [...transcodedPaths];
+    return transcodedPaths.map(initialResolve);
+  });
 
   useEffect(() => {
+    // Skip the HD probe entirely in SD mode — there's no point warming
+    // the cache when initialResolve will never look at it on the next
+    // key change. Saves a HEAD request per clip on the weaker device
+    // that explicitly opted out of HD.
+    const { sdMode } = getKioskDisplayMode();
+    if (sdMode) return;
+
     // Probe HD candidates to warm the module cache. We do NOT setState here
     // on purpose — that would remount the video element mid-playback.
     transcodedPaths.forEach((p) => {

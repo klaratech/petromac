@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect } from 'react';
 import StaffIdentityBadge from '@/components/kiosk/StaffIdentityBadge';
+import { useKioskDisplay } from '@/hooks/useKioskDisplay';
 
 export default function KioskShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -21,8 +22,16 @@ export default function KioskShell({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
+  // `?tv=1` adds a TV safe-area scale so Fire Stick / set-top-box overscan
+  // can't crop kiosk chrome out of the picture. The flag persists in
+  // sessionStorage so it survives in-kiosk navigation even when the query
+  // string drops. See useKioskDisplay.
+  const { tvMode } = useKioskDisplay();
+
   return (
-    <div className="fixed inset-0 z-50 bg-black overflow-hidden">
+    <div
+      className={`fixed inset-0 z-50 bg-black overflow-hidden ${tvMode ? 'kiosk-tv-mode' : ''}`}
+    >
       {/* StaffIdentityBadge calls useSearchParams() (to preserve ?lane= on
           the Microsoft login / logout redirects). Next.js 16 requires that
           any client component using useSearchParams sits inside a Suspense

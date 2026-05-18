@@ -41,6 +41,33 @@ Lane loops and `OverlayExperience` resolve their clips through
 when one exists (matched by filename) and otherwise falls back to the
 committed `public/videos/transcoded/` clip. See [ADMIN.md](ADMIN.md) §7.
 
+## Display flags
+
+The kiosk reads two opt-in URL flags once at boot and persists them to
+`sessionStorage` so they survive in-kiosk navigation (see
+`src/hooks/useKioskDisplay.ts`).
+
+| Flag      | Effect |
+|-----------|--------|
+| `?tv=1`   | TV safe-area mode. Scales the kiosk content to 94% so TV overscan (Fire Stick, set-top boxes) can't crop chrome out of the picture. The kiosk shell's `bg-black` fills the ~3% gutter on each side. |
+| `?sd=1`   | Skip the kiosk-hd 1080p upgrade. `useKioskVideo` stays on the 720p `transcoded/` clips. Use on Fire Stick or any device that stutters on 1080p H.264; also helpful when mirroring from a CPU-bound tablet, since the tablet's screen-capture encoder has less work to do per frame. |
+| `?tv=0` / `?sd=0` | Explicit opt-out. Clears the persisted flag without needing to clear sessionStorage manually — useful when swapping a Fire Stick kiosk back to a tablet. |
+
+Typical Fire Stick setup: navigate the kiosk browser once to
+`/intranet/kiosk?tv=1&sd=1`. The flags stick for the rest of the
+session; the query string can drop on subsequent navigations.
+
+### Why mirroring stutters
+
+If you're mirroring (Miracast / AirPlay / "Cast my screen") rather than
+navigating to the kiosk URL on the Fire Stick directly, the **source
+device** (the tablet) does all the rendering AND encodes its own screen
+frames as an H.264 mirror stream. The Fire Stick is just a decoder /
+display. Stutters in this mode usually mean the tablet is CPU/GPU-bound
+between the kiosk render and the simultaneous mirror encode — `?sd=1`
+helps here too, because there are fewer pixels per second for the
+encoder to chew on.
+
 ## Service Worker Cache Versioning
 The kiosk service worker lives at `public/kiosk-sw.js` and uses a version string:
 

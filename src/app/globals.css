@@ -38,6 +38,24 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 
+/*
+ * Kiosk TV safe-area mode.
+ *
+ * Triggered by `?tv=1` on any kiosk URL (see src/hooks/useKioskDisplay.ts).
+ * Scales every direct child of the kiosk shell to 94%; the parent's
+ * `bg-black` then fills the ~3% gutter on each side. That gutter sits in
+ * the area TV overscan would otherwise crop, so no important chrome
+ * (close X, HUD strip, corner badges) gets lost off the edge.
+ *
+ * Children retain their original layout — only a CSS transform is applied,
+ * so `h-screen` / `w-full` etc. all stay the same and the scaled content
+ * remains centred.
+ */
+.kiosk-tv-mode > * {
+  transform: scale(0.94);
+  transform-origin: center center;
+}
+
 /* 3D Flip Card Animations */
 .perspective-1000 {
   perspective: 1000px;
