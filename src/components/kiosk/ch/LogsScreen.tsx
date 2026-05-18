@@ -46,8 +46,21 @@ export interface LogAnnotation {
    *  'blue' → benefits / good outcome (brand navy)
    *  undefined → neutral (white / navy circles) */
   tone?: 'red' | 'blue';
-  /** Circle markers on the image that this annotation refers to. */
+  /** Circle markers on the main image that this annotation refers to.
+   *  Pass `[]` when the spotlight is on `detail` instead and the main image
+   *  is presented un-annotated. */
   circles: AnnotationCircle[];
+  /** Optional secondary chart shown beneath the bullets in this card —
+   *  e.g. a summary histogram or distribution plot. Has its own circle
+   *  overlay in its OWN coordinate space (so a circle at xPct: 65 on the
+   *  detail is 65% of the detail image's bounding box, not the main one). */
+  detail?: {
+    src: string;
+    alt: string;
+    /** Optional circles overlaid on the detail image, scaled to the detail's
+     *  own bounding box. Tone-colored the same way main-image circles are. */
+    circles?: AnnotationCircle[];
+  };
 }
 
 export type LogsSlide =
@@ -87,10 +100,12 @@ interface Props {
 
 // ── Cased Hole presets (ported from the original Helix/Rocker maps) ──────────
 // Asset slots — drop files at these paths and the slides pick them up:
-//   /public/images/kiosk-images/Helix_Log1.jpg  (annotated slide 1)
-//   /public/images/kiosk-images/Helix_Log2.png  (annotated slide 2)
-//   /public/images/helix-cbl-setup.png          (CBL slide)
-//   /public/images/rocker-logs-{N}.png          (Rocker log comparisons)
+//   /public/images/kiosk-images/Helix_Log1.jpg    (annotated slide 1)
+//   /public/images/kiosk-images/Helix_Log2.png    (annotated slide 2)
+//   /public/images/kiosk-images/Helix_Log3-1.jpg  (annotated slide 3, main strip)
+//   /public/images/kiosk-images/Helix_Log3-2.png  (annotated slide 3, ECCE histogram inset)
+//   /public/images/helix-cbl-setup.png            (CBL slide)
+//   /public/images/rocker-logs-{N}.png            (Rocker log comparisons)
 //
 // (The Helix lever-arm comparison images moved to the Mechanism slideshow
 //  and now live under /public/images/kiosk-images/leverage-{conventional,
@@ -160,6 +175,39 @@ export const HELIX_LOGS: LogsConfig = {
             // Sonic track, 7" zone.
             { xPct: 65, yPct: 62, rPct: 5 },
           ],
+        },
+      ],
+    },
+    // Slide 3 — Aramco KHRS-300. The strip shows excellent ECCE all the way
+    // out to 85° deviation in 9-5/8" casing; the ECCE histogram inset in the
+    // bottom of the annotation card summarises the run — a Mean of 0.0688"
+    // against a 0.38" limit, circled in red.
+    {
+      type: 'annotated',
+      src: '/images/kiosk-images/Helix_Log3-1.jpg',
+      caption: 'Aramco KHRS-300 — HELIX run',
+      annotations: [
+        {
+          tone: 'blue',
+          title: 'CX9: Ultrasonic to 85° deviation in 9-5/8"',
+          bullets: [
+            'Excellent ECCE even where DLS is high',
+            'Excellent ECCE from vertical to 85° deviation',
+            'Average ECCE of 0.07" (limit is 0.38")',
+          ],
+          // No callouts on the main strip — the supporting evidence sits in
+          // the histogram below.
+          circles: [],
+          detail: {
+            src: '/images/kiosk-images/Helix_Log3-2.png',
+            alt: 'ECCE distribution histogram — Aramco KHRS-300 HELIX run',
+            circles: [
+              // Red ring around the "Mean: 0.0688" stat in the bottom
+              // statistics strip. xPct/yPct are tuned against the cropped
+              // histogram image — adjust from a tablet once seen.
+              { xPct: 72, yPct: 93, rPct: 4 },
+            ],
+          },
         },
       ],
     },
@@ -411,6 +459,7 @@ function AnnotationCard({ annotation }: { annotation: LogAnnotation }) {
     : annotation.tone === 'blue'
       ? 'text-[#7FA8E6]'
       : 'text-white';
+  const stroke = toneStroke(annotation.tone);
   return (
     <div className="rounded-2xl border border-white/15 bg-white/5 p-5">
       {annotation.eyebrow && (
@@ -436,6 +485,51 @@ function AnnotationCard({ annotation }: { annotation: LogAnnotation }) {
             </li>
           ))}
         </ul>
+      )}
+      {annotation.detail && (
+        <div className="relative mt-4 rounded-lg overflow-hidden bg-white aspect-[16/10]">
+          <AssetSlot
+            key={annotation.detail.src}
+            src={annotation.detail.src}
+            alt={annotation.detail.alt}
+            className="object-contain"
+            theme="light"
+          />
+          {annotation.detail.circles && annotation.detail.circles.length > 0 && (
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="absolute inset-0 w-full h-full pointer-events-none"
+            >
+              {annotation.detail.circles.map((c, i) => {
+                const r = c.rPct ?? 4;
+                return (
+                  <g key={`detail-${i}-${c.xPct}-${c.yPct}`}>
+                    <circle
+                      cx={c.xPct}
+                      cy={c.yPct}
+                      r={r}
+                      fill="none"
+                      stroke="white"
+                      strokeWidth={1.5}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                    <circle
+                      cx={c.xPct}
+                      cy={c.yPct}
+                      r={r}
+                      fill="none"
+                      stroke={stroke}
+                      strokeWidth={2.5}
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+          )}
+        </div>
       )}
     </div>
   );
