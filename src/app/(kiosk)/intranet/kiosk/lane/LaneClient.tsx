@@ -359,6 +359,58 @@ function LaneLoopContent() {
         ))}
       </div>
 
+      {/* Playlist controls — small prev/next pair + position dots. Lets
+          the user skip ahead or back to a particular clip in the OH
+          loop without waiting for the current one to finish. Fades with
+          the right-edge product button strip; the underlying <video> is
+          keyed on `playlist[videoIdx]` so changing the index remounts
+          the element and autoplay fires the fresh clip from the start. */}
+      {playlist.length > 1 && (
+        <div
+          className={`absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 px-2 py-1.5 rounded-full bg-black/55 border border-white/10 shadow-lg transition-opacity duration-300 ${
+            overlayVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setVideoIdx((i) => (i - 1 + playlist.length) % playlist.length);
+            }}
+            aria-label="Previous video"
+            className="w-8 h-8 flex items-center justify-center rounded-full text-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            ‹
+          </button>
+          <div className="flex items-center gap-1.5 px-2" aria-hidden="true">
+            {playlist.map((src, i) => (
+              <button
+                key={src}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setVideoIdx(i);
+                }}
+                aria-label={`Jump to clip ${i + 1}`}
+                className={`block w-1.5 h-1.5 rounded-full transition-colors ${
+                  i === videoIdx
+                    ? 'bg-white'
+                    : 'bg-white/30 hover:bg-white/60'
+                }`}
+              />
+            ))}
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setVideoIdx((i) => (i + 1) % playlist.length);
+            }}
+            aria-label="Next video"
+            className="w-8 h-8 flex items-center justify-center rounded-full text-xl text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            ›
+          </button>
+        </div>
+      )}
+
       {/* Active experience layer — conditional render, no transition
           wrapper. The FullScreenLayer inside OverlayExperience handles
           its own mount (snap to fixed inset-0 z-50 bg-black). */}
