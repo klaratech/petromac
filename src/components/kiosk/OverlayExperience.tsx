@@ -1,24 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
-import useOperationsData from '@/hooks/useOperationsData';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
 import MechanismScreen, {
   type MechanismConfig,
 } from '@/components/kiosk/ch/MechanismScreen';
 import LogsScreen, { type LogsConfig } from '@/components/kiosk/ch/LogsScreen';
-import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
-import type { JobRecord } from '@/types/JobRecord';
 
 /**
  * Config for a generic kiosk product experience.
  *
- * This is the open-hole sibling of `FocusCentralizersExperience` — same shape
- * (looping video background + 3-button HUD: Track Record / Mechanism /
- * Case Studies + close), but driven by a config object so new overlay
- * buttons can be added without copy-pasting a component.
+ * Open-hole sibling of `FocusCentralizersExperience` — same shape: looping
+ * video background + 2-button HUD (Mechanism · Case Studies) + close.
+ * Driven by a config object so new overlay buttons can be added without
+ * copy-pasting a component. Track Record + Success Stories live INSIDE
+ * the Case Studies pager (first slide is the map).
  *
  * To "build out" an experience (per the Helix pattern), fill in the optional
  * fields below. Anything left undefined renders a clearly-marked placeholder
@@ -34,14 +31,14 @@ export interface OverlayExperienceConfig {
   /** Featured video that loops fullscreen behind the HUD. */
   video: string;
   /**
-   * When set, the "Track Record" button opens the real drilldown map filtered
-   * to this system name (must match the `system` field in the operations data).
-   * Leave undefined to show the placeholder.
+   * When set, the Case Studies pager prepends a map slide filtered to this
+   * system (must match the `system` field in operations data). Folded
+   * into `logs.trackRecord.system` at the call site if `logs` is provided.
    */
   trackRecordSystem?: string;
   /**
    * When true, the in-map "Success Stories" link is shown and opens the
-   * flipbook as an inline sub-view. Leave false/undefined to hide it.
+   * flipbook as an inline takeover of the LogsScreen pager.
    */
   enableSuccessStories?: boolean;
   /**
@@ -50,13 +47,14 @@ export interface OverlayExperienceConfig {
    */
   mechanism?: MechanismConfig;
   /**
-   * When set, the "Logs" button opens the real slide screen.
+   * When set, the "Case Studies" button opens the slide screen. If
+   * `trackRecordSystem` is also set the map slide is auto-prepended.
    * Leave undefined to show the placeholder.
    */
   logs?: LogsConfig;
 }
 
-type View = 'main' | 'track-record' | 'success-stories' | 'mechanism' | 'logs';
+type View = 'main' | 'mechanism' | 'logs';
 
 interface Props {
   config: OverlayExperienceConfig;
@@ -74,56 +72,6 @@ export default function OverlayExperience({ config, onClose }: Props) {
 
   // Prefers the /videos/kiosk-hd/ master when present, else transcoded.
   const videoSrc = useKioskVideo(config.video);
-
-  const { data: jobData } = useOperationsData<JobRecord>({
-    enabled: view === 'track-record' && Boolean(config.trackRecordSystem),
-  });
-
-  // ── Sub-views ────────────────────────────────────────────────────────────
-  if (view === 'track-record') {
-    // Placeholder for configs that haven't been wired to a system yet. All
-    // current OH overlays set `trackRecordSystem` — see LaneClient.
-    if (!config.trackRecordSystem) {
-      return (
-        <FullScreenLayer>
-          <ComingSoon
-            eyebrow={`${config.laneLabel} · ${config.title}`}
-            heading="Track Record"
-            onBack={() => setView('main')}
-          />
-        </FullScreenLayer>
-      );
-    }
-    return jobData ? (
-      <FullScreenLayer>
-        <DrilldownMapCore
-          data={jobData}
-          initialSystem={config.trackRecordSystem}
-          showCloseButton
-          onClose={() => setView('main')}
-          showSuccessStoriesLink={config.enableSuccessStories ?? false}
-          onSuccessStoriesClick={() => setView('success-stories')}
-        />
-      </FullScreenLayer>
-    ) : (
-      <FullScreenLayer>
-        <div className="w-full h-full flex items-center justify-center text-white/70">
-          Loading track record…
-        </div>
-      </FullScreenLayer>
-    );
-  }
-
-  if (view === 'success-stories') {
-    return (
-      <FullScreenLayer>
-        <SuccessStoriesFlipbook
-          onBack={() => setView('main')}
-          backLabel="Back"
-        />
-      </FullScreenLayer>
-    );
-  }
 
   if (view === 'mechanism') {
     return (
@@ -145,10 +93,31 @@ export default function OverlayExperience({ config, onClose }: Props) {
   }
 
   if (view === 'logs') {
+    // Fold the OverlayExperience's trackRecordSystem + enableSuccessStories
+    // into the LogsConfig so the case-studies pager prepends a map slide
+    // automatically. If the caller's LogsConfig already declares
+    // trackRecord, that wins and we leave the slides untouched.
+    const logsWithTrackRecord: LogsConfig | null = (() => {
+      if (!config.logs) return null;
+      if (config.logs.trackRecord || !config.trackRecordSystem) {
+        return config.logs;
+      }
+      return {
+        ...config.logs,
+        trackRecord: {
+          system: config.trackRecordSystem,
+          enableSuccessStories: config.enableSuccessStories ?? false,
+        },
+        slides: [{ type: 'map' as const }, ...config.logs.slides],
+      };
+    })();
     return (
       <FullScreenLayer>
-        {config.logs ? (
-          <LogsScreen config={config.logs} onBack={() => setView('main')} />
+        {logsWithTrackRecord ? (
+          <LogsScreen
+            config={logsWithTrackRecord}
+            onBack={() => setView('main')}
+          />
         ) : (
           <ComingSoon
             eyebrow={`${config.laneLabel} · ${config.title}`}
@@ -229,13 +198,6 @@ export default function OverlayExperience({ config, onClose }: Props) {
             hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
-          <HudButton
-            label="Track Record"
-            onClick={(e) => {
-              e.stopPropagation();
-              setView('track-record');
-            }}
-          />
           <HudButton
             label="Mechanism"
             onClick={(e) => {

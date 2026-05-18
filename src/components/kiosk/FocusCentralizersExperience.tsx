@@ -2,24 +2,14 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
-import useOperationsData from '@/hooks/useOperationsData';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
-import type { JobRecord } from '@/types/JobRecord';
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
 import MechanismScreen, { HELIX_MECHANISM } from './ch/MechanismScreen';
 import LogsScreen, { HELIX_LOGS } from './ch/LogsScreen';
 import RockerExperience from './ch/RockerExperience';
-import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
 
-type View =
-  | 'main'
-  | 'track-record'
-  | 'success-stories'
-  | 'mechanism'
-  | 'logs'
-  | 'rocker';
+type View = 'main' | 'mechanism' | 'logs' | 'rocker';
 
 interface Props {
   onClose: () => void;
@@ -31,12 +21,13 @@ const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
  * Cased-hole "Focus Centralizers" experience.
  *
  * - Helix intro video loops fullscreen in the background.
- * - HUD strip of 3 buttons (Track Record, Mechanism, Case Studies) appears
- *   on entry, fades out after HUD_AUTOHIDE_MS of no interaction. Tap
- *   anywhere to bring it back. Success Stories opens inline from the
- *   Track Record view rather than from the HUD.
+ * - HUD strip of 2 buttons (Mechanism, Case Studies) appears on entry,
+ *   fades out after HUD_AUTOHIDE_MS of no interaction. Tap anywhere to
+ *   bring it back. Track Record + Success Stories live INSIDE Case
+ *   Studies now — the map is the first slide of the case-studies pager,
+ *   Success Stories opens inline from the in-map link.
  * - Bottom-right corner badge for ROCKER → opens the sister Rocker view
- *   with the same 3-button HUD over a still product layout.
+ *   with the same 2-button HUD over a still product layout.
  */
 export default function FocusCentralizersExperience({ onClose }: Props) {
   const [view, setView] = useState<View>('main');
@@ -45,50 +36,10 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
     HUD_AUTOHIDE_MS,
   );
 
-  const { data: jobData } = useOperationsData<JobRecord>({
-    enabled: view === 'track-record',
-  });
-
   const media = systemMedia['Focus Centralizers'];
   // Route the Helix video through useKioskVideo so the CH lane gets the
   // same HD upgrade path (videos/kiosk-hd/<file>.mp4) as the lane attractor.
   const videoSrc = useKioskVideo(media?.video ?? '');
-
-  // Sub-views
-  if (view === 'track-record') {
-    return jobData ? (
-      <FullScreenLayer>
-        <DrilldownMapCore
-          data={jobData}
-          // The map filters by `System`. Helix + Rocker both roll up to
-          // "Focus - CH" in the data pipeline; the finer Helix/Rocker split
-          // lives on each record's `Subsystem` field for future filtering.
-          initialSystem="Focus - CH"
-          showCloseButton
-          onClose={() => setView('main')}
-          showSuccessStoriesLink
-          onSuccessStoriesClick={() => setView('success-stories')}
-        />
-      </FullScreenLayer>
-    ) : (
-      <FullScreenLayer>
-        <div className="w-full h-full flex items-center justify-center text-white/70">
-          Loading track record…
-        </div>
-      </FullScreenLayer>
-    );
-  }
-
-  if (view === 'success-stories') {
-    return (
-      <FullScreenLayer>
-        <SuccessStoriesFlipbook
-          onBack={() => setView('main')}
-          backLabel="Back"
-        />
-      </FullScreenLayer>
-    );
-  }
 
   if (view === 'mechanism') {
     // Inject the live Helix spec sheet + load-capacity graph so the
@@ -176,13 +127,6 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
             hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
-          <HudButton
-            label="Track Record"
-            onClick={(e) => {
-              e.stopPropagation();
-              setView('track-record');
-            }}
-          />
           <HudButton
             label="Mechanism"
             onClick={(e) => {

@@ -2,17 +2,13 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
-import useOperationsData from '@/hooks/useOperationsData';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
-import type { JobRecord } from '@/types/JobRecord';
 import { deviceSpecs } from '@modules/catalog/data/deviceSpecs';
 import MechanismScreen, { ROCKER_MECHANISM } from './MechanismScreen';
 import LogsScreen, { ROCKER_LOGS } from './LogsScreen';
-import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
 import { AssetSlot } from '@/components/kiosk/AssetSlot';
 
-type View = 'main' | 'track-record' | 'success-stories' | 'mechanism' | 'logs';
+type View = 'main' | 'mechanism' | 'logs';
 
 interface Props {
   onBack: () => void;   // back to Helix / Focus Centralizers main
@@ -23,9 +19,11 @@ const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
 
 /**
  * RockerExperience — sister view to FocusCentralizersExperience for the
- * smaller-casing Rocker tool. Same 3-button HUD + Helix corner badge.
- * There's no intro video for Rocker — the main view is a clean side-by-side
- * of the two tool variants (Rocker / Rocker Inline) on a dark backdrop.
+ * smaller-casing Rocker tool. Same 2-button HUD (Mechanism · Case Studies)
+ * + Helix corner badge. There's no intro video for Rocker — the main view
+ * is a clean side-by-side of the two tool variants (Rocker / Rocker
+ * Inline) on a dark backdrop. Track Record + Success Stories live INSIDE
+ * the Case Studies pager (first slide is the map).
  *
  * Asset slots:
  *   /public/images/kiosk-images/rocker.png         (Rocker tool render — left panel)
@@ -37,42 +35,6 @@ export default function RockerExperience({ onBack, onClose }: Props) {
     view === 'main',
     HUD_AUTOHIDE_MS,
   );
-
-  const { data: jobData } = useOperationsData<JobRecord>({
-    enabled: view === 'track-record',
-  });
-
-  if (view === 'track-record') {
-    return (
-      <FullScreenLayer>
-        {jobData ? (
-          <DrilldownMapCore
-            data={jobData}
-            // Helix + Rocker both roll up to "Focus - CH" as the `System`; the
-            // Rocker-specific split lives on each record's `Subsystem` field
-            // (filtering by Subsystem can be added to the map later).
-            initialSystem="Focus - CH"
-            showCloseButton
-            onClose={() => setView('main')}
-            showSuccessStoriesLink
-            onSuccessStoriesClick={() => setView('success-stories')}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-white/70">
-            Loading track record…
-          </div>
-        )}
-      </FullScreenLayer>
-    );
-  }
-
-  if (view === 'success-stories') {
-    return (
-      <FullScreenLayer>
-        <SuccessStoriesFlipbook onBack={() => setView('main')} backLabel="Back" />
-      </FullScreenLayer>
-    );
-  }
 
   if (view === 'mechanism') {
     const rockerSpec = deviceSpecs['/models/rocker.glb'];
@@ -159,13 +121,6 @@ export default function RockerExperience({ onBack, onClose }: Props) {
           hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <HudButton
-          label="Track Record"
-          onClick={(e) => {
-            e.stopPropagation();
-            setView('track-record');
-          }}
-        />
         <HudButton
           label="Mechanism"
           onClick={(e) => {

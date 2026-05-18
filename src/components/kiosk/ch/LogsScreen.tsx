@@ -2,20 +2,30 @@
 
 import { useState } from 'react';
 import { AssetSlot } from '@/components/kiosk/AssetSlot';
+import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
+import useOperationsData from '@/hooks/useOperationsData';
+import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
+import type { JobRecord } from '@/types/JobRecord';
 
 /**
- * LogsScreen — config-driven "Case Studies" sub-view.
+ * LogsScreen — config-driven "Case Studies" pager.
  *
  * Used by the Cased Hole experiences (Helix / Rocker) and the Open Hole
- * `OverlayExperience` scaffolds. Each slide is either a single full-bleed
- * image or a left/right comparison pair; a pager steps through them.
+ * `OverlayExperience` scaffolds. Slide types:
  *
- * Missing images fall back to a "drop file here" placeholder so the screen
- * stays usable while graphics assets are in progress.
+ *   - `map`        — Track Record drill-down map (DrilldownMapCore). Pulls
+ *                    operations data from useOperationsData; the in-map
+ *                    Success Stories link opens the flipbook as a takeover.
+ *   - `single`     — full-bleed image with a caption pill.
+ *   - `pair`       — two side-by-side comparison images.
+ *   - `annotated`  — image with side text cards (and optional SVG circles).
+ *
+ * Track Record used to be its own HUD button — it folded into Case Studies
+ * in May 2026 so the experiences are down to two HUD buttons (Mechanism +
+ * Case Studies). Missing images fall back to a "drop file here" placeholder.
  *
  * Note on naming: the file, type and constants keep the historical `Logs`
- * naming for minimal churn — the displayed label was renamed to "Case
- * Studies" in May 2026.
+ * naming for minimal churn — the displayed label is "Case Studies".
  */
 
 /** Annotation circle — positioned in % of the image's bounding box so it
@@ -65,6 +75,16 @@ export interface LogAnnotation {
 
 export type LogsSlide =
   | {
+      /** Track Record drill-down map — first slide in every case-studies
+       *  pager. Driven by `config.trackRecord` (system filter + Success
+       *  Stories enable flag). Operations data fetched inside LogsScreen
+       *  only when a map slide is present. */
+      type: 'map';
+      /** Optional caption pill shown bottom-centre. Defaults to "Track
+       *  Record" if omitted. */
+      caption?: string;
+    }
+  | {
       type: 'single';
       src: string;
       caption: string;
@@ -76,11 +96,9 @@ export type LogsSlide =
       right: { src: string; label: string; highlight?: boolean };
     }
   | {
-      /** Annotated log — image on the left with transparent circles overlaid
-       *  at specific spots; a stack of text cards sits on the right and each
-       *  card calls out a different set of circles. Used for ICOTA-style log
-       *  call-outs where a single strip shows multiple distinct outcomes
-       *  (e.g. poor centralisation up top, excellent down below). */
+      /** Annotated log — image with side text cards calling out specific
+       *  outcomes. Optionally carries SVG circle overlays in the image's
+       *  own coordinate space. */
       type: 'annotated';
       src: string;
       caption: string;
@@ -91,6 +109,17 @@ export interface LogsConfig {
   /** Shown as the screen heading, e.g. "Helix", "Pathfinder". */
   title: string;
   slides: LogsSlide[];
+  /** Required when any slide is of type `map`. Drives the DrilldownMapCore
+   *  inside that slide and toggles the in-map Success Stories link. */
+  trackRecord?: {
+    /** System filter passed to DrilldownMapCore `initialSystem` — e.g.
+     *  "Focus - CH" for Helix/Rocker, "Wireline Express - FT" for OH
+     *  Formation Testing. */
+    system: string;
+    /** Show the "Success Stories" link inside the map. Clicking it opens
+     *  SuccessStoriesFlipbook as an inline takeover of LogsScreen. */
+    enableSuccessStories?: boolean;
+  };
 }
 
 interface Props {
@@ -113,7 +142,16 @@ interface Props {
 
 export const HELIX_LOGS: LogsConfig = {
   title: 'Helix',
+  // Helix + Rocker both roll up to "Focus - CH" in the operations pipeline.
+  trackRecord: {
+    system: 'Focus - CH',
+    enableSuccessStories: true,
+  },
   slides: [
+    // Slide 0 — Track Record map. The drill-down map used to be its own
+    // HUD button; folded in here so users page through map → logs in a
+    // single flow. Country chart / yearly stats render on top of the map.
+    { type: 'map' },
     // The leverage comparison that used to live here moved to the Helix
     // mechanism slideshow (slide 3 — see HELIX_MECHANISM in MechanismScreen).
     //
@@ -205,7 +243,15 @@ export const HELIX_LOGS: LogsConfig = {
 
 export const ROCKER_LOGS: LogsConfig = {
   title: 'Rocker',
+  // Helix + Rocker share the "Focus - CH" rollup in the operations data;
+  // a Subsystem-level Helix/Rocker split lives on each record for future
+  // filtering but the map filters by System.
+  trackRecord: {
+    system: 'Focus - CH',
+    enableSuccessStories: true,
+  },
   slides: [
+    { type: 'map' },
     {
       type: 'single',
       src: '/images/rocker-logs-1.png',
@@ -217,7 +263,32 @@ export const ROCKER_LOGS: LogsConfig = {
 export default function LogsScreen({ config, onBack }: Props) {
   const slides = config.slides;
   const [index, setIndex] = useState(0);
+  const [showSuccessStories, setShowSuccessStories] = useState(false);
   const slide = slides[index] as LogsSlide | undefined;
+
+  // Only fetch operations data when a map slide is configured — keeps
+  // standalone usages (e.g. an OH overlay with only image slides) from
+  // pulling the ~600 KB JSON for no reason.
+  const hasMap = slides.some((s) => s.type === 'map');
+  const { data: jobData } = useOperationsData<JobRecord>({
+    enabled: hasMap,
+  });
+
+  // Success Stories takes over the whole sub-view when triggered from
+  // inside the map slide. Returns to the same slide index on Back.
+  if (showSuccessStories) {
+    return (
+      <SuccessStoriesFlipbook
+        onBack={() => setShowSuccessStories(false)}
+        backLabel="Back"
+      />
+    );
+  }
+
+  const captionForSlide = (s: LogsSlide): string => {
+    if (s.type === 'map') return s.caption ?? 'Track Record';
+    return s.caption;
+  };
 
   return (
     <div className="w-full h-full bg-black text-white flex flex-col">
@@ -241,6 +312,16 @@ export default function LogsScreen({ config, onBack }: Props) {
           <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">
             No log slides configured yet.
           </div>
+        ) : slide.type === 'map' ? (
+          <MapPane
+            jobData={jobData}
+            system={config.trackRecord?.system}
+            onSuccessStoriesClick={
+              config.trackRecord?.enableSuccessStories
+                ? () => setShowSuccessStories(true)
+                : undefined
+            }
+          />
         ) : slide.type === 'single' ? (
           <SinglePane src={slide.src} alt={slide.caption} />
         ) : slide.type === 'pair' ? (
@@ -275,9 +356,9 @@ export default function LogsScreen({ config, onBack }: Props) {
         )}
 
         {slide && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30">
             <div className="px-4 py-2 rounded-full bg-black/60 text-sm">
-              {slide.caption}
+              {captionForSlide(slide)}
             </div>
             {slides.length > 1 && (
               <div className="px-3 py-1.5 rounded-full bg-black/60 text-white/70 text-xs tabular-nums">
@@ -288,6 +369,38 @@ export default function LogsScreen({ config, onBack }: Props) {
         )}
       </div>
     </div>
+  );
+}
+
+/** MapPane — renders the DrilldownMapCore inside a case-studies slide.
+ *  Loading state matches the experience-level placeholder we used to show
+ *  before this folded into LogsScreen. */
+function MapPane({
+  jobData,
+  system,
+  onSuccessStoriesClick,
+}: {
+  jobData: JobRecord[] | null | undefined;
+  system: string | undefined;
+  onSuccessStoriesClick?: (() => void) | undefined;
+}) {
+  if (!jobData) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-white/70">
+        Loading track record…
+      </div>
+    );
+  }
+  return (
+    <DrilldownMapCore
+      data={jobData}
+      {...(system ? { initialSystem: system } : {})}
+      showSuccessStoriesLink={Boolean(onSuccessStoriesClick)}
+      {...(onSuccessStoriesClick ? { onSuccessStoriesClick } : {})}
+      // Fill the slide area; the slide's bottom caption + pager arrows
+      // sit on top of this via z-30.
+      className="relative w-full h-full overflow-hidden bg-white"
+    />
   );
 }
 
