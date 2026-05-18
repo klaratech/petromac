@@ -244,6 +244,7 @@ function VideoSlide({
           autoPlay
           muted
           loop
+          preload="metadata"
           playsInline
           className="absolute inset-0 w-full h-full object-contain"
           onError={(e) => {
@@ -300,6 +301,7 @@ function AnnotatedSlide({
               autoPlay
               loop
               muted
+              preload="metadata"
               playsInline
               className="absolute inset-0 w-full h-full object-contain bg-white"
               onError={(e) => {

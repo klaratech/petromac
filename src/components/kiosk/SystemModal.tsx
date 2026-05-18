@@ -84,6 +84,7 @@ export default function SystemModal({
                   ref={ref}
                   controls
                   autoPlay
+                  preload="metadata"
                   className="w-full h-full object-contain"
                   src={videoSrc}
                   onPlay={onVideoPlay}

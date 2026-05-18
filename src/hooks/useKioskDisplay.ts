@@ -52,6 +52,11 @@ function readOnce(key: string): boolean {
 let cachedTv: boolean | null = null;
 let cachedSd: boolean | null = null;
 
+export function getKioskPrimeMode(): boolean {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).get('prime') === '1';
+}
+
 export function getKioskDisplayMode(): { tvMode: boolean; sdMode: boolean } {
   if (cachedTv === null) cachedTv = readOnce('tv');
   if (cachedSd === null) cachedSd = readOnce('sd');

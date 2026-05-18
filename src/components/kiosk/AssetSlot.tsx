@@ -56,6 +56,7 @@ export function AssetSlot({
       src={src}
       alt={alt}
       fill
+      unoptimized
       {...(priority ? { priority } : {})}
       {...(sizes ? { sizes } : {})}
       {...(className ? { className } : {})}

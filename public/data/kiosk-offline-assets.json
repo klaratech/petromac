@@ -1,0 +1,737 @@
+{
+  "version": "2026-05-18-tablet-balanced-v1",
+  "profile": "Android tablet + Chromecast balanced 1080p",
+  "launchUrl": "/intranet/kiosk/?sd=0&tv=0",
+  "required": [
+    {
+      "kind": "manifest",
+      "url": "/manifest.json",
+      "label": "PWA manifest"
+    },
+    {
+      "kind": "icon",
+      "url": "/icons/icon-192x192.png",
+      "label": "PWA 192 icon"
+    },
+    {
+      "kind": "icon",
+      "url": "/icons/icon-512x512.png",
+      "label": "PWA 512 icon"
+    },
+    {
+      "kind": "route",
+      "url": "/intranet/kiosk/?sd=0&tv=0",
+      "label": "Kiosk splash"
+    },
+    {
+      "kind": "route",
+      "url": "/intranet/kiosk/lane?lane=oh&sd=0&tv=0",
+      "label": "Open Hole lane"
+    },
+    {
+      "kind": "route",
+      "url": "/intranet/kiosk/ch?sd=0&tv=0",
+      "label": "Cased Hole / Helix"
+    },
+    {
+      "kind": "route",
+      "url": "/intranet/kiosk/dashboard?sd=0&tv=0",
+      "label": "Track Record dashboard"
+    },
+    {
+      "kind": "route",
+      "url": "/intranet/kiosk/successstories?sd=0&tv=0",
+      "label": "Success Stories"
+    },
+    {
+      "kind": "route",
+      "url": "/intranet/kiosk/prime?sd=0&tv=0",
+      "label": "Prime utility"
+    },
+    {
+      "kind": "route-warmup",
+      "url": "/intranet/kiosk/?sd=0&tv=0&prime=1",
+      "label": "Warm splash chunks"
+    },
+    {
+      "kind": "route-warmup",
+      "url": "/intranet/kiosk/lane?lane=oh&sd=0&tv=0&prime=1",
+      "label": "Warm OH chunks"
+    },
+    {
+      "kind": "route-warmup",
+      "url": "/intranet/kiosk/ch?sd=0&tv=0&prime=1",
+      "label": "Warm CH chunks"
+    },
+    {
+      "kind": "route-warmup",
+      "url": "/intranet/kiosk/dashboard?sd=0&tv=0&prime=1",
+      "label": "Warm dashboard chunks"
+    },
+    {
+      "kind": "route-warmup",
+      "url": "/intranet/kiosk/successstories?sd=0&tv=0&prime=1",
+      "label": "Warm success-stories chunks"
+    },
+    {
+      "kind": "data",
+      "url": "/data/country_labels.json",
+      "label": "Country labels"
+    },
+    {
+      "kind": "data",
+      "url": "/data/operations_data.json",
+      "label": "Operations data"
+    },
+    {
+      "kind": "data",
+      "url": "/data/world-50m.json",
+      "label": "World map"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/manifest.json",
+      "label": "Success Stories manifest"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/tags.csv",
+      "label": "Success Stories tags"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/manifest.json",
+      "label": "Catalog manifest"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0001.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0002.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0003.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0004.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0005.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0006.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0007.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0008.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0009.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0010.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0011.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0012.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0013.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0014.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0015.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0016.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0017.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0018.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0019.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0020.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0021.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0022.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0023.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0024.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0025.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0026.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0027.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0028.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0029.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0030.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0031.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0032.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0033.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0034.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0035.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0036.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0037.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0038.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0039.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0040.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0041.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0042.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0043.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0044.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0045.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0046.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0047.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/success-stories/pages/0048.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0001.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0002.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0003.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0004.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0005.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0006.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0007.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0008.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0009.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0010.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0011.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0012.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0013.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0014.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0015.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0016.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0017.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0018.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0019.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0020.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0021.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0022.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0023.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0024.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0025.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0026.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0027.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0028.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0029.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0030.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0031.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0032.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0033.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0034.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0035.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0036.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0037.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0038.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0039.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0040.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0041.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0042.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0043.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0044.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0045.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0046.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0047.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0048.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0049.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0050.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0051.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0052.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0053.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0054.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0055.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0056.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0057.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0058.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0059.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0060.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0061.jpg"
+    },
+    {
+      "kind": "flipbook",
+      "url": "/flipbooks/catalog/pages/0062.jpg"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/dice.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/WirelineExpress.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/WirelineExpress-subtitled.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/pf-subtitled.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/helix-subtitled.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/differential-sticking-subtitled.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/dice.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/WirelineExpress-subtitled.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/WirelineExpress.mp4?v=20240519"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/pf-subtitled.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/pf.mp4?v=20240519"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/helix-subtitled.mp4?v=20240517"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/helix.mp4?v=20240517"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/differential-sticking-subtitled.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/conventional-largecasings.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/conventional-smallcasings.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/helix-mechanism.mp4"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/transcoded/rocker-mechanism.mp4"
+    },
+    {
+      "kind": "image",
+      "url": "/images/tv-bg.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/focus.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/wirelineexpress.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/pathfinder.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/thor.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Helix_Log1.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Helix_Log2.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Helix_Log3-1.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Helix_Log3-2.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Helix_Log4.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Helix_Log5-1.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Helix_Log5-2.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Helix_Log5-3.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/helix-load-capacity.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/leverage-conventional.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/leverage-helix.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Rocker_Log1.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Rocker_Log2-1.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Rocker_Log2-2.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/Rocker_Log3.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/rocker-inline.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/rocker-load-capacity.png"
+    },
+    {
+      "kind": "image",
+      "url": "/images/kiosk-images/rocker.png"
+    }
+  ],
+  "optional": [
+    {
+      "kind": "model",
+      "url": "/models/cp12.glb"
+    },
+    {
+      "kind": "model",
+      "url": "/models/cp8.glb"
+    },
+    {
+      "kind": "model",
+      "url": "/models/helix.glb"
+    },
+    {
+      "kind": "model",
+      "url": "/models/pathfinderht.glb"
+    },
+    {
+      "kind": "model",
+      "url": "/models/thor.glb"
+    },
+    {
+      "kind": "model",
+      "url": "/models/ttbs75.glb"
+    }
+  ]
+}

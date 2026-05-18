@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import OverlayExperience, {
   type OverlayExperienceConfig,
 } from '@/components/kiosk/OverlayExperience';
+import { getKioskPrimeMode } from '@/hooks/useKioskDisplay';
 import { useKioskVideos } from '@/hooks/useKioskVideo';
 import { KIOSK_CH_PATH } from '@/constants/app';
 
@@ -211,6 +212,7 @@ function LaneLoopContent() {
   const [active, setActive] = useState<ActiveExperience | null>(null);
   const [overlayVisible, setOverlayVisible] = useState(true);
   const overlayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const primeMode = getKioskPrimeMode();
   // Pointer-inside is a ref (not state) so we can read the latest value
   // inside revealOverlay without re-creating the callback on every change.
   const pointerInsideRef = useRef(false);
@@ -324,7 +326,9 @@ function LaneLoopContent() {
         ref={attractorRef}
         key={playlist[videoIdx]}
         src={playlist[videoIdx]}
-        autoPlay
+        autoPlay={!primeMode}
+        muted={primeMode}
+        preload="metadata"
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
         onEnded={() => setVideoIdx((i) => (i + 1) % playlist.length)}

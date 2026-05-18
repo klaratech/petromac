@@ -132,6 +132,7 @@ export default function CircularGallery({
         alt="Background"
         fill
         priority
+        unoptimized
         className="absolute inset-0 object-cover z-0"
       />
 

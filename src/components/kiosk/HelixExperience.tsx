@@ -1,13 +1,12 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import Image from 'next/image';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
+import { getKioskPrimeMode } from '@/hooks/useKioskDisplay';
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
-import MechanismScreen from './ch/MechanismScreen';
-import LogsScreen from './ch/LogsScreen';
-import RockerExperience from './ch/RockerExperience';
 import { HELIX_MECHANISM, HELIX_LOGS } from './ch/ch-configs';
 
 type View = 'main' | 'mechanism' | 'logs' | 'rocker';
@@ -17,6 +16,27 @@ interface Props {
 }
 
 const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
+
+const LoadingSubView = () => (
+  <div className="w-full h-full bg-black flex items-center justify-center text-white/50 text-sm">
+    Loading...
+  </div>
+);
+
+const MechanismScreen = dynamic(() => import('./ch/MechanismScreen'), {
+  ssr: false,
+  loading: LoadingSubView,
+});
+
+const LogsScreen = dynamic(() => import('./ch/LogsScreen'), {
+  ssr: false,
+  loading: LoadingSubView,
+});
+
+const RockerExperience = dynamic(() => import('./ch/RockerExperience'), {
+  ssr: false,
+  loading: LoadingSubView,
+});
 
 /**
  * HelixExperience — cased-hole Helix view.
@@ -42,6 +62,7 @@ export default function HelixExperience({ onClose }: Props) {
   );
 
   const media = systemMedia['Focus Centralizers'];
+  const primeMode = getKioskPrimeMode();
   // Route the Helix video through useKioskVideo so the CH lane gets the
   // same HD upgrade path (videos/kiosk-hd/<file>.mp4) as the lane attractor.
   const videoSrc = useKioskVideo(media?.video ?? '');
@@ -96,8 +117,10 @@ export default function HelixExperience({ onClose }: Props) {
           // No native `controls` — kiosk uses its own HUD.
           <video
             src={videoSrc}
-            autoPlay
+            autoPlay={!primeMode}
+            muted={primeMode}
             loop
+            preload="metadata"
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -160,13 +183,18 @@ export default function HelixExperience({ onClose }: Props) {
           }`}
         >
           {/* Corner-badge silhouette pending — tracked in TODO.md. */}
-          <span className="w-5 h-5 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80">
+          <span className="w-5 h-5 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80 overflow-hidden">
+            {/* Intrinsic dims match the file's 1055x413 aspect ratio so
+                Next/Image stops warning about aspect-ratio mismatch; CSS
+                renders the wordmark at ~8px tall fitted inside the badge.
+                Tracked-for-replacement in TODO.md (dedicated silhouette). */}
             <Image
               src="/images/focus.png"
               alt=""
-              width={12}
+              width={31}
               height={12}
-              className="opacity-80"
+              unoptimized
+              className="h-2 w-auto opacity-80"
             />
           </span>
           <span>Rocker</span>

@@ -1,12 +1,12 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
+import { getKioskPrimeMode } from '@/hooks/useKioskDisplay';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
-import MechanismScreen, {
-  type MechanismConfig,
-} from '@/components/kiosk/ch/MechanismScreen';
-import LogsScreen, { type LogsConfig } from '@/components/kiosk/ch/LogsScreen';
+import type { MechanismConfig } from '@/components/kiosk/ch/MechanismScreen';
+import type { LogsConfig } from '@/components/kiosk/ch/LogsScreen';
 
 /**
  * Config for a generic kiosk product experience.
@@ -63,6 +63,25 @@ interface Props {
 
 const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
 
+const LoadingSubView = () => (
+  <div className="w-full h-full bg-black flex items-center justify-center text-white/50 text-sm">
+    Loading...
+  </div>
+);
+
+const MechanismScreen = dynamic(
+  () => import('@/components/kiosk/ch/MechanismScreen'),
+  {
+    ssr: false,
+    loading: LoadingSubView,
+  },
+);
+
+const LogsScreen = dynamic(() => import('@/components/kiosk/ch/LogsScreen'), {
+  ssr: false,
+  loading: LoadingSubView,
+});
+
 export default function OverlayExperience({ config, onClose }: Props) {
   const [view, setView] = useState<View>('main');
   const { hudVisible, handleTap } = useAutoHideHud(
@@ -72,6 +91,7 @@ export default function OverlayExperience({ config, onClose }: Props) {
 
   // Prefers the /videos/kiosk-hd/ master when present, else transcoded.
   const videoSrc = useKioskVideo(config.video);
+  const primeMode = getKioskPrimeMode();
 
   if (view === 'mechanism') {
     return (
@@ -148,8 +168,10 @@ export default function OverlayExperience({ config, onClose }: Props) {
         <video
           key={videoSrc}
           src={videoSrc}
-          autoPlay
+          autoPlay={!primeMode}
+          muted={primeMode}
           loop
+          preload="metadata"
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         />

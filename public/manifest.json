@@ -1,6 +1,7 @@
 {
   "name": "Petromac Kiosk",
   "short_name": "Petromac",
+  "id": "/intranet/kiosk/",
   "start_url": "/intranet/kiosk/",
   "scope": "/intranet/kiosk/",
   "display": "fullscreen",

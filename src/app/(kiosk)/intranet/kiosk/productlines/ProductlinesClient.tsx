@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Head from 'next/head';
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import SystemModal from '@/components/kiosk/SystemModal';
@@ -91,21 +90,11 @@ export default function ProductlinesClient() {
   }, [resetIdleTimer]);
 
   return (
-    <>
-      <Head>
-        {featuredSystems.map((system) => {
-          const video = systemMedia[system]?.video;
-          return video ? (
-            <link key={system} rel="preload" as="video" href={video} />
-          ) : null;
-        })}
-      </Head>
-
-      <div
-        className={`relative w-full h-screen bg-black flex flex-col items-center justify-center overflow-hidden transition-opacity duration-1000 ${
-          fading ? 'opacity-0' : 'opacity-100'
-        }`}
-      >
+    <div
+      className={`relative w-full h-screen bg-black flex flex-col items-center justify-center overflow-hidden transition-opacity duration-1000 ${
+        fading ? 'opacity-0' : 'opacity-100'
+      }`}
+    >
         {/* Background: lane-specific video loop (muted, plays through a
             sequence and cycles). Falls back to tv-bg.png when no lane is set. */}
         {bgVideos.length > 0 ? (
@@ -115,6 +104,7 @@ export default function ProductlinesClient() {
               src={bgVideos[bgVideoIdx]}
               autoPlay
               muted
+              preload="metadata"
               playsInline
               className="absolute inset-0 w-full h-full object-cover z-0"
               onEnded={() =>
@@ -130,6 +120,7 @@ export default function ProductlinesClient() {
             alt="Background"
             fill
             priority
+            unoptimized
             className="absolute inset-0 object-cover z-0"
           />
         )}
@@ -169,6 +160,7 @@ export default function ProductlinesClient() {
                   alt={system}
                   width={180}
                   height={180}
+                  unoptimized
                   className="shadow-xl object-contain"
                 />
                 <span className="text-white text-lg font-semibold tracking-wide drop-shadow">
@@ -205,7 +197,6 @@ export default function ProductlinesClient() {
             />
           )}
       </div>
-    </>
   );
 }
 

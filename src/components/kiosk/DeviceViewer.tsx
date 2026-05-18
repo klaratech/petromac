@@ -113,6 +113,7 @@ export default function DeviceViewer({
             alt="Background"
             fill
             priority
+            unoptimized
             className="absolute inset-0 object-cover z-0"
           />
 
@@ -176,6 +177,7 @@ export default function DeviceViewer({
                 src={video}
                 controls
                 autoPlay
+                preload="metadata"
                 className="w-full h-full object-contain bg-black"
               />
               <button
