@@ -141,9 +141,10 @@ export default function MechanismScreen({ config, onBack }: Props) {
           )}
           <button
             onClick={onBack}
-            className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm tracking-wide"
+            aria-label="Close"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-2xl"
           >
-            ← Back
+            ✕
           </button>
         </div>
       </header>
@@ -181,8 +182,7 @@ export default function MechanismScreen({ config, onBack }: Props) {
 
         {/* Pager — large round arrow buttons on the left + right middle
             edges of the slide area. Disabled (faded) at the boundaries
-            rather than removed so the layout doesn't shift between slides.
-            Page indicator + sourceNote sit in a bottom-centre pill. */}
+            rather than removed so the layout doesn't shift between slides. */}
         {slides.length > 1 && (
           <>
             <SlideNavButton
@@ -197,16 +197,6 @@ export default function MechanismScreen({ config, onBack }: Props) {
               }
               disabled={index === slides.length - 1}
             />
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
-              {config.sourceNote && (
-                <span className="px-3 py-1.5 rounded-full bg-black/55 text-white/55 text-[10px] uppercase tracking-[0.2em]">
-                  {config.sourceNote}
-                </span>
-              )}
-              <span className="px-3 py-1.5 rounded-full bg-black/60 text-white/70 text-xs tabular-nums">
-                {index + 1} / {slides.length}
-              </span>
-            </div>
           </>
         )}
       </div>

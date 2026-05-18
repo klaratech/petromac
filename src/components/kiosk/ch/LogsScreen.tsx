@@ -196,14 +196,6 @@ export default function LogsScreen({ config, onBack }: Props) {
     );
   }
 
-  // Returns the caption string to show in the bottom pill, or null when
-  // the slide deliberately doesn't carry one (e.g. annotated log slides
-  // that would otherwise expose client + well names).
-  const captionForSlide = (s: LogsSlide): string | null => {
-    if (s.type === 'map') return s.caption ?? 'Track Record';
-    return s.caption && s.caption.length > 0 ? s.caption : null;
-  };
-
   return (
     <div className="w-full h-full bg-black text-white flex flex-col">
       <header className="flex items-center justify-between px-8 py-5 border-b border-white/10">
@@ -215,9 +207,10 @@ export default function LogsScreen({ config, onBack }: Props) {
         </div>
         <button
           onClick={onBack}
-          className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm tracking-wide"
+          aria-label="Close"
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-2xl"
         >
-          ← Back
+          ✕
         </button>
       </header>
 
@@ -269,24 +262,6 @@ export default function LogsScreen({ config, onBack }: Props) {
           </>
         )}
 
-        {slide && (() => {
-          const caption = captionForSlide(slide);
-          if (!caption && slides.length <= 1) return null;
-          return (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30">
-              {caption && (
-                <div className="px-4 py-2 rounded-full bg-black/60 text-sm">
-                  {caption}
-                </div>
-              )}
-              {slides.length > 1 && (
-                <div className="px-3 py-1.5 rounded-full bg-black/60 text-white/70 text-xs tabular-nums">
-                  {index + 1} / {slides.length}
-                </div>
-              )}
-            </div>
-          );
-        })()}
       </div>
     </div>
   );

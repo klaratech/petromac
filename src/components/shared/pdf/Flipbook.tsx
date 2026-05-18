@@ -78,12 +78,21 @@ export default function Flipbook({
     let cancelled = false;
     setIsLoading(true);
 
-    // Create all page elements. Wrapped in try/catch defensively — a
-    // malformed page URL or DOM error here used to take down the whole
-    // tree.
+    // Create page elements. Only the first spread (4 pages: covers +
+    // first inner) gets a real `src` up-front; the rest get the lazy
+    // attributes so the browser defers the fetch until the page is
+    // about to flip into view. Catalog perf:
+    // - was 62 imgs * full JPG load on mount (~15 MB), now ~4 imgs
+    //   eager, the rest lazy.
+    // - `decoding="async"` + `loading="lazy"` are honored once the
+    //   <img> is appended to the document by page-flip's loadFromHTML.
+    //
+    // Wrapped in try/catch defensively — a malformed page URL or DOM
+    // error here used to take down the whole tree.
+    const EAGER_PAGES = 4;
     let pageElements: HTMLDivElement[] = [];
     try {
-      pageElements = pages.map((src) => {
+      pageElements = pages.map((src, idx) => {
         const pageElement = document.createElement("div");
         pageElement.className = "page";
         pageElement.setAttribute("data-density", "hard");
@@ -93,6 +102,11 @@ export default function Flipbook({
         img.style.width = "100%";
         img.style.height = "100%";
         img.style.objectFit = "contain";
+        img.decoding = "async";
+        if (idx >= EAGER_PAGES) {
+          img.loading = "lazy";
+          img.setAttribute("fetchpriority", "low");
+        }
 
         pageElement.appendChild(img);
         return pageElement;
