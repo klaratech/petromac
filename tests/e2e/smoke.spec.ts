@@ -18,7 +18,10 @@ test('success stories loads', async ({ page }) => {
 
 test('success stories filters update results', async ({ page }) => {
   await page.goto('/success-stories/flipbook');
-  const countLocator = page.getByText(/Showing \d+ of \d+ success stories/i);
+  // Subtitle has two shapes — unfiltered ("N stories across every region
+  // we operate in.") and filtered ("Showing X of Y stories that match
+  // your filters."). Match either by anchoring on "stories".
+  const countLocator = page.getByText(/\bstories\b/i).first();
   await expect(countLocator).toBeVisible();
   const initialText = await countLocator.textContent();
 

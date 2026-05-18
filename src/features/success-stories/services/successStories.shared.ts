@@ -103,6 +103,12 @@ export function parseSuccessStoriesTagsCsv(csvText: string): SuccessStoryRow[] {
     throw new Error(`CSV parse error: ${parsed.errors[0].message}`);
   }
 
+  // We intentionally do NOT filter out rows with page<=0 here. Dropping
+  // them at parse time silently hides them from validate:successstories
+  // — a missing or blank Page column would simply vanish instead of
+  // raising a `missingPageRows` count. The page<=0 gate lives downstream
+  // in filterSuccessStories() so render / download paths still skip
+  // them.
   return parsed.data
     .map((row) => {
       const pageValue = pickField(row, PAGE_FIELD_CANDIDATES);
@@ -142,8 +148,7 @@ export function parseSuccessStoriesTagsCsv(csvText: string): SuccessStoryRow[] {
       if (year > 0) storyRow.year = year;
 
       return storyRow;
-    })
-    .filter((row) => row.page > 0);
+    });
 }
 
 export function buildValidationReport(rows: SuccessStoryRow[]): SuccessStoriesValidationReport {
@@ -191,6 +196,11 @@ export function filterSuccessStories(
   const { areas = [], companies = [], techs = [] } = filters;
 
   return data.filter((row) => {
+    // Sanity gate — page<=0 rows are kept by parseSuccessStoriesTagsCsv
+    // so validation can flag them, but they must never reach the render
+    // / download paths because they'd map to non-existent page numbers.
+    if (!Number.isFinite(row.page) || row.page <= 0) return false;
+
     const matchesArea = matchesFilter(row.areas, areas);
     const matchesCompany = matchesFilter(row.companies, companies);
     const matchesTech = matchesFilter(row.techs, techs);

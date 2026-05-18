@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
-import { useDebounce } from '@/hooks/useDebounce';
 import { buildClientApiUrl } from '@/lib/api';
 import SuccessStoriesFilters from './SuccessStoriesFilters';
 import FlipbookErrorBoundary from './FlipbookErrorBoundary';
@@ -28,6 +27,21 @@ const Flipbook = dynamic(() => import('@/components/shared/pdf/Flipbook'), {
     </div>
   ),
 });
+
+/**
+ * Page numbers that the deck has but tags.csv doesn't cover.
+ *
+ *   1                  cover
+ *   2-3                "About us" + product-category intro (no per-story tags)
+ *   4-47               tagged story pages — tags.csv lives here
+ *   {manifest pageCount} back cover
+ *
+ * Without this constant the unfiltered flipbook would render 46 pages
+ * (covers + tagged) and the matching PDF download would skip pages 2-3.
+ * We always include 1 / 2 / 3 / last so the intro material stays
+ * visible whether filters are active or not.
+ */
+const ALWAYS_INCLUDE_PAGES = [1, 2, 3];
 
 interface SuccessStoriesFlipbookProps {
   /** Where the "back" control should navigate. Either pass a route via
@@ -53,8 +67,10 @@ export default function SuccessStoriesFlipbook({
 
   const { manifest } = useFlipbookManifest(FLIPBOOK_KEYS.successStories);
 
-  const debouncedFilters = useDebounce(filters, 200);
-
+  // No debounce on filters: MultiSelect changes are discrete (one click =
+  // one update), the filter recompute is cheap, and the old 200 ms
+  // debounce caused selectedPages to lag behind the visible filter — a
+  // Download fired in that window sent the previous filter's pages.
   useEffect(() => {
     loadSuccessStoriesData()
       .then((data) => {
@@ -67,22 +83,29 @@ export default function SuccessStoriesFlipbook({
       });
   }, []);
 
-  const options = useMemo(() => getAvailableOptions(csvData, debouncedFilters), [csvData, debouncedFilters]);
+  const options = useMemo(() => getAvailableOptions(csvData, filters), [csvData, filters]);
 
   const allowedPages = useMemo(
-    () => getFilteredPageNumbers(csvData, debouncedFilters),
-    [csvData, debouncedFilters]
+    () => getFilteredPageNumbers(csvData, filters),
+    [csvData, filters]
   );
 
   const totalStories = useMemo(() => getTotalStoryCount(csvData), [csvData]);
 
+  // Front/back covers + intro pages 2-3 ride alongside the tagged pages
+  // whether filters are active or not.
+  const supportingPages = useMemo<number[]>(() => {
+    if (!manifest) return [];
+    return [...ALWAYS_INCLUDE_PAGES, manifest.pageCount];
+  }, [manifest]);
+
   useEffect(() => {
     if (!manifest) return;
-    const totalPages = manifest.pageCount;
-    const coverPages = [1, totalPages];
-    const next = Array.from(new Set([...allowedPages, ...coverPages])).sort((a, b) => a - b);
+    const next = Array.from(new Set([...allowedPages, ...supportingPages])).sort(
+      (a, b) => a - b,
+    );
     setSelectedPages(next);
-  }, [allowedPages, manifest]);
+  }, [allowedPages, supportingPages, manifest]);
 
   const displayPages = useMemo(() => {
     if (!manifest) return [];
@@ -92,11 +115,10 @@ export default function SuccessStoriesFlipbook({
       url,
     }));
 
-    const coverPages = new Set<number>([1, allPages.length]);
-    const allowedSet = new Set(allowedPages);
+    const includeSet = new Set<number>([...allowedPages, ...supportingPages]);
 
-    return allPages.filter((page) => allowedSet.has(page.pageNumber) || coverPages.has(page.pageNumber));
-  }, [allowedPages, manifest]);
+    return allPages.filter((page) => includeSet.has(page.pageNumber));
+  }, [allowedPages, supportingPages, manifest]);
 
   const pageUrls = useMemo(() => displayPages.map((page) => page.url), [displayPages]);
   const pageNumbers = useMemo(() => displayPages.map((page) => page.pageNumber), [displayPages]);
@@ -219,7 +241,7 @@ export default function SuccessStoriesFlipbook({
               pdfType="success-stories"
               pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.successStories)}/source.pdf`}
               endpoint={buildClientApiUrl('/api/email/send-pdf')}
-              payload={{ pageNumbers: selectedPages, filters: debouncedFilters }}
+              payload={{ pageNumbers: selectedPages, filters }}
               disabled={selectedPages.length === 0}
             />
             <button
@@ -300,7 +322,13 @@ export default function SuccessStoriesFlipbook({
         ) : (
           <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-6 md:p-8">
             <FlipbookErrorBoundary>
+              {/* Key on the page-set so React fully remounts the Flipbook
+                  when the filter changes the included pages. PageFlip's
+                  internal destroy() races with its rebuild and used to
+                  throw `NotFoundError: insertBefore ...` on rapid filter
+                  changes; a clean unmount/mount sidesteps that path. */}
               <Flipbook
+                key={pageNumbers.join('-')}
                 pages={pageUrls}
                 pageNumbers={pageNumbers}
                 width={600}

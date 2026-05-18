@@ -34,12 +34,18 @@ export default function MultiSelect({
     option.value.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const toggleOption = (option: string) => {
+  const toggleOption = (option: string, count?: number) => {
     if (selected.includes(option)) {
+      // Always allow deselect, even if the count has since dropped to 0.
       onChange(selected.filter(item => item !== option));
-    } else {
-      onChange([...selected, option]);
+      return;
     }
+    // Block selecting an option that would yield zero results given the
+    // other active filters — the dropdown still shows it greyed out so
+    // users can tell it exists, but clicking it would just collapse to
+    // the empty-state.
+    if (count === 0) return;
+    onChange([...selected, option]);
   };
 
   const removeOption = (option: string) => {
@@ -82,7 +88,8 @@ export default function MultiSelect({
       case ' ':
         event.preventDefault();
         if (focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
-          toggleOption(filteredOptions[focusedIndex].value);
+          const opt = filteredOptions[focusedIndex];
+          toggleOption(opt.value, opt.count);
         }
         break;
     }
@@ -234,29 +241,45 @@ export default function MultiSelect({
             {filteredOptions.length === 0 ? (
               <div className="px-3 py-2 text-sm text-gray-500">No options found</div>
             ) : (
-              filteredOptions.map((option, index) => (
-                <div
-                  key={option.value}
-                  role="option"
-                  aria-selected={selected.includes(option.value)}
-                  className={`relative cursor-pointer px-3 py-2 ${
-                    index === focusedIndex ? 'bg-blue-50' : 'hover:bg-gray-50'
-                  }`}
-                  onClick={() => toggleOption(option.value)}
-                >
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(option.value)}
-                      readOnly
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-3"
-                      tabIndex={-1}
-                    />
-                    <span className="text-sm text-gray-900 flex-1">{option.value}</span>
-                    <span className="text-xs text-gray-500 ml-2">({option.count})</span>
+              filteredOptions.map((option, index) => {
+                const isSelected = selected.includes(option.value);
+                // Zero-count options are only disabled when not already
+                // selected — keep deselect working so users can recover.
+                const isDisabled = option.count === 0 && !isSelected;
+                return (
+                  <div
+                    key={option.value}
+                    role="option"
+                    aria-selected={isSelected}
+                    aria-disabled={isDisabled}
+                    className={`relative px-3 py-2 ${
+                      isDisabled
+                        ? 'opacity-50 cursor-not-allowed'
+                        : index === focusedIndex
+                          ? 'bg-blue-50 cursor-pointer'
+                          : 'hover:bg-gray-50 cursor-pointer'
+                    }`}
+                    onClick={() => toggleOption(option.value, option.count)}
+                  >
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        readOnly
+                        disabled={isDisabled}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-3"
+                        tabIndex={-1}
+                      />
+                      <span className={`text-sm flex-1 ${isDisabled ? 'text-gray-400' : 'text-gray-900'}`}>
+                        {option.value}
+                      </span>
+                      <span className={`text-xs ml-2 ${isDisabled ? 'text-gray-400' : 'text-gray-500'}`}>
+                        ({option.count})
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 
