@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
+import { useAutoHideHud } from '@/hooks/useAutoHideHud';
 import type { JobRecord } from '@/types/JobRecord';
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
@@ -39,8 +40,10 @@ const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
  */
 export default function FocusCentralizersExperience({ onClose }: Props) {
   const [view, setView] = useState<View>('main');
-  const [hudVisible, setHudVisible] = useState(true);
-  const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const { hudVisible, handleTap } = useAutoHideHud(
+    view === 'main',
+    HUD_AUTOHIDE_MS,
+  );
 
   const { data: jobData } = useOperationsData<JobRecord>({
     enabled: view === 'track-record',
@@ -50,29 +53,6 @@ export default function FocusCentralizersExperience({ onClose }: Props) {
   // Route the Helix video through useKioskVideo so the CH lane gets the
   // same HD upgrade path (videos/kiosk-hd/<file>.mp4) as the lane attractor.
   const videoSrc = useKioskVideo(media?.video ?? '');
-
-  const scheduleHide = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    hideTimerRef.current = setTimeout(
-      () => setHudVisible(false),
-      HUD_AUTOHIDE_MS,
-    );
-  };
-
-  useEffect(() => {
-    if (view !== 'main') return;
-    setHudVisible(true);
-    scheduleHide();
-    return () => {
-      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    };
-  }, [view]);
-
-  const handleTap = () => {
-    if (view !== 'main') return;
-    setHudVisible(true);
-    scheduleHide();
-  };
 
   // Sub-views
   if (view === 'track-record') {

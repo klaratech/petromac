@@ -27,7 +27,13 @@ const eslintConfig = [
       "react/no-unescaped-entities": "warn",
       "react-hooks/incompatible-library": "warn",
       "react-hooks/purity": "warn",
-      "react-hooks/set-state-in-effect": "warn",
+      // react-hooks/set-state-in-effect is aspirational ("derive state during
+      // render instead of syncing it from an effect"), not correctness-
+      // oriented. We deliberately use the synchronize pattern in HUD auto-
+      // hide hooks, async data-fetch hooks (useOperationsData / useMapData /
+      // useCountryLabels), and external-library inits (PageFlip). None of
+      // those are bugs and per-line suppressions would just add noise.
+      "react-hooks/set-state-in-effect": "off",
       "react-hooks/static-components": "warn",
     },
   },

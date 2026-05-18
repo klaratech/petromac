@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 import useOperationsData from '@/hooks/useOperationsData';
+import { useAutoHideHud } from '@/hooks/useAutoHideHud';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
 import MechanismScreen, {
   type MechanismConfig,
@@ -66,8 +67,10 @@ const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
 
 export default function OverlayExperience({ config, onClose }: Props) {
   const [view, setView] = useState<View>('main');
-  const [hudVisible, setHudVisible] = useState(true);
-  const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const { hudVisible, handleTap } = useAutoHideHud(
+    view === 'main',
+    HUD_AUTOHIDE_MS,
+  );
 
   // Prefers the /videos/kiosk-hd/ master when present, else transcoded.
   const videoSrc = useKioskVideo(config.video);
@@ -75,26 +78,6 @@ export default function OverlayExperience({ config, onClose }: Props) {
   const { data: jobData } = useOperationsData<JobRecord>({
     enabled: view === 'track-record' && Boolean(config.trackRecordSystem),
   });
-
-  const scheduleHide = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    hideTimerRef.current = setTimeout(() => setHudVisible(false), HUD_AUTOHIDE_MS);
-  };
-
-  useEffect(() => {
-    if (view !== 'main') return;
-    setHudVisible(true);
-    scheduleHide();
-    return () => {
-      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    };
-  }, [view]);
-
-  const handleTap = () => {
-    if (view !== 'main') return;
-    setHudVisible(true);
-    scheduleHide();
-  };
 
   // ── Sub-views ────────────────────────────────────────────────────────────
   if (view === 'track-record') {
