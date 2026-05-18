@@ -249,5 +249,63 @@ export const ROCKER_LOGS: LogsConfig = {
         },
       ],
     },
+    // Slide 2 — Rocker run with IBC sub in a 4-1/2" liner. Three side
+    // cards: the centralisation result (with red Limit sub-bullet), a
+    // note about why eccentricity is slightly higher with the IBC sub,
+    // and a low-side eccentering observation with the IBC sub diagram
+    // as a tap-to-zoom detail.
+    {
+      type: 'annotated',
+      src: '/images/kiosk-images/Rocker_Log2-1.png',
+      annotations: [
+        {
+          eyebrow: 'Rocker: IBC in 4-1/2" Liner',
+          tone: 'blue',
+          title: 'Very Good Centralization to 65° deviation',
+          bullets: [
+            'Both Rockers not overloaded',
+            'Average Centralization < 0.15"',
+            { text: 'Limit of 0.15"', indent: true, tone: 'red' },
+          ],
+          circles: [],
+        },
+        {
+          tone: 'blue',
+          title: 'Eccentricity slightly higher due to IBC sub',
+          bullets: ['Longer distance from Rocker to IBC sensor'],
+          circles: [],
+        },
+        {
+          tone: 'blue',
+          title: 'Eccentering to low-side through dog-leg',
+          bullets: ['AZEC is tracking RB'],
+          circles: [],
+          detail: {
+            src: '/images/kiosk-images/Rocker_Log2-2.png',
+            alt: 'IBC sub geometry — RB / AZEC tracking through a building well',
+          },
+        },
+      ],
+    },
+    // Slide 3 — Rocker USIT run pushed all the way to 89° in a 4-1/2"
+    // liner. Same shape as slide 1 — centralisation result + red
+    // tolerance call-out — but at the high-deviation end of the range.
+    {
+      type: 'annotated',
+      src: '/images/kiosk-images/Rocker_Log3.png',
+      annotations: [
+        {
+          eyebrow: 'Rocker: USIT in 4-1/2" Liner to 90° Deviation',
+          tone: 'blue',
+          title: 'Excellent Centralization to 89° deviation',
+          bullets: [
+            'Rockers not overloaded',
+            'Average Centralization < 0.1"',
+            { text: 'Limit of 0.15"', indent: true, tone: 'red' },
+          ],
+          circles: [],
+        },
+      ],
+    },
   ],
 };
