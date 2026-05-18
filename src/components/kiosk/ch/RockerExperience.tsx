@@ -27,8 +27,8 @@ const HUD_AUTOHIDE_MS = 3200; // was 4000; -20% May 2026
  * of the two tool variants (Rocker / Rocker Inline) on a dark backdrop.
  *
  * Asset slots:
- *   /public/images/rocker.png         (Rocker tool render — left panel)
- *   /public/images/rocker-inline.png  (Rocker Inline tool render — right panel)
+ *   /public/images/kiosk-images/rocker.png         (Rocker tool render — left panel)
+ *   /public/images/kiosk-images/rocker-inline.png  (Rocker Inline tool render — right panel)
  */
 export default function RockerExperience({ onBack, onClose }: Props) {
   const [view, setView] = useState<View>('main');
@@ -146,12 +146,12 @@ export default function RockerExperience({ onBack, onClose }: Props) {
           Top + bottom padding leaves the HUD strip and corner badge clear. */}
       <div className="absolute inset-0 px-10 pt-28 pb-24 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 z-10">
         <ToolPanel
-          src="/images/rocker.png"
+          src="/images/kiosk-images/rocker.png"
           alt="Rocker"
           label="Rocker"
         />
         <ToolPanel
-          src="/images/rocker-inline.png"
+          src="/images/kiosk-images/rocker-inline.png"
           alt="Rocker Inline"
           label="Rocker Inline"
         />

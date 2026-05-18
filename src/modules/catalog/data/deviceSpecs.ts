@@ -180,7 +180,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       Attachment: 'Alloy steel grub screw, ¼" hex, UNC thread, dog end',
       'SWL (Shear set screws)': '17,000 lbs',
     },
-    graph: '/images/helix-load-capacity.png',
+    graph: '/images/kiosk-images/helix-load-capacity.png',
     media: {
       model: '/models/helix.glb',
       image: '/images/helix.png',
@@ -237,7 +237,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       Bearings: 'Custom bush bearing',
       Grease: 'Lubriplate 930AA',
     },
-    graph: '/images/rocker-load-capacity.png',
+    graph: '/images/kiosk-images/rocker-load-capacity.png',
     media: {
       model: '/models/rocker.glb', // placeholder — file not yet present
       image: '/images/focus.png',  // placeholder

@@ -106,10 +106,10 @@ interface Props {
 // component or already baked into the artwork by graphics.
 //
 // Helix slideshow:
-//   /public/images/helix-mechanism-conventional.png        (annotated slide 1)
-//   /public/images/helix-mechanism-helix.png               (annotated slide 2)
-//   /public/images/helix-mechanism-lever-conventional.png  (comparison slide 3, top)
-//   /public/images/helix-mechanism-lever-helix.png         (comparison slide 3, bottom)
+//   /public/images/helix-mechanism-conventional.png         (annotated slide 1)
+//   /public/images/helix-mechanism-helix.png                 (annotated slide 2)
+//   /public/images/kiosk-images/leverage-conventional.png    (comparison slide 3, top)
+//   /public/images/kiosk-images/leverage-helix.png           (comparison slide 3, bottom)
 //
 // Rocker slideshow:
 //   /public/images/rocker-mechanism-conventional.png         (annotated slide 1, tool render)
@@ -155,8 +155,8 @@ export const HELIX_MECHANISM: MechanismConfig = {
       type: 'comparison',
       label: 'Lever arm comparison',
       rows: [
-        { image: '/images/leverage-conventional.png', rowLabel: 'Conventional' },
-        { image: '/images/leverage-helix.png', rowLabel: 'HELIX' },
+        { image: '/images/kiosk-images/leverage-conventional.png', rowLabel: 'Conventional' },
+        { image: '/images/kiosk-images/leverage-helix.png', rowLabel: 'HELIX' },
       ],
       bullets: [
         { text: 'Helix enters restrictions with 80% less force', highlight: 'blue' },
