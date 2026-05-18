@@ -142,6 +142,9 @@ interface Props {
 //   /public/images/kiosk-images/Helix_Log3-1.png  (slide 3, main strip)
 //   /public/images/kiosk-images/Helix_Log3-2.png  (slide 3, ECCE histogram inset)
 //   /public/images/kiosk-images/Helix_Log4.png    (slide 4)
+//   /public/images/kiosk-images/Helix_Log5-1.png  (slide 5, main strip)
+//   /public/images/kiosk-images/Helix_Log5-2.png  (slide 5, AvDrag histogram)
+//   /public/images/kiosk-images/Helix_Log5-3.png  (slide 5, ECCE histogram)
 //   /public/images/helix-cbl-setup.png            (CBL slide)
 //   /public/images/rocker-logs-{N}.png            (Rocker log comparisons)
 //
@@ -244,6 +247,38 @@ export const HELIX_LOGS: LogsConfig = {
             'TT overlaying TTSL in both 7" and 9-5/8" over the whole deviation from 0 to 90°',
           ],
           circles: [],
+        },
+      ],
+    },
+    // Slide 5 — CX13 Ultrasonic run pushed to 77° in 13-3/8". Two side
+    // cards each carry their own supporting histogram: the ECCE
+    // distribution (LUP1:ECCE mean 0.0654, well below the 13-3/8"
+    // tolerance) and the AvDrag distribution (mean 0.157, very tight).
+    // Both histograms have the Mean call-out baked into the image, so
+    // no SVG overlays from this side.
+    {
+      type: 'annotated',
+      src: '/images/kiosk-images/Helix_Log5-1.png',
+      annotations: [
+        {
+          tone: 'blue',
+          title: 'Very low ECCE, mainly unaffected by DLS',
+          bullets: ['Average of 0.06'],
+          circles: [],
+          detail: {
+            src: '/images/kiosk-images/Helix_Log5-3.png',
+            alt: 'LUP1:ECCE distribution histogram with mean call-out',
+          },
+        },
+        {
+          tone: 'blue',
+          title: 'Very stable drag of 0.15',
+          bullets: ['Getting to 80° deviation is easily achievable'],
+          circles: [],
+          detail: {
+            src: '/images/kiosk-images/Helix_Log5-2.png',
+            alt: 'AvDrag distribution histogram with mean call-out',
+          },
         },
       ],
     },
