@@ -398,7 +398,8 @@ function ChOtherComingSoon({ onClose }: { onClose: () => void }) {
         </p>
         <h2 className="text-5xl font-extrabold mb-6">Coming soon</h2>
         <p className="text-lg text-white/70 mb-10">
-          {/* TODO(rajesh): build the "Other" cased-hole experience. */}
+          {/* "Other" CH experience is tracked in TODO.md (Backlog) — last
+              priority until Helix / Rocker content is locked in. */}
           Additional cased-hole product families will live here.
         </p>
         <button

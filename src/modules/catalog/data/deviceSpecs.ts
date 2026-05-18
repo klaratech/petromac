@@ -47,12 +47,12 @@ export const systemMedia: Record<string, SystemMedia> = {
   // overlay + Rocker corner badge). Helix and Rocker are NOT separate tiles.
   'Focus Centralizers': {
     // Uses the subtitled Helix clip so the kiosk gets narration + on-screen
-    // captions in the Focus Centralizers experience.
-    // TODO(rajesh): replace with the transcoded slide-2 Helix intro video
-    //   from ICOTA 2026 MaIn.pptx. Drop at /public/videos/transcoded/kiosk/helix-intro.mp4
-    //   then update this path. For now we reuse helix-subtitled.mp4.
+    // captions in the Focus Centralizers experience. Routed through
+    // useKioskVideo in FocusCentralizersExperience so the kiosk-hd 1080p
+    // variant is picked up automatically when present.
     video: '/videos/transcoded/helix-subtitled.mp4?v=20240517',
-    // TODO(graphics): dedicated Focus Centralizers brandmark.
+    // Focus Centralizers brandmark — reuses focus.png intentionally; a
+    // dedicated brandmark is tracked under "Helix product image" in TODO.md.
     logo: '/images/focus.png',
   },
   // Other cased-hole product family — placeholder slot. The chooser shows it

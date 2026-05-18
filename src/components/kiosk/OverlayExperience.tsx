@@ -185,6 +185,10 @@ export default function OverlayExperience({ config, onClose }: Props) {
         className="relative w-full h-full bg-black"
         onClick={handleTap}
         onTouchStart={handleTap}
+        // Mouse-move reveals the HUD too — matches FocusCentralizers /
+        // RockerExperience chrome. Without this, the HUD only revives on
+        // tap/click; on desktop you'd have to click to surface it.
+        onMouseMove={handleTap}
       >
         {/* Audio on — the user explicitly tapped an overlay button to reach
             this view, so the page has user activation and autoplay-with-sound
@@ -202,30 +206,49 @@ export default function OverlayExperience({ config, onClose }: Props) {
         {/* Subtle dark overlay so HUD copy stays readable over bright frames */}
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
-        {/* Top-right close */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          aria-label="Close"
-          className="absolute top-4 right-4 z-50 text-white text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60"
-        >
-          ✕
-        </button>
-
-        {/* Top-left product label */}
-        <div className="absolute top-6 left-6 z-40 pointer-events-none">
-          <p className="text-xs uppercase tracking-[0.4em] text-white/60">
-            {config.laneLabel}
-          </p>
-          <h2 className="text-3xl font-extrabold text-white drop-shadow">
-            {config.title}
-          </h2>
-          {config.subtitle && (
-            <p className="text-base text-white/70 mt-1">{config.subtitle}</p>
+        {/* Top-right close — fades in/out with the HUD (CH parity) */}
+        <AnimatePresence>
+          {hudVisible && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              aria-label="Close"
+              className="absolute top-4 right-4 z-50 text-white text-3xl font-bold w-12 h-12 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60"
+            >
+              ✕
+            </motion.button>
           )}
-        </div>
+        </AnimatePresence>
+
+        {/* Top-left product label — also fades with the HUD so the looping
+            video can shine on its own when the user idles. */}
+        <AnimatePresence>
+          {hudVisible && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="absolute top-6 left-6 z-40 pointer-events-none"
+            >
+              <p className="text-xs uppercase tracking-[0.4em] text-white/60">
+                {config.laneLabel}
+              </p>
+              <h2 className="text-3xl font-extrabold text-white drop-shadow">
+                {config.title}
+              </h2>
+              {config.subtitle && (
+                <p className="text-base text-white/70 mt-1">{config.subtitle}</p>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* HUD button strip — small, top centre. Matches the Helix experience. */}
         <AnimatePresence>

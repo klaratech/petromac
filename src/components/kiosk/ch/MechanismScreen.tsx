@@ -388,11 +388,15 @@ function VideoSlide({
             : 'border-white/10'
         } bg-black/40`}
       >
-        {/* No `muted` / no `controls` — kiosk mechanism slides play with
-            their narration audio and rely on the experience HUD for nav. */}
+        {/* Muted — current mechanism clips (conventional-largecasings,
+            conventional-smallcasings, helix-mechanism, rocker-mechanism)
+            have no audio masters, and `muted` lets the browser autoplay
+            them unconditionally regardless of activation policy. Drop
+            `muted` if/when a clip with narration replaces these. */}
         <video
           src={src}
           autoPlay
+          muted
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-contain"

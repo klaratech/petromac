@@ -45,7 +45,7 @@ committed `public/videos/transcoded/` clip. See [ADMIN.md](ADMIN.md) §7.
 The kiosk service worker lives at `public/kiosk-sw.js` and uses a version string:
 
 ```js
-const VERSION = 'v9';
+const VERSION = 'v10';
 ```
 
 **When you need to refresh cached content** (e.g., new videos/flipbooks or data files):

@@ -59,8 +59,16 @@
     - `/public/images/rocker-mechanism-conventional.png` — slide 1 primary, bare 3D render of the small-casing conventional centraliser (no annotations; the kiosk draws the 6.3"/3.3" dimension brackets).
     - `/public/images/rocker-mechanism-conventional-detail.png` — slide 1 detail (small thumbnail in the right column), force-section schematic with the red/blue arrows baked in.
     - `/public/images/rocker-mechanism-rocker.png` — slide 2, bare 3D render of the Rocker tool (no annotations).
+  - [ ] Case Studies images:
+    - `/public/images/helix-cbl-setup.png` — Helix Case Studies single slide (Ultrasonic-CBL set-up illustration).
+    - `/public/images/rocker-logs-1.png` — Rocker Case Studies single slide (log comparison).
+  - [ ] OH overlay mechanism + Case Studies content (LaneClient OH configs):
+    - Mechanism videos at `/public/videos/transcoded/conventional-formation-testing.mp4` + `formation-testing-mechanism.mp4` (Formation Testing), `conventional-high-deviation.mp4` + `high-deviation-mechanism.mp4` (High Deviation), `conventional-holefinding.mp4` + `pathfinder-mechanism.mp4` (Pathfinder).
+    - Case-study log images at `/public/images/formation-testing-logs-1.png`, `high-deviation-logs-1.png`, `pathfinder-logs-1.png`.
+  - [ ] Corner-badge silhouettes — `FocusCentralizersExperience` and `RockerExperience` reuse `/images/focus.png` for the small Rocker / Helix badge in the bottom-right corner. Dedicated tool silhouettes (≈12×12 px usable) would read better than the recycled focus logo.
+  - [ ] `kiosk-hd/WirelineExpress-subtitled.mp4` — the OH lane attractor swapped to the `-subtitled` variant in May 2026 but the kiosk-hd folder still only has the silent `WirelineExpress.mp4`. Drop a 1080p subtitled master so `useKioskVideo` picks it up for the trade-show display.
   - [ ] Thor product video (the FeaturedProducts Thor card is commented out until graphics + messaging are finalised)
-  - [x] Rocker product images (May 2026) — `rocker.png` (Rocker, 1455×975) and `rocker-inline.png` (Rocker Inline, 1920×1756, resized down from a 3840px master) dropped into `public/images/` and wired into a side-by-side panel layout on the Rocker experience main view. Rocker GLB model still pending.
+  - [x] Rocker product images (May 2026) — `rocker.png` (Rocker, 1455×975) and `rocker-inline.png` (Rocker Inline, 1920×1756, resized down from a 3840px master) dropped into `public/images/` and wired into a side-by-side panel layout on the Rocker experience main view. Rocker GLB model still pending (`/public/models/rocker.glb`).
 - [ ] Place delivered files in correct directories
 - [x] Wire up email-optimized PDFs in send-pdf API route — backend now reads `email.pdf` (needs a backend redeploy to take effect)
 
