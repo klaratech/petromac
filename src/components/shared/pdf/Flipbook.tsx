@@ -245,7 +245,7 @@ export default function Flipbook({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
               </svg>
             </button>
-            <span className="text-sm font-medium min-w-[60px] text-center">{Math.round(zoom * 100)}%</span>
+            <span className="text-sm font-medium min-w-[60px] text-center text-slate-900">{Math.round(zoom * 100)}%</span>
             <button
               onClick={handleZoomIn}
               disabled={zoom >= 2}
@@ -268,7 +268,7 @@ export default function Flipbook({
             >
               ← Previous
             </button>
-            <span className="text-sm font-semibold min-w-[80px] text-center">
+            <span className="text-sm font-semibold min-w-[80px] text-center text-slate-900">
               {displayPage} of {totalPages}
             </span>
             {onToggleSelect && pageNumber != null && (

@@ -214,15 +214,30 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
     subsystem: 'Pathfinder HT',
     lane: 'oh',
   },
-  // Stub for ROCKER — sister cased-hole tool to Helix for smaller casing.
-  // No 3D model yet; the entry exists so the tile renders in the CH lane and
-  // we can wire up real specs/media as graphics delivers them.
+  // ROCKER — sister cased-hole tool to Helix for smaller casing (CRU).
+  // Sourced from product-catalog p.52. Two configurations (Small kit and
+  // Standard) differ only on Minimum OD; everything else is shared.
+  // 3D model file is still pending — see TODO.md.
   '/models/rocker.glb': {
     specs: {
-      Name: 'Rocker Centraliser',
-      Status: 'Coming soon',
-      Notes: 'Sister tool to Helix for small casing sizes (3.3"–6.3" range).',
+      Name: 'CRU Rocker Centraliser',
+      Model: 'CRU',
+      Weight: '23 lbs (10.5 kg)',
+      Length: 'Assembled to USIS Sonde',
+      Volume: '0.05 ft³',
+      'Min Casing Size': '4-1/2"',
+      'Max Casing Size': '7"',
+      'Minimum OD': '3-⅜" (Small kit) · 3-⅝" (Standard)',
+      'Max Load Carry Capability': '200 lbs',
+      'Drag Coefficient (Dynamic)': '2%',
+      'Drag Force': '6 lbs',
+      'Temperature Rating': '400°F',
+      'Pressure Rating': '30,000 psi',
+      Body: '17-4 PH SS, heat treated H1075',
+      Bearings: 'Custom bush bearing',
+      Grease: 'Lubriplate 930AA',
     },
+    graph: '/images/rocker-load-capacity.png',
     media: {
       model: '/models/rocker.glb', // placeholder — file not yet present
       image: '/images/focus.png',  // placeholder
