@@ -81,27 +81,29 @@ export type LogsSlide =
        *  only when a map slide is present. */
       type: 'map';
       /** Optional caption pill shown bottom-centre. Defaults to "Track
-       *  Record" if omitted. */
+       *  Record" if omitted. Pass `''` to hide entirely. */
       caption?: string;
     }
   | {
       type: 'single';
       src: string;
-      caption: string;
+      /** Bottom-centre caption pill. Pass `''` or omit to hide. */
+      caption?: string;
     }
   | {
       type: 'pair';
-      caption: string;
+      caption?: string;
       left: { src: string; label: string };
       right: { src: string; label: string; highlight?: boolean };
     }
   | {
       /** Annotated log — image with side text cards calling out specific
        *  outcomes. Optionally carries SVG circle overlays in the image's
-       *  own coordinate space. */
+       *  own coordinate space. Bottom-centre caption is optional; drop it
+       *  when the artwork would otherwise expose client or well names. */
       type: 'annotated';
       src: string;
-      caption: string;
+      caption?: string;
       annotations: LogAnnotation[];
     };
 
@@ -128,11 +130,18 @@ interface Props {
 }
 
 // ── Cased Hole presets (ported from the original Helix/Rocker maps) ──────────
-// Asset slots — drop files at these paths and the slides pick them up:
-//   /public/images/kiosk-images/Helix_Log1.png    (slide 1 — annotations baked into image)
-//   /public/images/kiosk-images/Helix_Log2.png    (slide 2 — annotations baked into image)
-//   /public/images/kiosk-images/Helix_Log3-1.jpg  (slide 3, main strip)
+// Asset slots — drop files at these paths and the slides pick them up.
+// All Helix log images now ship with annotations baked in by graphics; the
+// LogsScreen render doesn't draw SVG circles on top of them. Slide captions
+// at the bottom are dropped on purpose — those used to show client + well
+// names ("PEMEX CIBIX-35", "Aramco KHRS-300", etc.) and we can't expose
+// that level of detail to a kiosk audience.
+//
+//   /public/images/kiosk-images/Helix_Log1.png    (slide 1)
+//   /public/images/kiosk-images/Helix_Log2.png    (slide 2)
+//   /public/images/kiosk-images/Helix_Log3-1.png  (slide 3, main strip)
 //   /public/images/kiosk-images/Helix_Log3-2.png  (slide 3, ECCE histogram inset)
+//   /public/images/kiosk-images/Helix_Log4.png    (slide 4)
 //   /public/images/helix-cbl-setup.png            (CBL slide)
 //   /public/images/rocker-logs-{N}.png            (Rocker log comparisons)
 //
@@ -152,17 +161,12 @@ export const HELIX_LOGS: LogsConfig = {
     // HUD button; folded in here so users page through map → logs in a
     // single flow. Country chart / yearly stats render on top of the map.
     { type: 'map' },
-    // The leverage comparison that used to live here moved to the Helix
-    // mechanism slideshow (slide 3 — see HELIX_MECHANISM in MechanismScreen).
-    //
-    // Slide 1 — PEMEX CIBIX-35 log strip. Four leftward drops in the red
-    // HTEN curve, each only ~60 lbs, demonstrate how cleanly the CX9 Helix
-    // runs through IBC + Sonic ledges. The annotation circles are baked
-    // into Helix_Log1.png so the slide just renders the image + side card.
+    // Slide 1 — log strip showing four leftward drops in the red HTEN
+    // curve, each only ~60 lbs. Demonstrates how cleanly the CX9 Helix
+    // runs through IBC + Sonic ledges.
     {
       type: 'annotated',
       src: '/images/kiosk-images/Helix_Log1.png',
-      caption: 'PEMEX CIBIX-35 — HELIX run',
       annotations: [
         {
           title: '4 drops in HTEN of ONLY 60 lbs from CX9 on IBC & Sonic',
@@ -171,15 +175,14 @@ export const HELIX_LOGS: LogsConfig = {
         },
       ],
     },
-    // Slide 2 — ENI BlackTip P5 log strip. Two contrasting outcomes on the
-    // same well: poor centralisation up in the 13-3/8" with conventional
-    // centralisers, then excellent centralisation in the deeper 9-5/8" and
-    // 7" sections after switching to CX9. Circles are baked into the
-    // image; this config carries the two side cards (red + blue).
+    // Slide 2 — two contrasting outcomes on the same well: poor central-
+    // isation up in 13-3/8" with conventional centralisers, then excellent
+    // centralisation in the deeper 9-5/8" and 7" sections after switching
+    // to CX9. Circles + arrows baked into the image; this config carries
+    // the two side cards (red + blue).
     {
       type: 'annotated',
       src: '/images/kiosk-images/Helix_Log2.png',
-      caption: 'ENI BlackTip P5 — HELIX run',
       annotations: [
         {
           tone: 'red',
@@ -200,14 +203,13 @@ export const HELIX_LOGS: LogsConfig = {
         },
       ],
     },
-    // Slide 3 — Aramco KHRS-300. The strip shows excellent ECCE all the way
-    // out to 85° deviation in 9-5/8" casing; the ECCE histogram inset in the
-    // bottom of the annotation card summarises the run — a Mean of 0.0688"
-    // against a 0.38" limit, circled in red.
+    // Slide 3 — excellent ECCE all the way out to 85° deviation in 9-5/8"
+    // casing, with the ECCE histogram inset below the bullets. The Mean
+    // call-out on the histogram is now baked into Helix_Log3-2.png so we
+    // don't draw any overlay circles on it from this side.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log3-1.jpg',
-      caption: 'Aramco KHRS-300 — HELIX run',
+      src: '/images/kiosk-images/Helix_Log3-1.png',
       annotations: [
         {
           tone: 'blue',
@@ -217,19 +219,31 @@ export const HELIX_LOGS: LogsConfig = {
             'Excellent ECCE from vertical to 85° deviation',
             'Average ECCE of 0.07" (limit is 0.38")',
           ],
-          // No callouts on the main strip — the supporting evidence sits in
-          // the histogram below.
           circles: [],
           detail: {
             src: '/images/kiosk-images/Helix_Log3-2.png',
-            alt: 'ECCE distribution histogram — Aramco KHRS-300 HELIX run',
-            circles: [
-              // Red ring around the "Mean: 0.0688" stat in the bottom
-              // statistics strip. xPct/yPct are tuned against the cropped
-              // histogram image — adjust from a tablet once seen.
-              { xPct: 72, yPct: 93, rPct: 4 },
-            ],
+            alt: 'ECCE distribution histogram with mean call-out',
           },
+        },
+      ],
+    },
+    // Slide 4 — Ultrasonic / Sonic CX9 run pushed all the way to 90°
+    // deviation across both 7" and 9-5/8" casings. Annotations baked
+    // into Helix_Log4.png.
+    {
+      type: 'annotated',
+      src: '/images/kiosk-images/Helix_Log4.png',
+      annotations: [
+        {
+          tone: 'blue',
+          title: 'CX9: Ultrasonic / Sonic to 90° deviation in 9-5/8" / 7"',
+          bullets: [
+            'Excellent ECCE with high DLS where the well is building',
+            'Excellent ECCE at high deviations',
+            'ECCE well within limit of 7" and 9-5/8" tolerance levels',
+            'TT overlaying TTSL in both 7" and 9-5/8" over the whole deviation from 0 to 90°',
+          ],
+          circles: [],
         },
       ],
     },
@@ -285,9 +299,12 @@ export default function LogsScreen({ config, onBack }: Props) {
     );
   }
 
-  const captionForSlide = (s: LogsSlide): string => {
+  // Returns the caption string to show in the bottom pill, or null when
+  // the slide deliberately doesn't carry one (e.g. annotated log slides
+  // that would otherwise expose client + well names).
+  const captionForSlide = (s: LogsSlide): string | null => {
     if (s.type === 'map') return s.caption ?? 'Track Record';
-    return s.caption;
+    return s.caption && s.caption.length > 0 ? s.caption : null;
   };
 
   return (
@@ -323,13 +340,13 @@ export default function LogsScreen({ config, onBack }: Props) {
             }
           />
         ) : slide.type === 'single' ? (
-          <SinglePane src={slide.src} alt={slide.caption} />
+          <SinglePane src={slide.src} alt={slide.caption ?? ''} />
         ) : slide.type === 'pair' ? (
           <PairPane left={slide.left} right={slide.right} />
         ) : (
           <AnnotatedPane
             src={slide.src}
-            alt={slide.caption}
+            alt={slide.caption ?? ''}
             annotations={slide.annotations}
           />
         )}
@@ -355,18 +372,24 @@ export default function LogsScreen({ config, onBack }: Props) {
           </>
         )}
 
-        {slide && (
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30">
-            <div className="px-4 py-2 rounded-full bg-black/60 text-sm">
-              {captionForSlide(slide)}
+        {slide && (() => {
+          const caption = captionForSlide(slide);
+          if (!caption && slides.length <= 1) return null;
+          return (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30">
+              {caption && (
+                <div className="px-4 py-2 rounded-full bg-black/60 text-sm">
+                  {caption}
+                </div>
+              )}
+              {slides.length > 1 && (
+                <div className="px-3 py-1.5 rounded-full bg-black/60 text-white/70 text-xs tabular-nums">
+                  {index + 1} / {slides.length}
+                </div>
+              )}
             </div>
-            {slides.length > 1 && (
-              <div className="px-3 py-1.5 rounded-full bg-black/60 text-white/70 text-xs tabular-nums">
-                {index + 1} / {slides.length}
-              </div>
-            )}
-          </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );
