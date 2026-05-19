@@ -1,7 +1,7 @@
 {
-  "version": "2026-05-18-tablet-balanced-v1",
-  "profile": "Android tablet + Chromecast balanced 1080p",
-  "launchUrl": "/intranet/kiosk/?sd=0&tv=0",
+  "version": "2026-05-19-tablet-sd-default-v2",
+  "profile": "Android tablet + Chromecast SD default (sd=1 launch, 1080p opt-in)",
+  "launchUrl": "/intranet/kiosk/?sd=1&tv=0",
   "required": [
     {
       "kind": "manifest",
@@ -20,57 +20,57 @@
     },
     {
       "kind": "route",
-      "url": "/intranet/kiosk/?sd=0&tv=0",
+      "url": "/intranet/kiosk/?sd=1&tv=0",
       "label": "Kiosk splash"
     },
     {
       "kind": "route",
-      "url": "/intranet/kiosk/lane?lane=oh&sd=0&tv=0",
+      "url": "/intranet/kiosk/lane?lane=oh&sd=1&tv=0",
       "label": "Open Hole lane"
     },
     {
       "kind": "route",
-      "url": "/intranet/kiosk/ch?sd=0&tv=0",
+      "url": "/intranet/kiosk/ch?sd=1&tv=0",
       "label": "Cased Hole / Helix"
     },
     {
       "kind": "route",
-      "url": "/intranet/kiosk/dashboard?sd=0&tv=0",
+      "url": "/intranet/kiosk/dashboard?sd=1&tv=0",
       "label": "Track Record dashboard"
     },
     {
       "kind": "route",
-      "url": "/intranet/kiosk/successstories?sd=0&tv=0",
+      "url": "/intranet/kiosk/successstories?sd=1&tv=0",
       "label": "Success Stories"
     },
     {
       "kind": "route",
-      "url": "/intranet/kiosk/prime?sd=0&tv=0",
+      "url": "/intranet/kiosk/prime?sd=1&tv=0",
       "label": "Prime utility"
     },
     {
       "kind": "route-warmup",
-      "url": "/intranet/kiosk/?sd=0&tv=0&prime=1",
+      "url": "/intranet/kiosk/?sd=1&tv=0&prime=1",
       "label": "Warm splash chunks"
     },
     {
       "kind": "route-warmup",
-      "url": "/intranet/kiosk/lane?lane=oh&sd=0&tv=0&prime=1",
+      "url": "/intranet/kiosk/lane?lane=oh&sd=1&tv=0&prime=1",
       "label": "Warm OH chunks"
     },
     {
       "kind": "route-warmup",
-      "url": "/intranet/kiosk/ch?sd=0&tv=0&prime=1",
+      "url": "/intranet/kiosk/ch?sd=1&tv=0&prime=1",
       "label": "Warm CH chunks"
     },
     {
       "kind": "route-warmup",
-      "url": "/intranet/kiosk/dashboard?sd=0&tv=0&prime=1",
+      "url": "/intranet/kiosk/dashboard?sd=1&tv=0&prime=1",
       "label": "Warm dashboard chunks"
     },
     {
       "kind": "route-warmup",
-      "url": "/intranet/kiosk/successstories?sd=0&tv=0&prime=1",
+      "url": "/intranet/kiosk/successstories?sd=1&tv=0&prime=1",
       "label": "Warm success-stories chunks"
     },
     {
@@ -545,30 +545,6 @@
     },
     {
       "kind": "video",
-      "url": "/videos/kiosk-hd/dice.mp4"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/WirelineExpress.mp4"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/WirelineExpress-subtitled.mp4"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/pf-subtitled.mp4"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/helix-subtitled.mp4"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/differential-sticking-subtitled.mp4"
-    },
-    {
-      "kind": "video",
       "url": "/videos/transcoded/dice.mp4"
     },
     {
@@ -709,6 +685,36 @@
     }
   ],
   "optional": [
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/dice.mp4",
+      "label": "1080p kiosk-hd · dice intro"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/WirelineExpress.mp4",
+      "label": "1080p kiosk-hd · WirelineExpress"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/WirelineExpress-subtitled.mp4",
+      "label": "1080p kiosk-hd · WirelineExpress (subtitled)"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/pf-subtitled.mp4",
+      "label": "1080p kiosk-hd · PathFinder (subtitled)"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/helix-subtitled.mp4",
+      "label": "1080p kiosk-hd · Helix (subtitled)"
+    },
+    {
+      "kind": "video",
+      "url": "/videos/kiosk-hd/differential-sticking-subtitled.mp4",
+      "label": "1080p kiosk-hd · Differential Sticking (subtitled)"
+    },
     {
       "kind": "model",
       "url": "/models/cp12.glb"

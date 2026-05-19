@@ -2,7 +2,7 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v15';
+const VERSION = 'v16';
 
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;
@@ -19,7 +19,7 @@ const RUNTIME_DATA = `kiosk-data-${VERSION}`;
 const META_CACHE = `kiosk-meta-${VERSION}`;
 
 const MAX_STATIC_ENTRIES = 80;
-const MAX_VIDEO_ENTRIES = 32;     // balanced 1080p kiosk-hd + 720p fallback clips
+const MAX_VIDEO_ENTRIES = 32;     // 540p transcoded default + opt-in 1080p kiosk-hd
 const MAX_MODEL_ENTRIES = 16;     // GLB files per product family
 const MAX_FLIPBOOK_ENTRIES = 240; // success-stories (~48) + catalog (~64) + headroom
 const MAX_IMAGE_ENTRIES = 80;     // kiosk-images/, system logos, posters
@@ -46,13 +46,13 @@ const MEDIA_BUCKETS = [
 const KIOSK_SHELL_ROUTES = [
   '/intranet/kiosk',
   '/intranet/kiosk/',
-  '/intranet/kiosk/?sd=0&tv=0',
-  '/intranet/kiosk/lane?lane=oh&sd=0&tv=0',
+  '/intranet/kiosk/?sd=1&tv=0',
+  '/intranet/kiosk/lane?lane=oh&sd=1&tv=0',
   '/intranet/kiosk/ch',
-  '/intranet/kiosk/ch?sd=0&tv=0',
-  '/intranet/kiosk/dashboard?sd=0&tv=0',
-  '/intranet/kiosk/successstories?sd=0&tv=0',
-  '/intranet/kiosk/prime?sd=0&tv=0',
+  '/intranet/kiosk/ch?sd=1&tv=0',
+  '/intranet/kiosk/dashboard?sd=1&tv=0',
+  '/intranet/kiosk/successstories?sd=1&tv=0',
+  '/intranet/kiosk/prime?sd=1&tv=0',
 ];
 
 // Adjust if your manifest is kiosk-scoped rather than root-scoped.

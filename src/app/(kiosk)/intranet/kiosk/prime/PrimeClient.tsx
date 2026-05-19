@@ -349,7 +349,14 @@ export default function PrimeClient() {
                           disabled={isPriming}
                           onChange={(event) => setIncludeOptional(event.target.checked)}
                         />
-                        Include optional 3D models
+                        {/* Optional bucket holds the 1080p kiosk-hd masters
+                            (~175 MB) plus the 3D GLB models. Default is
+                            SD-only so a routine prime stays light on
+                            bandwidth — we mostly mirror to Chromecast and
+                            the 1080p set is overkill there. Tick this only
+                            when the kiosk will run untethered offline at
+                            full HD. */}
+                        Include 1080p videos + 3D models
                       </label>
                     )}
                     <button
