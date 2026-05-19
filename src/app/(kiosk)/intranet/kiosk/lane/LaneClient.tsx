@@ -150,11 +150,18 @@ function LaneLoopContent() {
           Chrome with `--autoplay-policy=no-user-gesture-required` so the
           first load can play with sound; subsequent loads inherit user
           activation from the splash → lane navigation. */}
+      {/* Native browser controls (play/pause, scrub, volume, fullscreen) on
+          the narrated clips so attendees can pause / replay during a demo.
+          The dice intro is a silent interstitial so we keep its chrome off
+          — it's not user-navigable per the prev/next strip below either. */}
       <video
         key={playlist[videoIdx]}
         src={playlist[videoIdx]}
         autoPlay={!primeMode}
         muted={primeMode}
+        controls={!isDice(playlist[videoIdx] ?? '')}
+        controlsList="nodownload noremoteplayback"
+        disablePictureInPicture
         preload="metadata"
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"

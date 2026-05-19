@@ -163,14 +163,19 @@ export default function OverlayExperience({ config, onClose }: Props) {
       >
         {/* Audio on — the user explicitly tapped an overlay button to reach
             this view, so the page has user activation and autoplay-with-sound
-            is allowed. No native `controls` — the kiosk shouldn't surface
-            browser-level video chrome. */}
+            is allowed. Native `controls` are exposed so attendees can
+            pause/scrub/replay during a walk-through; the HUD strip + close ✕
+            above still fade in/out independently. Mechanism sub-view videos
+            stay chrome-free (handled inside MechanismScreen). */}
         <video
           key={videoSrc}
           src={videoSrc}
           autoPlay={!primeMode}
           muted={primeMode}
           loop
+          controls
+          controlsList="nodownload noremoteplayback"
+          disablePictureInPicture
           preload="metadata"
           playsInline
           className="absolute inset-0 w-full h-full object-cover"

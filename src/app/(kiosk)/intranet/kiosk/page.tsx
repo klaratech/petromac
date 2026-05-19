@@ -6,6 +6,7 @@ import {
   APP_CONSTANTS,
   KIOSK_CH_PATH,
   KIOSK_LANE_PATH,
+  KIOSK_PRIME_PATH,
 } from '@/constants/app';
 
 type Lane = 'oh' | 'ch';
@@ -81,6 +82,36 @@ export default function HomeClient() {
           </div>
         )}
       </div>
+
+      {/* Staff utility: route to the prime screen that warms the service-worker
+          cache (routes, data, images, flipbooks, balanced 1080p videos) for
+          offline use. Kept unobtrusive in the corner so it doesn't compete
+          with the two lane CTAs; fades in with the rest of the splash chrome. */}
+      <button
+        onClick={() => router.push(KIOSK_PRIME_PATH)}
+        aria-label="Prime offline assets"
+        className={`absolute bottom-6 right-6 flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white/70 shadow-md transition-all duration-500 hover:bg-white/15 hover:text-white ${
+          mounted ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        {/* Inline arrow-clockwise icon — keeps the splash dependency-light
+            (no lucide-react import) and crisp at any DPI. */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className="h-3.5 w-3.5"
+        >
+          <path d="M21 12a9 9 0 1 1-3.51-7.13" />
+          <polyline points="21 4 21 10 15 10" />
+        </svg>
+        <span>Prime offline</span>
+      </button>
     </div>
   );
 }

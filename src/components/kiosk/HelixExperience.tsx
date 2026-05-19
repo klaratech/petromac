@@ -118,12 +118,17 @@ export default function HelixExperience({ onClose }: Props) {
         {media?.video ? (
           // Audio on — user tapped the CH Helix overlay to reach this view,
           // so user activation is established and autoplay-with-sound is allowed.
-          // No native `controls` — kiosk uses its own HUD.
+          // Native `controls` are exposed so attendees can pause/scrub/replay
+          // the looping Helix clip during a walk-through; the HUD strip and
+          // close ✕ above still fade in/out independently.
           <video
             src={videoSrc}
             autoPlay={!primeMode}
             muted={primeMode}
             loop
+            controls
+            controlsList="nodownload noremoteplayback"
+            disablePictureInPicture
             preload="metadata"
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
