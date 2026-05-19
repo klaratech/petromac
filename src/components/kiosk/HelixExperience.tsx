@@ -78,7 +78,11 @@ export default function HelixExperience({ onClose }: Props) {
     };
     return (
       <FullScreenLayer>
-        <MechanismScreen config={configWithSpecs} onBack={() => setView('main')} />
+        <MechanismScreen
+          config={configWithSpecs}
+          onBack={() => setView('main')}
+          onSwitchSection={setView}
+        />
       </FullScreenLayer>
     );
   }
@@ -86,7 +90,11 @@ export default function HelixExperience({ onClose }: Props) {
   if (view === 'logs') {
     return (
       <FullScreenLayer>
-        <LogsScreen config={HELIX_LOGS} onBack={() => setView('main')} />
+        <LogsScreen
+          config={HELIX_LOGS}
+          onBack={() => setView('main')}
+          onSwitchSection={setView}
+        />
       </FullScreenLayer>
     );
   }
@@ -187,7 +195,11 @@ export default function HelixExperience({ onClose }: Props) {
             setView('rocker');
           }}
           aria-label="Open Rocker"
-          className={`absolute bottom-8 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-opacity duration-250 ${
+          // bottom-24 (not bottom-8) — clears the native HTML5 video control
+          // bar at the bottom of the helix loop so the badge isn't sitting on
+          // top of the fullscreen icon. Matches the Helix corner badge inside
+          // RockerExperience for visual symmetry when toggling between views.
+          className={`absolute bottom-24 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-opacity duration-250 ${
             hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >

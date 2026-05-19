@@ -14,6 +14,7 @@
 
 import { useState } from 'react';
 import { AssetSlot } from '@/components/kiosk/AssetSlot';
+import SectionPill, { type Section } from './SectionPill';
 
 // ── Slide types ──────────────────────────────────────────────────────────────
 
@@ -98,6 +99,11 @@ export interface MechanismConfig {
 interface Props {
   config: MechanismConfig;
   onBack: () => void;
+  /** Switch to the peer sub-view (Case Studies) without bouncing back to
+   *  the experience's main view. Rendered as the persistent header pill;
+   *  parent typically wires this to its `setView` so 'logs' lands directly
+   *  on LogsScreen. */
+  onSwitchSection: (_section: Section) => void;
 }
 
 // Configs (HELIX_MECHANISM, ROCKER_MECHANISM) moved to ./ch-configs.ts so
@@ -115,7 +121,11 @@ interface Props {
 
 // ── Main component ──────────────────────────────────────────────────────────
 
-export default function MechanismScreen({ config, onBack }: Props) {
+export default function MechanismScreen({
+  config,
+  onBack,
+  onSwitchSection,
+}: Props) {
   const { slides } = config;
   const [index, setIndex] = useState(0);
   const [specsOpen, setSpecsOpen] = useState(false);
@@ -123,13 +133,13 @@ export default function MechanismScreen({ config, onBack }: Props) {
 
   return (
     <div className="w-full h-full bg-black text-white flex flex-col">
+      {/* Persistent section pill (Mechanism · Case Studies) replaces the
+          previous eyebrow + device-name title block — visitors always go
+          Mechanism → Case Studies, and forcing them back to the main view
+          between the two was needless friction. Specifications + close ✕
+          stay docked right. */}
       <header className="flex items-center justify-between px-8 py-5 border-b border-white/10">
-        <div>
-          <p className="text-xs uppercase tracking-[0.4em] text-white/50">
-            Mechanism
-          </p>
-          <h2 className="text-3xl font-extrabold">{config.title}</h2>
-        </div>
+        <SectionPill active="mechanism" onSwitch={onSwitchSection} />
         <div className="flex items-center gap-2">
           {config.specs && (
             <button

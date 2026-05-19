@@ -100,6 +100,7 @@ export default function OverlayExperience({ config, onClose }: Props) {
           <MechanismScreen
             config={config.mechanism}
             onBack={() => setView('main')}
+            onSwitchSection={setView}
           />
         ) : (
           <ComingSoon
@@ -137,6 +138,7 @@ export default function OverlayExperience({ config, onClose }: Props) {
           <LogsScreen
             config={logsWithTrackRecord}
             onBack={() => setView('main')}
+            onSwitchSection={setView}
           />
         ) : (
           <ComingSoon

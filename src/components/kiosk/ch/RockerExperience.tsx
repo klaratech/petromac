@@ -61,7 +61,11 @@ export default function RockerExperience({ onBack, onClose }: Props) {
     };
     return (
       <FullScreenLayer>
-        <MechanismScreen config={configWithSpecs} onBack={() => setView('main')} />
+        <MechanismScreen
+          config={configWithSpecs}
+          onBack={() => setView('main')}
+          onSwitchSection={setView}
+        />
       </FullScreenLayer>
     );
   }
@@ -69,7 +73,11 @@ export default function RockerExperience({ onBack, onClose }: Props) {
   if (view === 'logs') {
     return (
       <FullScreenLayer>
-        <LogsScreen config={ROCKER_LOGS} onBack={() => setView('main')} />
+        <LogsScreen
+          config={ROCKER_LOGS}
+          onBack={() => setView('main')}
+          onSwitchSection={setView}
+        />
       </FullScreenLayer>
     );
   }
@@ -161,7 +169,11 @@ export default function RockerExperience({ onBack, onClose }: Props) {
           onBack();
         }}
         aria-label="Back to Helix"
-        className={`absolute bottom-8 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-opacity duration-250 ${
+        // bottom-24 (not bottom-8) — mirrors the Rocker corner badge inside
+        // HelixExperience so the badges live at the same screen position when
+        // toggling between the two views. Rocker has no video so no native
+        // controls to clear, but symmetry avoids a visual jump.
+        className={`absolute bottom-24 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-opacity duration-250 ${
           hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >

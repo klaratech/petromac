@@ -7,6 +7,7 @@ import useOperationsData from '@/hooks/useOperationsData';
 import SuccessStoriesFlipbook from '@/features/success-stories/components/SuccessStoriesFlipbook';
 import type { JobRecord } from '@/types/JobRecord';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
+import SectionPill, { type Section } from './SectionPill';
 
 /**
  * LogsScreen — config-driven "Case Studies" pager.
@@ -146,6 +147,11 @@ export interface LogsConfig {
 interface Props {
   config: LogsConfig;
   onBack: () => void;
+  /** Switch to the peer sub-view (Mechanism) without bouncing back to the
+   *  experience's main view. Rendered as the persistent header pill;
+   *  parent typically wires this to its `setView` so 'mechanism' lands
+   *  directly on MechanismScreen. */
+  onSwitchSection: (_section: Section) => void;
 }
 
 // Configs (HELIX_LOGS, ROCKER_LOGS) moved to ./ch-configs.ts so the
@@ -165,7 +171,11 @@ interface Props {
 //   /public/images/kiosk-images/Helix_Log5-{1,2,3}.png  (slide 5)
 //   /public/images/rocker-logs-{N}.png              (Rocker log comparisons)
 
-export default function LogsScreen({ config, onBack }: Props) {
+export default function LogsScreen({
+  config,
+  onBack,
+  onSwitchSection,
+}: Props) {
   const slides = config.slides;
   const [index, setIndex] = useState(0);
   const [showSuccessStories, setShowSuccessStories] = useState(false);
@@ -198,13 +208,12 @@ export default function LogsScreen({ config, onBack }: Props) {
 
   return (
     <div className="w-full h-full bg-black text-white flex flex-col">
+      {/* Persistent section pill (Mechanism · Case Studies) replaces the
+          previous eyebrow + device-name title block — keeps navigation in
+          place so visitors can jump straight back to Mechanism without
+          bouncing through the main view. */}
       <header className="flex items-center justify-between px-8 py-5 border-b border-white/10">
-        <div>
-          <p className="text-xs uppercase tracking-[0.4em] text-white/50">
-            Case Studies
-          </p>
-          <h2 className="text-3xl font-extrabold">{config.title}</h2>
-        </div>
+        <SectionPill active="logs" onSwitch={onSwitchSection} />
         <button
           onClick={onBack}
           aria-label="Close"

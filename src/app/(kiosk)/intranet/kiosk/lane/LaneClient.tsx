@@ -66,9 +66,6 @@ function LaneLoopContent() {
   const [overlayVisible, setOverlayVisible] = useState(true);
   const overlayTimerRef = useRef<NodeJS.Timeout | null>(null);
   const primeMode = getKioskPrimeMode();
-  // Pointer-inside is a ref (not state) so we can read the latest value
-  // inside revealOverlay without re-creating the callback on every change.
-  const pointerInsideRef = useRef(false);
 
   // Indexes of narrated (non-dice) clips. The prev/next chevrons and the
   // position dots both operate on this subset; dice still rolls inline
@@ -97,13 +94,18 @@ function LaneLoopContent() {
     if (target !== undefined) setVideoIdx(target);
   }, [currentNavIdx, navIndexes]);
 
-  // Skip the auto-hide timer while the cursor is over the lane. On
-  // desktop this keeps the controls visible the whole time you're
-  // hovering; on touch (where mouseenter / mouseleave don't fire
-  // reliably for taps) the timer still runs as before.
+  // Auto-hide the prev/next strip after OVERLAY_AUTOHIDE of no interaction.
+  //
+  // The old implementation pinned the strip while the cursor was "inside"
+  // the lane element. That was meant as a desktop convenience but actively
+  // broke on the kiosk: Android Chrome fires `mouseenter` once on the first
+  // touch, and the matching `mouseleave` never fires (the lane is fullscreen
+  // so there's no edge to leave). Result was a stuck `pointerInside === true`
+  // that disabled the timer permanently after the first tap. Now the timer
+  // is unconditional — devs on desktop refresh it by tapping/moving the
+  // same way a kiosk user would.
   const scheduleAutoHide = useCallback(() => {
     if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
-    if (pointerInsideRef.current) return;
     overlayTimerRef.current = setTimeout(
       () => setOverlayVisible(false),
       OVERLAY_AUTOHIDE,
@@ -116,18 +118,7 @@ function LaneLoopContent() {
     scheduleAutoHide();
   }, [scheduleAutoHide]);
 
-  const handleMouseEnter = useCallback(() => {
-    pointerInsideRef.current = true;
-    setOverlayVisible(true);
-    if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    pointerInsideRef.current = false;
-    scheduleAutoHide();
-  }, [scheduleAutoHide]);
-
-  // Reveal on mount, then auto-hide (unless mouse is hovering).
+  // Reveal on mount, then auto-hide.
   useEffect(() => {
     revealOverlay();
     return () => {
@@ -138,8 +129,6 @@ function LaneLoopContent() {
   return (
     <div
       className="relative w-full h-screen bg-black overflow-hidden"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       onMouseMove={revealOverlay}
       onClick={revealOverlay}
       onTouchStart={revealOverlay}
