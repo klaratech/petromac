@@ -18,10 +18,13 @@ import ToolPanel from './ToolPanel';
  * SpecsModal in-place. Close ✕ jumps straight back to the looping video
  * (no hierarchical step through this screen on exit).
  *
- * Asset slots — drop PNGs with transparent backgrounds at:
- *   /public/images/kiosk-images/helix-cx7.png
- *   /public/images/kiosk-images/helix-cx9.png
- *   /public/images/kiosk-images/helix-cx13.png
+ * Asset slots — alpha PNGs are processed to a common 1600x1600 transparent
+ * canvas with the tool axis on a matching ~45° diagonal so the three
+ * variants read as one product family. Originals are backed up under
+ * /public/images/kiosk-images/originals/. Sources at:
+ *   /public/images/kiosk-images/CX7.png
+ *   /public/images/kiosk-images/CX9.png
+ *   /public/images/kiosk-images/CX13.png
  * Missing assets fall back to AssetSlot's "drop file" placeholder so the
  * screen stays usable while content is in progress.
  */
@@ -32,10 +35,24 @@ interface Props {
   specsGraph?: string;
 }
 
-const VARIANTS: ReadonlyArray<{ src: string; label: string }> = [
-  { src: '/images/kiosk-images/helix-cx7.png', label: 'CX7' },
-  { src: '/images/kiosk-images/helix-cx9.png', label: 'CX9' },
-  { src: '/images/kiosk-images/helix-cx13.png', label: 'CX13' },
+/**
+ * Sublabel = casing range. Typographic normalisation applied to the values
+ * the user provided: ASCII hyphens between numbers → en-dash (–) for range
+ * separators, mixed-number fractions → Unicode glyphs (½, ⅝, ⅜). Straight
+ * ASCII inch marks kept as-is for source readability.
+ */
+const VARIANTS: ReadonlyArray<{
+  src: string;
+  label: string;
+  sublabel: string;
+}> = [
+  { src: '/images/kiosk-images/CX7.png', label: 'CX7', sublabel: '5½" – 7"' },
+  { src: '/images/kiosk-images/CX9.png', label: 'CX9', sublabel: '7" – 9⅝"' },
+  {
+    src: '/images/kiosk-images/CX13.png',
+    label: 'CX13',
+    sublabel: '7" – 13⅜"',
+  },
 ];
 
 export default function HelixProductScreen({
@@ -74,6 +91,7 @@ export default function HelixProductScreen({
             src={v.src}
             alt={`Helix ${v.label}`}
             label={v.label}
+            {...(v.sublabel ? { sublabel: v.sublabel } : {})}
             sizes="(min-width: 768px) 30vw, 90vw"
           />
         ))}
