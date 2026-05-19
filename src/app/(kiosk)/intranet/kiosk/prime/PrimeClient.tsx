@@ -70,18 +70,47 @@ function labelFor(entry: PrimeEntry): string {
   return entry.label ?? entry.url;
 }
 
+// navigator.serviceWorker.ready never rejects and waits indefinitely until
+// an active SW exists for the current scope. On a kiosk where SW install
+// hangs (bad PRECACHE_ASSETS URL, slow network during route precache, or
+// the SW file simply isn't reachable), this hang propagates up to
+// startPriming and the UI sits on "Priming..." with no items ever moving
+// from pending → running. Race against a hard timeout so priming proceeds
+// either way — the actual asset fetches don't need the SW to be active,
+// they just benefit from its caching when it is.
+const SW_READY_TIMEOUT_MS = 5_000;
+
 async function getServiceWorkerStatus(): Promise<ServiceWorkerStatus> {
   if (!('serviceWorker' in navigator)) {
     return { supported: false, ready: false, controlled: false };
   }
 
-  const registration = await navigator.serviceWorker.ready;
-  return {
-    supported: true,
-    ready: Boolean(registration.active),
-    controlled: Boolean(navigator.serviceWorker.controller),
-    scope: registration.scope,
-  };
+  try {
+    const registration = await Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise<never>((_, reject) =>
+        setTimeout(
+          () => reject(new Error('serviceWorker.ready timeout')),
+          SW_READY_TIMEOUT_MS,
+        ),
+      ),
+    ]);
+    return {
+      supported: true,
+      ready: Boolean(registration.active),
+      controlled: Boolean(navigator.serviceWorker.controller),
+      scope: registration.scope,
+    };
+  } catch {
+    // Timed out — SW probably still installing or failed to register. Report
+    // 'supported but not ready' so the UI shows the real state, and let
+    // priming proceed without waiting any longer.
+    return {
+      supported: true,
+      ready: false,
+      controlled: Boolean(navigator.serviceWorker.controller),
+    };
+  }
 }
 
 async function warmRoute(url: string): Promise<number> {
@@ -304,11 +333,15 @@ export default function PrimeClient() {
               <StatusCard
                 label="Service Worker"
                 value={
-                  serviceWorkerStatus?.supported
-                    ? serviceWorkerStatus.controlled
-                      ? 'Ready and controlling'
-                      : 'Ready; reload if first run'
-                    : 'Unsupported'
+                  !serviceWorkerStatus
+                    ? 'Checking…'
+                    : !serviceWorkerStatus.supported
+                      ? 'Unsupported'
+                      : serviceWorkerStatus.controlled
+                        ? 'Ready and controlling'
+                        : serviceWorkerStatus.ready
+                          ? 'Ready; reload if first run'
+                          : 'Not yet active — priming will still run'
                 }
               />
               <StatusCard

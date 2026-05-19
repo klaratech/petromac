@@ -23,6 +23,10 @@ Escape hatch when you really need it: `git commit --no-verify` or `git push --no
 
 Workflow we use: stage with `git add`, commit, push. Don't run `pnpm build` manually before push — the hook does it. Don't run `prettier --write` manually on a whole tree before commit — lint-staged scopes it to changed files for you.
 
+**For Claude:** when suggesting a commit or push, ALWAYS give the user one ready-to-paste shell command — full `git add <files> && git commit -m "..." && git push`, with the file list spelled out and the commit message inline. No placeholder fragments, no "then run git commit" prose split across paragraphs. Group everything in a single fenced block so it's one copy-paste action. When in doubt about which files to stage, prefer `git add -A` (or list every modified path explicitly) over leaving the user to figure it out.
+
+**Lockfile reminder:** `package.json` and `pnpm-lock.yaml` ALWAYS change together. Any `pnpm add` / `pnpm remove` / `pnpm update` produces a diff in both. If `git status` shows one without the other, that's a deploy-build trap — `pnpm install --frozen-lockfile` will fail. Stage both in the same commit. The pre-push hook does NOT catch this; only the deploy build does.
+
 ## Architecture
 
 - **Route groups**: `src/app/(public)/` for public site, `src/app/(kiosk)/` for kiosk shell
