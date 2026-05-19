@@ -7,9 +7,15 @@ import { useAutoHideHud } from '@/hooks/useAutoHideHud';
 import { getKioskPrimeMode } from '@/hooks/useKioskDisplay';
 import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
-import { HELIX_MECHANISM, HELIX_LOGS } from './ch/ch-configs';
+import {
+  HELIX_MECHANISM,
+  HELIX_LOGS,
+  ROCKER_MECHANISM,
+  ROCKER_LOGS,
+} from './ch/ch-configs';
 
-type View = 'main' | 'mechanism' | 'logs' | 'rocker';
+type View = 'video' | 'product' | 'mechanism' | 'logs';
+type Product = 'helix' | 'rocker';
 
 interface Props {
   onClose: () => void;
@@ -33,88 +39,132 @@ const LogsScreen = dynamic(() => import('./ch/LogsScreen'), {
   loading: LoadingSubView,
 });
 
-const RockerExperience = dynamic(() => import('./ch/RockerExperience'), {
+const HelixProductScreen = dynamic(() => import('./ch/HelixProductScreen'), {
+  ssr: false,
+  loading: LoadingSubView,
+});
+
+const RockerProductScreen = dynamic(() => import('./ch/RockerProductScreen'), {
   ssr: false,
   loading: LoadingSubView,
 });
 
 /**
- * HelixExperience — cased-hole Helix view.
+ * HelixExperience — Cased Hole lane orchestrator.
  *
- * Lives under the "Focus Centralizers" product family in systemMedia
- * (Helix + Rocker both belong to that family), but this component is
- * specifically the Helix entry point. Splash → Cased Hole lands here.
+ * Reorganised May 2026. The CH lane is now a three-tier flow:
  *
- * - Helix intro video loops fullscreen in the background.
- * - HUD strip of 2 buttons (Mechanism, Case Studies) appears on entry,
- *   fades out after HUD_AUTOHIDE_MS of no interaction. Tap anywhere to
- *   bring it back. Track Record + Success Stories live INSIDE Case
- *   Studies now — the map is the first slide of the case-studies pager,
- *   Success Stories opens inline from the in-map link.
- * - Bottom-right corner badge for ROCKER → opens the sister Rocker view
- *   with the same 2-button HUD over a still product layout.
+ *   1. video      — looping Helix attractor with two corner badges
+ *                   (Helix + Rocker) and a top-right ✕. No top HUD pill;
+ *                   the badges are the only call to action. ✕ exits the
+ *                   experience back to the splash via the parent `onClose`.
+ *   2. product    — image-based product page for whichever badge was
+ *                   tapped (HelixProductScreen with CX7/CX9/CX13 panels,
+ *                   or RockerProductScreen with Rocker + Rocker Inline).
+ *                   Persistent pill on top: Mechanism · Case Studies ·
+ *                   Specifications. Pill's `active` is undefined here
+ *                   since the screen sits "above" the two sub-views.
+ *   3. mechanism / logs — MechanismScreen / LogsScreen with their own
+ *                   persistent pill (Specs included when the product has
+ *                   a spec sheet). ✕ jumps straight back to the looping
+ *                   video — no hierarchical step through the product
+ *                   screen on exit. Configs and spec sheets are picked
+ *                   from `deviceSpecs` based on the currently-active
+ *                   `product`.
+ *
+ * The standalone RockerExperience.tsx that used to drive the Rocker
+ * sub-flow is gone — its main view became RockerProductScreen and the
+ * sub-view configs are folded back in here.
  */
 export default function HelixExperience({ onClose }: Props) {
-  const [view, setView] = useState<View>('main');
+  const [view, setView] = useState<View>('video');
+  // Which product owns the current sub-view (mechanism/logs/product).
+  // Default doesn't matter — set explicitly when the visitor taps a
+  // corner badge, before any sub-view ever renders.
+  const [product, setProduct] = useState<Product>('helix');
+
   const { hudVisible, handleTap } = useAutoHideHud(
-    view === 'main',
+    view === 'video',
     HUD_AUTOHIDE_MS,
   );
 
   const media = systemMedia['Focus Centralizers'];
   const primeMode = getKioskPrimeMode();
-  // Route the Helix video through useKioskVideo so the CH lane gets the
-  // same HD upgrade path (videos/kiosk-hd/<file>.mp4) as the lane attractor.
+  // Route the Helix video through useKioskVideo so the CH attractor gets
+  // the same HD upgrade path (videos/kiosk-hd/<file>.mp4) as the lane.
   const videoSrc = useKioskVideo(media?.video ?? '');
 
+  // Resolve specs once per product so sub-views and the product screen
+  // share the same source of truth.
+  const activeSpec =
+    product === 'helix'
+      ? deviceSpecs['/models/helix.glb']
+      : deviceSpecs['/models/rocker.glb'];
+  const specs = activeSpec?.specs;
+  const specsGraph = activeSpec?.graph;
+
+  const handleOpenProduct = (next: Product) => {
+    setProduct(next);
+    setView('product');
+  };
+
+  const exitToVideo = () => setView('video');
+
+  // ── Sub-view: product image page (Helix or Rocker) ─────────────────────────
+  if (view === 'product') {
+    const ProductScreen =
+      product === 'helix' ? HelixProductScreen : RockerProductScreen;
+    return (
+      <FullScreenLayer>
+        <ProductScreen
+          onClose={exitToVideo}
+          onSwitchSection={setView}
+          {...(specs ? { specs } : {})}
+          {...(specsGraph ? { specsGraph } : {})}
+        />
+      </FullScreenLayer>
+    );
+  }
+
+  // ── Sub-view: Mechanism slides for the active product ─────────────────────
   if (view === 'mechanism') {
-    // Inject the live Helix spec sheet + load-capacity graph so the
-    // Specifications button in the Mechanism header opens with real data.
-    const helixSpec = deviceSpecs['/models/helix.glb'];
+    const baseMech = product === 'helix' ? HELIX_MECHANISM : ROCKER_MECHANISM;
     const configWithSpecs = {
-      ...HELIX_MECHANISM,
-      ...(helixSpec?.specs ? { specs: helixSpec.specs } : {}),
-      ...(helixSpec?.graph ? { specsGraph: helixSpec.graph } : {}),
+      ...baseMech,
+      ...(specs ? { specs } : {}),
+      ...(specsGraph ? { specsGraph } : {}),
     };
     return (
       <FullScreenLayer>
         <MechanismScreen
           config={configWithSpecs}
-          onBack={() => setView('main')}
+          onBack={exitToVideo}
           onSwitchSection={setView}
         />
       </FullScreenLayer>
     );
   }
 
+  // ── Sub-view: Case Studies pager for the active product ───────────────────
   if (view === 'logs') {
+    const baseLogs = product === 'helix' ? HELIX_LOGS : ROCKER_LOGS;
+    const logsWithSpecs = {
+      ...baseLogs,
+      ...(specs ? { specs } : {}),
+      ...(specsGraph ? { specsGraph } : {}),
+    };
     return (
       <FullScreenLayer>
         <LogsScreen
-          config={HELIX_LOGS}
-          onBack={() => setView('main')}
+          config={logsWithSpecs}
+          onBack={exitToVideo}
           onSwitchSection={setView}
         />
       </FullScreenLayer>
     );
   }
 
-  if (view === 'rocker') {
-    return (
-      <FullScreenLayer>
-        <RockerExperience
-          // Both back-affordances inside Rocker (Helix corner badge AND
-          // the top-right ✕) close the Rocker sub-view back to the
-          // Helix main view rather than bouncing all the way out to the
-          // splash. Only the Helix top-right ✕ exits to splash.
-          onBack={() => setView('main')}
-          onClose={() => setView('main')}
-        />
-      </FullScreenLayer>
-    );
-  }
-
-  // Main: Helix video on loop + HUD overlay + Rocker corner
+  // ── Main: looping Helix video + two corner badges (Helix, Rocker) ─────────
   return (
     <FullScreenLayer>
       <div
@@ -124,11 +174,10 @@ export default function HelixExperience({ onClose }: Props) {
         onMouseMove={handleTap}
       >
         {media?.video ? (
-          // Audio on — user tapped the CH Helix overlay to reach this view,
-          // so user activation is established and autoplay-with-sound is allowed.
-          // Native `controls` are exposed so attendees can pause/scrub/replay
-          // the looping Helix clip during a walk-through; the HUD strip and
-          // close ✕ above still fade in/out independently.
+          // Audio on — user tapped CH on the splash to reach this view, so
+          // user activation is established and autoplay-with-sound works.
+          // Native controls expose play/pause/scrub/volume/fullscreen so
+          // attendees can pause/replay the loop during a walk-through.
           <video
             src={videoSrc}
             autoPlay={!primeMode}
@@ -147,10 +196,10 @@ export default function HelixExperience({ onClose }: Props) {
           </div>
         )}
 
-        {/* Subtle dark overlay so HUD copy stays readable over bright frames */}
+        {/* Subtle dark overlay so chrome stays readable over bright frames */}
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
-        {/* Top-right close — fades with the HUD via CSS opacity. */}
+        {/* Top-right close — fades with the rest of the chrome. */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -164,62 +213,33 @@ export default function HelixExperience({ onClose }: Props) {
           ✕
         </button>
 
-        {/* HUD button strip — bumped bg-black/65 (was bg-black/35 +
-            backdrop-blur) to keep contrast without the per-frame composite
-            cost of backdrop-filter. */}
+        {/* Bottom-right corner badges — the two product entry points. Pair
+            sits at bottom-24 to clear the native HTML5 video control bar.
+            The old top-center HUD pill (Mechanism · Case Studies) was
+            dropped May 2026 — visitors now pick a product first, then
+            drill into M/CS from inside that product's page. */}
         <div
-          className={`absolute top-4 left-1/2 -translate-x-1/2 z-40 flex gap-2 px-2 py-2 rounded-xl bg-black/65 border border-white/10 shadow-xl transition-opacity duration-250 ${
+          className={`absolute bottom-24 right-8 z-40 flex items-center gap-3 transition-opacity duration-250 ${
             hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
-          <HudButton
-            label="Mechanism"
+          <CornerBadge
+            label="Helix"
+            ariaLabel="Open Helix product page"
             onClick={(e) => {
               e.stopPropagation();
-              setView('mechanism');
+              handleOpenProduct('helix');
             }}
           />
-          <HudButton
-            label="Case Studies"
+          <CornerBadge
+            label="Rocker"
+            ariaLabel="Open Rocker product page"
             onClick={(e) => {
               e.stopPropagation();
-              setView('logs');
+              handleOpenProduct('rocker');
             }}
           />
         </div>
-
-        {/* Rocker corner badge — fades with the HUD. */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setView('rocker');
-          }}
-          aria-label="Open Rocker"
-          // bottom-24 (not bottom-8) — clears the native HTML5 video control
-          // bar at the bottom of the helix loop so the badge isn't sitting on
-          // top of the fullscreen icon. Matches the Helix corner badge inside
-          // RockerExperience for visual symmetry when toggling between views.
-          className={`absolute bottom-24 right-8 z-40 group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md transition-opacity duration-250 ${
-            hudVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
-        >
-          {/* Corner-badge silhouette pending — tracked in TODO.md. */}
-          <span className="w-5 h-5 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80 overflow-hidden">
-            {/* Intrinsic dims match the file's 1055x413 aspect ratio so
-                Next/Image stops warning about aspect-ratio mismatch; CSS
-                renders the wordmark at ~8px tall fitted inside the badge.
-                Tracked-for-replacement in TODO.md (dedicated silhouette). */}
-            <Image
-              src="/images/focus.png"
-              alt=""
-              width={31}
-              height={12}
-              unoptimized
-              className="h-2 w-auto opacity-80"
-            />
-          </span>
-          <span>Rocker</span>
-        </button>
       </div>
     </FullScreenLayer>
   );
@@ -230,26 +250,40 @@ export default function HelixExperience({ onClose }: Props) {
  *  by LaneClient when an experience opens, so the snap to z-50 over black
  *  is the dramatic reveal on its own. */
 function FullScreenLayer({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="fixed inset-0 z-50 bg-black">
-      {children}
-    </div>
-  );
+  return <div className="fixed inset-0 z-50 bg-black">{children}</div>;
 }
 
-function HudButton({
+/** Bottom-right corner badge — same affordance Rocker / Helix used to
+ *  carry individually, now reused for both product entry points on the
+ *  video view. Wordmark silhouette + label text in a rounded pill. */
+function CornerBadge({
   label,
+  ariaLabel,
   onClick,
 }: {
   label: string;
+  ariaLabel: string;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 }) {
   return (
     <button
       onClick={onClick}
-      className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/25 text-white/85 hover:text-white text-xs font-medium tracking-wide transition-colors"
+      aria-label={ariaLabel}
+      className="group flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/15 hover:bg-white/30 border border-white/25 text-white text-[10px] font-semibold tracking-[0.18em] uppercase shadow-md"
     >
-      {label}
+      {/* Corner-badge silhouette pending — tracked in TODO.md. Both badges
+          carry the same focus.png wordmark for now. */}
+      <span className="w-5 h-5 rounded-full bg-white/15 border border-white/30 flex items-center justify-center text-white/80 overflow-hidden">
+        <Image
+          src="/images/focus.png"
+          alt=""
+          width={31}
+          height={12}
+          unoptimized
+          className="h-2 w-auto opacity-80"
+        />
+      </span>
+      <span>{label}</span>
     </button>
   );
 }

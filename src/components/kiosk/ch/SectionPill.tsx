@@ -1,32 +1,44 @@
 'use client';
 
 /**
- * SectionPill — two-button persistent tab pill shared by MechanismScreen
- * and LogsScreen.
+ * SectionPill — persistent navigation pill shared by the CH product screens
+ * (HelixProductScreen, RockerProductScreen) and the Mechanism / Case Studies
+ * sub-views. Also used by the OH OverlayExperience's M/CS screens.
  *
- * Replaces the per-screen eyebrow + device-name title block in each sub-view
- * so visitors can hop directly between Mechanism and Case Studies without
- * bouncing back to the experience's main view. Mirrors the visual language
- * of the main-view HUD pill (same rounded chrome, same button geometry) so
- * the navigation feels like one continuous control rather than a new widget
- * once you've drilled in.
+ * Visual language mirrors the main-view HUD pill so the chrome feels like
+ * one continuous control as the visitor drills in.
  *
- * Behaviour
- * - `active` is highlighted (solid white-on-black) and carries
- *   `aria-current="page"`; tapping it is a no-op state update that React
- *   short-circuits.
- * - The inactive button calls `onSwitch` with its own section id; the
- *   parent experience routes that through its `setView` so the swap is a
- *   single-tap hop in either direction.
+ * Buttons
+ * - Mechanism / Case Studies — state-driven, exactly one of them carries
+ *   the active treatment (solid white-on-black + `aria-current="page"`).
+ *   When `active` is undefined (e.g. on a product screen sitting above
+ *   both sub-views) neither pill is highlighted — both render in the
+ *   inactive ghost style so the visitor sees the pair as equal-status
+ *   options to drill into.
+ * - Specifications — appears only when `onOpenSpecs` is provided. Never
+ *   carries an active state; it opens a modal so there's no "you're here"
+ *   semantics. Allows the same pill to expose the spec sheet from every
+ *   screen that has `config.specs` set, replacing the old per-screen
+ *   header button.
  */
 export type Section = 'mechanism' | 'logs';
 
 interface Props {
-  active: Section;
+  /** Which section is currently shown. Undefined when the pill is mounted
+   *  on a screen that isn't either of the sub-views (e.g. a product page). */
+  active?: Section | undefined;
   onSwitch: (_section: Section) => void;
+  /** When provided, renders a third "Specifications" pill button that
+   *  triggers this callback. Typically `() => setSpecsOpen(true)` from the
+   *  parent screen's local modal state. */
+  onOpenSpecs?: (() => void) | undefined;
 }
 
-export default function SectionPill({ active, onSwitch }: Props) {
+export default function SectionPill({
+  active,
+  onSwitch,
+  onOpenSpecs,
+}: Props) {
   return (
     <div className="flex gap-2 px-2 py-2 rounded-xl bg-black/65 border border-white/10 shadow-xl">
       <PillButton
@@ -39,6 +51,9 @@ export default function SectionPill({ active, onSwitch }: Props) {
         active={active === 'logs'}
         onClick={() => onSwitch('logs')}
       />
+      {onOpenSpecs && (
+        <PillButton label="Specifications" active={false} onClick={onOpenSpecs} />
+      )}
     </div>
   );
 }

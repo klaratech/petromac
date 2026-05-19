@@ -8,6 +8,7 @@ import SuccessStoriesFlipbook from '@/features/success-stories/components/Succes
 import type { JobRecord } from '@/types/JobRecord';
 import type { SuccessStoriesFilters } from '@/features/success-stories/types';
 import SectionPill, { type Section } from './SectionPill';
+import SpecsModal from './SpecsModal';
 
 /**
  * LogsScreen — config-driven "Case Studies" pager.
@@ -127,6 +128,13 @@ export interface LogsConfig {
   /** Shown as the screen heading, e.g. "Helix", "Pathfinder". */
   title: string;
   slides: LogsSlide[];
+  /** Spec sheet — exposed via the persistent pill's Specifications button
+   *  when set. Same shape as MechanismConfig.specs so HelixExperience can
+   *  fold the same deviceSpecs entry into both configs. */
+  specs?: Record<string, string>;
+  /** Optional graph image (load-capacity, performance curve, etc.) shown
+   *  beneath the spec table in SpecsModal. */
+  specsGraph?: string;
   /** Required when any slide is of type `map`. Drives the DrilldownMapCore
    *  inside that slide and toggles the in-map Success Stories link. */
   trackRecord?: {
@@ -179,6 +187,7 @@ export default function LogsScreen({
   const slides = config.slides;
   const [index, setIndex] = useState(0);
   const [showSuccessStories, setShowSuccessStories] = useState(false);
+  const [specsOpen, setSpecsOpen] = useState(false);
   const slide = slides[index] as LogsSlide | undefined;
 
   // Only fetch operations data when a map slide is configured — keeps
@@ -208,12 +217,18 @@ export default function LogsScreen({
 
   return (
     <div className="w-full h-full bg-black text-white flex flex-col">
-      {/* Persistent section pill (Mechanism · Case Studies) replaces the
-          previous eyebrow + device-name title block — keeps navigation in
-          place so visitors can jump straight back to Mechanism without
-          bouncing through the main view. */}
+      {/* Persistent section pill — Mechanism · Case Studies · Specifications
+          (Specs only when `config.specs` is set). Same canonical pill the
+          MechanismScreen + CH product screens render; tapping Specifications
+          opens SpecsModal on top of this screen. */}
       <header className="flex items-center justify-between px-8 py-5 border-b border-white/10">
-        <SectionPill active="logs" onSwitch={onSwitchSection} />
+        <SectionPill
+          active="logs"
+          onSwitch={onSwitchSection}
+          onOpenSpecs={
+            config.specs ? () => setSpecsOpen(true) : undefined
+          }
+        />
         <button
           onClick={onBack}
           aria-label="Close"
@@ -272,6 +287,14 @@ export default function LogsScreen({
         )}
 
       </div>
+
+      {specsOpen && config.specs && (
+        <SpecsModal
+          specs={config.specs}
+          graph={config.specsGraph}
+          onClose={() => setSpecsOpen(false)}
+        />
+      )}
     </div>
   );
 }
