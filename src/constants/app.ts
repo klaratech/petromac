@@ -7,6 +7,7 @@ export const KIOSK_LANE_PATH = '/intranet/kiosk/lane';
 export const KIOSK_CH_PATH = '/intranet/kiosk/ch';
 export const KIOSK_PRODUCTLINES_PATH = '/intranet/kiosk/productlines';
 export const KIOSK_PRIME_PATH = '/intranet/kiosk/prime';
+export const KIOSK_DASHBOARD_PATH = '/intranet/kiosk/dashboard';
 
 // App-wide constants
 export const APP_CONSTANTS = {

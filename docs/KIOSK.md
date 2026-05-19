@@ -8,15 +8,25 @@ We pre-cache the kiosk shell and small data files, and runtime‑cache large med
 ## Routes & flow
 
 ```
-/intranet/kiosk                            splash (typed text → Open Hole / Cased Hole buttons)
-   └─► /intranet/kiosk/lane?lane=oh|ch      per-lane looping video screen + right-side overlay
-        ├─► OH overlay: Formation Testing, High Deviation, Data Quality, Pathfinder
-        │     → OverlayExperience (looping video + HUD; Helix-pattern scaffold)
-        └─► CH overlay: Helix, Rocker, Other
-              → Helix  → HelixExperience (Helix video loop + HUD
-                          + Rocker corner badge)
-              → Rocker → RockerExperience
-              → Other  → "Coming soon" placeholder
+/intranet/kiosk                            splash (typed text → Open Hole / Cased Hole
+                                            + bottom-right "Prime offline" pill)
+   ├─► /intranet/kiosk/lane?lane=oh         OH attractor — fullscreen subtitled-video
+   │                                        playlist (dice intro + 3 narrated clips),
+   │                                        native play/pause/scrub controls on the
+   │                                        narrated clips, prev/next + dot strip at
+   │                                        bottom-centre. No more side button strip.
+   │
+   ├─► /intranet/kiosk/ch                   CH orchestrator (HelixExperience). Three
+   │                                        view tiers:
+   │     1. video    looping Helix attractor + two bottom-right corner badges
+   │                 (Helix, Rocker) + top-right ✕
+   │     2. product  HelixProductScreen (CX7/CX9/CX13 panels) or
+   │                 RockerProductScreen (Rocker + Rocker Inline). Persistent
+   │                 top pill: Mechanism · Case Studies · Specifications.
+   │     3. m/cs     MechanismScreen / LogsScreen, same pill, ✕ → video.
+   │
+   └─► /intranet/kiosk/prime                staff utility: warm SW cache for
+                                            offline use (see Trade-show setup below)
 
 /intranet/kiosk/productlines?lane=oh|ch     legacy tile grid (still works; no longer
                                             in the main flow)
@@ -26,13 +36,7 @@ We pre-cache the kiosk shell and small data files, and runtime‑cache large med
 /intranet/kiosk/datacheck                  data validation tools
 ```
 
-The splash picks a lane directly (Open Hole / Cased Hole). Each lane lands
-on `/intranet/kiosk/lane?lane=…`, which loops that lane's attractor videos
-fullscreen with a persistent overlay button strip on the right — the same
-buttons regardless of which clip is playing. Tapping an overlay button opens
-that product's experience. The old `/lane` card chooser was retired and the
-`/productlines` tile grid is no longer in the funnel, though the route still
-works for direct links.
+Specifications is a modal: tapping the pill button opens `SpecsModal` on top of whichever screen is below. Track Record + Success Stories live INSIDE Case Studies — the drill-down map is the first slide of the pager, and the in-map link opens Success Stories as an inline takeover. The old CH lane attractor at `/lane?lane=ch` redirects to `/ch` for bookmarks. The standalone `RockerExperience.tsx` was retired in May 2026.
 
 ### Video sources
 
@@ -72,13 +76,13 @@ encoder to chew on.
 The kiosk service worker lives at `public/kiosk-sw.js` and uses a version string:
 
 ```js
-const VERSION = 'v10';
+const VERSION = 'v16';
 ```
 
 **When you need to refresh cached content** (e.g., new videos/flipbooks or data files):
 1. Bump `VERSION` in `public/kiosk-sw.js`.
 2. Deploy.
-3. On the kiosk device, reload the kiosk once while online.
+3. On the kiosk device, reload the kiosk once while online, then re-prime via the splash's "Prime offline" pill.
 
 This forces the old caches to be evicted during SW `activate` and rebuilds fresh caches.
 
@@ -89,30 +93,69 @@ response into a `206 Partial Content`, so seeking and offline playback both
 work after priming. Non-media Range requests still fall through to the
 network. See `serveRangeFromCache()` in `public/kiosk-sw.js`.
 
-## Offline Ready Checklist
-1. Connect the kiosk device to a stable network.
-2. Visit these routes once to prime caches:
-   - `/intranet/kiosk`                           (splash)
-   - `/intranet/kiosk/lane?lane=oh`              (let the OH attractor playlist loop once;
-                                                  then tap each overlay button to prime
-                                                  its experience video + Track Record + flipbook)
-   - `/intranet/kiosk/lane?lane=ch`              (same — open Helix and Rocker experiences once)
-   - `/intranet/kiosk/dashboard`
-   - `/intranet/kiosk/successstories`
-3. Wait for all videos and flipbooks to load at least once.
-4. Toggle DevTools → Application → Service Workers → Offline and refresh.
-5. Confirm:
-   - Lane attractor loops play
-   - Helix / Rocker / OH overlay experiences open with video
-   - Map loads
-   - Success Stories flipbook loads
-   - Videos and flipbooks are cached
+## Trade-show kiosk setup
 
-> The legacy `/intranet/kiosk/productlines` tile grid still works for direct
-> links but is no longer in the main flow, so it isn't part of the priming
-> routine.
+End-to-end walkthrough for a fresh Android tablet + Amazon Fire Stick on a TV. Each step takes a minute or two. Do them in order — a couple of them depend on the previous one.
 
-If content appears stale, clear site data for the kiosk domain and repeat.
+### 1. Install the kiosk on the tablet
+
+1. On the Android tablet, open **Chrome** and go to the deployed kiosk URL.
+2. Chrome menu (⋮ top right) → **Install app** (or **Add to Home screen** on older Chrome).
+3. Find the "Petromac" icon on the home screen and tap to launch. The PWA runs fullscreen with no browser chrome.
+4. Confirm the splash renders ("Petromac · Disruptive Conveyance Solutions" with Open Hole and Cased Hole buttons).
+
+### 2. Prime the offline cache
+
+1. On the splash, tap the small **Prime offline** pill at the bottom-right.
+2. On the prime screen, tap **Start priming**.
+3. Wait for every row to reach **OK** — usually 1–2 minutes on decent Wi-Fi. Total payload is roughly 50–80 MB of video, plus images and flipbooks.
+4. The top status card should read **Ready for offline** when the run finishes.
+5. Tap **Open kiosk** (top-right of the prime screen) to return to the splash.
+
+> Want the sharper 1080p videos cached too? Tick **Include 1080p videos + 3D models** before starting. Skip it for mirrored Fire Stick setups — the SD set is what plays in mirroring mode anyway, and the HD pull adds ~175 MB.
+
+### 3. Connect the Fire Stick and the tablet to the same Wi-Fi
+
+1. **Fire Stick:** Settings → **Network** → join the show's Wi-Fi network.
+2. **Tablet:** Settings → **Wi-Fi** → join the same network.
+3. Both devices must be on the same Wi-Fi (and same subnet, if the show network has multiple). Mirroring discovery won't work otherwise.
+
+### 4. Put the Fire Stick into Mirroring mode
+
+1. On the Fire Stick remote, **press and hold the Home button** for ~3 seconds.
+2. The quick menu pops up. Pick **Mirroring**.
+3. The TV now shows a "Ready to connect" screen with the Fire Stick's device name (e.g. "Petromac-FireTV").
+
+### 5. Cast from the tablet (Smart View)
+
+1. On the tablet, open the **Quick Settings** panel (swipe down twice from the top).
+2. Tap **Smart View** (Samsung) — or **Cast** / **Screen mirroring** on other Android brands.
+3. Tap the Fire Stick from the device list. Accept any pairing prompt on the TV.
+4. The TV should now mirror whatever is on the tablet screen, including the kiosk PWA.
+
+### 6. Get a full-screen image on the TV
+
+If the kiosk renders with letterbox bars, looks small in a corner, or has its chrome cropped by overscan, tune in this order:
+
+1. **Tablet rotation** — make sure the tablet is locked in **landscape**. Smart View mirrors whatever the tablet is doing; if the tablet is portrait the TV gets pillarboxes either side.
+2. **Smart View aspect** — open the Smart View notification on the tablet → **⋮** menu → **Aspect ratio** (or **Phone aspect ratio** vs **Full screen on TV**). Pick **Full screen on TV**.
+3. **TV picture size** — on the TV remote, open Picture Settings → set **Picture Size / Aspect Ratio** to **Screen Fit** or **Just Scan** (avoid 4:3 or "Auto Wide").
+4. **Overscan safety** — if a sliver of the kiosk's top-right ✕ or bottom-right badges is being clipped by the TV bezel, navigate the kiosk once to `/intranet/kiosk?tv=1` to enable a 3% safe-area scale. The flag sticks via sessionStorage; you only need to do it once per session.
+
+### 7. If the video stutters
+
+Mirroring uses the **tablet** as the renderer + encoder, so it's the tablet's CPU getting taxed. If the kiosk video looks janky on the TV:
+
+- Navigate the kiosk once to `/intranet/kiosk?sd=1` — the flag is sticky and forces 540p playback, cutting the mirror encoder's per-frame work. The Helix / lane attractor videos still look fine at SD on a 1080p TV when viewed from across a booth.
+- If a deeper view is open (Mechanism / Case Studies), close back to the looping video — fewer overlays = less compositing.
+
+### Verifying offline-readiness
+
+Once you've primed and confirmed the TV is happy, sanity-check that the kiosk really survives losing Wi-Fi:
+
+1. On the tablet, toggle **Wi-Fi off** (or put the tablet in Airplane Mode and turn Wi-Fi back on if needed for mirroring — Fire Stick will keep the local Miracast link).
+2. Walk through the kiosk: Open Hole lane attractor loops, Cased Hole lands on the Helix video, both product pages render with images, Mechanism slides and Case Studies pager work, the map and Success Stories flipbook load.
+3. Anything stale or missing → return to the splash, tap **Prime offline**, then **Retry priming**. Failed rows re-fetch on retry; "ok" rows skip.
 
 ## Notes
 - Next.js image optimization outputs (`/_next/image`) are cached for kiosk use.

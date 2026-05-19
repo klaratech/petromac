@@ -46,7 +46,7 @@ const VARIANTS: ReadonlyArray<{
   label: string;
   sublabel: string;
 }> = [
-  { src: '/images/kiosk-images/CX7.png', label: 'CX7', sublabel: '5½" – 7"' },
+  { src: '/images/kiosk-images/CX7.png', label: 'CX7', sublabel: '4½" – 7"' },
   { src: '/images/kiosk-images/CX9.png', label: 'CX9', sublabel: '7" – 9⅝"' },
   {
     src: '/images/kiosk-images/CX13.png',

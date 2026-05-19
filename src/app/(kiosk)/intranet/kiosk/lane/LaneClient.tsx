@@ -4,7 +4,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getKioskPrimeMode } from '@/hooks/useKioskDisplay';
 import { useKioskVideos } from '@/hooks/useKioskVideo';
-import { KIOSK_CH_PATH } from '@/constants/app';
+import { KIOSK_CH_PATH, KIOSK_DASHBOARD_PATH } from '@/constants/app';
 
 const OVERLAY_AUTOHIDE = 4_000; // hide the controls after this idle gap
 
@@ -158,6 +158,40 @@ function LaneLoopContent() {
       />
       {/* Dim so controls stay readable over bright frames */}
       <div className="absolute inset-0 bg-black/35 z-0 pointer-events-none" />
+
+      {/* Track Record shortcut — small pill at top-center that fades with
+          the same 4 s auto-hide as the bottom prev/next strip. Visible on
+          every clip in the OH playlist (including dice) so a presenter can
+          jump straight to the operations map without backing out to the
+          splash. */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          router.push(KIOSK_DASHBOARD_PATH);
+        }}
+        aria-label="Open Track Record map"
+        className={`absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/55 border border-white/10 text-white/85 hover:text-white hover:bg-black/75 text-xs font-medium tracking-wide shadow-lg transition-opacity duration-300 ${
+          overlayVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {/* Inline pin icon — same style as the splash's prime SVG so the
+            lane chrome stays lucide-react-free. */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className="h-3.5 w-3.5"
+        >
+          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+        <span>Track Record</span>
+      </button>
 
       {/* Playlist controls — small prev/next chevrons + one dot per
           narrated clip (dice excluded). When dice is playing, no dot is
