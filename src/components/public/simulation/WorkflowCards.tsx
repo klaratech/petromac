@@ -2,19 +2,19 @@ const cards = [
   {
     step: "01",
     title: "Early feasibility",
-    quote: "Can we reach TD without tractors or contingency runs?",
+    quote: "Can we reach TD without tractors or pipe conveyance?",
   },
   {
     step: "02",
     title: "Configuration selection",
     quote:
-      "Which conveyance + centralization set gives the best chance of success?",
+      "Which conveyance setup gives the best chance of success?",
   },
   {
     step: "03",
     title: "Risk & contingency planning",
     quote:
-      "What\u2019s the failure envelope, and what\u2019s Plan B if friction rises?",
+      "What\u2019s the failure envelope, and what\u2019s Plan B?",
   },
   {
     step: "04",

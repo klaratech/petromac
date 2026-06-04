@@ -62,10 +62,9 @@ export default function SimulationHero() {
         </h1>
 
         <p className="mb-8 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl">
-          Athena turns a well plan into a go / no-go call before the run starts
-          &mdash; not during it. Operators and wireline service companies use it
-          to weigh sticking risk and conveyance options while the job is still
-          on paper.
+          Athena turns a well plan into a go / no-go call before the operations start.
+          Operators and wireline service companies use it to weigh sticking risk and conveyance options while 
+          the job is still on paper.
         </p>
 
         {/* The three inputs behind every Athena recommendation */}
