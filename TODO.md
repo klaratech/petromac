@@ -8,30 +8,30 @@
 ## Data pipeline
 
 - [x] Drop-zone content pipeline (May 2026) — `sources/` drop zone +
-  auto-detecting `scripts/node/data-pipeline.ts` for operations and flipbooks;
-  consumed inputs archived to `sources/_archive/`. See `sources/README.md`.
+      auto-detecting `scripts/node/data-pipeline.ts` for operations and flipbooks;
+      consumed inputs archived to `sources/_archive/`. See `sources/README.md`.
 - [ ] Longer term: move job history off Excel to a database-backed source of
-  truth, with the site reading from an API or a generated export rather than a
-  hand-maintained spreadsheet.
+      truth, with the site reading from an API or a generated export rather than a
+      hand-maintained spreadsheet.
 - [ ] `data-build.yaml` GitHub Action still references the old
-  `OPERATIONS_SOURCE_XLSX_URL` secret mechanism — rework or disable it now that
-  the pipeline is drop-zone based.
+      `OPERATIONS_SOURCE_XLSX_URL` secret mechanism — rework or disable it now that
+      the pipeline is drop-zone based.
 - [ ] `scripts/daily-operations-update.sh` cron still runs `pnpm data:operations`
-  — now a no-op unless something is in `sources/operations/`. Decide if the
-  daily automated job still has a purpose.
+      — now a no-op unless something is in `sources/operations/`. Decide if the
+      daily automated job still has a purpose.
 
 ## Known issues
 
 - [x] Track Record map: Bolivia renders oddly (May 2026) — root cause was
-  natural-earth-110m's coarse generalization of Bolivia's Andean border
-  (the polygon stitched correctly with 60 points, but the simplification
-  produced a visible notch on the south-east edge). Fixed by swapping
-  `world-110m.json` for `world-50m.json` from `world-atlas@2`: Bolivia goes
-  from 64 raw arc points to 421, and every other country gets a smoother
-  outline as a bonus. File size goes from ~106 KB to ~739 KB; precached by
-  the kiosk service worker. Wired via `EXTERNAL_URLS.WORLD_MAP_DATA` in
-  `src/constants/app.ts`; SW cache version bumped in `public/kiosk-sw.js`.
-  `world-110m.json` was removed in the June 2026 cleanup.
+      natural-earth-110m's coarse generalization of Bolivia's Andean border
+      (the polygon stitched correctly with 60 points, but the simplification
+      produced a visible notch on the south-east edge). Fixed by swapping
+      `world-110m.json` for `world-50m.json` from `world-atlas@2`: Bolivia goes
+      from 64 raw arc points to 421, and every other country gets a smoother
+      outline as a bonus. File size goes from ~106 KB to ~739 KB; precached by
+      the kiosk service worker. Wired via `EXTERNAL_URLS.WORLD_MAP_DATA` in
+      `src/constants/app.ts`; SW cache version bumped in `public/kiosk-sw.js`.
+      `world-110m.json` was removed in the June 2026 cleanup.
 
 ## Phase 1 — Finalize Design & Assets
 
@@ -39,7 +39,7 @@
 - [x] Video library reorg (May 2026) — `public/videos/` split into `originals/` (gitignored masters) + `transcoded/` (committed web clips); WirelineExpress, helix, pf, differential-sticking all re-encoded from HD masters to 720p. The kiosk now plays the `-subtitled` variants which carry audio (narration + on-screen captions); the non-subtitled clips remain for the public homepage. `intro-loop2.mp4` (56 MB) still needs re-encoding.
 - [x] `WirelineExpress-subtitled.mp4` master ingested (May 2026) — 88 MB 540p with audio dropped into `public/videos/originals/`, transcoded to 1280×720 / ~330 kbps + 128 kbps AAC at `public/videos/transcoded/WirelineExpress-subtitled.mp4` (8.7 MB). Wired into the OH lane attractor playlist and the High Deviation + Data Quality experience videos.
 - [x] `dice.mp4` leading black frame trimmed (May 2026) — first 2.12 s of black removed; re-encoded from the 4K master with audio kept. Both 720p `transcoded/dice.mp4` (~970 KB) and 1080p `kiosk-hd/dice.mp4` (~2.4 MB) updated.
-- [x] Kiosk audio (May 2026) — `muted` removed from the lane attractor and experience overlay `<video>` tags; relies on the kiosk Chrome running with `--autoplay-policy=no-user-gesture-required` for first-load attractor audio. Mechanism / "conventional-*" short clips (helix-mechanism, rocker-mechanism, conventional-smallcasings) are still silent — they have no audio master.
+- [x] Kiosk audio (May 2026) — `muted` removed from the lane attractor and experience overlay `<video>` tags; relies on the kiosk Chrome running with `--autoplay-policy=no-user-gesture-required` for first-load attractor audio. Mechanism / "conventional-\*" short clips (helix-mechanism, rocker-mechanism, conventional-smallcasings) are still silent — they have no audio master.
 - [ ] Update asset manifest with final design requirements
 - [ ] Collect all optimized asset files from designers (images, videos, OG image)
   - [x] Add `petromac-og.png` (1200×630) for Open Graph share image
@@ -51,13 +51,13 @@
   - [ ] Optimize favicon (currently 58 KB, target < 5 KB)
   - [ ] Helix product image (currently uses focus.png placeholder on the homepage FeaturedProducts card and as the kiosk "Focus Centralizers" tile logo)
   - [ ] ChallengeSelector card thumbnails — `public/images/conveyance.jpg`, `ledges.jpg`, `orientation.jpg`, `sampling.jpg`, `sticking.jpg` are all dev placeholders (black 800×480 canvas with the topic word stencilled in the top-left). Three cards (`Stuck Tools`, `Incomplete Operations`, `Cased Hole Centralization`) have a video that covers the poster after a brief flash; three cards (`Sticking Risk`, `Data Quality`, `High Deviations`) have no video so the placeholder is permanent. Hero already swapped to `hero-poster.jpg` (a frame from WirelineExpress.mp4, May 2026); apply the same treatment per card or replace with real photos.
-  - [ ] Helix mechanism slideshow renders (slides 1 & 2 only — slide 3 wired to existing /images/leverage-*.png, May 2026). The kiosk overlays SVG dimension brackets on the annotated slides; the embedded mechanism video plays between the brackets when supplied.
-    - `/public/images/helix-mechanism-conventional.png` — slide 1, bare 3D render of the conventional centraliser (no annotations).
-    - `/public/images/helix-mechanism-helix.png` — slide 2, bare 3D render of the Helix tool (no annotations).
-  - [ ] Rocker mechanism slideshow renders (2 slides):
-    - `/public/images/rocker-mechanism-conventional.png` — slide 1 primary, bare 3D render of the small-casing conventional centraliser (no annotations; the kiosk draws the 6.3"/3.3" dimension brackets).
-    - `/public/images/rocker-mechanism-conventional-detail.png` — slide 1 detail (small thumbnail in the right column), force-section schematic with the red/blue arrows baked in.
-    - `/public/images/rocker-mechanism-rocker.png` — slide 2, bare 3D render of the Rocker tool (no annotations).
+  - [x] Helix mechanism slideshow renders (Jun 2026) — posters extracted as stills from the corresponding mechanism videos (bare renders, no annotations; they double as `<video poster>` so the slide isn't blank before autoplay).
+    - `/public/images/helix-mechanism-conventional.png` — frame from `conventional-largecasings.mp4` (arms extended).
+    - `/public/images/helix-mechanism-helix.png` — frame from `helix-mechanism.mp4` (arms deployed).
+  - [x] Rocker mechanism slideshow renders (Jun 2026) — same treatment as Helix:
+    - `/public/images/rocker-mechanism-conventional.png` — frame from `conventional-smallcasings.mp4` (shallow arm angle).
+    - `/public/images/rocker-mechanism-rocker.png` — frame from `rocker-mechanism.mp4` (arms deployed around centreline pivot).
+    - `/public/images/rocker-mechanism-conventional-detail.png` — INTERIM: close-up crop of the central pivot from the same frame. Spec calls for a force-section schematic with red/blue arrows baked in — replace when graphics produce it.
   - [ ] Case Studies images:
     - `/public/images/helix-cbl-setup.png` — Helix Case Studies single slide (Ultrasonic-CBL set-up illustration).
     - `/public/images/rocker-logs-1.png` — Rocker Case Studies single slide (log comparison).
@@ -79,9 +79,9 @@
 ## Backlog (lower priority)
 
 - [ ] Kiosk CH lane "Other" experience — the third CH overlay button currently
-  opens a "Coming soon" placeholder (`src/app/(kiosk)/intranet/kiosk/lane/
-  LaneClient.tsx`, `ChOtherComingSoon`). Deprioritized May 2026 — build this
-  out last, once Helix / Rocker content and assets are finalised.
+      opens a "Coming soon" placeholder (`src/app/(kiosk)/intranet/kiosk/lane/
+LaneClient.tsx`, `ChOtherComingSoon`). Deprioritized May 2026 — build this
+      out last, once Helix / Rocker content and assets are finalised.
 
 ## Service-provider follow-ups
 
