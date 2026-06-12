@@ -2,17 +2,27 @@
 
 import { useMemo, useState } from 'react';
 import useOperationsData, { Operation } from '@/hooks/useOperationsData';
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  flexRender,
-  ColumnDef,
-} from '@tanstack/react-table';
 
-const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const monthNames = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 /* Operation type imported from useOperationsData hook */
+
+function formatCellValue(value: string | number | undefined) {
+  return typeof value === 'string' || typeof value === 'number' ? value.toString() : '';
+}
 
 export default function DataTableFull() {
   // Staff diagnostic — wants every column from the source xlsx, so points at
@@ -37,57 +47,25 @@ export default function DataTableFull() {
     [rawData]
   );
 
-  const columns = useMemo<ColumnDef<Operation>[]>(() => {
+  const columns = useMemo(() => {
     if (!data[0]) return [];
 
-    return Object.keys(data[0]).map((key, index) => {
-      const skipFilter = index === 7 || key === 'Remarks';
-
-      return {
-        accessorKey: key,
-        header: () => (
-          <div className="flex flex-col">
-            <span>{key}</span>
-            {!skipFilter && (
-              <input
-                type="text"
-                placeholder="Filter"
-                className="border mt-1 px-2 py-1 text-xs rounded"
-                value={columnFilters[key] || ''}
-                onChange={(e) =>
-                  setColumnFilters((prev) => ({
-                    ...prev,
-                    [key]: e.target.value,
-                  }))
-                }
-              />
-            )}
-          </div>
-        ),
-        cell: ({ getValue }) => {
-          const value = getValue();
-          return typeof value === 'string' || typeof value === 'number'
-            ? value.toString()
-            : '';
-        },
-      };
-    });
-  }, [data, columnFilters]);
+    return Object.keys(data[0]).map((key, index) => ({
+      key,
+      canFilter: index !== 7 && key !== 'Remarks',
+    }));
+  }, [data]);
 
   const filteredData = useMemo(() => {
     return data.filter((row) =>
       Object.entries(columnFilters).every(([key, filterValue]) =>
-        row[key]?.toString().toLowerCase().includes((filterValue as string).toLowerCase())
+        row[key]
+          ?.toString()
+          .toLowerCase()
+          .includes((filterValue as string).toLowerCase())
       )
     );
   }, [data, columnFilters]);
-
-  const table = useReactTable({
-    data: filteredData,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-  });
 
   const totalRows = filteredData.length;
   const successfulJobs = filteredData.filter((row) => row.Successful === 1).length;
@@ -102,22 +80,36 @@ export default function DataTableFull() {
 
       <table className="min-w-full border-collapse border border-gray-300 text-sm">
         <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} className="border p-2 bg-gray-100 text-left align-top">
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
+          <tr>
+            {columns.map((column) => (
+              <th key={column.key} className="border p-2 bg-gray-100 text-left align-top">
+                <div className="flex flex-col">
+                  <span>{column.key}</span>
+                  {column.canFilter && (
+                    <input
+                      type="text"
+                      placeholder="Filter"
+                      className="border mt-1 px-2 py-1 text-xs rounded"
+                      value={columnFilters[column.key] || ''}
+                      onChange={(e) =>
+                        setColumnFilters((prev) => ({
+                          ...prev,
+                          [column.key]: e.target.value,
+                        }))
+                      }
+                    />
+                  )}
+                </div>
+              </th>
+            ))}
+          </tr>
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="border p-2">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          {filteredData.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {columns.map((column) => (
+                <td key={column.key} className="border p-2">
+                  {formatCellValue(row[column.key])}
                 </td>
               ))}
             </tr>
