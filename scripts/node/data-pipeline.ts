@@ -93,6 +93,21 @@ function run(
 
 /** sources/operations/ -> public/data/operations_data.json */
 function processOperations(): void {
+  const configuredSource = process.env.OPERATIONS_SOURCE_XLSX || process.env.EXCEL_PATH;
+  if (configuredSource) {
+    if (!existsSync(configuredSource)) {
+      throw new Error(`Configured operations source not found: ${configuredSource}`);
+    }
+
+    // eslint-disable-next-line no-console
+    console.log(`📊 operations  — ${configuredSource}`);
+    run('python3', ['scripts/python/generate_json.py'], {
+      EXCEL_PATH: configuredSource,
+      SKIP_GITHUB_PUSH: 'true',
+    });
+    return;
+  }
+
   const dir = path.join(SOURCES, 'operations');
   const src = newestFile(dir, ['.xlsx', '.xls']);
   if (!src) {
