@@ -18,23 +18,26 @@ test('success stories loads', async ({ page }) => {
 
 test('success stories filters update results', async ({ page }) => {
   await page.goto('/success-stories/flipbook');
-  // Subtitle has two shapes — unfiltered ("N stories across every region
-  // we operate in.") and filtered ("Showing X of Y stories that match
-  // your filters."). Match either by anchoring on "stories".
-  const countLocator = page.getByText(/\bstories\b/i).first();
-  await expect(countLocator).toBeVisible();
-  const initialText = await countLocator.textContent();
+  await expect(page.getByText(/^\d+ stories across every region we operate in\.$/)).toBeVisible();
 
   await page.getByLabel('Area multiselect').click();
   const firstOption = page.getByRole('option').first();
   await firstOption.click();
   await page.keyboard.press('Escape');
 
-  await expect(countLocator).not.toHaveText(initialText || '');
+  await expect(
+    page.getByText(/^Showing \d+ of \d+ stories that match your filters\.$/)
+  ).toBeVisible();
 });
 
 test('success stories PDF endpoint returns 200', async ({ request }) => {
-  const response = await request.post('/api/pdf/success-stories', {
+  const apiBase = process.env.PLAYWRIGHT_API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+  test.skip(
+    !apiBase,
+    'Set PLAYWRIGHT_API_BASE_URL or NEXT_PUBLIC_API_BASE_URL to test the FastAPI PDF endpoint.'
+  );
+
+  const response = await request.post(`${apiBase}/api/pdf/success-stories`, {
     data: { pageNumbers: [1, 2], mode: 'preview' },
   });
   expect(response.ok()).toBeTruthy();
