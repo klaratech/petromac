@@ -22,14 +22,14 @@ Browser → Cloudflare edge → cloudflared (klaratech-1) → 127.0.0.1:3015 (fr
 
 1. Builds frontend + backend images for `linux/amd64` only (no multi-arch — Hetzner is amd64).
 2. Pushes `:latest` and `:sha-<short>` tags to GHCR.
-3. SSHes into the server and runs `docker compose pull && docker compose up -d` from `/root/apps/petromac`.
+3. SSHes into the server, logs Docker into GHCR with the workflow token, then runs `docker compose pull && docker compose up -d` from `/root/apps/petromac`.
 
 ## Required GitHub Actions secrets
 
-| Secret | Value |
-|---|---|
-| `DEPLOY_HOST` | Public IP of klaratech-1 (`46.225.75.202`) |
-| `DEPLOY_USER` | `root` |
+| Secret           | Value                                                        |
+| ---------------- | ------------------------------------------------------------ |
+| `DEPLOY_HOST`    | Public IP of klaratech-1 (`46.225.75.202`)                   |
+| `DEPLOY_USER`    | `root`                                                       |
 | `DEPLOY_SSH_KEY` | Deploy SSH private key (added to server's `authorized_keys`) |
 
 The image base name (`petromac`) and the deploy path (`/root/apps/petromac`) are hardcoded in the workflow file. To change them, edit `.github/workflows/deploy-prod.yml` directly — there's no GitHub-side variable to set.
@@ -41,10 +41,10 @@ On `klaratech-1`:
 1. `mkdir -p /root/apps/petromac /root/apps/petromac/data`
 2. Copy `deploy/docker-compose.prod.yml` from this repo to `/root/apps/petromac/docker-compose.yml`.
 3. Create the env files (use `.env.example` as the reference for which keys go where; never commit either):
-   - `/root/apps/petromac/.env-frontend` — public-facing config (NEXT_PUBLIC_* vars, API URLs)
+   - `/root/apps/petromac/.env-frontend` — public-facing config (NEXT*PUBLIC*\* vars, API URLs)
    - `/root/apps/petromac/.env-backend` — backend secrets (SMTP creds, ENTRA_CLIENT_SECRET, STAFF_SESSION_SECRET, etc.)
-   Splitting the env files keeps backend secrets out of the frontend container.
-4. Confirm `docker login ghcr.io` is configured for the server pull (one-time setup, see Tech Standards `Server Setup Runbook.md`).
+     Splitting the env files keeps backend secrets out of the frontend container.
+4. CI logs Docker into GHCR during each deploy before pulling images. For manual server-side pulls or rollbacks, run `docker login ghcr.io` first with a token that has `read:packages`.
 5. Add the cloudflared ingress (already documented in Tech Standards `Hetzner Server.md`):
    ```yaml
    - hostname: petromac.klaratech.it
