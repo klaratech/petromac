@@ -30,9 +30,8 @@
   from 64 raw arc points to 421, and every other country gets a smoother
   outline as a bonus. File size goes from ~106 KB to ~739 KB; precached by
   the kiosk service worker. Wired via `EXTERNAL_URLS.WORLD_MAP_DATA` in
-  `src/constants/app.ts`; SW cache version bumped to v8 in
-  `public/kiosk-sw.js`. `world-110m.json` is kept in `public/data/` for now
-  as a fallback / for the data pipeline; safe to delete in a follow-up.
+  `src/constants/app.ts`; SW cache version bumped in `public/kiosk-sw.js`.
+  `world-110m.json` was removed in the June 2026 cleanup.
 
 ## Phase 1 — Finalize Design & Assets
 
@@ -43,7 +42,7 @@
 - [x] Kiosk audio (May 2026) — `muted` removed from the lane attractor and experience overlay `<video>` tags; relies on the kiosk Chrome running with `--autoplay-policy=no-user-gesture-required` for first-load attractor audio. Mechanism / "conventional-*" short clips (helix-mechanism, rocker-mechanism, conventional-smallcasings) are still silent — they have no audio master.
 - [ ] Update asset manifest with final design requirements
 - [ ] Collect all optimized asset files from designers (images, videos, OG image)
-  - [ ] Add `petromac-og.png` (1200×630) for Open Graph share image
+  - [x] Add `petromac-og.png` (1200×630) for Open Graph share image
   - [x] Add email-optimized PDFs (`email.pdf`) for catalog and success stories — `build_flipbook.py` now generates them (Ghostscript, /ebook→/screen adaptive). `success-stories/email.pdf` is committed (~3 MB); run `pnpm run data:flipbooks` to generate `catalog/email.pdf`.
   - [ ] Re-encode remaining videos with H.264 VBR — `intro-loop2.mp4` (56 MB) in `public/videos/transcoded/`. (`helix.mp4` / `pf.mp4` were re-encoded from HD masters May 2026.) `cp12-placeholder.mp4` + `cp8-placeholder.mp4` (~156 MB) are unused and can be deleted outright.
   - [ ] Apply Draco compression to GLB models (213 MB total, 30-50% reduction). Eager `useGLTF.preload` on every model was removed from `CircularGallery.tsx` (May 2026), so opening the 3D viewer no longer pulls every GLB at once — but the per-model footprint is still large (cp12.glb alone is ~70 MB), so Draco + per-model lazy loading is still worth doing.

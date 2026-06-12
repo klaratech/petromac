@@ -61,7 +61,7 @@ pnpm run dev
 - `pnpm run lint`
 - `pnpm run typecheck`
 - `pnpm run build`
-- `pnpm run data` - rebuild operations JSON and flipbook assets from env-configured source paths
+- `pnpm run data` - rebuild operations JSON and flipbook assets from the `sources/` drop zone
 - `pnpm run validate:flipbooks`
 - `pnpm run validate:successstories`
 - `pnpm run test:e2e` - requires a local server

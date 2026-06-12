@@ -1,5 +1,6 @@
 # Build artifacts
 node_modules
+.pnpm-store
 .next
 .next/cache
 **/__pycache__
@@ -27,6 +28,8 @@ backend/.venv
 .ruff_cache
 .mypy_cache
 .eslintcache
+test-results
+playwright-report
 
 # Docs / templates not needed at runtime
 *.md
@@ -36,3 +39,15 @@ backend/Dockerfile
 .dockerignore
 docker-compose*.yml
 deploy/
+
+# Local-only content and large source assets
+sources/
+public/videos/originals/
+public/videos/WIP/
+public/models/Step Files/
+public/models/Step/
+public/**/*.DS_Store
+scripts/.venv/
+scripts/python/venv/
+scripts/python/env/
+scripts/**/*.log

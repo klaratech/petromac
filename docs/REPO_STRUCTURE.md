@@ -48,7 +48,6 @@ website/
 │   ├── features/                         # Feature modules (shared)
 │   │   ├── success-stories/              # ✅ Single source of truth
 │   │   │   ├── components/               # Filters + flipbook UI
-│   │   │   ├── config/                   # Options + normalization
 │   │   │   └── services/                 # CSV parsing/filtering
 │   │   └── kiosk/                        # Kiosk shell components
 │   ├── shared/
@@ -65,7 +64,6 @@ website/
 │   ├── types/                            # TypeScript type definitions
 │   ├── data/                             # Static data modules (small)
 │   │   └── team.ts                       # Team member data
-│   ├── config/                           # App configuration
 │   └── constants/                        # Constants and enums
 ├── public/                               # Static assets served by Next.js
 │   ├── kiosk-sw.js                       # 🔧 Kiosk-only service worker
@@ -78,10 +76,11 @@ website/
 │   ├── images/                           # Images and icons
 │   ├── videos/                           # Video files
 │   └── models/                           # 3D models (.glb files)
-├── data/                                 # Data management (private sources only)
-│   └── private/                          # 🚫 GITIGNORED - not deployed
-│       ├── raw/                          # Raw Excel uploads (e.g., jobhistory.xlsx)
-│       └── intermediate/                 # Python processing intermediates & diagnostics
+├── sources/                              # 🚫 GITIGNORED content drop zone
+│   ├── operations/                       # Incoming job-history spreadsheets
+│   ├── catalog/                          # Incoming catalog PDF
+│   ├── success-stories/                  # Incoming PDF + tags workbook
+│   └── _archive/                         # Consumed inputs, date-stamped
 ├── scripts/
 │   ├── python/                           # Python data processing
 │   └── node/                             # Node.js utilities
@@ -159,6 +158,7 @@ The repository uses a three-tier data organization to separate pipeline inputs, 
   - `operations_data.json` - Processed operations data (3MB+)
   - `country_labels.json` - Country name mappings for map
   - `world-50m.json` - TopoJSON for offline map rendering (natural-earth 50m via world-atlas@2)
+  - `kiosk-offline-assets.json` - Kiosk priming manifest used by `/intranet/kiosk/prime`
   - Flipbook assets live under `public/flipbooks/` (see [FLIPBOOKS.md](FLIPBOOKS.md))
 
 #### 3. `src/data/` - TypeScript Data Modules

@@ -7,18 +7,12 @@ export interface SystemMedia {
   logo: string;
 }
 
-export interface DeviceMedia {
-  model: string; // GLB path
-  image: string;
-}
-
 export interface DeviceSpec {
   specs: Record<string, string>;
   /** Optional graph image (load-capacity curve, performance plot, etc.) shown
    *  beneath the spec table inside the kiosk Specifications modal. Sized to
    *  fit the modal — a cropped page from the product catalog works well. */
   graph?: string;
-  media: DeviceMedia;
   system: string;
   subsystem: string;
   /** Which kiosk lane this device belongs to. */
@@ -79,10 +73,6 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       'Drag Coefficient (Static)': '12%',
       'Carry Load': 'Up to 500 lbs',
     },
-    media: {
-      model: '/models/cp12.glb',
-      image: '/images/cp12.png',
-    },
     system: 'Focus',
     subsystem: 'Focus-OH',
     lane: 'oh',
@@ -102,10 +92,6 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       'Drag Coefficient (Static)': '12%',
       'Carry Load': 'Up to 350 lbs',
     },
-    media: {
-      model: '/models/cp8.glb',
-      image: '/images/cp8.png',
-    },
     system: 'Focus',
     subsystem: 'Focus - OH',
     lane: 'oh',
@@ -123,10 +109,6 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       'Drag Coefficient (Dynamic)': '2%',
       'Drag Coefficient (Static)': '4%',
       'Carry Load': 'Up to 12,700 lbs (tool-dependent)',
-    },
-    media: {
-      model: '/models/ttbs75.glb',
-      image: '/images/ttbs75.png',
     },
     system: 'Wireline Express',
     subsystem: 'Wireline Express',
@@ -146,10 +128,6 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       'Jarring Force': 'Up to xxx,xxx lbs',
       'Time Delay to Fire': 'Up to 6 minutes',
       'Tool Compatibility': 'All SLB Logging Tools',
-    },
-    media: {
-      model: '/models/thor.glb',
-      image: '/images/thor.png',
     },
     system: 'Thor',
     subsystem: 'Thor',
@@ -181,10 +159,6 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       'SWL (Shear set screws)': '17,000 lbs',
     },
     graph: '/images/kiosk-images/helix-load-capacity.png',
-    media: {
-      model: '/models/helix.glb',
-      image: '/images/helix.png',
-    },
     // Helix lives inside the "Focus Centralizers" CH experience — it's the
     // primary tool, with the Helix intro video looping in the background.
     // Rocker is the secondary tool accessed via a corner badge inside the
@@ -206,10 +180,6 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       'Flex Joint': '6° all directions',
       'Tool Compatibility': 'HAL J-Latch, Baker WTS, SLB Threaded ring',
     },
-    media: {
-      model: '/models/pathfinderht.glb',
-      image: '/images/pathfinder.png',
-    },
     system: 'PathFinder',
     subsystem: 'Pathfinder HT',
     lane: 'oh',
@@ -218,7 +188,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
   // Sourced from product-catalog p.52. Two configurations (Small kit and
   // Standard) differ only on Minimum OD; everything else is shared.
   // 3D model file is still pending — see TODO.md.
-  '/models/rocker.glb': {
+  rocker: {
     specs: {
       Name: 'CRU Rocker Centraliser',
       Model: 'CRU',
@@ -238,10 +208,6 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       Grease: 'Lubriplate 930AA',
     },
     graph: '/images/kiosk-images/rocker-load-capacity.png',
-    media: {
-      model: '/models/rocker.glb', // placeholder — file not yet present
-      image: '/images/focus.png',  // placeholder
-    },
     system: 'Rocker',
     subsystem: 'Rocker',
     lane: 'ch',

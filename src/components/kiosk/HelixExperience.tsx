@@ -99,7 +99,7 @@ export default function HelixExperience({ onClose }: Props) {
   const activeSpec =
     product === 'helix'
       ? deviceSpecs['/models/helix.glb']
-      : deviceSpecs['/models/rocker.glb'];
+      : deviceSpecs.rocker;
   const specs = activeSpec?.specs;
   const specsGraph = activeSpec?.graph;
 
