@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import type { JobRecord } from "@/types/JobRecord";
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import type { JobRecord } from '@/types/JobRecord';
 
 interface Stats {
   countries: number;
@@ -18,8 +18,8 @@ export default function ProofSection() {
     async function loadStats() {
       try {
         // Static JSON in /public/data keeps proof stats independent from backend reachability.
-        const res = await fetch("/data/operations_data.json", { cache: "force-cache" });
-        if (!res.ok) throw new Error("Failed to load");
+        const res = await fetch('/data/operations_data.json', { cache: 'force-cache' });
+        if (!res.ok) throw new Error('Failed to load');
         const data: JobRecord[] = await res.json();
 
         const countries = new Set(data.map((r) => r.Country)).size;
@@ -40,28 +40,32 @@ export default function ProofSection() {
   return (
     <section className="py-20 px-6 bg-white">
       <div className="max-w-5xl mx-auto text-center">
-        <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">
-          Proof
-        </p>
+        <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">Proof</p>
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-14">
           Proven in the field
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-14">
           <div>
-            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
+            <p
+              className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+            >
               {stats.countries}+
             </p>
             <p className="text-slate-600 mt-2 font-medium">Countries</p>
           </div>
           <div>
-            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
+            <p
+              className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+            >
               {stats.deployments.toLocaleString()}+
             </p>
             <p className="text-slate-600 mt-2 font-medium">Successful Deployments</p>
           </div>
           <div>
-            <p className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}>
+            <p
+              className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+            >
               {stats.years}+
             </p>
             <p className="text-slate-600 mt-2 font-medium">Years of Experience</p>
@@ -73,7 +77,13 @@ export default function ProofSection() {
           className="inline-flex items-center gap-2 px-7 py-3 rounded-full border-2 border-brand text-brand font-semibold hover:bg-brand hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
         >
           Explore our track record
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
           </svg>
         </Link>
@@ -81,15 +91,9 @@ export default function ProofSection() {
         {/* Reach summary — replaces the placeholder logo strip. */}
         <div className="mt-16 pt-12 border-t border-slate-200">
           <p className="text-base md:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-            Deployed with{" "}
-            <span className="font-semibold text-slate-900">
-              all major IOCs and NOCs
-            </span>{" "}
-            across{" "}
-            <span className="font-semibold text-slate-900">
-              {stats.countries}+ countries
-            </span>
-            .
+            Deployed with{' '}
+            <span className="font-semibold text-slate-900">all major IOCs and NOCs</span> across{' '}
+            <span className="font-semibold text-slate-900">{stats.countries}+ countries</span>.
           </p>
         </div>
       </div>

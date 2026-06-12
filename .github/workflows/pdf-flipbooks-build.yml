@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - "scripts/build_flipbook.py"
-      - "scripts/update_flipbooks.py"
-      - "scripts/node/validate-flipbooks.ts"
+      - 'scripts/python/build_flipbook.py'
+      - 'scripts/python/update_flipbooks.py'
+      - 'scripts/node/validate-flipbooks.ts'
 
 jobs:
   flipbook:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install system dependencies
         run: |
@@ -35,7 +35,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Enable pnpm
         run: corepack enable

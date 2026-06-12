@@ -30,14 +30,14 @@ export default function MultiSelect({
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Filter options based on search term
-  const filteredOptions = options.filter(option =>
+  const filteredOptions = options.filter((option) =>
     option.value.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const toggleOption = (option: string, count?: number) => {
     if (selected.includes(option)) {
       // Always allow deselect, even if the count has since dropped to 0.
-      onChange(selected.filter(item => item !== option));
+      onChange(selected.filter((item) => item !== option));
       return;
     }
     // Block selecting an option that would yield zero results given the
@@ -49,7 +49,7 @@ export default function MultiSelect({
   };
 
   const removeOption = (option: string) => {
-    onChange(selected.filter(item => item !== option));
+    onChange(selected.filter((item) => item !== option));
   };
 
   const clearAll = () => {
@@ -57,7 +57,7 @@ export default function MultiSelect({
   };
 
   const selectAll = () => {
-    onChange(filteredOptions.map(opt => opt.value));
+    onChange(filteredOptions.map((opt) => opt.value));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -78,11 +78,11 @@ export default function MultiSelect({
         break;
       case 'ArrowDown':
         event.preventDefault();
-        setFocusedIndex(prev => Math.min(prev + 1, filteredOptions.length - 1));
+        setFocusedIndex((prev) => Math.min(prev + 1, filteredOptions.length - 1));
         break;
       case 'ArrowUp':
         event.preventDefault();
-        setFocusedIndex(prev => Math.max(prev - 1, 0));
+        setFocusedIndex((prev) => Math.max(prev - 1, 0));
         break;
       case 'Enter':
       case ' ':
@@ -122,9 +122,7 @@ export default function MultiSelect({
   const renderSelectedDisplay = () => {
     if (selected.length === 0) {
       return (
-        <span className="text-gray-500">
-          {placeholder || `Select ${label.toLowerCase()}...`}
-        </span>
+        <span className="text-gray-500">{placeholder || `Select ${label.toLowerCase()}...`}</span>
       );
     }
 
@@ -176,9 +174,7 @@ export default function MultiSelect({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div
         ref={inputRef}
         role="combobox"
@@ -193,7 +189,12 @@ export default function MultiSelect({
       >
         <div className="flex-1 min-w-0">{renderSelectedDisplay()}</div>
         <div className="flex-shrink-0 ml-2">
-          <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="h-4 w-4 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>
@@ -222,7 +223,7 @@ export default function MultiSelect({
               type="button"
               onClick={selectAll}
               className="text-xs text-blue-600 hover:text-blue-800 disabled:text-gray-400"
-              disabled={filteredOptions.every(opt => selected.includes(opt.value))}
+              disabled={filteredOptions.every((opt) => selected.includes(opt.value))}
             >
               Select All
             </button>
@@ -237,7 +238,12 @@ export default function MultiSelect({
           </div>
 
           {/* Options list */}
-          <div id={listboxId} role="listbox" aria-multiselectable="true" className="max-h-48 overflow-y-auto">
+          <div
+            id={listboxId}
+            role="listbox"
+            aria-multiselectable="true"
+            className="max-h-48 overflow-y-auto"
+          >
             {filteredOptions.length === 0 ? (
               <div className="px-3 py-2 text-sm text-gray-500">No options found</div>
             ) : (
@@ -270,10 +276,14 @@ export default function MultiSelect({
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-3"
                         tabIndex={-1}
                       />
-                      <span className={`text-sm flex-1 ${isDisabled ? 'text-gray-400' : 'text-gray-900'}`}>
+                      <span
+                        className={`text-sm flex-1 ${isDisabled ? 'text-gray-400' : 'text-gray-900'}`}
+                      >
                         {option.value}
                       </span>
-                      <span className={`text-xs ml-2 ${isDisabled ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <span
+                        className={`text-xs ml-2 ${isDisabled ? 'text-gray-400' : 'text-gray-500'}`}
+                      >
                         ({option.count})
                       </span>
                     </div>

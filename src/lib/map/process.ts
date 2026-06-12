@@ -6,20 +6,16 @@ import { MAP_CONSTANTS } from '@/constants/mapConstants';
 /**
  * Process map data based on selected systems
  */
-export function processMapData(
-  data: JobRecord[],
-  selectedSystems: string[]
-): ProcessedMapData {
-  const filteredData = selectedSystems.length > 0
-    ? data.filter((job) => selectedSystems.includes(job.System))
-    : [];
+export function processMapData(data: JobRecord[], selectedSystems: string[]): ProcessedMapData {
+  const filteredData =
+    selectedSystems.length > 0 ? data.filter((job) => selectedSystems.includes(job.System)) : [];
 
-  const isPathfinderOnly = selectedSystems.length === 1 &&
-    selectedSystems[0].toLowerCase() === 'pathfinder';
+  const isPathfinderOnly =
+    selectedSystems.length === 1 && selectedSystems[0].toLowerCase() === 'pathfinder';
 
   return {
     filteredData,
-    isPathfinderOnly
+    isPathfinderOnly,
   };
 }
 
@@ -35,12 +31,13 @@ export function calculateCountryStats(
 
   return rollups(
     source,
-    (entries) => sum(entries, (d) => {
-      if (isPathfinderOnly) {
-        return (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
-      }
-      return +d.Successful || 0;
-    }),
+    (entries) =>
+      sum(entries, (d) => {
+        if (isPathfinderOnly) {
+          return (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
+        }
+        return +d.Successful || 0;
+      }),
     (d) => d.Country
   );
 }
@@ -74,9 +71,7 @@ export interface IntensityScale {
  * a fifth of the countries-with-data — visually balanced regardless of
  * whether deployment counts are evenly distributed or heavily skewed.
  */
-export function buildIntensityScale(
-  countryStats: CountryStats[],
-): IntensityScale {
+export function buildIntensityScale(countryStats: CountryStats[]): IntensityScale {
   const ramp = MAP_CONSTANTS.COLORS.INTENSITY_RAMP;
   const empty = MAP_CONSTANTS.COLORS.COUNTRY_DEFAULT;
 
@@ -115,4 +110,3 @@ export function buildIntensityScale(
 
   return { color, breaks, min, max };
 }
-

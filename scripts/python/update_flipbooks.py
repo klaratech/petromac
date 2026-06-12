@@ -5,8 +5,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-BUILD_SCRIPT = ROOT / "scripts" / "build_flipbook.py"
+ROOT = Path(__file__).resolve().parents[2]
+BUILD_SCRIPT = ROOT / "scripts" / "python" / "build_flipbook.py"
 
 DEFAULT_SUCCESS_OUT = ROOT / "public" / "flipbooks" / "success-stories"
 DEFAULT_CATALOG_OUT = ROOT / "public" / "flipbooks" / "catalog"

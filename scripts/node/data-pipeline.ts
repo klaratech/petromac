@@ -18,13 +18,7 @@
  *   tsx scripts/node/data-pipeline.ts --flipbooks-only
  */
 
-import {
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  renameSync,
-  statSync,
-} from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, renameSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
@@ -76,11 +70,7 @@ function archive(files: string[]): void {
   }
 }
 
-function run(
-  command: string,
-  args: string[],
-  env: Record<string, string> = {},
-): void {
+function run(command: string, args: string[], env: Record<string, string> = {}): void {
   const res = spawnSync(command, args, {
     stdio: 'inherit',
     cwd: ROOT,
@@ -135,12 +125,12 @@ function processFlipbooks(): void {
   if (!catalogPdf && !successPdf) {
     // eslint-disable-next-line no-console
     console.log(
-      '📘 flipbooks   — nothing in sources/catalog/ or sources/success-stories/, skipped',
+      '📘 flipbooks   — nothing in sources/catalog/ or sources/success-stories/, skipped'
     );
     return;
   }
 
-  const args = ['scripts/update_flipbooks.py', '--skip-validate'];
+  const args = ['scripts/python/update_flipbooks.py', '--skip-validate'];
 
   if (catalogPdf) {
     // eslint-disable-next-line no-console
@@ -150,14 +140,14 @@ function processFlipbooks(): void {
   if (successPdf) {
     // eslint-disable-next-line no-console
     console.log(
-      `📗 success     — ${successPdf.name}${successTags ? ` + ${successTags.name}` : ' (no tags .xlsx — keeping existing tags)'}`,
+      `📗 success     — ${successPdf.name}${successTags ? ` + ${successTags.name}` : ' (no tags .xlsx — keeping existing tags)'}`
     );
     args.push('--success-pdf', successPdf.path);
     if (successTags) args.push('--tags-xlsx', successTags.path);
   } else if (successTags) {
     // eslint-disable-next-line no-console
     console.log(
-      `⚠️  success     — found ${successTags.name} but no PDF alongside it; skipping success stories`,
+      `⚠️  success     — found ${successTags.name} but no PDF alongside it; skipping success stories`
     );
   }
 

@@ -9,16 +9,8 @@ import { useDebounce } from '@/hooks/useDebounce';
 import YearlyStatsChart from '@/components/kiosk/YearlyStatsChart';
 import CountryChart from '@/components/kiosk/CountryChart';
 import MapRenderer from '@/components/geo/MapRenderer';
-import {
-  processMapData,
-  calculateCountryStats,
-  buildIntensityScale,
-} from '@/lib/maps';
-import type {
-  CountryStats,
-  ProcessedMapData,
-  HoverPayload,
-} from '@/types/MapTypes';
+import { processMapData, calculateCountryStats, buildIntensityScale } from '@/lib/map/process';
+import type { CountryStats, ProcessedMapData, HoverPayload } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
 
 export interface DrilldownMapCoreProps {
@@ -74,7 +66,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
     seededRef.current = true;
     if (initialSystem) {
       const matches = systemOptions.filter((s) =>
-        s.toLowerCase().startsWith(initialSystem.toLowerCase()),
+        s.toLowerCase().startsWith(initialSystem.toLowerCase())
       );
       setSelectedSystems(matches.length > 0 ? matches : systemOptions);
     } else {
@@ -84,19 +76,19 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
 
   const processedData: ProcessedMapData = useMemo(
     () => processMapData(data, debouncedSelectedSystems),
-    [data, debouncedSelectedSystems],
+    [data, debouncedSelectedSystems]
   );
 
   const { filteredData, isPathfinderOnly } = processedData;
 
   const countryStats: CountryStats[] = useMemo(
     () => calculateCountryStats(data, filteredData, isPathfinderOnly),
-    [data, filteredData, isPathfinderOnly],
+    [data, filteredData, isPathfinderOnly]
   );
 
   const countryMap = useMemo(
     () => new Map(countryStats.map(([country, count]) => [country, count])),
-    [countryStats],
+    [countryStats]
   );
 
   // Quantile-based intensity scale — drives both the choropleth fill and
@@ -105,22 +97,22 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
 
   const sortedCountries = useMemo(
     () => [...countryStats].sort((a, b) => b[1] - a[1]),
-    [countryStats],
+    [countryStats]
   );
 
   const chartCountries = useMemo(
     () => sortedCountries.filter(([, count]) => count > 0),
-    [sortedCountries],
+    [sortedCountries]
   );
 
   const totalDeployments = useMemo(
     () => countryStats.reduce((sum, [, count]) => sum + count, 0),
-    [countryStats],
+    [countryStats]
   );
 
   const countryCount = useMemo(
     () => countryStats.filter(([, count]) => count > 0).length,
-    [countryStats],
+    [countryStats]
   );
 
   const yearlyStats = useMemo(() => {
@@ -135,15 +127,14 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
         if (!acc[year]) acc[year] = 0;
 
         if (isPathfinderOnly) {
-          acc[year] +=
-            (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
+          acc[year] += (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES' ? 1 : 0;
         } else {
           acc[year] += +d.Successful || 0;
         }
 
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     return Object.entries(yearGroups)
@@ -153,7 +144,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
 
   const handleSystemToggle = useCallback((system: string) => {
     setSelectedSystems((prev) =>
-      prev.includes(system) ? prev.filter((s) => s !== system) : [...prev, system],
+      prev.includes(system) ? prev.filter((s) => s !== system) : [...prev, system]
     );
   }, []);
 
@@ -172,9 +163,12 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   const handleRetry = useCallback(async () => {
     if (retryCount < MAP_CONSTANTS.MAX_RETRIES) {
       setRetryCount((prev) => prev + 1);
-      setTimeout(() => {
-        retryMap();
-      }, 1000 * (retryCount + 1));
+      setTimeout(
+        () => {
+          retryMap();
+        },
+        1000 * (retryCount + 1)
+      );
     }
   }, [retryCount, retryMap]);
 
@@ -288,8 +282,8 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
               </span>
             </div>
           </div>
-          {showSuccessStoriesLink && (
-            onSuccessStoriesClick ? (
+          {showSuccessStoriesLink &&
+            (onSuccessStoriesClick ? (
               <button
                 type="button"
                 onClick={onSuccessStoriesClick}
@@ -306,8 +300,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
               >
                 Success Stories →
               </a>
-            )
-          )}
+            ))}
         </div>
       )}
 
@@ -431,9 +424,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
           }}
           role="tooltip"
         >
-          <div className="font-semibold">
-            {countryLabels[hover.country] || hover.country}
-          </div>
+          <div className="font-semibold">{countryLabels[hover.country] || hover.country}</div>
           <div className="text-slate-300">
             {hover.count} deployment{hover.count !== 1 ? 's' : ''}
           </div>

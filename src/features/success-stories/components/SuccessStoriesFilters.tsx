@@ -1,6 +1,6 @@
 'use client';
 
-import { MultiSelect } from '@/shared/ui/inputs';
+import MultiSelect from '@/components/ui/MultiSelect';
 import type { SuccessStoriesFilters, SuccessStoriesOptions } from '../types';
 
 interface SuccessStoriesFiltersProps {

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 // NOTE: this used to import framer-motion for the card expand + detail-panel
 // animations. framer-motion is ~5 MB of dep and sat in the public common
@@ -25,69 +25,69 @@ interface Challenge {
 
 const challenges: Challenge[] = [
   {
-    id: "stuck-tools",
-    title: "Stuck Tools",
-    image: "/images/sticking.jpg",
+    id: 'stuck-tools',
+    title: 'Stuck Tools',
+    image: '/images/sticking.jpg',
     // Transcoded from public/videos/originals/DifferentialSticking.mp4 →
     // 1280x720 H.264 CRF 30, no audio, faststart. Masters live in
     // public/videos/originals/ (gitignored); re-transcode when they update.
-    video: "/videos/transcoded/differential-sticking.mp4",
+    video: '/videos/transcoded/differential-sticking.mp4',
     bullets: [
-      "Conveyance past ledges and tight spots in high-deviation wells",
-      "Pathfinder hole finder helps logging tools navigate restrictions",
-      "Field-proven across operators worldwide",
+      'Conveyance past ledges and tight spots in high-deviation wells',
+      'Pathfinder hole finder helps logging tools navigate restrictions',
+      'Field-proven across operators worldwide',
     ],
   },
   {
-    id: "incomplete-operations",
-    title: "Incomplete Operations",
-    image: "/images/sampling.jpg",
-    video: "/videos/transcoded/pf.mp4",
+    id: 'incomplete-operations',
+    title: 'Incomplete Operations',
+    image: '/images/sampling.jpg',
+    video: '/videos/transcoded/pf.mp4',
     bullets: [
-      "Reach total depth on the first attempt — no costly contingency runs",
-      "Confidence to log full intervals even with risky access",
-      "Plan ahead with Athena to anticipate every tight zone",
+      'Reach total depth on the first attempt — no costly contingency runs',
+      'Confidence to log full intervals even with risky access',
+      'Plan ahead with Athena to anticipate every tight zone',
     ],
   },
   {
-    id: "sticking-risk",
-    title: "Sticking Risk",
-    image: "/images/sticking.jpg",
+    id: 'sticking-risk',
+    title: 'Sticking Risk',
+    image: '/images/sticking.jpg',
     bullets: [
-      "Thor controlled-impulse jar frees tools without resorting to fishing",
-      "Engineered for differential-sticking conditions in cased holes",
-      "Reduces non-productive time on at-risk operations",
+      'Thor controlled-impulse jar frees tools without resorting to fishing',
+      'Engineered for differential-sticking conditions in cased holes',
+      'Reduces non-productive time on at-risk operations',
     ],
   },
   {
-    id: "data-quality",
-    title: "Data Quality",
-    image: "/images/orientation.jpg",
+    id: 'data-quality',
+    title: 'Data Quality',
+    image: '/images/orientation.jpg',
     bullets: [
-      "Centralised tool strings produce sharper CBL, sonic, and density logs",
-      "Focus and HELIX keep sondes on-axis across the casing range",
-      "Less repeat logging, more first-time-right data",
+      'Centralised tool strings produce sharper CBL, sonic, and density logs',
+      'Focus and HELIX keep sondes on-axis across the casing range',
+      'Less repeat logging, more first-time-right data',
     ],
   },
   {
-    id: "cased-hole-centralization",
-    title: "Cased Hole Centralization",
-    image: "/images/ledges.jpg",
-    video: "/videos/transcoded/helix.mp4",
+    id: 'cased-hole-centralization',
+    title: 'Cased Hole Centralization',
+    image: '/images/ledges.jpg',
+    video: '/videos/transcoded/helix.mp4',
     bullets: [
-      "HELIX maintains centralisation across the full casing range",
-      "Improved leverage and lower drag than conventional centralisers",
-      "Cleaner CBL, sonic, and density logs through optimal standoff",
+      'HELIX maintains centralisation across the full casing range',
+      'Improved leverage and lower drag than conventional centralisers',
+      'Cleaner CBL, sonic, and density logs through optimal standoff',
     ],
   },
   {
-    id: "high-deviations",
-    title: "High Deviations",
-    image: "/images/conveyance.jpg",
+    id: 'high-deviations',
+    title: 'High Deviations',
+    image: '/images/conveyance.jpg',
     bullets: [
-      "Pathfinder proven in 80°+ deviated wells worldwide",
-      "Reliable conveyance through ledges, breakouts, and washouts",
-      "Designed for tortuous wellbore profiles",
+      'Pathfinder proven in 80°+ deviated wells worldwide',
+      'Reliable conveyance through ledges, breakouts, and washouts',
+      'Designed for tortuous wellbore profiles',
     ],
   },
 ];
@@ -123,12 +123,12 @@ export default function ChallengeSelector() {
                 aria-expanded={isExpanded}
                 className={`rounded-xl overflow-hidden cursor-pointer border-2 transition-colors focus:outline-2 focus:outline-brand ${
                   isExpanded
-                    ? "border-brand shadow-card lg:col-span-2"
-                    : "border-slate-200 hover:border-brand/40 shadow-subtle hover:shadow-card"
+                    ? 'border-brand shadow-card lg:col-span-2'
+                    : 'border-slate-200 hover:border-brand/40 shadow-subtle hover:shadow-card'
                 }`}
                 onClick={() => toggle(c.id)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
+                  if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     toggle(c.id);
                   }
@@ -167,9 +167,7 @@ export default function ChallengeSelector() {
                     overflow-hidden so its content stays clipped at 0fr. */}
                 <div
                   className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
-                    isExpanded
-                      ? "grid-rows-[1fr] opacity-100"
-                      : "grid-rows-[0fr] opacity-0"
+                    isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                   }`}
                   aria-hidden={!isExpanded}
                 >
@@ -193,8 +191,19 @@ export default function ChallengeSelector() {
                         tabIndex={isExpanded ? 0 : -1}
                       >
                         Learn more
-                        <svg className="ml-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="ml-1 w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </Link>
                     </div>

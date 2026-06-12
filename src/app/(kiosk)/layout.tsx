@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import KioskShell from '@/features/kiosk/components/KioskShell';
+import KioskShell from '@/components/kiosk/KioskShell';
 
 export const metadata: Metadata = {
   title: 'Petromac Kiosk',

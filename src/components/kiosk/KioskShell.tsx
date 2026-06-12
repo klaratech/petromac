@@ -29,9 +29,7 @@ export default function KioskShell({ children }: { children: React.ReactNode }) 
   const { tvMode } = useKioskDisplay();
 
   return (
-    <div
-      className={`fixed inset-0 z-50 bg-black overflow-hidden ${tvMode ? 'kiosk-tv-mode' : ''}`}
-    >
+    <div className={`fixed inset-0 z-50 bg-black overflow-hidden ${tvMode ? 'kiosk-tv-mode' : ''}`}>
       {/* StaffIdentityBadge calls useSearchParams() (to preserve ?lane= on
           the Microsoft login / logout redirects). Next.js 16 requires that
           any client component using useSearchParams sits inside a Suspense

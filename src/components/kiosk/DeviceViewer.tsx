@@ -5,18 +5,12 @@ import useOperationsData from '@/hooks/useOperationsData';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import { Suspense, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import * as THREE from 'three';
-import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
+import { deviceSpecs, systemMedia } from '@/features/catalog/deviceSpecs';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 
-function DeviceModel({
-  model,
-  isUserInteracting,
-}: {
-  model: string;
-  isUserInteracting: boolean;
-}) {
+function DeviceModel({ model, isUserInteracting }: { model: string; isUserInteracting: boolean }) {
   const { scene } = useGLTF(model);
   const ref = useRef<THREE.Group>(null);
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
@@ -44,13 +38,7 @@ function DeviceModel({
   );
 }
 
-export default function DeviceViewer({
-  model,
-  onClose,
-}: {
-  model: string;
-  onClose: () => void;
-}) {
+export default function DeviceViewer({ model, onClose }: { model: string; onClose: () => void }) {
   const [showSpecs, setShowSpecs] = useState(false);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
   const [showVideo, setShowVideo] = useState(false);

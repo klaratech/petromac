@@ -30,8 +30,6 @@ The root `tailwind.config.ts` scans:
 - `src/app/**/*.{ts,tsx}`
 - `src/components/**/*.{ts,tsx}`
 - `src/features/**/*.{ts,tsx}`
-- `src/pages/**/*.{ts,tsx}`
-- `src/shared/**/*.{ts,tsx}`
 
 Do not add a second Tailwind config file.
 

@@ -5,6 +5,7 @@ This document describes how to develop, test, and deploy features for the Petrom
 ## Local Development
 
 ### Setup
+
 ```bash
 git clone https://github.com/Klaratech/petromac.git
 cd petromac
@@ -19,12 +20,14 @@ pnpm run dev
 - `.env.local` is loaded by Next.js local development; `.env.dev` is loaded by Docker Compose and `pnpm run data`.
 
 ### Running Locally
+
 - Public site: http://localhost:3000
 - Backend API: http://localhost:8000
 - Intranet: http://localhost:3000/intranet
 - Track Record (map): http://localhost:3000/track-record
 
 ### Flipbooks
+
 - Source PDFs and the tags xlsx are dropped into `sources/catalog/` and `sources/success-stories/` (see `sources/README.md`)
 - Generated bundles live in `public/flipbooks/<docKey>/`
 - Preferred unified pipeline (operations + flipbooks):
@@ -42,6 +45,7 @@ This CSV is auto-generated from the `Success Stories_Summary.xlsx` file (sheet: 
 Normalization rules live in `src/features/success-stories/services/successStories.shared.ts`.
 
 To update filters:
+
 1. Edit the "Kiosk" sheet in the success-stories summary `.xlsx` and drop it into `sources/success-stories/`
 2. Run `pnpm run data` (or `pnpm run data:flipbooks`)
 3. Commit generated outputs
@@ -65,7 +69,7 @@ To update filters:
   passthrough/debug endpoints, but frontend map surfaces should fetch the
   published JSON directly.
 - `src/features/success-stories/` → Success Stories feature (filters, parsing, services)
-- `src/shared/ui/` → Shared UI primitives
+- `src/components/ui/` → Shared UI primitives
 
 ## GitHub Actions
 
@@ -77,11 +81,11 @@ To update filters:
 The pipeline reads from the `sources/` drop zone — no env vars, no renaming. Drop
 a file into the matching folder (any filename) and run the pipeline:
 
-| Drop into | Contents | Build |
-|---|---|---|
-| `sources/operations/` | job-history `.xlsx` | `pnpm run data:operations` |
-| `sources/catalog/` | catalog `.pdf` | `pnpm run data:flipbooks` |
-| `sources/success-stories/` | success-stories `.pdf` + tags `.xlsx` | `pnpm run data:flipbooks` |
+| Drop into                  | Contents                              | Build                      |
+| -------------------------- | ------------------------------------- | -------------------------- |
+| `sources/operations/`      | job-history `.xlsx`                   | `pnpm run data:operations` |
+| `sources/catalog/`         | catalog `.pdf`                        | `pnpm run data:flipbooks`  |
+| `sources/success-stories/` | success-stories `.pdf` + tags `.xlsx` | `pnpm run data:flipbooks`  |
 
 Or run everything at once:
 
@@ -90,6 +94,7 @@ pnpm run data
 ```
 
 This will:
+
 1. build `public/data/operations_data.json` from the newest `sources/operations/` file
 2. rebuild `public/flipbooks/*` (pages + `email.pdf`) from the newest `sources/catalog/` and `sources/success-stories/` files
 3. run flipbook/success-stories validators
@@ -109,6 +114,7 @@ An empty `sources/` subfolder is simply skipped. See [sources/README.md](../../s
 ## Kiosk Offline Refresh (Trade Shows)
 
 To refresh kiosk content before going offline:
+
 1. Connect the kiosk device to a stable network.
 2. Visit key kiosk routes at least once:
    - `/intranet/kiosk`
@@ -127,12 +133,14 @@ If assets appear stale, clear site data for the kiosk domain in the browser sett
 Follow these conventions when working with data:
 
 #### 1. Pipeline Inputs (`sources/`)
+
 - **Never commit large Excel files or raw PDFs** — dropped files are gitignored
 - Drop into `sources/{operations,catalog,success-stories}/` (any filename)
 - Consumed inputs are auto-moved to `sources/_archive/`
 - These files are never deployed
 
 #### 2. Published Data (`public/data/`)
+
 - JSON/CSV/PDF artifacts generated for frontend and backend use
 - Frontend map surfaces fetch JSON directly from `/data/*`
 - Use for:
@@ -143,6 +151,7 @@ Follow these conventions when working with data:
 Flipbook assets (PDFs + images) live under `public/flipbooks/` and are accessed via `/flipbooks/*` URLs.
 
 #### 3. TypeScript Modules (`src/data/`)
+
 - Small, typed data only (e.g., `team.ts`)
 - Import directly: `import { data } from "@/data/module"`
 - **Do not store large JSON here** - use `public/data/` instead
@@ -153,34 +162,36 @@ For data in `public/data/`, always use fetch:
 
 ```tsx
 // ✅ Client Component
-"use client";
+'use client';
 const [data, setData] = useState(null);
 
 useEffect(() => {
-  fetch("/data/operations_data.json")
-    .then(r => r.json())
+  fetch('/data/operations_data.json')
+    .then((r) => r.json())
     .then(setData);
 }, []);
 
 // ✅ Server Component
 const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/data/operations_data.json`, {
-  next: { revalidate: 3600 }
+  next: { revalidate: 3600 },
 });
 const data = await res.json();
 
 // ❌ WRONG - Don't import large JSON
-import data from "@/data/operations_data.json"; // NO!
+import data from '@/data/operations_data.json'; // NO!
 ```
 
 ### Python Script Output Targets
 
 When creating or modifying Python scripts:
+
 - ✅ Read pipeline inputs from: `sources/` (e.g. `sources/operations/`)
 - ✅ Write published data to: `public/data/`
 - ✅ Write flipbook images to: `public/flipbooks/`
 - ❌ **Never** write to `scripts/python/` (creates duplicates)
 
 Example:
+
 ```python
 # Correct paths
 EXCEL_PATH = "sources/operations/jobhistory.xlsx"
@@ -199,6 +210,7 @@ docker compose up --build
 ```
 
 Check these pages:
+
 - Public Track Record (map): http://localhost:3000/track-record
 - Kiosk Dashboard (map): http://localhost:3000/intranet/kiosk/dashboard
 - Product lines: http://localhost:3000/intranet/kiosk/productlines

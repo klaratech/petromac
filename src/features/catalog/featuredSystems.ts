@@ -1,4 +1,4 @@
-import type { Lane } from '@modules/catalog/data/deviceSpecs';
+import type { Lane } from '@/features/catalog/deviceSpecs';
 
 export interface FeaturedSystem {
   /** Display name. Must match a key in `systemMedia` and the `system` field

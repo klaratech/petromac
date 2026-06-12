@@ -5,14 +5,9 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
 import { getKioskPrimeMode } from '@/hooks/useKioskDisplay';
-import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
+import { deviceSpecs, systemMedia } from '@/features/catalog/deviceSpecs';
 import { useKioskVideo } from '@/hooks/useKioskVideo';
-import {
-  HELIX_MECHANISM,
-  HELIX_LOGS,
-  ROCKER_MECHANISM,
-  ROCKER_LOGS,
-} from './ch/ch-configs';
+import { HELIX_MECHANISM, HELIX_LOGS, ROCKER_MECHANISM, ROCKER_LOGS } from './ch/ch-configs';
 
 type View = 'video' | 'product' | 'mechanism' | 'logs';
 type Product = 'helix' | 'rocker';
@@ -83,10 +78,7 @@ export default function HelixExperience({ onClose }: Props) {
   // corner badge, before any sub-view ever renders.
   const [product, setProduct] = useState<Product>('helix');
 
-  const { hudVisible, handleTap } = useAutoHideHud(
-    view === 'video',
-    HUD_AUTOHIDE_MS,
-  );
+  const { hudVisible, handleTap } = useAutoHideHud(view === 'video', HUD_AUTOHIDE_MS);
 
   const media = systemMedia['Focus Centralizers'];
   const primeMode = getKioskPrimeMode();
@@ -96,10 +88,7 @@ export default function HelixExperience({ onClose }: Props) {
 
   // Resolve specs once per product so sub-views and the product screen
   // share the same source of truth.
-  const activeSpec =
-    product === 'helix'
-      ? deviceSpecs['/models/helix.glb']
-      : deviceSpecs.rocker;
+  const activeSpec = product === 'helix' ? deviceSpecs['/models/helix.glb'] : deviceSpecs.rocker;
   const specs = activeSpec?.specs;
   const specsGraph = activeSpec?.graph;
 
@@ -112,8 +101,7 @@ export default function HelixExperience({ onClose }: Props) {
 
   // ── Sub-view: product image page (Helix or Rocker) ─────────────────────────
   if (view === 'product') {
-    const ProductScreen =
-      product === 'helix' ? HelixProductScreen : RockerProductScreen;
+    const ProductScreen = product === 'helix' ? HelixProductScreen : RockerProductScreen;
     return (
       <FullScreenLayer>
         <ProductScreen
@@ -136,11 +124,7 @@ export default function HelixExperience({ onClose }: Props) {
     };
     return (
       <FullScreenLayer>
-        <MechanismScreen
-          config={configWithSpecs}
-          onBack={exitToVideo}
-          onSwitchSection={setView}
-        />
+        <MechanismScreen config={configWithSpecs} onBack={exitToVideo} onSwitchSection={setView} />
       </FullScreenLayer>
     );
   }
@@ -155,11 +139,7 @@ export default function HelixExperience({ onClose }: Props) {
     };
     return (
       <FullScreenLayer>
-        <LogsScreen
-          config={logsWithSpecs}
-          onBack={exitToVideo}
-          onSwitchSection={setView}
-        />
+        <LogsScreen config={logsWithSpecs} onBack={exitToVideo} onSwitchSection={setView} />
       </FullScreenLayer>
     );
   }

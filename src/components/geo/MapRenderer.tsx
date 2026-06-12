@@ -6,7 +6,7 @@ import type { Feature, Geometry } from 'geojson';
 import type { MapRendererProps } from '@/types/MapTypes';
 import { APP_CONSTANTS } from '@/constants/app';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
-import { formatDeploymentCount } from '@/lib/maps';
+import { formatDeploymentCount } from '@/lib/map/process';
 
 const MapRenderer = memo(function MapRenderer({
   worldData,
@@ -69,9 +69,7 @@ const MapRenderer = memo(function MapRenderer({
       .attr('stroke', (d) => {
         const feature = d as Feature<Geometry>;
         const name = feature.properties?.name || '';
-        return name === selectedCountry
-          ? MAP_CONSTANTS.COLORS.COUNTRY_SELECTED_STROKE
-          : '#ffffff';
+        return name === selectedCountry ? MAP_CONSTANTS.COLORS.COUNTRY_SELECTED_STROKE : '#ffffff';
       })
       .style('stroke-width', (d) => {
         const feature = d as Feature<Geometry>;
@@ -134,9 +132,7 @@ const MapRenderer = memo(function MapRenderer({
             y: mouseEvent.clientY,
           });
         }
-        select(this)
-          .attr('stroke', MAP_CONSTANTS.COLORS.HOVER_STROKE)
-          .style('stroke-width', 1);
+        select(this).attr('stroke', MAP_CONSTANTS.COLORS.HOVER_STROKE).style('stroke-width', 1);
       })
       .on('mouseout', function (_, d) {
         const feature = d as Feature<Geometry>;
@@ -144,17 +140,10 @@ const MapRenderer = memo(function MapRenderer({
         if (onCountryHover) onCountryHover(null);
         const isSelected = name === selectedCountry;
         select(this)
-          .attr(
-            'stroke',
-            isSelected
-              ? MAP_CONSTANTS.COLORS.COUNTRY_SELECTED_STROKE
-              : '#ffffff',
-          )
+          .attr('stroke', isSelected ? MAP_CONSTANTS.COLORS.COUNTRY_SELECTED_STROKE : '#ffffff')
           .style(
             'stroke-width',
-            isSelected
-              ? MAP_CONSTANTS.STROKE_WIDTH_SELECTED
-              : MAP_CONSTANTS.STROKE_WIDTH_DEFAULT,
+            isSelected ? MAP_CONSTANTS.STROKE_WIDTH_SELECTED : MAP_CONSTANTS.STROKE_WIDTH_DEFAULT
           );
       });
 

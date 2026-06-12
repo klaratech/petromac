@@ -1,5 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface Product {
   name: string;
@@ -13,25 +13,25 @@ interface Product {
 
 const products: Product[] = [
   {
-    name: "Wireline Express",
+    name: 'Wireline Express',
     description:
-      "Flagship conveyance system — gravity descent in high-deviation open hole, including the world record at 79°.",
-    image: "/images/wirelineexpress.png",
-    video: "/videos/transcoded/WirelineExpress.mp4",
+      'Flagship conveyance system — gravity descent in high-deviation open hole, including the world record at 79°.',
+    image: '/images/wirelineexpress.png',
+    video: '/videos/transcoded/WirelineExpress.mp4',
   },
   {
-    name: "Pathfinder",
+    name: 'Pathfinder',
     description:
-      "Universal hole finder for navigating restrictions, ledges, and washouts in deviated wells.",
-    image: "/images/pathfinder.png",
-    video: "/videos/transcoded/pf.mp4",
+      'Universal hole finder for navigating restrictions, ledges, and washouts in deviated wells.',
+    image: '/images/pathfinder.png',
+    video: '/videos/transcoded/pf.mp4',
   },
   {
-    name: "Focus Centralizers",
+    name: 'Focus Centralizers',
     description:
-      "Open and cased hole centralisation — HELIX, Rocker, CP-series, and more across the full casing range.",
-    image: "/images/focus.png",
-    video: "/videos/transcoded/helix.mp4",
+      'Open and cased hole centralisation — HELIX, Rocker, CP-series, and more across the full casing range.',
+    image: '/images/focus.png',
+    video: '/videos/transcoded/helix.mp4',
   },
   // TODO: re-enable Thor once we have a dedicated Thor video and finalised
   // anti-differential-sticking copy. Placeholder thor.png + 'New' badge in
@@ -90,8 +90,19 @@ export default function FeaturedProducts() {
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-slate-400">
-                    <svg className="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    <svg
+                      className="w-12 h-12 mb-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                      />
                     </svg>
                     <span className="text-sm">Image coming soon</span>
                   </div>

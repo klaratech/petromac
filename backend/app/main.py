@@ -31,7 +31,7 @@ OPERATIONS_DATA_PATH = PUBLIC_DIR / "data" / "operations_data.json"
 COUNTRY_LABELS_PATH = PUBLIC_DIR / "data" / "country_labels.json"
 # Email the small, compressed copies (email.pdf) — the full source.pdf can be
 # 8-19 MB and bounces on many mail servers. email.pdf is built by
-# scripts/build_flipbook.py; fall back to source.pdf if it hasn't been
+# scripts/python/build_flipbook.py; fall back to source.pdf if it hasn't been
 # generated yet (run `pnpm run data:flipbooks`).
 def _emailable_pdf(doc_key: str) -> Path:
     base = PUBLIC_DIR / "flipbooks" / doc_key

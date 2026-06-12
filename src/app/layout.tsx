@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, IBM_Plex_Sans } from 'next/font/google';
 import './globals.css';
-import ErrorBoundary from '@/shared/ui/ErrorBoundary';
+import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { getSiteUrl } from '@/lib/siteUrl';
 
 const inter = Inter({

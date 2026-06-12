@@ -17,8 +17,8 @@ Next.js 16 (App Router) + React 19 + TypeScript website with public site, protec
 - **Intranet**: `/intranet/*` is the staff area; Microsoft sign-in can be enabled for staff identity
 - **Shared components**: `src/components/shared/` (header, footer, flipbook)
 - **Map components**: `src/components/geo/` (DrilldownMapCore + Public/Kiosk wrappers)
-- **Feature modules**: `src/features/` (success-stories filters/services, kiosk shell)
-- **Shared UI primitives**: `src/shared/ui/`
+- **Feature modules**: `src/features/` (success-stories filters/services, flipbooks, catalog config/specs)
+- **Shared UI primitives**: `src/components/ui/`
 - **API routes**: `src/app/api/` and `src/app/auth/` for staff session and Microsoft auth; FastAPI handles contact email, PDF generation, email logs/config, and data passthrough endpoints
 - **Styling**: Tailwind CSS 4 with brand tokens (`brand`, `brandblack`, `brandgray`), fonts: Inter (body), IBM Plex Sans (headings)
 

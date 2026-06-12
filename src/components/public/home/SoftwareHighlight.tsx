@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 /**
  * Compact "platform band" on the homepage. The full Athena pitch lives
@@ -36,19 +36,14 @@ export default function SoftwareHighlight() {
               <p className="text-[10px] uppercase tracking-[0.3em] text-blue-300 font-semibold">
                 Software
               </p>
-              <h3 className="font-heading text-2xl font-bold text-white leading-tight">
-                Athena
-              </h3>
+              <h3 className="font-heading text-2xl font-bold text-white leading-tight">Athena</h3>
             </div>
           </div>
 
           {/* Copy */}
           <p className="text-slate-300 md:flex-1 md:max-w-xl text-base leading-relaxed">
-            No more spreadsheets and guesswork. Engineer every wireline run —{" "}
-            <span className="text-white font-semibold">
-              simulate with confidence
-            </span>
-            .
+            No more spreadsheets and guesswork. Engineer every wireline run —{' '}
+            <span className="text-white font-semibold">simulate with confidence</span>.
           </p>
 
           {/* CTA */}

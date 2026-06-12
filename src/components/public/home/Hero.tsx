@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-export default function HeroV2() {
+export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
@@ -61,8 +61,19 @@ export default function HeroV2() {
             className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/30 transition-all hover:translate-y-[-1px] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black"
           >
             See the track record
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </Link>
           <Link

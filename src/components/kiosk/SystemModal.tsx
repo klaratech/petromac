@@ -1,6 +1,6 @@
 'use client';
 
-import { deviceSpecs, systemMedia } from '@modules/catalog/data/deviceSpecs';
+import { deviceSpecs, systemMedia } from '@/features/catalog/deviceSpecs';
 import { useEffect, useRef, useState } from 'react';
 import useOperationsData from '@/hooks/useOperationsData';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,12 +15,7 @@ interface Props {
   onVideoPause?: () => void;
 }
 
-export default function SystemModal({
-  system,
-  onClose,
-  onVideoPlay,
-  onVideoPause
-}: Props) {
+export default function SystemModal({ system, onClose, onVideoPlay, onVideoPause }: Props) {
   const ref = useRef<HTMLVideoElement | null>(null);
   const [showDrilldown, setShowDrilldown] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
@@ -46,10 +41,7 @@ export default function SystemModal({
     .map(([file, d]) => ({ name: d.specs.Name, file }));
 
   const renderCloseButton = () => (
-    <button
-      onClick={onClose}
-      className="absolute top-4 right-4 text-white text-xl font-bold z-50"
-    >
+    <button onClick={onClose} className="absolute top-4 right-4 text-white text-xl font-bold z-50">
       ✕
     </button>
   );

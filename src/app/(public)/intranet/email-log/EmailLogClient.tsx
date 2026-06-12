@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, useTransition } from 'react';
 import type { EmailConfig, EmailLogEntry } from '@/types/emailLog';
 import { buildClientApiUrl } from '@/lib/api';
 import { useStaffSession } from '@/hooks/useStaffSession';
-import { toCsvRow } from '@/shared/utils/csv';
+import { toCsvRow } from '@/lib/csv';
 
 function formatFilters(f?: EmailLogEntry['filtersApplied']): string {
   if (!f) return '';

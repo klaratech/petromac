@@ -20,7 +20,7 @@ export interface DeviceSpec {
 }
 
 export const systemMedia: Record<string, SystemMedia> = {
-  'Focus': {
+  Focus: {
     video: '/videos/transcoded/helix.mp4?v=20240517',
     logo: '/images/focus.png',
   },
@@ -28,11 +28,11 @@ export const systemMedia: Record<string, SystemMedia> = {
     video: '/videos/transcoded/WirelineExpress.mp4?v=20240519',
     logo: '/images/wirelineexpress.png',
   },
-  'Thor': {
+  Thor: {
     video: '/videos/transcoded/helix.mp4?v=20240517',
     logo: '/images/thor.png',
   },
-  'PathFinder': {
+  PathFinder: {
     video: '/videos/transcoded/pf.mp4?v=20240519',
     logo: '/images/pathfinder.png',
   },
