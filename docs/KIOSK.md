@@ -40,8 +40,8 @@ Specifications is a modal: tapping the pill button opens `SpecsModal` on top of 
 
 ### Video sources
 
-Lane loops and `OverlayExperience` resolve their clips through
-`useKioskVideo` — it prefers a 1080p master in `public/videos/kiosk-hd/`
+Lane loops and CH experiences resolve their clips through `useKioskVideo` —
+it prefers a 1080p master in `public/videos/kiosk-hd/`
 when one exists (matched by filename) and otherwise falls back to the
 committed `public/videos/transcoded/` clip. See [ADMIN.md](ADMIN.md) §7.
 

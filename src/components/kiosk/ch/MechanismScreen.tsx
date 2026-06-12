@@ -3,8 +3,8 @@
 /**
  * MechanismScreen — config-driven "Mechanism" sub-view.
  *
- * Used by the Cased Hole experiences (Helix / Rocker) and the Open Hole
- * `OverlayExperience` scaffolds. Renders a slideshow of mechanism content
+ * Used by the Cased Hole experiences (Helix / Rocker). Renders a slideshow
+ * of mechanism content
  * (annotated diagrams + comparison videos) with a previous/next pager so
  * each piece gets the full screen rather than competing for space.
  *

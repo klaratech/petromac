@@ -1,8 +1,0 @@
-// Kiosk components barrel export
-export { default as CircularGallery } from './CircularGallery';
-export { default as CountryChart } from './CountryChart';
-export { default as DataTable } from './DataTable';
-export { default as DeviceViewer } from './DeviceViewer';
-export { default as LoadingSpinner } from './LoadingSpinner';
-export { default as SystemModal } from './SystemModal';
-export { default as YearlyStatsChart } from './YearlyStatsChart';

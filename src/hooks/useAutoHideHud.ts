@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from 'react';
  * useAutoHideHud — manage a kiosk HUD's "reveal then fade after N ms"
  * pattern.
  *
- * Each cased-hole / open-hole experience (Helix, Rocker, generic
- * OverlayExperience) has the same shape: when the inner view returns
+ * Each kiosk product experience (Helix, Rocker, lane attractors) has the
+ * same shape: when the inner view returns
  * to `'main'`, the HUD pops in and an idle timer fades it back out
  * after a few seconds unless interaction resets it. The hook bundles:
  *

@@ -3,7 +3,7 @@
 /**
  * SectionPill — persistent navigation pill shared by the CH product screens
  * (HelixProductScreen, RockerProductScreen) and the Mechanism / Case Studies
- * sub-views. Also used by the OH OverlayExperience's M/CS screens.
+ * sub-views.
  *
  * Visual language mirrors the main-view HUD pill so the chrome feels like
  * one continuous control as the visitor drills in.

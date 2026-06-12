@@ -13,8 +13,7 @@ import SpecsModal from './SpecsModal';
 /**
  * LogsScreen — config-driven "Case Studies" pager.
  *
- * Used by the Cased Hole experiences (Helix / Rocker) and the Open Hole
- * `OverlayExperience` scaffolds. Slide types:
+ * Used by the Cased Hole experiences (Helix / Rocker). Slide types:
  *
  *   - `map`        — Track Record drill-down map (DrilldownMapCore). Pulls
  *                    operations data from useOperationsData; the in-map
