@@ -66,7 +66,6 @@ export default function SuccessStoriesFlipbook({
   const [csvData, setCsvData] = useState<SuccessStoryRow[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [selectedPages, setSelectedPages] = useState<number[]>([]);
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -79,10 +78,6 @@ export default function SuccessStoriesFlipbook({
     preload(url, { as: 'image', fetchPriority: 'high' });
   }
 
-  // No debounce on filters: MultiSelect changes are discrete (one click =
-  // one update), the filter recompute is cheap, and the old 200 ms
-  // debounce caused selectedPages to lag behind the visible filter — a
-  // Download fired in that window sent the previous filter's pages.
   useEffect(() => {
     loadSuccessStoriesData()
       .then((data) => {
@@ -108,11 +103,13 @@ export default function SuccessStoriesFlipbook({
     return [...ALWAYS_INCLUDE_PAGES, manifest.pageCount];
   }, [manifest]);
 
-  useEffect(() => {
-    if (!manifest) return;
-    const next = Array.from(new Set([...allowedPages, ...supportingPages])).sort((a, b) => a - b);
-    setSelectedPages(next);
-  }, [allowedPages, supportingPages, manifest]);
+  // Pages that Download/Email send — simply the visible set (filtered
+  // stories + covers/intro). Was toggleable state while the flipbook had
+  // a per-page Exclude control; that was dropped in Jul 2026.
+  const selectedPages = useMemo(
+    () => Array.from(new Set([...allowedPages, ...supportingPages])).sort((a, b) => a - b),
+    [allowedPages, supportingPages]
+  );
 
   const displayPages = useMemo(() => {
     if (!manifest) return [];
