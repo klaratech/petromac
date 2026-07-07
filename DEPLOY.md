@@ -10,8 +10,14 @@ Browser → Cloudflare edge → cloudflared (klaratech-1) → 127.0.0.1:3015 (fr
 ```
 
 - Hostname: `petromac.klaratech.it`
-- Frontend container port: `3015` on host, `3000` in container
-- Backend container port: `8012` on host, `8000` in container
+- Frontend container port: `127.0.0.1:3015` on host, `3000` in container
+- Backend container port: `127.0.0.1:8012` on host, `8000` in container
+  - **Both bind to `127.0.0.1` only** — cloudflared connects over loopback, so
+    nothing should be published on `0.0.0.0`. A server copy of the compose file
+    once dropped the `127.0.0.1:` prefix and exposed both ports to the public
+    internet (bypassing Cloudflare's WAF and the `CF-Connecting-IP` rate limit);
+    fixed Jul 2026. If reconciling the live `/root/apps/petromac/docker-compose.yml`,
+    keep the prefix.
 - App folder on server: `/root/apps/petromac/`
 - Images: `ghcr.io/klaratech/petromac-frontend:latest`, `ghcr.io/klaratech/petromac-backend:latest`
 - DNS, TLS, and routing live in Cloudflare; the server has no public ports open beyond SSH.
