@@ -119,7 +119,6 @@ To refresh kiosk content before going offline:
 2. Visit key kiosk routes at least once:
    - `/intranet/kiosk`
    - `/intranet/kiosk/dashboard`
-   - `/intranet/kiosk/productlines`
    - `/intranet/kiosk/successstories`
 3. Wait for videos/models/flipbooks to finish loading (first load caches assets).
 4. If a new release ships, hard refresh once while online to update caches.
@@ -217,7 +216,6 @@ Check these pages:
 
 - Public Track Record (map): http://localhost:3000/track-record
 - Kiosk Dashboard (map): http://localhost:3000/intranet/kiosk/dashboard
-- Product lines: http://localhost:3000/intranet/kiosk/productlines
 - Data validation: http://localhost:3000/intranet/kiosk/datacheck
 
 ## Notes

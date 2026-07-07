@@ -187,7 +187,7 @@ export default function CircularGallery({ onClose, models, forceSingleModel = fa
               model={activeModel}
               onClose={() => {
                 if (forceSingleModel) {
-                  onClose(); // Return to productlines
+                  onClose(); // Return to the caller view
                 } else {
                   setSelectedModel(null); // Back to gallery
                 }

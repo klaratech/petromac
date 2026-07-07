@@ -29,8 +29,6 @@ We pre-cache the kiosk shell and small data files, and runtime‑cache large med
    └─► /intranet/kiosk/prime                staff utility: warm SW cache for
                                             offline use (see Trade-show setup below)
 
-/intranet/kiosk/productlines?lane=oh|ch     legacy tile grid (still works; no longer
-                                            in the main flow)
 /intranet/kiosk/dashboard                  operations map (DrilldownMapKiosk)
 /intranet/kiosk/successstories             flipbook with filters
 /intranet/kiosk/3d-viewer                  deferred 3D model viewer
