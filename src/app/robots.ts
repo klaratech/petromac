@@ -9,7 +9,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/intranet/', '/api/'],
+        // No trailing slash: '/intranet/' would leave the bare /intranet
+        // landing page crawlable. '/intranet' covers it and the subtree.
+        disallow: ['/intranet', '/api/'],
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,

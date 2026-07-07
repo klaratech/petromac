@@ -44,6 +44,17 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        // The bare parent path 404s otherwise — all internal links point at
+        // /flipbook, this catches typed/shared URLs.
+        source: '/success-stories',
+        destination: '/success-stories/flipbook',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
   },

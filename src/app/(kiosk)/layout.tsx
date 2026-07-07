@@ -4,6 +4,9 @@ import KioskShell from '@/components/kiosk/KioskShell';
 export const metadata: Metadata = {
   title: 'Petromac Kiosk',
   description: 'Petromac kiosk application',
+  // Staff-only surface — robots.txt already disallows /intranet, this is
+  // defense-in-depth (robots.txt is advisory).
+  robots: { index: false, follow: false },
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
