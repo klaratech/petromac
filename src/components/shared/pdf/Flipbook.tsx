@@ -7,19 +7,9 @@ type FlipbookProps = {
   pages: string[];
   width?: number;
   height?: number;
-  pageNumbers?: number[];
-  selectedPages?: number[];
-  onToggleSelect?: (_pageNumber: number) => void;
 };
 
-export default function Flipbook({
-  pages,
-  width = 800,
-  height = 600,
-  pageNumbers,
-  selectedPages = [],
-  onToggleSelect,
-}: FlipbookProps) {
+export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const bookRef = useRef<HTMLDivElement>(null);
   const flipRef = useRef<PageFlip | null>(null);
@@ -226,9 +216,6 @@ export default function Flipbook({
 
   const totalPages = pages.length;
   const displayPage = currentPage + 1;
-  const pageNumber = pageNumbers?.[currentPage] ?? displayPage;
-  const isIncluded = selectedPages.includes(pageNumber);
-  const isExcluded = !isIncluded;
 
   return (
     <div
@@ -311,19 +298,6 @@ export default function Flipbook({
             <span className="text-sm font-semibold min-w-[80px] text-center text-slate-900">
               {displayPage} of {totalPages}
             </span>
-            {onToggleSelect && pageNumber != null && (
-              <button
-                onClick={() => onToggleSelect(pageNumber)}
-                className={`px-4 py-2 rounded font-medium transition ${
-                  isExcluded
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                }`}
-                title={isExcluded ? 'Include page' : 'Exclude page'}
-              >
-                {isExcluded ? 'Excluded' : 'Exclude'}
-              </button>
-            )}
             <button
               onClick={goToNextPage}
               disabled={currentPage >= totalPages - 1}

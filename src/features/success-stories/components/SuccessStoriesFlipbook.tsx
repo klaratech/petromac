@@ -132,15 +132,6 @@ export default function SuccessStoriesFlipbook({
   const pageUrls = useMemo(() => displayPages.map((page) => page.url), [displayPages]);
   const pageNumbers = useMemo(() => displayPages.map((page) => page.pageNumber), [displayPages]);
 
-  const handleToggleSelection = (pageNumber: number) => {
-    setSelectedPages((prev) => {
-      if (prev.includes(pageNumber)) {
-        return prev.filter((page) => page !== pageNumber);
-      }
-      return [...prev, pageNumber].sort((a, b) => a - b);
-    });
-  };
-
   const buildDownloadFilename = () => {
     const parts: string[] = ['petromac', 'successstories'];
 
@@ -204,13 +195,15 @@ export default function SuccessStoriesFlipbook({
     filters.areas?.length || filters.companies?.length || filters.techs?.length
   );
 
+  // No default-state blurb — the subtitle only appears when it carries
+  // information (loading, filter feedback, empty result).
   const subtitle = isLoadingData
     ? 'Loading stories…'
     : allowedPages.length === 0
       ? 'No stories match the current filters.'
       : hasActiveFilter
         ? `Showing ${allowedPages.length} of ${totalStories} stories that match your filters.`
-        : `${totalStories} stories across every region we operate in.`;
+        : null;
 
   return (
     <main className="bg-slate-50 min-h-screen">
@@ -242,7 +235,7 @@ export default function SuccessStoriesFlipbook({
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.05]">
               Success <span className="text-brand">Stories</span>.
             </h1>
-            <p className="mt-4 text-base md:text-lg text-slate-600">{subtitle}</p>
+            {subtitle && <p className="mt-4 text-base md:text-lg text-slate-600">{subtitle}</p>}
           </div>
 
           <div className="flex flex-wrap items-center gap-3 self-start md:self-end">
@@ -345,15 +338,7 @@ export default function SuccessStoriesFlipbook({
                   internal destroy() races with its rebuild and used to
                   throw `NotFoundError: insertBefore ...` on rapid filter
                   changes; a clean unmount/mount sidesteps that path. */}
-              <Flipbook
-                key={pageNumbers.join('-')}
-                pages={pageUrls}
-                pageNumbers={pageNumbers}
-                width={600}
-                height={800}
-                selectedPages={selectedPages}
-                onToggleSelect={handleToggleSelection}
-              />
+              <Flipbook key={pageNumbers.join('-')} pages={pageUrls} width={600} height={800} />
             </FlipbookErrorBoundary>
           </div>
         )}

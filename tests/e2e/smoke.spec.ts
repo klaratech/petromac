@@ -18,7 +18,9 @@ test('success stories loads', async ({ page }) => {
 
 test('success stories filters update results', async ({ page }) => {
   await page.goto('/success-stories/flipbook');
-  await expect(page.getByText(/^\d+ stories across every region we operate in\.$/)).toBeVisible();
+  // The default-state subtitle was removed (Jul 2026); the filter panel
+  // being interactive is the readiness signal instead.
+  await expect(page.getByLabel('Area multiselect')).toBeVisible();
 
   await page.getByLabel('Area multiselect').click();
   const firstOption = page.getByRole('option').first();
