@@ -10,7 +10,7 @@ The repository contains:
 2. **Intranet Portal** - Internal portal at `/intranet`
 3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
 4. **Flipbook Module** - Interactive PDF flipbooks for product catalog and success stories
-5. **Backend Service** - FastAPI service for contact email, PDFs, email logs/config, and data passthrough endpoints
+5. **Backend Service** - FastAPI service for contact email, PDFs, and data passthrough endpoints
 
 ## Directory Structure
 
@@ -34,12 +34,10 @@ website/
 │   │   │   ├── privacy/                  # Privacy policy
 │   │   │   ├── terms/                    # Terms of use
 │   │   │   └── intranet/                 # Intranet homepage
-│   │   │       └── email-log/            # Staff email log/config
 │   │   ├── (kiosk)/                      # Kiosk shell routes
 │   │   │   └── intranet/kiosk/           # Kiosk application
 │   │   │       ├── page.tsx              # Kiosk entry (video intro)
 │   │   │       ├── dashboard/            # Operations dashboard (map)
-│   │   │       ├── productlines/         # Product lines viewer
 │   │   │       ├── datacheck/            # Data validation tools
 │   │   │       └── successstories/       # Success stories flipbook
 │   │   ├── api/staff/session/            # Staff session API

@@ -76,7 +76,6 @@ pids
 *.pid
 *.seed
 *.pid.lock
-data/email-config.json
 
 # Coverage directory used by tools like istanbul
 coverage/

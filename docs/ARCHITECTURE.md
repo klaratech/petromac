@@ -70,7 +70,7 @@ Success Stories are implemented as a **single feature module**:
 
 ### Email & Security
 
-- SMTP, PDF generation, recipient allowlists, origin validation, and email log state live in the backend service
+- SMTP, PDF generation, recipient allowlists, and origin validation live in the backend service
 - Frontend calls the backend over env-configured API base URLs
 - Contact form: HTML escaping, honeypot, timing check, input length limits enforced by the backend
 - Microsoft staff identity uses Entra OAuth routes and an encrypted session cookie

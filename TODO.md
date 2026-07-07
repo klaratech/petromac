@@ -85,8 +85,13 @@
       unauthenticated `/api/pdf/success-stories` can be fed multi-million-element
       arrays. Add Field caps + early bound check + body size limit.
 - [x] Backend hardening partial (Jul 2026): rate-limit dict pruning, contact-form
-      length caps, 64 KB body limit. Still open: email-log PII rotation/retention
-      policy; domain-wide email allowlist permits any address in an allowed domain.
+      length caps, 64 KB body limit.
+- [x] Email log removed entirely (Jul 2026) — emails send from info@petromac.co.nz
+      (Office 365), so Sent Items is the durable record; the JSONL copy was
+      redundant PII on a server volume. Backend endpoints/helpers, frontend
+      /intranet/email-log, data volume mounts, and the backend staff-session
+      gate (its only consumer) all deleted. Still open: domain-wide email
+      allowlist permits any address in an allowed domain.
 - [x] **Add Content-Security-Policy header** (Jul 2026 — verified on prod build incl. 3D viewer/Draco) — site is fully self-hosted (no external
       fonts/scripts/analytics), so this is achievable now. Needs `'unsafe-inline'`
       (App Router inline bootstrap + styled-jsx), `'wasm-unsafe-eval'` (Draco), and
@@ -95,9 +100,8 @@
 
 ## Backlog (lower priority)
 
-- [ ] Decide fate of `/intranet/kiosk/productlines` — zero inbound links in-app
-      (kept for direct links per CLAUDE.md); the exported `KIOSK_PRODUCTLINES_PATH`
-      constant is referenced nowhere and can go either way.
+- [x] `/intranet/kiosk/productlines` removed (Jul 2026) — zero inbound links;
+      SystemModal.tsx and featuredSystems.ts went with it (no other consumers).
 - [x] Drop unused runtime dep `geojson` (Jul 2026) (all imports are type-only via @types/geojson).
 - [x] `docs/ASSET_MANIFEST.md` still lists thor.png / rocker.png / tv-bg.png rows —
       code migrated to WebP (Jul 2026); refresh the image tables.

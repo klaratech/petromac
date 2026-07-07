@@ -9,7 +9,7 @@ Next.js 16 + React 19 website for Petromac's public site, protected intranet, tr
 - **Typography**: Inter for body text, IBM Plex Sans for headings
 - **Maps and data visualization**: D3.js with static public data artifacts
 - **3D visualization**: Three.js and React Three Fiber
-- **Backend**: FastAPI for contact email, PDF generation, email logs/config, and data passthrough endpoints
+- **Backend**: FastAPI for contact email, PDF generation, and data passthrough endpoints
 - **Data pipeline**: Python 3.11+ and Node scripts for operations JSON and flipbook generation
 - **Deployment**: Hetzner (`klaratech-1`) through Cloudflare Tunnel, container images on GHCR
 - **CI/CD**: GitHub Actions for builds, deploys, data, and flipbooks
@@ -34,7 +34,6 @@ Next.js 16 + React 19 website for Petromac's public site, protected intranet, tr
 ### Intranet and Kiosk
 
 - `/intranet` - Staff entry point with Athena and kiosk links
-- `/intranet/email-log` - Staff email log/config view
 - `/intranet/kiosk` - Trade-show kiosk shell
 - `/intranet/kiosk/dashboard` - Operations dashboard
 - `/intranet/kiosk/productlines` - Product line explorer

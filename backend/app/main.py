@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import html
 import io
 import json
@@ -8,8 +7,6 @@ import os
 import smtplib
 import threading
 import time
-import uuid
-from base64 import urlsafe_b64decode
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
@@ -18,15 +15,11 @@ from urllib.parse import urlparse
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from pydantic import BaseModel, EmailStr, Field
 from pypdf import PdfReader, PdfWriter
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 PUBLIC_DIR = ROOT_DIR / "public"
-DATA_DIR = ROOT_DIR / "data"
-EMAIL_LOG_PATH = DATA_DIR / "email-log.jsonl"
-EMAIL_CONFIG_PATH = DATA_DIR / "email-config.json"
 OPERATIONS_DATA_PATH = PUBLIC_DIR / "data" / "operations_data.json"
 COUNTRY_LABELS_PATH = PUBLIC_DIR / "data" / "country_labels.json"
 # Email the small, compressed copies (email.pdf) — the full source.pdf can be
@@ -42,7 +35,6 @@ def _emailable_pdf(doc_key: str) -> Path:
 CATALOG_PDF_PATH = _emailable_pdf("catalog")
 SUCCESS_STORIES_PDF_PATH = _emailable_pdf("success-stories")
 
-SESSION_COOKIE_NAME = "petromac_staff_session"
 CONTACT_RATE_LIMIT = {"limit": 3, "window_ms": 60_000}
 EMAIL_RATE_LIMIT = {"limit": 3, "window_ms": 60_000}
 PDF_RATE_LIMIT = {"limit": 5, "window_ms": 60_000}
@@ -106,61 +98,9 @@ def check_rate_limit(key: str, limit: int, window_ms: int) -> tuple[bool, int]:
     return allowed, retry_after
 
 
-def ensure_data_dir() -> None:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-
 def read_json_file(path: Path):
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
-
-
-def write_json_file(path: Path, payload: dict) -> None:
-    ensure_data_dir()
-    with path.open("w", encoding="utf-8") as handle:
-        json.dump(payload, handle, indent=2)
-        handle.write("\n")
-
-
-def get_email_config() -> dict[str, str | None]:
-    if not EMAIL_CONFIG_PATH.exists():
-        return {"currentEvent": None}
-    return read_json_file(EMAIL_CONFIG_PATH)
-
-
-def set_email_config(current_event: str | None) -> dict[str, str | None]:
-    payload = {"currentEvent": current_event}
-    write_json_file(EMAIL_CONFIG_PATH, payload)
-    return payload
-
-
-def read_email_log() -> list[dict]:
-    if not EMAIL_LOG_PATH.exists():
-        return []
-    with EMAIL_LOG_PATH.open("r", encoding="utf-8") as handle:
-        return [json.loads(line) for line in handle if line.strip()]
-
-
-def append_email_log(
-    *,
-    recipient_email: str,
-    email_type: str,
-    filters_applied: dict[str, list[str]] | None = None,
-) -> None:
-    ensure_data_dir()
-    config = get_email_config()
-    payload = {
-        "id": str(uuid.uuid4()),
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "recipientEmail": recipient_email,
-        "emailType": email_type,
-    }
-    if filters_applied:
-        payload["filtersApplied"] = filters_applied
-    if config.get("currentEvent"):
-        payload["eventTag"] = config["currentEvent"]
-    with EMAIL_LOG_PATH.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(payload) + "\n")
 
 
 def is_origin_allowed(request: Request) -> bool:
@@ -210,54 +150,6 @@ def allowlists_configured() -> bool:
         parse_env_list(os.getenv("ALLOWED_EMAIL_RECIPIENTS"))
         or parse_env_list(os.getenv("ALLOWED_EMAIL_DOMAINS"))
     )
-
-
-def decode_base64url(value: str) -> bytes:
-    padding = "=" * (-len(value) % 4)
-    return urlsafe_b64decode((value + padding).encode("ascii"))
-
-
-def get_staff_session_secret() -> str:
-    secret = os.getenv("STAFF_SESSION_SECRET") or ""
-    if len(secret) < 32:
-        raise HTTPException(
-            status_code=503,
-            detail="Staff session verification is not configured.",
-        )
-    return secret
-
-
-def read_staff_session_cookie(value: str | None) -> dict | None:
-    if not value:
-        return None
-
-    try:
-        iv_part, tag_part, data_part = value.split(".")
-        key = hashlib.sha256(get_staff_session_secret().encode("utf-8")).digest()
-        plaintext = AESGCM(key).decrypt(
-            decode_base64url(iv_part),
-            decode_base64url(data_part) + decode_base64url(tag_part),
-            None,
-        )
-        session = json.loads(plaintext.decode("utf-8"))
-    except HTTPException:
-        raise
-    except Exception:
-        return None
-
-    expires_at = session.get("expiresAt")
-    if not isinstance(expires_at, (int, float)) or expires_at <= time.time() * 1000:
-        return None
-    if not isinstance(session.get("user"), dict):
-        return None
-    return session
-
-
-def require_staff_session(request: Request) -> dict:
-    session = read_staff_session_cookie(request.cookies.get(SESSION_COOKIE_NAME))
-    if not session:
-        raise HTTPException(status_code=401, detail="Staff sign-in required")
-    return session
 
 
 def get_from_address() -> str:
@@ -391,10 +283,6 @@ class SuccessStoriesPdfRequest(BaseModel):
     pageNumbers: list[int] | None = Field(default=None, max_length=DEFAULT_MAX_PAGES)
 
 
-class EmailConfigRequest(BaseModel):
-    currentEvent: str | None = None
-
-
 app = FastAPI(title="Petromac Backend")
 
 app.add_middleware(
@@ -436,25 +324,6 @@ def get_operations_data():
 @app.get("/api/data/country-labels")
 def get_country_labels():
     return read_json_file(COUNTRY_LABELS_PATH)
-
-
-@app.get("/api/email-log")
-def get_email_log(request: Request):
-    require_staff_session(request)
-    return read_email_log()
-
-
-@app.get("/api/email-config")
-def get_email_config_endpoint(request: Request):
-    require_staff_session(request)
-    return get_email_config()
-
-
-@app.post("/api/email-config")
-def set_email_config_endpoint(payload: EmailConfigRequest, request: Request):
-    require_staff_session(request)
-    value = payload.currentEvent.strip() if payload.currentEvent else None
-    return set_email_config(value or None)
 
 
 @app.post("/api/contact")
@@ -517,7 +386,6 @@ async def submit_contact(request: Request):
         ),
         reply_to=email,
     )
-    append_email_log(recipient_email=email, email_type="contact")
     return {"ok": True}
 
 
@@ -613,9 +481,4 @@ async def send_pdf(payload: SendPdfRequest, request: Request):
         attachment_bytes=pdf_bytes,
     )
 
-    append_email_log(
-        recipient_email=recipient,
-        email_type=payload.pdfType,
-        filters_applied=filters,
-    )
     return {"success": True}
