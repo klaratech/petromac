@@ -1,41 +1,18 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { JobRecord } from '@/types/JobRecord';
+// Headline stats are computed by the data pipeline (generate_json.py) and
+// committed alongside the operations JSON. Importing them at build time
+// means the homepage no longer downloads the ~600 KB operations dataset
+// just to show two numbers — and there's no hardcoded fallback to drift.
+import operationsStats from '../../../../public/data/operations_stats.json';
 
-interface Stats {
-  countries: number;
-  deployments: number;
-  years: number;
-}
+const FOUNDED_YEAR = 2013;
 
 export default function ProofSection() {
-  const [stats, setStats] = useState<Stats>({ countries: 0, deployments: 0, years: 0 });
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    async function loadStats() {
-      try {
-        // Static JSON in /public/data keeps proof stats independent from backend reachability.
-        const res = await fetch('/data/operations_data.json', { cache: 'force-cache' });
-        if (!res.ok) throw new Error('Failed to load');
-        const data: JobRecord[] = await res.json();
-
-        const countries = new Set(data.map((r) => r.Country)).size;
-        const deployments = data.reduce((sum, r) => sum + r.Successful, 0);
-        const years = new Date().getFullYear() - 2013;
-
-        setStats({ countries, deployments, years });
-        setLoaded(true);
-      } catch {
-        // Fallback to known approximate values
-        setStats({ countries: 51, deployments: 2845, years: new Date().getFullYear() - 2013 });
-        setLoaded(true);
-      }
-    }
-    loadStats();
-  }, []);
+  const stats = {
+    countries: operationsStats.countries,
+    deployments: operationsStats.deployments,
+    years: new Date().getFullYear() - FOUNDED_YEAR,
+  };
 
   return (
     <section className="py-20 px-6 bg-white">
@@ -47,25 +24,19 @@ export default function ProofSection() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-14">
           <div>
-            <p
-              className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-            >
+            <p className="font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums">
               {stats.countries}+
             </p>
             <p className="text-slate-600 mt-2 font-medium">Countries</p>
           </div>
           <div>
-            <p
-              className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-            >
+            <p className="font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums">
               {stats.deployments.toLocaleString()}+
             </p>
             <p className="text-slate-600 mt-2 font-medium">Successful Deployments</p>
           </div>
           <div>
-            <p
-              className={`font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums transition-opacity duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-            >
+            <p className="font-heading text-5xl md:text-6xl font-bold text-brand tabular-nums">
               {stats.years}+
             </p>
             <p className="text-slate-600 mt-2 font-medium">Years of Experience</p>

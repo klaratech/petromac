@@ -449,6 +449,22 @@ def main():
             f"Wrote {len(full_records)} full records to {Config.OUTPUT_DIAG_JSON}"
         )
 
+        # Tiny headline-stats artifact. The homepage ProofSection imports
+        # this at build time instead of fetching the ~600 KB slim JSON at
+        # runtime just to derive two numbers. Semantics match what the
+        # component used to compute client-side: countries = all distinct,
+        # deployments = sum of Successful.
+        stats = {
+            "countries": len({r["Country"] for r in slim_records if r.get("Country")}),
+            "deployments": int(sum(int(r.get("Successful") or 0) for r in slim_records)),
+            "generatedAt": datetime.now().strftime("%Y-%m-%d"),
+        }
+        stats_path = os.path.join(Config.REPO_ROOT, "public", "data", "operations_stats.json")
+        with open(stats_path, "w") as f:
+            json.dump(stats, f, indent=2)
+            f.write("\n")
+        logging.info(f"Wrote headline stats {stats} to {stats_path}")
+
         # Push to GitHub with retry
         success = push_to_github_with_retry(OUTPUT_FULL_JSON, TARGET_FULL_JSON)
 
