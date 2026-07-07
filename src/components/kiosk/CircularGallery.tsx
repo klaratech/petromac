@@ -37,7 +37,8 @@ function FloatingModel({
   position: [number, number, number];
   onClick: () => void;
 }) {
-  const { scene } = useGLTF(url);
+  // Self-hosted Draco decoder — see public/draco/ (offline kiosk).
+  const { scene } = useGLTF(url, '/draco/');
   const ref = useRef<THREE.Group>(null);
   const [scale, setScale] = useState(1);
 
@@ -94,11 +95,7 @@ function RotatingGroup({ children }: { children: ReactNode }) {
   return <group ref={groupRef}>{children}</group>;
 }
 
-export default function CircularGallery({
-  onClose,
-  models,
-  forceSingleModel = false,
-}: Props) {
+export default function CircularGallery({ onClose, models, forceSingleModel = false }: Props) {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [isZooming, setIsZooming] = useState(false);
   const zoomTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);

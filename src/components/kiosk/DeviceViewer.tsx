@@ -11,7 +11,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DrilldownMapCore from '@/components/geo/DrilldownMapCore';
 
 function DeviceModel({ model, isUserInteracting }: { model: string; isUserInteracting: boolean }) {
-  const { scene } = useGLTF(model);
+  // '/draco/' points useGLTF at our self-hosted decoder (public/draco/)
+  // — the drei default is a Google CDN, which would break the offline
+  // kiosk. All GLBs are Draco-compressed by the asset pipeline.
+  const { scene } = useGLTF(model, '/draco/');
   const ref = useRef<THREE.Group>(null);
   const clonedScene = useMemo(() => scene.clone(true), [scene]);
 

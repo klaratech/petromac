@@ -705,6 +705,21 @@
       "kind": "image",
       "url": "/images/kiosk-images/CX13.png",
       "label": "Helix CX13 product render"
+    },
+    {
+      "kind": "model",
+      "url": "/draco/draco_wasm_wrapper.js",
+      "label": "Draco decoder wrapper (3D models)"
+    },
+    {
+      "kind": "model",
+      "url": "/draco/draco_decoder.wasm",
+      "label": "Draco decoder wasm (3D models)"
+    },
+    {
+      "kind": "model",
+      "url": "/draco/draco_decoder.js",
+      "label": "Draco decoder JS fallback (3D models)"
     }
   ],
   "optional": [
