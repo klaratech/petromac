@@ -60,21 +60,21 @@ Product images display on transparent/white backgrounds. Deliver as PNG with tra
 
 | File                          | Current | Deliver As                                         | Display Size      | Context                   |
 | ----------------------------- | ------- | -------------------------------------------------- | ----------------- | ------------------------- |
-| `/images/thor.png`            | 480 KB  | **WebP with alpha, 512 x 512 px** (target <100 KB) | 180-208 px square | Product card + kiosk icon |
+| `/images/thor.webp`           | 480 KB  | **WebP with alpha, 512 x 512 px** (target <100 KB) | 180-208 px square | Product card + kiosk icon |
 | `/images/pathfinder.png`      | 122 KB  | **WebP with alpha, 512 x 512 px** (target <80 KB)  | 180-208 px square | Product card + kiosk icon |
 | `/images/focus.png`           | 33 KB   | **WebP with alpha, 512 x 512 px** (target <60 KB)  | 180-208 px square | Product card + kiosk icon |
 | `/images/wirelineexpress.png` | 32 KB   | **WebP with alpha, 512 x 512 px** (target <60 KB)  | 180 px square     | Kiosk product icon        |
 
-> `thor.png` at 480 KB is oversized. Re-export all four at 512x512 in WebP for consistency.
+> `thor.webp` at 480 KB is oversized. Re-export all four at 512x512 in WebP for consistency.
 > **Note:** Helix product currently has no image — please provide one at the same specs.
 
 ---
 
 ### 1.5 Kiosk Background
 
-| File                | Current | Deliver As                                | Display Size               | Used In                                                           |
-| ------------------- | ------- | ----------------------------------------- | -------------------------- | ----------------------------------------------------------------- |
-| `/images/tv-bg.png` | 731 KB  | **WebP, 1920 x 1080 px** (target <150 KB) | Fullscreen (kiosk display) | Background for 3D viewer, carousel, product lines (4 kiosk pages) |
+| File                 | Current | Deliver As                                | Display Size               | Used In                                                           |
+| -------------------- | ------- | ----------------------------------------- | -------------------------- | ----------------------------------------------------------------- |
+| `/images/tv-bg.webp` | 731 KB  | **WebP, 1920 x 1080 px** (target <150 KB) | Fullscreen (kiosk display) | Background for 3D viewer, carousel, product lines (4 kiosk pages) |
 
 > This is the single biggest image. Converting from PNG to WebP at 1920x1080 should reduce it from 731 KB to ~100-150 KB.
 

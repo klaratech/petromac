@@ -5,7 +5,6 @@ export const KIOSK_HOME_PATH = '/intranet/kiosk';
 // KIOSK_CH_PATH for backward compatibility.
 export const KIOSK_LANE_PATH = '/intranet/kiosk/lane';
 export const KIOSK_CH_PATH = '/intranet/kiosk/ch';
-export const KIOSK_PRODUCTLINES_PATH = '/intranet/kiosk/productlines';
 export const KIOSK_PRIME_PATH = '/intranet/kiosk/prime';
 export const KIOSK_DASHBOARD_PATH = '/intranet/kiosk/dashboard';
 
@@ -49,7 +48,7 @@ export const DEVICE_TYPES = [
   'CP-12',
   'CP-8',
   'Rocker',
-  'THOR'
+  'THOR',
 ] as const;
 
-export type DeviceType = typeof DEVICE_TYPES[number];
+export type DeviceType = (typeof DEVICE_TYPES)[number];

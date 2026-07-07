@@ -77,18 +77,17 @@
       Clean: HTML escaping, origin validation, email allowlists (fail-closed), secrets
       handling, SSRF/path-traversal, deployment posture (localhost binds + cloudflared),
       no NEXT*PUBLIC* leakage. Findings below.
-- [ ] **HIGH — backend rate-limit bypass**: `get_client_ip` trusts the left-most
+- [x] **HIGH — backend rate-limit bypass** (fixed Jul 2026, needs backend redeploy): `get_client_ip` trusts the left-most
       client-supplied `X-Forwarded-For` value, so every request can mint a fresh
       rate bucket. Use `CF-Connecting-IP` (cloudflared) / right-most trusted hop.
-- [ ] **HIGH — backend PDF DoS**: `pageNumbers: list[int]` has no `max_length` and
+- [x] **HIGH — backend PDF DoS** (fixed Jul 2026, needs backend redeploy): `pageNumbers: list[int]` has no `max_length` and
       `normalize_page_numbers` materializes the whole array before the 60-page cap;
       unauthenticated `/api/pdf/success-stories` can be fed multi-million-element
       arrays. Add Field caps + early bound check + body size limit.
-- [ ] Backend hardening (medium/low): in-memory rate-limit dict never evicts
-      (unbounded growth); contact-form fields lack max lengths / `EmailStr`;
-      email log stores PII (recipients) as JSONL with no rotation/retention policy;
-      domain-wide email allowlist permits any address in an allowed domain.
-- [ ] **Add Content-Security-Policy header** — site is fully self-hosted (no external
+- [x] Backend hardening partial (Jul 2026): rate-limit dict pruning, contact-form
+      length caps, 64 KB body limit. Still open: email-log PII rotation/retention
+      policy; domain-wide email allowlist permits any address in an allowed domain.
+- [x] **Add Content-Security-Policy header** (Jul 2026 — verified on prod build incl. 3D viewer/Draco) — site is fully self-hosted (no external
       fonts/scripts/analytics), so this is achievable now. Needs `'unsafe-inline'`
       (App Router inline bootstrap + styled-jsx), `'wasm-unsafe-eval'` (Draco), and
       `worker-src 'self' blob:` (three.js workers).
@@ -99,8 +98,8 @@
 - [ ] Decide fate of `/intranet/kiosk/productlines` — zero inbound links in-app
       (kept for direct links per CLAUDE.md); the exported `KIOSK_PRODUCTLINES_PATH`
       constant is referenced nowhere and can go either way.
-- [ ] Drop unused runtime dep `geojson` (all imports are type-only via @types/geojson).
-- [ ] `docs/ASSET_MANIFEST.md` still lists thor.png / rocker.png / tv-bg.png rows —
+- [x] Drop unused runtime dep `geojson` (Jul 2026) (all imports are type-only via @types/geojson).
+- [x] `docs/ASSET_MANIFEST.md` still lists thor.png / rocker.png / tv-bg.png rows —
       code migrated to WebP (Jul 2026); refresh the image tables.
 
 - [ ] Kiosk CH lane "Other" experience — the third CH overlay button currently
@@ -116,13 +115,13 @@ LaneClient.tsx`, `ChOtherComingSoon`). Deprioritized May 2026 — build this
 
 - [x] Crawlability audit (Jul 2026) — sitemap verified correct (12 routes, no intranet
       leakage); metadata coverage complete on all public pages. Gaps below.
-- [ ] robots.ts disallows `/intranet/` but not bare `/intranet` — the staff landing
+- [x] robots.ts disallows `/intranet/` but not bare `/intranet` (fixed Jul 2026) — the staff landing
       page is crawlable. Change disallow to `/intranet` (covers the subtree too).
-- [ ] No `noindex` on intranet/kiosk pages — add `robots: { index: false }` metadata
+- [x] No `noindex` on intranet/kiosk pages (fixed Jul 2026) — add `robots: { index: false }` metadata
       as defense-in-depth (robots.txt is advisory).
-- [ ] `/success-stories` (bare) 404s — internal links all point to
+- [x] `/success-stories` (bare) 404s (308 redirect added Jul 2026) — internal links all point to
       `/success-stories/flipbook`, but add a redirect for typed/legacy URLs.
-- [ ] Header mobile menu a11y — no Escape-to-close, no focus trap, no focus return
+- [x] Header mobile menu a11y (Escape + focus management added Jul 2026) — no Escape-to-close, no focus trap, no focus return
       to the toggle on close (`src/components/shared/Header.tsx`).
 - [ ] Full SEO audit (structured data, performance scores) — remainder
 
