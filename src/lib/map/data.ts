@@ -18,14 +18,29 @@ import type { JobRecord } from '@/types/JobRecord';
  * server shipped `no-store`; now the server cooperates and revalidation
  * happens naturally.
  */
-export async function fetchOperationsData(): Promise<JobRecord[]> {
-  const response = await fetch('/data/operations_data.json');
+let operationsPromise: Promise<JobRecord[]> | null = null;
 
-  if (!response.ok) {
-    throw new Error(`Failed to load operations data: ${response.status}`);
+export function fetchOperationsData(): Promise<JobRecord[]> {
+  // Module-level memo: several surfaces (track record, kiosk dashboard,
+  // in-experience maps) call this on mount; fetch + parse the ~600 KB
+  // payload once per session instead of once per navigation. A failed
+  // attempt clears the memo so the next mount retries.
+  if (!operationsPromise) {
+    operationsPromise = (async () => {
+      const response = await fetch('/data/operations_data.json');
+
+      if (!response.ok) {
+        throw new Error(`Failed to load operations data: ${response.status}`);
+      }
+
+      return response.json();
+    })().catch((err) => {
+      operationsPromise = null;
+      throw err;
+    });
   }
 
-  return response.json();
+  return operationsPromise;
 }
 
 /**

@@ -42,6 +42,20 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // world-50m.json (~740 KB) is static reference geometry — it only
+        // changes if we swap map resolutions (last done May 2026, with a
+        // filename change). Cache hard for a day and serve stale for a
+        // month while revalidating; without this it fell through to the
+        // default max-age=0 and re-downloaded far too often.
+        source: '/data/world-50m.json',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400, stale-while-revalidate=2592000',
+          },
+        ],
+      },
+      {
         // operations_full.json (~3.5 MB) is the same data with all 33
         // columns from the source xlsx — only fetched by the staff
         // diagnostic at /intranet/kiosk/datacheck. Same cache policy as
