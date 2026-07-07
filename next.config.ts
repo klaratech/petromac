@@ -1,7 +1,36 @@
 import type { NextConfig } from 'next';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 
+// Everything is self-hosted (fonts via next/font, Draco decoder in
+// public/draco/, no analytics), so the CSP can be tight. The exceptions:
+// - script-src 'unsafe-inline': App Router's inline bootstrap scripts (no
+//   nonce middleware); 'wasm-unsafe-eval': the Draco decoder wasm.
+// - style-src 'unsafe-inline': styled-jsx (Flipbook, EmailPdfButton) +
+//   inline styles from Tailwind utilities/framer-motion.
+// - worker-src blob:: three.js/Draco spawn blob workers.
+// - img-src blob: + media-src 'self': 3D viewer textures and kiosk videos.
+const isDev = process.env.NODE_ENV === 'development';
+
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  // React dev mode needs eval() (source maps, refresh); production never does.
+  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${isDev ? " 'unsafe-eval'" : ''}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self'",
+  // blob: is required — three.js GLTFLoader fetch()es blob: URLs for the
+  // textures embedded in the Draco GLBs (img-src alone doesn't cover it).
+  "connect-src 'self' blob:",
+  "media-src 'self' blob:",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
+
 const securityHeaders = [
+  { key: 'Content-Security-Policy', value: contentSecurityPolicy },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
