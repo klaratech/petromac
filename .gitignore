@@ -173,3 +173,6 @@ ICOTA*.pptx
 # These are generated on each `pnpm test:e2e` run; not source.
 /test-results/
 /playwright-report/
+
+# Python build artifacts
+*.egg-info/

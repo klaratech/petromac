@@ -66,18 +66,35 @@ def get_allowed_origins() -> list[str]:
 
 
 def get_client_ip(headers) -> str:
-    forwarded_for = headers.get("x-forwarded-for")
-    if forwarded_for:
-        return forwarded_for.split(",")[0].strip()
+    # Behind cloudflared, CF-Connecting-IP is set by Cloudflare and cannot be
+    # forged by the client. X-Forwarded-For is NOT trustworthy here: its
+    # left-most entry is client-supplied, so keying rate limits on it lets an
+    # attacker mint a fresh bucket per request. Only fall back to it (and
+    # x-real-ip) for local/dev setups without the tunnel.
+    cf_ip = headers.get("cf-connecting-ip")
+    if cf_ip:
+        return cf_ip.strip()
     real_ip = headers.get("x-real-ip")
     if real_ip:
         return real_ip.strip()
+    forwarded_for = headers.get("x-forwarded-for")
+    if forwarded_for:
+        return forwarded_for.split(",")[0].strip()
     return "unknown"
+
+
+_RATE_LIMIT_PRUNE_THRESHOLD = 10_000
 
 
 def check_rate_limit(key: str, limit: int, window_ms: int) -> tuple[bool, int]:
     now = time.time() * 1000
     with _rate_limit_lock:
+        # The dict otherwise grows one entry per distinct client forever —
+        # a slow memory leak. Prune expired windows once it gets large.
+        if len(_rate_limit_state) > _RATE_LIMIT_PRUNE_THRESHOLD:
+            expired = [k for k, (_, reset) in _rate_limit_state.items() if now >= reset]
+            for k in expired:
+                del _rate_limit_state[k]
         count, reset_at = _rate_limit_state.get(key, (0, now + window_ms))
         if now >= reset_at:
             count = 0
@@ -321,6 +338,13 @@ def build_catalog_filename() -> str:
 def normalize_page_numbers(raw: list[int] | None) -> list[int]:
     if not raw:
         return []
+    # Bound-check the RAW length before any per-element work — the model-level
+    # max_length is the first line of defense, this is the second.
+    if len(raw) > DEFAULT_MAX_PAGES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Too many pages selected. Max {DEFAULT_MAX_PAGES} pages allowed.",
+        )
     numbers = sorted({int(value) for value in raw if int(value) > 0})
     return numbers
 
@@ -349,22 +373,22 @@ def build_success_stories_pdf(page_numbers: list[int] | None) -> tuple[bytes, in
 
 
 class FiltersModel(BaseModel):
-    areas: list[str] | None = None
-    companies: list[str] | None = None
-    techs: list[str] | None = None
+    areas: list[str] | None = Field(default=None, max_length=50)
+    companies: list[str] | None = Field(default=None, max_length=50)
+    techs: list[str] | None = Field(default=None, max_length=50)
 
 
 class SendPdfRequest(BaseModel):
     email: EmailStr
     pdfType: str = Field(pattern="^(catalog|success-stories)$")
-    pageNumbers: list[int] | None = None
+    pageNumbers: list[int] | None = Field(default=None, max_length=DEFAULT_MAX_PAGES)
     filters: FiltersModel | None = None
 
 
 class SuccessStoriesPdfRequest(BaseModel):
     filters: FiltersModel | None = None
     mode: str = Field(default="download", pattern="^(preview|download)$")
-    pageNumbers: list[int] | None = None
+    pageNumbers: list[int] | None = Field(default=None, max_length=DEFAULT_MAX_PAGES)
 
 
 class EmailConfigRequest(BaseModel):
@@ -380,6 +404,23 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# The largest legitimate request is a contact-form post (~10 KB message);
+# everything else is small JSON. Reject oversized bodies before FastAPI
+# parses them — pydantic caps kick in only after the JSON is materialized.
+MAX_REQUEST_BODY_BYTES = 64 * 1024
+
+
+@app.middleware("http")
+async def limit_request_body(request: Request, call_next):
+    content_length = request.headers.get("content-length")
+    if content_length:
+        try:
+            if int(content_length) > MAX_REQUEST_BODY_BYTES:
+                return JSONResponse({"detail": "Request body too large"}, status_code=413)
+        except ValueError:
+            return JSONResponse({"detail": "Invalid Content-Length"}, status_code=400)
+    return await call_next(request)
 
 
 @app.get("/health")
@@ -426,13 +467,19 @@ async def submit_contact(request: Request):
     email = str(form.get("email", "")).strip()
     message = str(form.get("message", "")).strip()
     company = str(form.get("company", "")).strip()
-    timing = float(str(form.get("_timing", "0")))
+    try:
+        timing = float(str(form.get("_timing", "0")))
+    except ValueError:
+        timing = 0.0
 
     if company:
         return {"ok": True}
     if timing < 3:
         return {"ok": True}
     if len(name) < 2 or len(message) < 10 or "@" not in email:
+        return JSONResponse({"ok": False, "error": "Validation failed"}, status_code=400)
+    # Upper bounds: keep outbound emails sane and reject junk payloads.
+    if len(name) > 200 or len(email) > 320 or len(message) > 10_000:
         return JSONResponse({"ok": False, "error": "Validation failed"}, status_code=400)
 
     allowed, retry_after = check_rate_limit(
