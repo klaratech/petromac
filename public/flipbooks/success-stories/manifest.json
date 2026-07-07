@@ -3,8 +3,9 @@
   "title": "Success Stories",
   "pageCount": 50,
   "pageDigits": 4,
-  "pageExtension": "jpg",
+  "pageExtension": "webp",
   "pagesPath": "pages",
   "sourcePdf": "source.pdf",
-  "updatedAt": "2026-07-07"
+  "updatedAt": "2026-07-07",
+  "emailPdf": "email.pdf"
 }

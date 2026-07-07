@@ -18,7 +18,15 @@
  *   tsx scripts/node/data-pipeline.ts --flipbooks-only
  */
 
-import { existsSync, mkdirSync, readdirSync, renameSync, statSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
@@ -157,6 +165,48 @@ function processFlipbooks(): void {
   if (successPdf) archive(allFiles(successDir));
 }
 
+/**
+ * Rewrite the flipbook page entries in public/data/kiosk-offline-assets.json
+ * from the published manifests, so the kiosk prime list can't go stale when
+ * a flipbook's page count or image format changes. Non-page entries
+ * (manifest.json, tags.csv, routes, videos, …) are left untouched.
+ */
+function syncKioskOfflineAssets(): void {
+  const offlinePath = path.join(ROOT, 'public', 'data', 'kiosk-offline-assets.json');
+  if (!existsSync(offlinePath)) return;
+
+  const offline = JSON.parse(readFileSync(offlinePath, 'utf8'));
+  const isPageEntry = (entry: { url?: string }) =>
+    typeof entry.url === 'string' && /^\/flipbooks\/[^/]+\/pages\//.test(entry.url);
+
+  const pageEntries: { kind: string; url: string }[] = [];
+  for (const docKey of ['success-stories', 'catalog']) {
+    const manifestPath = path.join(ROOT, 'public', 'flipbooks', docKey, 'manifest.json');
+    if (!existsSync(manifestPath)) continue;
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    for (let page = 1; page <= manifest.pageCount; page++) {
+      const pad = String(page).padStart(manifest.pageDigits, '0');
+      pageEntries.push({
+        kind: 'flipbook',
+        url: `/flipbooks/${docKey}/${manifest.pagesPath}/${pad}.${manifest.pageExtension}`,
+      });
+    }
+  }
+
+  const kept = offline.required.filter((entry: { url?: string }) => !isPageEntry(entry));
+  // Insert page entries after the last non-page flipbook entry (manifests/tags)
+  // so the file stays organized; fall back to appending.
+  const lastFlipbookMeta = kept.findLastIndex((entry: { url?: string }) =>
+    (entry.url ?? '').startsWith('/flipbooks/')
+  );
+  const insertAt = lastFlipbookMeta >= 0 ? lastFlipbookMeta + 1 : kept.length;
+  offline.required = [...kept.slice(0, insertAt), ...pageEntries, ...kept.slice(insertAt)];
+
+  writeFileSync(offlinePath, JSON.stringify(offline, null, 2) + '\n', 'utf8');
+  // eslint-disable-next-line no-console
+  console.log(`🗂  kiosk-offline-assets.json — synced ${pageEntries.length} flipbook page entries`);
+}
+
 function main(): void {
   const operationsOnly = process.argv.includes('--operations-only');
   const flipbooksOnly = process.argv.includes('--flipbooks-only');
@@ -165,7 +215,10 @@ function main(): void {
   console.log('🚀 Content pipeline — scanning sources/\n');
 
   if (!flipbooksOnly) processOperations();
-  if (!operationsOnly) processFlipbooks();
+  if (!operationsOnly) {
+    processFlipbooks();
+    syncKioskOfflineAssets();
+  }
 
   // Flipbook validation is advisory — it checks the published bundles, so it
   // runs whenever flipbooks were in scope, even if nothing new was dropped.

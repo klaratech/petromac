@@ -3,8 +3,9 @@
   "title": "Product Catalog",
   "pageCount": 62,
   "pageDigits": 4,
-  "pageExtension": "jpg",
+  "pageExtension": "webp",
   "pagesPath": "pages",
   "sourcePdf": "source.pdf",
-  "updatedAt": "2026-02-09"
+  "updatedAt": "2026-07-07",
+  "emailPdf": "email.pdf"
 }

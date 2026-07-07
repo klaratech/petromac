@@ -2,7 +2,7 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v16';
+const VERSION = 'v17';
 
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;
@@ -19,10 +19,10 @@ const RUNTIME_DATA = `kiosk-data-${VERSION}`;
 const META_CACHE = `kiosk-meta-${VERSION}`;
 
 const MAX_STATIC_ENTRIES = 80;
-const MAX_VIDEO_ENTRIES = 32;     // 540p transcoded default + opt-in 1080p kiosk-hd
-const MAX_MODEL_ENTRIES = 16;     // GLB files per product family
+const MAX_VIDEO_ENTRIES = 32; // 540p transcoded default + opt-in 1080p kiosk-hd
+const MAX_MODEL_ENTRIES = 16; // GLB files per product family
 const MAX_FLIPBOOK_ENTRIES = 240; // success-stories (~48) + catalog (~64) + headroom
-const MAX_IMAGE_ENTRIES = 80;     // kiosk-images/, system logos, posters
+const MAX_IMAGE_ENTRIES = 80; // kiosk-images/, system logos, posters
 const MAX_DATA_ENTRIES = 40;
 
 const MAX_MEDIA_AGE_SECONDS = 60 * 60 * 24 * 30; // 30 days
@@ -137,15 +137,15 @@ self.addEventListener('fetch', (event) => {
 
   // Cache Next.js image optimization outputs (if used)
   if (url.pathname.startsWith(NEXT_IMAGE_PATH)) {
-    event.respondWith(cacheFirst(request, RUNTIME_STATIC, MAX_STATIC_ENTRIES, MAX_DATA_AGE_SECONDS));
+    event.respondWith(
+      cacheFirst(request, RUNTIME_STATIC, MAX_STATIC_ENTRIES, MAX_DATA_AGE_SECONDS)
+    );
     return;
   }
 
   // Cache data files with network-first strategy
   if (url.pathname.startsWith('/data/')) {
-    event.respondWith(
-      networkFirst(request, RUNTIME_DATA, MAX_DATA_ENTRIES, MAX_DATA_AGE_SECONDS)
-    );
+    event.respondWith(networkFirst(request, RUNTIME_DATA, MAX_DATA_ENTRIES, MAX_DATA_AGE_SECONDS));
     return;
   }
 

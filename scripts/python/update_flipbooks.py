@@ -76,6 +76,10 @@ def build_flipbook(input_pdf: Path, output_dir: Path, title: str, tags: Path | N
         str(output_dir),
         "--title",
         title,
+        # WebP pages are ~60% smaller than the JPEG equivalents — the
+        # flipbook's first-load payload is almost entirely page images.
+        "--format",
+        "webp",
     ]
 
     if tags:

@@ -70,7 +70,10 @@ def ensure_empty_dir(path: Path):
 
 def save_image(image, out_path: Path, fmt: str):
     if fmt == "webp":
-        image.save(out_path, "WEBP", quality=90)
+        # quality=80 + method=6 halves the payload vs quality=90 with no
+        # visible difference at flipbook display sizes (pages render at
+        # ~300-600 px, 2x zoom max, from a ~1240 px source).
+        image.save(out_path, "WEBP", quality=80, method=6)
     elif fmt in {"jpg", "jpeg"}:
         image.save(out_path, "JPEG", quality=90)
     else:

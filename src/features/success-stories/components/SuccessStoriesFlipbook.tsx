@@ -2,14 +2,13 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { preload } from 'react-dom';
 import Link from 'next/link';
 import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
 import { buildClientApiUrl } from '@/lib/api';
 import SuccessStoriesFilters from './SuccessStoriesFilters';
 import FlipbookErrorBoundary from './FlipbookErrorBoundary';
-import {
-  loadSuccessStoriesData,
-} from '../services/successStories.service';
+import { loadSuccessStoriesData } from '../services/successStories.service';
 import {
   getAvailableOptions,
   getFilteredPageNumbers,
@@ -73,6 +72,13 @@ export default function SuccessStoriesFlipbook({
 
   const { manifest } = useFlipbookManifest(FLIPBOOK_KEYS.successStories);
 
+  // Kick off the first spread's image downloads in parallel with the
+  // page-flip chunk — the manifest is imported at build time, so the
+  // URLs are known on first render.
+  for (const url of buildFlipbookPageUrls(FLIPBOOK_KEYS.successStories, manifest).slice(0, 2)) {
+    preload(url, { as: 'image', fetchPriority: 'high' });
+  }
+
   // No debounce on filters: MultiSelect changes are discrete (one click =
   // one update), the filter recompute is cheap, and the old 200 ms
   // debounce caused selectedPages to lag behind the visible filter — a
@@ -91,10 +97,7 @@ export default function SuccessStoriesFlipbook({
 
   const options = useMemo(() => getAvailableOptions(csvData, filters), [csvData, filters]);
 
-  const allowedPages = useMemo(
-    () => getFilteredPageNumbers(csvData, filters),
-    [csvData, filters]
-  );
+  const allowedPages = useMemo(() => getFilteredPageNumbers(csvData, filters), [csvData, filters]);
 
   const totalStories = useMemo(() => getTotalStoryCount(csvData), [csvData]);
 
@@ -107,19 +110,19 @@ export default function SuccessStoriesFlipbook({
 
   useEffect(() => {
     if (!manifest) return;
-    const next = Array.from(new Set([...allowedPages, ...supportingPages])).sort(
-      (a, b) => a - b,
-    );
+    const next = Array.from(new Set([...allowedPages, ...supportingPages])).sort((a, b) => a - b);
     setSelectedPages(next);
   }, [allowedPages, supportingPages, manifest]);
 
   const displayPages = useMemo(() => {
     if (!manifest) return [];
 
-    const allPages = buildFlipbookPageUrls(FLIPBOOK_KEYS.successStories, manifest).map((url, index) => ({
-      pageNumber: index + 1,
-      url,
-    }));
+    const allPages = buildFlipbookPageUrls(FLIPBOOK_KEYS.successStories, manifest).map(
+      (url, index) => ({
+        pageNumber: index + 1,
+        url,
+      })
+    );
 
     const includeSet = new Set<number>([...allowedPages, ...supportingPages]);
 
@@ -198,16 +201,16 @@ export default function SuccessStoriesFlipbook({
   };
 
   const hasActiveFilter = Boolean(
-    filters.areas?.length || filters.companies?.length || filters.techs?.length,
+    filters.areas?.length || filters.companies?.length || filters.techs?.length
   );
 
   const subtitle = isLoadingData
     ? 'Loading stories…'
     : allowedPages.length === 0
-    ? 'No stories match the current filters.'
-    : hasActiveFilter
-    ? `Showing ${allowedPages.length} of ${totalStories} stories that match your filters.`
-    : `${totalStories} stories across every region we operate in.`;
+      ? 'No stories match the current filters.'
+      : hasActiveFilter
+        ? `Showing ${allowedPages.length} of ${totalStories} stories that match your filters.`
+        : `${totalStories} stories across every region we operate in.`;
 
   return (
     <main className="bg-slate-50 min-h-screen">
@@ -255,8 +258,19 @@ export default function SuccessStoriesFlipbook({
               disabled={selectedPages.length === 0 || isDownloading}
               className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20 ring-1 ring-blue-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed"
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
+                />
               </svg>
               {isDownloading ? 'Preparing PDF…' : 'Download PDF'}
             </button>
@@ -302,7 +316,10 @@ export default function SuccessStoriesFlipbook({
             <p className="text-slate-600 max-w-md">{loadError}</p>
           </div>
         ) : isLoadingData || !manifest ? (
-          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8 flex items-center justify-center min-h-[600px] text-slate-500" role="status">
+          <div
+            className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8 flex items-center justify-center min-h-[600px] text-slate-500"
+            role="status"
+          >
             Loading success stories…
           </div>
         ) : allowedPages.length === 0 ? (

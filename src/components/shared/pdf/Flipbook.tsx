@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
-import { PageFlip } from "page-flip";
+import { useEffect, useRef, useState } from 'react';
+import { PageFlip } from 'page-flip';
 
 type FlipbookProps = {
   pages: string[];
@@ -35,9 +35,7 @@ export default function Flipbook({
   const isMobile = containerWidth != null ? containerWidth < 768 : false;
   const aspectRatio = height / width;
   // Reserve a bit of horizontal padding so page shadows aren't clipped.
-  const maxSpreadWidth = containerWidth
-    ? Math.max(320, containerWidth - 16)
-    : width * 2;
+  const maxSpreadWidth = containerWidth ? Math.max(320, containerWidth - 16) : width * 2;
   const pageWidth = isMobile
     ? Math.max(240, Math.min(width, maxSpreadWidth))
     : Math.max(320, Math.min(width, Math.floor(maxSpreadWidth / 2)));
@@ -52,9 +50,9 @@ export default function Flipbook({
 
     // ResizeObserver covers both window resizes and parent layout changes
     // (e.g. sidebar toggles). Falls back gracefully when unavailable.
-    if (typeof ResizeObserver === "undefined") {
-      window.addEventListener("resize", set);
-      return () => window.removeEventListener("resize", set);
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', set);
+      return () => window.removeEventListener('resize', set);
     }
 
     const obs = new ResizeObserver(() => set());
@@ -79,13 +77,12 @@ export default function Flipbook({
     setIsLoading(true);
 
     // Create page elements. Only the first spread (4 pages: covers +
-    // first inner) gets a real `src` up-front; the rest get the lazy
-    // attributes so the browser defers the fetch until the page is
-    // about to flip into view. Catalog perf:
-    // - was 62 imgs * full JPG load on mount (~15 MB), now ~4 imgs
-    //   eager, the rest lazy.
-    // - `decoding="async"` + `loading="lazy"` are honored once the
-    //   <img> is appended to the document by page-flip's loadFromHTML.
+    // first inner) gets a real `src` up-front; the rest carry the URL in
+    // `data-src` and get it promoted to `src` as the reader flips near
+    // them (see loadPageWindow below). `loading="lazy"` is NOT enough
+    // here: page-flip stacks every page inside the visible book box, so
+    // the browser considers them all in-viewport and fetches the whole
+    // book on mount (measured: all 62 catalog pages, ~5 MB).
     //
     // Wrapped in try/catch defensively — a malformed page URL or DOM
     // error here used to take down the whole tree.
@@ -93,19 +90,19 @@ export default function Flipbook({
     let pageElements: HTMLDivElement[] = [];
     try {
       pageElements = pages.map((src, idx) => {
-        const pageElement = document.createElement("div");
-        pageElement.className = "page";
-        pageElement.setAttribute("data-density", "hard");
+        const pageElement = document.createElement('div');
+        pageElement.className = 'page';
+        pageElement.setAttribute('data-density', 'hard');
 
-        const img = document.createElement("img");
-        img.src = src;
-        img.style.width = "100%";
-        img.style.height = "100%";
-        img.style.objectFit = "contain";
-        img.decoding = "async";
+        const img = document.createElement('img');
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        img.decoding = 'async';
         if (idx >= EAGER_PAGES) {
-          img.loading = "lazy";
-          img.setAttribute("fetchpriority", "low");
+          img.dataset.src = src;
+        } else {
+          img.src = src;
         }
 
         pageElement.appendChild(img);
@@ -113,10 +110,25 @@ export default function Flipbook({
       });
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error("Error building flipbook page elements:", error);
+      console.error('Error building flipbook page elements:', error);
       setIsLoading(false);
       return;
     }
+
+    // Promote data-src -> src for the pages around `center` so the
+    // spread the reader is flipping toward is already decoded when it
+    // lands, without downloading the rest of the book.
+    const PRELOAD_RADIUS = 4;
+    const loadPageWindow = (center: number) => {
+      const start = Math.max(0, center - PRELOAD_RADIUS);
+      const end = Math.min(pageElements.length - 1, center + PRELOAD_RADIUS);
+      for (let i = start; i <= end; i++) {
+        const img = pageElements[i].querySelector('img');
+        if (img && !img.getAttribute('src') && img.dataset.src) {
+          img.src = img.dataset.src;
+        }
+      }
+    };
 
     // Wait a tick for DOM to update
     const rafId = window.requestAnimationFrame(() => {
@@ -134,13 +146,13 @@ export default function Flipbook({
         }
 
         // Clear any existing content before init
-        bookRef.current.innerHTML = "";
+        bookRef.current.innerHTML = '';
 
         // Initialize PageFlip (two-page on desktop, single-page on mobile)
         const flipInstance = new PageFlip(bookRef.current, {
           width: pageWidth,
           height: pageHeight,
-          size: "fixed",
+          size: 'fixed',
           minWidth: 240,
           maxWidth: 2000,
           minHeight: 320,
@@ -160,15 +172,17 @@ export default function Flipbook({
 
         // Add event listener for page flip
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (flipInstance as any).on("flip", (e: any) => {
+        (flipInstance as any).on('flip', (e: any) => {
           setCurrentPage(e.data);
+          loadPageWindow(e.data);
         });
 
+        loadPageWindow(0);
         setCurrentPage(0);
         setIsLoading(false);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error("Error updating flipbook:", error);
+        console.error('Error updating flipbook:', error);
         setIsLoading(false);
       }
     });
@@ -181,7 +195,7 @@ export default function Flipbook({
           flipRef.current.destroy();
         } catch (e) {
           // eslint-disable-next-line no-console
-          console.error("Error during cleanup:", e);
+          console.error('Error during cleanup:', e);
         }
         flipRef.current = null;
       }
@@ -226,7 +240,7 @@ export default function Flipbook({
           <p>Loading flipbook...</p>
         </div>
       )}
-      
+
       {/* Flipbook Container — no `key` here on purpose. The effect above
           already destroys and rebuilds the PageFlip when its deps change;
           keying the div as well used to cause an unmount race where
@@ -236,11 +250,11 @@ export default function Flipbook({
         ref={bookRef}
         className="flipbook-container"
         style={{
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
-          background: "#fff",
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+          background: '#fff',
           transform: `scale(${zoom})`,
-          transformOrigin: "center center",
-          transition: "transform 0.2s ease-out",
+          transformOrigin: 'center center',
+          transition: 'transform 0.2s ease-out',
         }}
       />
 
@@ -256,10 +270,17 @@ export default function Flipbook({
               title="Zoom Out"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"
+                />
               </svg>
             </button>
-            <span className="text-sm font-medium min-w-[60px] text-center text-slate-900">{Math.round(zoom * 100)}%</span>
+            <span className="text-sm font-medium min-w-[60px] text-center text-slate-900">
+              {Math.round(zoom * 100)}%
+            </span>
             <button
               onClick={handleZoomIn}
               disabled={zoom >= 2}
@@ -267,7 +288,12 @@ export default function Flipbook({
               title="Zoom In"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
+                />
               </svg>
             </button>
           </div>
@@ -290,12 +316,12 @@ export default function Flipbook({
                 onClick={() => onToggleSelect(pageNumber)}
                 className={`px-4 py-2 rounded font-medium transition ${
                   isExcluded
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                 }`}
-                title={isExcluded ? "Include page" : "Exclude page"}
+                title={isExcluded ? 'Include page' : 'Exclude page'}
               >
-                {isExcluded ? "Excluded" : "Exclude"}
+                {isExcluded ? 'Excluded' : 'Exclude'}
               </button>
             )}
             <button
