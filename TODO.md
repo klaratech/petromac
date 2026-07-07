@@ -44,10 +44,10 @@
 - [ ] Collect all optimized asset files from designers (images, videos, OG image)
   - [x] Add `petromac-og.png` (1200×630) for Open Graph share image
   - [x] Add email-optimized PDFs (`email.pdf`) for catalog and success stories — `build_flipbook.py` now generates them (Ghostscript, /ebook→/screen adaptive). `success-stories/email.pdf` is committed (~3 MB); run `pnpm run data:flipbooks` to generate `catalog/email.pdf`.
-  - [ ] Re-encode remaining videos with H.264 VBR — `intro-loop2.mp4` (56 MB) in `public/videos/transcoded/`. (`helix.mp4` / `pf.mp4` were re-encoded from HD masters May 2026.) `cp12-placeholder.mp4` + `cp8-placeholder.mp4` (~156 MB) are unused and can be deleted outright.
-  - [ ] Apply Draco compression to GLB models (213 MB total, 30-50% reduction). Eager `useGLTF.preload` on every model was removed from `CircularGallery.tsx` (May 2026), so opening the 3D viewer no longer pulls every GLB at once — but the per-model footprint is still large (cp12.glb alone is ~70 MB), so Draco + per-model lazy loading is still worth doing.
-  - [ ] Compress flipbook page JPGs and consider WebP variants (58 MB total)
-  - [ ] Convert large PNGs (tv-bg.png, thor.png) to WebP
+  - [x] Video cleanup (Jul 2026) — `intro-loop2.mp4` deleted (unreferenced; splash uses `dice.mp4`); `cp12/cp8-placeholder.mp4` were already gone.
+  - [x] Draco compression applied to all GLB models (Jul 2026) — 221 MB → 14 MB via gltf-transform (draco + webp textures). Decoder self-hosted at `public/draco/` (offline kiosk); `useGLTF(url, '/draco/')` in DeviceViewer + CircularGallery.
+  - [x] Flipbook pages now render as WebP (Jul 2026) — pipeline defaults to `--format webp` q80; catalog 15→5.2 MB, success-stories 17→7.5 MB. Flipbook.tsx loads pages in a ±4 window around the current spread (5 images on first load instead of the whole book).
+  - [x] Large PNGs converted to WebP (Jul 2026) — tv-bg, thor, rocker/rocker-inline, all Helix/Rocker log slides + diagrams (14 MB → 3 MB).
   - [ ] Optimize favicon (currently 58 KB, target < 5 KB)
   - [ ] Helix product image (currently uses focus.png placeholder on the homepage FeaturedProducts card and as the kiosk "Focus Centralizers" tile logo)
   - [ ] ChallengeSelector card thumbnails — `public/images/conveyance.jpg`, `ledges.jpg`, `orientation.jpg`, `sampling.jpg`, `sticking.jpg` are all dev placeholders (black 800×480 canvas with the topic word stencilled in the top-left). Three cards (`Stuck Tools`, `Incomplete Operations`, `Cased Hole Centralization`) have a video that covers the poster after a brief flash; three cards (`Sticking Risk`, `Data Quality`, `High Deviations`) have no video so the placeholder is permanent. Hero already swapped to `hero-poster.jpg` (a frame from WirelineExpress.mp4, May 2026); apply the same treatment per card or replace with real photos.
