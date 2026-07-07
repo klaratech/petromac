@@ -144,9 +144,13 @@ Follow these conventions when working with data:
 - JSON/CSV/PDF artifacts generated for frontend and backend use
 - Frontend map surfaces fetch JSON directly from `/data/*`
 - Use for:
-  - Large datasets (operations_data.json ~3MB)
+  - Large datasets (operations_data.json ~600 KB slim / operations_full.json ~3.5 MB)
   - Map data (country_labels.json, world-50m.json)
 - **Fetch at runtime from `/data/*`** - do not import large JSON files from here
+- Deliberate exceptions — tiny generated artifacts imported at build time so
+  pages skip a runtime fetch: `operations_stats.json` (homepage ProofSection)
+  and the flipbook `manifest.json` files (`src/features/flipbooks/manifests.ts`).
+  Changes to these ship with the next deploy, not on CDN refresh.
 
 Flipbook assets (PDFs + images) live under `public/flipbooks/` and are accessed via `/flipbooks/*` URLs.
 

@@ -14,12 +14,14 @@ Generated outputs (checked in):
 
 - `public/flipbooks/<docKey>/`
   - `source.pdf`
+  - `email.pdf` (compressed copy for the Email-PDF feature; needs Ghostscript)
   - `manifest.json`
-  - `pages/0001.jpg` (or `.webp`)
-  - `thumbs/0001.jpg` (optional)
+  - `pages/0001.webp` (WebP q80 is the pipeline default since Jul 2026; `.jpg` supported for legacy bundles)
+  - `thumbs/0001.webp` (optional)
   - `tags.csv` (success-stories only, auto-generated from xlsx)
 
 Current doc keys:
+
 - `success-stories`
 - `catalog`
 
@@ -31,6 +33,8 @@ Current doc keys:
 
 - Python 3.11+
 - Poppler (required by `pdf2image`)
+- Ghostscript (`brew install ghostscript`) — used to generate `email.pdf`; the
+  build warns and skips it if missing
 - Python deps from `scripts/python/requirements.txt`
 
 Example setup (macOS/Linux):
@@ -57,7 +61,14 @@ brew install poppler
 pnpm run data:flipbooks
 ```
 
-   `pnpm run data` does flipbooks and operations together.
+`pnpm run data` does flipbooks and operations together. Both variants also
+re-sync the flipbook page entries in `public/data/kiosk-offline-assets.json`
+from the manifests, so the kiosk prime list follows page-count/format changes
+automatically.
+
+Note: manifests are imported into the JS bundle at build time
+(`src/features/flipbooks/manifests.ts`), so a regenerated bundle shows up
+after the next commit + deploy — there is no runtime manifest fetch.
 
 3. Commit the updated `public/flipbooks/**` outputs (including `source.pdf`).
 
@@ -83,9 +94,11 @@ as the single source of truth for filtering and page mapping. Required columns:
 - `Device`
 
 Optional columns:
+
 - `Year`, `Country`, `Category 1`, `Category 2`
 
 Notes:
+
 - The xlsx "Kiosk" sheet column `Kiosk v1` is mapped to the CSV `Device` column.
 - Multi-value cells may be comma-separated.
 - Normalization (Area/Company/Technology) happens in

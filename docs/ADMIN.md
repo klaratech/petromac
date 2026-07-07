@@ -17,7 +17,9 @@ what changed under `public/`. The pipeline archives the input for you. See
 ## 1. Operations / job history data
 
 Drives the **Track Record** map (`/track-record`) and the homepage **Proof**
-stats. The published artifact is `public/data/operations_data.json`.
+stats. The published artifacts are `public/data/operations_data.json` (map
+surfaces), `operations_full.json` (staff datacheck), and
+`operations_stats.json` (headline numbers the homepage imports at build time).
 
 **When:** new job history is available (roughly quarterly), or whenever the
 numbers shown publicly need to be current.
@@ -49,7 +51,9 @@ changes.
 1. Drop the files into their folders — any filename is fine:
    - catalog PDF → `sources/catalog/`
    - success-stories PDF **and** its tags `.xlsx` → `sources/success-stories/`
-2. Run `pnpm run data:flipbooks`. The pipeline builds whichever flipbooks have
+2. Run `pnpm run data:flipbooks` (needs Ghostscript for `email.pdf`:
+   `brew install ghostscript`). The pipeline emits WebP pages, regenerates
+   `email.pdf`, re-syncs the kiosk offline-assets list, and builds whichever flipbooks have
    a new PDF, validates the published bundles, and archives the inputs into
    `sources/_archive/`.
 3. Commit `public/flipbooks/**` and push.
@@ -131,7 +135,7 @@ Team page (`/team`). Data is in `src/data/team.ts`.
 
 - **GitHub rejects any file over 100 MB.** Raw exports from graphics/
   PowerPoint routinely exceed this — they must be transcoded/compressed
-  *before* committing.
+  _before_ committing.
 - Videos: transcode to H.264, 854×480 or 1080p, no audio if it plays muted.
   Reference pattern: `differential-sticking.mp4` (257 MB → 3.6 MB) and
   `WirelineExpress.mp4` (50 MB → 3.7 MB).
@@ -178,15 +182,15 @@ big 60" screen instead of the default web-optimised ones.
 
 ## Quick reference
 
-| Content | Drop into | Build | Commit |
-|---|---|---|---|
-| Operations data | `sources/operations/` (`.xlsx`) | `pnpm run data:operations` | `public/data/operations_data.json` |
-| Flipbooks | `sources/catalog/`, `sources/success-stories/` (`.pdf` + `.xlsx`) | `pnpm run data:flipbooks` | `public/flipbooks/**` |
-| Patents | counsel's Word doc | hand-edit `PatentsClient.tsx` | that file + `public/patent_pdfs/` |
-| Publications | new paper | hand-edit `publications/page.tsx` | that file |
-| Team | — | hand-edit `src/data/team.ts` | that file + `public/images/team/` |
-| Large media | graphics delivery | transcode/compress first | the asset file |
-| Kiosk HD videos | `public/videos/kiosk-hd/` (1080p, same filename as transcoded) | transcode masters first | the `.mp4` + bump `kiosk-sw.js` VERSION |
+| Content         | Drop into                                                         | Build                             | Commit                                  |
+| --------------- | ----------------------------------------------------------------- | --------------------------------- | --------------------------------------- |
+| Operations data | `sources/operations/` (`.xlsx`)                                   | `pnpm run data:operations`        | `public/data/operations_data.json`      |
+| Flipbooks       | `sources/catalog/`, `sources/success-stories/` (`.pdf` + `.xlsx`) | `pnpm run data:flipbooks`         | `public/flipbooks/**`                   |
+| Patents         | counsel's Word doc                                                | hand-edit `PatentsClient.tsx`     | that file + `public/patent_pdfs/`       |
+| Publications    | new paper                                                         | hand-edit `publications/page.tsx` | that file                               |
+| Team            | —                                                                 | hand-edit `src/data/team.ts`      | that file + `public/images/team/`       |
+| Large media     | graphics delivery                                                 | transcode/compress first          | the asset file                          |
+| Kiosk HD videos | `public/videos/kiosk-hd/` (1080p, same filename as transcoded)    | transcode masters first           | the `.mp4` + bump `kiosk-sw.js` VERSION |
 
 After any push to `main`, CI runs and `deploy-prod.yml` builds the Docker
 images and redeploys the Hetzner box (`petromac.klaratech.it`). See

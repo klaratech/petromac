@@ -158,7 +158,7 @@ All videos play at **fullscreen** resolution. Deliver as H.264 MP4 with these en
 
 ## 3. 3D Models (GLB)
 
-Models display in a fullscreen 3D viewer (kiosk only). Optimize with **Draco compression** using `gltf-transform` or Blender.
+Models display in a fullscreen 3D viewer (kiosk only). All committed GLBs are **Draco-compressed** (Jul 2026); the decoder is self-hosted at `public/draco/` so the offline kiosk never hits a CDN. If you receive a new/updated model, compress it before committing.
 
 **Compression command (using gltf-transform):**
 
@@ -166,17 +166,18 @@ Models display in a fullscreen 3D viewer (kiosk only). Optimize with **Draco com
 npx @gltf-transform/cli optimize input.glb output.glb --compress draco
 ```
 
-| File                       | Current Size | Target Size | System           | Notes                                              |
-| -------------------------- | ------------ | ----------- | ---------------- | -------------------------------------------------- |
-| `/models/pathfinderht.glb` | **83 MB**    | <30 MB      | PathFinder       | Largest model — check if geometry can be decimated |
-| `/models/cp12.glb`         | **70 MB**    | <25 MB      | Focus            | High poly count likely                             |
-| `/models/cp8.glb`          | **31 MB**    | <12 MB      | Focus            |                                                    |
-| `/models/helix.glb`        | **21 MB**    | <8 MB       | Focus            |                                                    |
-| `/models/thor.glb`         | **8 MB**     | <4 MB       | Thor             |                                                    |
-| `/models/ttbs75.glb`       | **8 MB**     | <4 MB       | Wireline Express |                                                    |
+| File                       | Size (Draco) | Was   | System           |
+| -------------------------- | ------------ | ----- | ---------------- |
+| `/models/pathfinderht.glb` | 5.9 MB       | 87 MB | PathFinder       |
+| `/models/cp12.glb`         | 4.2 MB       | 73 MB | Focus            |
+| `/models/cp8.glb`          | 2.0 MB       | 33 MB | Focus            |
+| `/models/helix.glb`        | 1.4 MB       | 22 MB | Focus            |
+| `/models/thor.glb`         | 0.7 MB       | 8 MB  | Thor             |
+| `/models/ttbs75.glb`       | 0.7 MB       | 8 MB  | Wireline Express |
 
-> Total current: 221 MB. With Draco compression: target ~80 MB (60% reduction).
-> For the two largest models (pathfinderht, cp12), consider also reducing polygon count if visual fidelity allows — the display is at screen resolution, not CAD precision.
+> Total: 14 MB (was 221 MB). Loaded via `useGLTF(url, '/draco/')` — keep the
+> second argument, or drei falls back to a Google-CDN decoder and the offline
+> kiosk breaks.
 
 ---
 
@@ -199,10 +200,10 @@ Flipbook pages are auto-generated from source PDFs by the build pipeline. If you
 
 **Current stats (for reference only — no manual action needed):**
 
-| Flipbook        | Pages | Dimensions     | Avg Size | Total | Format |
-| --------------- | ----- | -------------- | -------- | ----- | ------ |
-| Catalog         | 62    | 1241 x 1754 px | 246 KB   | 15 MB | JPG    |
-| Success Stories | 48    | 1241 x 1754 px | 368 KB   | 17 MB | JPG    |
+| Flipbook        | Pages | Dimensions     | Avg Size | Total  | Format |
+| --------------- | ----- | -------------- | -------- | ------ | ------ |
+| Catalog         | 62    | 1241 x 1754 px | ~85 KB   | 5.2 MB | WebP   |
+| Success Stories | 50    | 1241 x 1754 px | ~150 KB  | 7.5 MB | WebP   |
 
 **Display sizes:**
 

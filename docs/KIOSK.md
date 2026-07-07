@@ -1,6 +1,7 @@
 # Kiosk Operations
 
 ## Why this matters
+
 The kiosk Service Worker is designed for trade‑show use where connectivity can be poor.
 We pre-cache the kiosk shell and small data files, and runtime‑cache large media
 (videos/flipbooks/images) with limits and expiry to keep storage bounded and reliable.
@@ -51,11 +52,11 @@ The kiosk reads two opt-in URL flags once at boot and persists them to
 `sessionStorage` so they survive in-kiosk navigation (see
 `src/hooks/useKioskDisplay.ts`).
 
-| Flag      | Effect |
-|-----------|--------|
-| `?tv=1`   | TV safe-area mode. Scales the kiosk content to 94% so TV overscan (Fire Stick, set-top boxes) can't crop chrome out of the picture. The kiosk shell's `bg-black` fills the ~3% gutter on each side. |
-| `?sd=1`   | Skip the kiosk-hd 1080p upgrade. `useKioskVideo` stays on the 720p `transcoded/` clips. Use on Fire Stick or any device that stutters on 1080p H.264; also helpful when mirroring from a CPU-bound tablet, since the tablet's screen-capture encoder has less work to do per frame. |
-| `?tv=0` / `?sd=0` | Explicit opt-out. Clears the persisted flag without needing to clear sessionStorage manually — useful when swapping a Fire Stick kiosk back to a tablet. |
+| Flag              | Effect                                                                                                                                                                                                                                                                              |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `?tv=1`           | TV safe-area mode. Scales the kiosk content to 94% so TV overscan (Fire Stick, set-top boxes) can't crop chrome out of the picture. The kiosk shell's `bg-black` fills the ~3% gutter on each side.                                                                                 |
+| `?sd=1`           | Skip the kiosk-hd 1080p upgrade. `useKioskVideo` stays on the 720p `transcoded/` clips. Use on Fire Stick or any device that stutters on 1080p H.264; also helpful when mirroring from a CPU-bound tablet, since the tablet's screen-capture encoder has less work to do per frame. |
+| `?tv=0` / `?sd=0` | Explicit opt-out. Clears the persisted flag without needing to clear sessionStorage manually — useful when swapping a Fire Stick kiosk back to a tablet.                                                                                                                            |
 
 Typical Fire Stick setup: navigate the kiosk browser once to
 `/intranet/kiosk?tv=1&sd=1`. The flags stick for the rest of the
@@ -73,6 +74,7 @@ helps here too, because there are fewer pixels per second for the
 encoder to chew on.
 
 ## Service Worker Cache Versioning
+
 The kiosk service worker lives at `public/kiosk-sw.js` and uses a version string:
 
 ```js
@@ -80,6 +82,7 @@ const VERSION = 'v16';
 ```
 
 **When you need to refresh cached content** (e.g., new videos/flipbooks or data files):
+
 1. Bump `VERSION` in `public/kiosk-sw.js`.
 2. Deploy.
 3. On the kiosk device, reload the kiosk once while online, then re-prime via the splash's "Prime offline" pill.
@@ -87,6 +90,7 @@ const VERSION = 'v16';
 This forces the old caches to be evicted during SW `activate` and rebuilds fresh caches.
 
 ### Range request handling (video seeking / offline playback)
+
 `<video>` elements send HTTP `Range` requests when buffering or seeking. The
 SW serves Range requests for cached media by slicing the full cached
 response into a `206 Partial Content`, so seeking and offline playback both
@@ -112,7 +116,9 @@ End-to-end walkthrough for a fresh Android tablet + Amazon Fire Stick on a TV. E
 4. The top status card should read **Ready for offline** when the run finishes.
 5. Tap **Open kiosk** (top-right of the prime screen) to return to the splash.
 
-> Want the sharper 1080p videos cached too? Tick **Include 1080p videos + 3D models** before starting. Skip it for mirrored Fire Stick setups — the SD set is what plays in mirroring mode anyway, and the HD pull adds ~175 MB.
+> Want the sharper 1080p videos cached too? Tick **Include 1080p videos + 3D models** before starting. Skip it for mirrored Fire Stick setups — the SD set is what plays in mirroring mode anyway. The 3D models are Draco-compressed (14 MB total) and the decoder at `/draco/` is part of the required prime set, so the 3D viewer works fully offline.
+
+> The flipbook page entries in the prime list are auto-synced by `pnpm run data` from the flipbook manifests — after a flipbook update, commit + deploy and re-prime; no manual list editing.
 
 ### 3. Connect the Fire Stick and the tablet to the same Wi-Fi
 
@@ -158,7 +164,8 @@ Once you've primed and confirmed the TV is happy, sanity-check that the kiosk re
 3. Anything stale or missing → return to the splash, tap **Prime offline**, then **Retry priming**. Failed rows re-fetch on retry; "ok" rows skip.
 
 ## Notes
+
 - Next.js image optimization outputs (`/_next/image`) are cached for kiosk use.
 - Video Range requests are served from the cached full file as `206 Partial
-  Content` (see "Range request handling" above) — seeking and offline
+Content` (see "Range request handling" above) — seeking and offline
   playback both work as long as the full clip was cached during priming.
