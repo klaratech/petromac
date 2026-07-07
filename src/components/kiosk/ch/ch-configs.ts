@@ -53,12 +53,10 @@ export const HELIX_MECHANISM: MechanismConfig = {
       type: 'comparison',
       label: 'Lever arm comparison',
       rows: [
-        { image: '/images/kiosk-images/leverage-conventional.png', rowLabel: 'Conventional' },
-        { image: '/images/kiosk-images/leverage-helix.png', rowLabel: 'HELIX' },
+        { image: '/images/kiosk-images/leverage-conventional.webp', rowLabel: 'Conventional' },
+        { image: '/images/kiosk-images/leverage-helix.webp', rowLabel: 'HELIX' },
       ],
-      bullets: [
-        { text: 'Helix enters restrictions with 80% less force', highlight: 'blue' },
-      ],
+      bullets: [{ text: 'Helix enters restrictions with 80% less force', highlight: 'blue' }],
     },
   ],
 };
@@ -85,7 +83,7 @@ export const ROCKER_MECHANISM: MechanismConfig = {
     {
       type: 'annotated',
       label: 'ROCKER',
-      image: '/images/rocker-mechanism-rocker.png',
+      image: '/images/rocker-mechanism-rocker.webp',
       video: '/videos/transcoded/rocker-mechanism.mp4',
       bullets: [
         { text: 'Rocker arm pivots around centreline' },
@@ -115,7 +113,7 @@ export const HELIX_LOGS: LogsConfig = {
     // Slide 1 — 4 drops in HTEN, ~60 lbs each, on IBC + Sonic ledges.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log1.png',
+      src: '/images/kiosk-images/Helix_Log1.webp',
       annotations: [
         {
           title: '4 drops in HTEN of ONLY 60 lbs from CX9 on IBC & Sonic',
@@ -127,23 +125,18 @@ export const HELIX_LOGS: LogsConfig = {
     // Slide 2 — Poor 13-3/8" conventional vs excellent 9-5/8"/7" CX9.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log2.png',
+      src: '/images/kiosk-images/Helix_Log2.webp',
       annotations: [
         {
           tone: 'red',
           title: 'Poor centralization in 13-3/8" casing with conventional centralizers',
-          bullets: [
-            'Large difference between Min and Max TT’s',
-            'Erratic & poor sonic data',
-          ],
+          bullets: ['Large difference between Min and Max TT’s', 'Erratic & poor sonic data'],
           circles: [],
         },
         {
           tone: 'blue',
           title: 'Excellent centralization in 9-5/8" and 7" casings with CX9',
-          bullets: [
-            'Difference between Min and Max TT’s < 10 µs',
-          ],
+          bullets: ['Difference between Min and Max TT’s < 10 µs'],
           circles: [],
         },
       ],
@@ -151,7 +144,7 @@ export const HELIX_LOGS: LogsConfig = {
     // Slide 3 — Excellent ECCE all the way out to 85° deviation in 9-5/8".
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log3-1.png',
+      src: '/images/kiosk-images/Helix_Log3-1.webp',
       annotations: [
         {
           tone: 'blue',
@@ -163,7 +156,7 @@ export const HELIX_LOGS: LogsConfig = {
           ],
           circles: [],
           detail: {
-            src: '/images/kiosk-images/Helix_Log3-2.png',
+            src: '/images/kiosk-images/Helix_Log3-2.webp',
             alt: 'ECCE distribution histogram with mean call-out',
           },
         },
@@ -172,7 +165,7 @@ export const HELIX_LOGS: LogsConfig = {
     // Slide 4 — Ultrasonic / Sonic CX9 run pushed to 90° deviation.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log4.png',
+      src: '/images/kiosk-images/Helix_Log4.webp',
       annotations: [
         {
           tone: 'blue',
@@ -193,7 +186,7 @@ export const HELIX_LOGS: LogsConfig = {
     // short enough to fit without scrolling.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Helix_Log5-1.png',
+      src: '/images/kiosk-images/Helix_Log5-1.webp',
       annotations: [
         {
           tone: 'blue',
@@ -201,7 +194,7 @@ export const HELIX_LOGS: LogsConfig = {
           bullets: ['Average of 0.06'],
           circles: [],
           detail: {
-            src: '/images/kiosk-images/Helix_Log5-3.png',
+            src: '/images/kiosk-images/Helix_Log5-3.webp',
             alt: 'LUP1:ECCE distribution histogram with mean call-out',
           },
         },
@@ -211,7 +204,7 @@ export const HELIX_LOGS: LogsConfig = {
           bullets: ['Getting to 80° deviation is easily achievable'],
           circles: [],
           detail: {
-            src: '/images/kiosk-images/Helix_Log5-2.png',
+            src: '/images/kiosk-images/Helix_Log5-2.webp',
             alt: 'AvDrag distribution histogram with mean call-out',
           },
         },
@@ -242,7 +235,7 @@ export const ROCKER_LOGS: LogsConfig = {
     // bullet flagging the 0.15" tolerance ceiling.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Rocker_Log1.png',
+      src: '/images/kiosk-images/Rocker_Log1.webp',
       annotations: [
         {
           eyebrow: 'Rocker: USIT in 4-1/2" Liner',
@@ -264,7 +257,7 @@ export const ROCKER_LOGS: LogsConfig = {
     // as a tap-to-zoom detail.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Rocker_Log2-1.png',
+      src: '/images/kiosk-images/Rocker_Log2-1.webp',
       annotations: [
         {
           eyebrow: 'Rocker: IBC in 4-1/2" Liner',
@@ -289,7 +282,7 @@ export const ROCKER_LOGS: LogsConfig = {
           bullets: ['AZEC is tracking RB'],
           circles: [],
           detail: {
-            src: '/images/kiosk-images/Rocker_Log2-2.png',
+            src: '/images/kiosk-images/Rocker_Log2-2.webp',
             alt: 'IBC sub geometry — RB / AZEC tracking through a building well',
           },
         },
@@ -300,7 +293,7 @@ export const ROCKER_LOGS: LogsConfig = {
     // tolerance call-out — but at the high-deviation end of the range.
     {
       type: 'annotated',
-      src: '/images/kiosk-images/Rocker_Log3.png',
+      src: '/images/kiosk-images/Rocker_Log3.webp',
       annotations: [
         {
           eyebrow: 'Rocker: USIT in 4-1/2" Liner to 90° Deviation',

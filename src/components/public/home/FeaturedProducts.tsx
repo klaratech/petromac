@@ -34,14 +34,14 @@ const products: Product[] = [
     video: '/videos/transcoded/helix.mp4',
   },
   // TODO: re-enable Thor once we have a dedicated Thor video and finalised
-  // anti-differential-sticking copy. Placeholder thor.png + 'New' badge in
+  // anti-differential-sticking copy. Placeholder thor.webp + 'New' badge in
   // the meantime would feel half-finished, so we're keeping it commented
   // out until graphics + product agree on the messaging.
   // {
   //   name: "Thor",
   //   description:
   //     "Anti-differential-sticking system for wireline logging in overbalanced wells.",
-  //   image: "/images/thor.png",
+  //   image: "/images/thor.webp",
   //   badge: "New",
   //   // video: "/videos/transcoded/thor.mp4",  ← when available
   // },

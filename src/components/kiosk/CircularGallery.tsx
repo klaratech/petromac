@@ -125,7 +125,7 @@ export default function CircularGallery({ onClose, models, forceSingleModel = fa
   return (
     <div className="w-full h-screen relative group">
       <Image
-        src="/images/tv-bg.png"
+        src="/images/tv-bg.webp"
         alt="Background"
         fill
         priority

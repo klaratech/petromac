@@ -1,5 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 /**
  * The three inputs Athena combines into a single recommendation.
@@ -8,16 +8,16 @@ import Link from "next/link";
  */
 const inputs = [
   {
-    name: "Hermes™",
-    text: "Modelling engine for drag, tension, and sticking risk.",
+    name: 'Hermes™',
+    text: 'Modelling engine for drag, tension, and sticking risk.',
   },
   {
-    name: "AI checks",
-    text: "Automated validation of the tool-string configuration.",
+    name: 'AI checks',
+    text: 'Automated validation of the tool-string configuration.',
   },
   {
-    name: "Regional managers",
-    text: "Field experience from the people who run the jobs.",
+    name: 'Regional managers',
+    text: 'Field experience from the people who run the jobs.',
   },
 ];
 
@@ -25,7 +25,7 @@ export default function SimulationHero() {
   return (
     <section className="relative overflow-hidden bg-slate-950 px-6 py-14 md:py-16">
       <Image
-        src="/images/tv-bg.png"
+        src="/images/tv-bg.webp"
         alt=""
         fill
         priority
@@ -51,9 +51,7 @@ export default function SimulationHero() {
             <p className="text-xs font-semibold uppercase text-blue-200">
               Athena&trade; by Petromac
             </p>
-            <p className="text-sm text-slate-300">
-              Vendor-neutral planning intelligence
-            </p>
+            <p className="text-sm text-slate-300">Vendor-neutral planning intelligence</p>
           </div>
         </div>
 
@@ -62,9 +60,9 @@ export default function SimulationHero() {
         </h1>
 
         <p className="mb-8 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl">
-          Athena turns a well plan into a go / no-go call before the operations start.
-          Operators and wireline service companies use it to weigh sticking risk and conveyance options while 
-          the job is still on paper.
+          Athena turns a well plan into a go / no-go call before the operations start. Operators and
+          wireline service companies use it to weigh sticking risk and conveyance options while the
+          job is still on paper.
         </p>
 
         {/* The three inputs behind every Athena recommendation */}
@@ -75,12 +73,8 @@ export default function SimulationHero() {
           <div className="grid gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10 sm:grid-cols-3">
             {inputs.map((item) => (
               <div key={item.name} className="bg-slate-950/70 p-4">
-                <p className="font-heading text-sm font-bold text-white">
-                  {item.name}
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-300">
-                  {item.text}
-                </p>
+                <p className="font-heading text-sm font-bold text-white">{item.name}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-300">{item.text}</p>
               </div>
             ))}
           </div>

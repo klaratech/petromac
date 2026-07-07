@@ -118,15 +118,11 @@ interface Props {
 //   /public/images/kiosk-images/leverage-{conventional,helix}.png
 //   /public/images/rocker-mechanism-conventional.png
 //   /public/images/rocker-mechanism-conventional-detail.png
-//   /public/images/rocker-mechanism-rocker.png
+//   /public/images/rocker-mechanism-rocker.webp
 
 // ── Main component ──────────────────────────────────────────────────────────
 
-export default function MechanismScreen({
-  config,
-  onBack,
-  onSwitchSection,
-}: Props) {
+export default function MechanismScreen({ config, onBack, onSwitchSection }: Props) {
   const { slides } = config;
   const [index, setIndex] = useState(0);
   const [specsOpen, setSpecsOpen] = useState(false);
@@ -144,9 +140,7 @@ export default function MechanismScreen({
         <SectionPill
           active="mechanism"
           onSwitch={onSwitchSection}
-          onOpenSpecs={
-            config.specs ? () => setSpecsOpen(true) : undefined
-          }
+          onOpenSpecs={config.specs ? () => setSpecsOpen(true) : undefined}
         />
         <button
           onClick={onBack}
@@ -200,9 +194,7 @@ export default function MechanismScreen({
             />
             <SlideNavButton
               direction="next"
-              onClick={() =>
-                setIndex((i) => Math.min(slides.length - 1, i + 1))
-              }
+              onClick={() => setIndex((i) => Math.min(slides.length - 1, i + 1))}
               disabled={index === slides.length - 1}
             />
           </>
@@ -237,9 +229,7 @@ function VideoSlide({
     <div className="relative w-full h-full flex items-center justify-center p-8">
       <div
         className={`relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden border ${
-          highlight
-            ? 'border-white/40 ring-2 ring-white/30'
-            : 'border-white/10'
+          highlight ? 'border-white/40 ring-2 ring-white/30' : 'border-white/10'
         } bg-black/40`}
       >
         {/* Muted — current mechanism clips (conventional-largecasings,
@@ -317,13 +307,7 @@ function AnnotatedSlide({
               }}
             />
           ) : (
-            <AssetSlot
-              src={image}
-              alt={label}
-              priority
-              className="object-contain"
-              theme="light"
-            />
+            <AssetSlot src={image} alt={label} priority className="object-contain" theme="light" />
           )}
         </div>
 
@@ -416,22 +400,13 @@ function ComparisonSlide({
  *   'blue' → benefits / takeaways (brand navy #1E4A9A)
  *   undefined → neutral (slate-900)
  */
-function BulletList({
-  bullets,
-  className = '',
-}: {
-  bullets: Bullet[];
-  className?: string;
-}) {
+function BulletList({ bullets, className = '' }: { bullets: Bullet[]; className?: string }) {
   return (
     <ul className={`flex flex-col justify-center gap-6 ${className}`}>
       {bullets.map((b) => {
         const tone = bulletToneClasses(b.highlight);
         return (
-          <li
-            key={b.text}
-            className={`flex items-start gap-3 text-lg font-medium ${tone.text}`}
-          >
+          <li key={b.text} className={`flex items-start gap-3 text-lg font-medium ${tone.text}`}>
             <span
               className={`mt-2 inline-block w-1.5 h-1.5 rounded-full ${tone.dot}`}
               aria-hidden="true"

@@ -100,7 +100,7 @@ export default function DeviceViewer({ model, onClose }: { model: string; onClos
           className="w-screen h-screen relative group"
         >
           <Image
-            src="/images/tv-bg.png"
+            src="/images/tv-bg.webp"
             alt="Background"
             fill
             priority

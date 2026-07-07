@@ -93,7 +93,7 @@ export default function ProductlinesClient() {
       }`}
     >
       {/* Background: lane-specific video loop (muted, plays through a
-            sequence and cycles). Falls back to tv-bg.png when no lane is set. */}
+            sequence and cycles). Falls back to tv-bg.webp when no lane is set. */}
       {bgVideos.length > 0 ? (
         <>
           <video
@@ -111,7 +111,7 @@ export default function ProductlinesClient() {
         </>
       ) : (
         <Image
-          src="/images/tv-bg.png"
+          src="/images/tv-bg.webp"
           alt="Background"
           fill
           priority

@@ -30,7 +30,7 @@ export const systemMedia: Record<string, SystemMedia> = {
   },
   Thor: {
     video: '/videos/transcoded/helix.mp4?v=20240517',
-    logo: '/images/thor.png',
+    logo: '/images/thor.webp',
   },
   PathFinder: {
     video: '/videos/transcoded/pf.mp4?v=20240519',
@@ -158,7 +158,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       Attachment: 'Alloy steel grub screw, ¼" hex, UNC thread, dog end',
       'SWL (Shear set screws)': '17,000 lbs',
     },
-    graph: '/images/kiosk-images/helix-load-capacity.png',
+    graph: '/images/kiosk-images/helix-load-capacity.webp',
     // Helix lives inside the "Focus Centralizers" CH experience — it's the
     // primary tool, with the Helix intro video looping in the background.
     // Rocker is the secondary tool accessed via a corner badge inside the
@@ -207,7 +207,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
       Bearings: 'Custom bush bearing',
       Grease: 'Lubriplate 930AA',
     },
-    graph: '/images/kiosk-images/rocker-load-capacity.png',
+    graph: '/images/kiosk-images/rocker-load-capacity.webp',
     system: 'Rocker',
     subsystem: 'Rocker',
     lane: 'ch',

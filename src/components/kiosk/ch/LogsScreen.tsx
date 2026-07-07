@@ -171,18 +171,14 @@ interface Props {
 // audience.
 //
 // Asset slots referenced from ch-configs:
-//   /public/images/kiosk-images/Helix_Log1.png      (slide 1)
-//   /public/images/kiosk-images/Helix_Log2.png      (slide 2)
+//   /public/images/kiosk-images/Helix_Log1.webp      (slide 1)
+//   /public/images/kiosk-images/Helix_Log2.webp      (slide 2)
 //   /public/images/kiosk-images/Helix_Log3-{1,2}.png  (slide 3)
-//   /public/images/kiosk-images/Helix_Log4.png      (slide 4)
+//   /public/images/kiosk-images/Helix_Log4.webp      (slide 4)
 //   /public/images/kiosk-images/Helix_Log5-{1,2,3}.png  (slide 5)
 //   /public/images/rocker-logs-{N}.png              (Rocker log comparisons)
 
-export default function LogsScreen({
-  config,
-  onBack,
-  onSwitchSection,
-}: Props) {
+export default function LogsScreen({ config, onBack, onSwitchSection }: Props) {
   const slides = config.slides;
   const [index, setIndex] = useState(0);
   const [showSuccessStories, setShowSuccessStories] = useState(false);
@@ -224,9 +220,7 @@ export default function LogsScreen({
         <SectionPill
           active="logs"
           onSwitch={onSwitchSection}
-          onOpenSpecs={
-            config.specs ? () => setSpecsOpen(true) : undefined
-          }
+          onOpenSpecs={config.specs ? () => setSpecsOpen(true) : undefined}
         />
         <button
           onClick={onBack}
@@ -277,14 +271,11 @@ export default function LogsScreen({
             />
             <SlideNavButton
               direction="next"
-              onClick={() =>
-                setIndex((i) => Math.min(slides.length - 1, i + 1))
-              }
+              onClick={() => setIndex((i) => Math.min(slides.length - 1, i + 1))}
               disabled={index === slides.length - 1}
             />
           </>
         )}
-
       </div>
 
       {specsOpen && config.specs && (
@@ -358,13 +349,7 @@ function SlideNavButton({
 function SinglePane({ src, alt }: { src: string; alt: string }) {
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <AssetSlot
-        key={src}
-        src={src}
-        alt={alt}
-        className="object-contain"
-        theme="dark"
-      />
+      <AssetSlot key={src} src={src} alt={alt} className="object-contain" theme="dark" />
     </div>
   );
 }
@@ -379,11 +364,7 @@ function PairPane({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-8 w-full h-full">
       <ComparisonImage src={left.src} label={left.label} />
-      <ComparisonImage
-        src={right.src}
-        label={right.label}
-        highlight={right.highlight ?? false}
-      />
+      <ComparisonImage src={right.src} label={right.label} highlight={right.highlight ?? false} />
     </div>
   );
 }
@@ -400,18 +381,10 @@ function ComparisonImage({
   return (
     <div
       className={`relative rounded-2xl overflow-hidden border ${
-        highlight
-          ? 'border-white/40 ring-2 ring-white/30'
-          : 'border-white/10'
+        highlight ? 'border-white/40 ring-2 ring-white/30' : 'border-white/10'
       } bg-black/40`}
     >
-      <AssetSlot
-        key={src}
-        src={src}
-        alt={label}
-        className="object-contain"
-        theme="dark"
-      />
+      <AssetSlot key={src} src={src} alt={label} className="object-contain" theme="dark" />
       <div className="absolute bottom-3 left-3 z-10 px-3 py-1 rounded-full bg-black/60 text-xs uppercase tracking-[0.2em]">
         {label}
       </div>
@@ -450,13 +423,7 @@ function AnnotatedPane({
       {/* Image column — AssetSlot fills the relative parent; circles ride
           on top in a same-bounding-box SVG. */}
       <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-white">
-        <AssetSlot
-          key={src}
-          src={src}
-          alt={alt}
-          className="object-contain"
-          theme="light"
-        />
+        <AssetSlot key={src} src={src} alt={alt} className="object-contain" theme="light" />
 
         {/* Annotation overlay — pointer-events-none so taps still register
             on the lane underneath if anything were interactive. Flatten the
@@ -505,11 +472,7 @@ function AnnotatedPane({
           column; detail histograms render as thumbnails with tap-to-zoom. */}
       <div className="flex flex-col justify-center gap-3 overflow-hidden">
         {annotations.map((a, i) => (
-          <AnnotationCard
-            key={`${a.title}-${i}`}
-            annotation={a}
-            onZoomDetail={setZoomedDetail}
-          />
+          <AnnotationCard key={`${a.title}-${i}`} annotation={a} onZoomDetail={setZoomedDetail} />
         ))}
       </div>
 
@@ -543,11 +506,12 @@ function AnnotationCard({
   annotation: LogAnnotation;
   onZoomDetail: (_detail: { src: string; alt: string }) => void;
 }) {
-  const titleClass = annotation.tone === 'red'
-    ? 'text-red-400'
-    : annotation.tone === 'blue'
-      ? 'text-[#7FA8E6]'
-      : 'text-white';
+  const titleClass =
+    annotation.tone === 'red'
+      ? 'text-red-400'
+      : annotation.tone === 'blue'
+        ? 'text-[#7FA8E6]'
+        : 'text-white';
   const stroke = toneStroke(annotation.tone);
   return (
     <div className="rounded-2xl border border-white/15 bg-white/5 p-4 min-h-0 flex flex-col">

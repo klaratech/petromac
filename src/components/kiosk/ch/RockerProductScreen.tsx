@@ -17,8 +17,8 @@ import ToolPanel from './ToolPanel';
  * straight into either sub-view without hopping back to the looping video.
  *
  * Asset slots:
- *   /public/images/kiosk-images/rocker.png         (Rocker tool — left panel)
- *   /public/images/kiosk-images/rocker-inline.png  (Rocker Inline — right panel)
+ *   /public/images/kiosk-images/rocker.webp         (Rocker tool — left panel)
+ *   /public/images/kiosk-images/rocker-inline.webp  (Rocker Inline — right panel)
  *
  * Close ✕ jumps straight back to the looping video (no hierarchical step
  * through this screen on exit, matching HelixProductScreen).
@@ -47,24 +47,20 @@ export default function RockerProductScreen({
 
       {/* Top-left eyebrow — identifies the product family. */}
       <div className="absolute top-6 left-6 z-30 pointer-events-none">
-        <p className="text-xs uppercase tracking-[0.4em] text-white/60">
-          Cased Hole
-        </p>
-        <h2 className="text-3xl font-extrabold text-white drop-shadow">
-          Rocker
-        </h2>
+        <p className="text-xs uppercase tracking-[0.4em] text-white/60">Cased Hole</p>
+        <h2 className="text-3xl font-extrabold text-white drop-shadow">Rocker</h2>
       </div>
 
       {/* Two-tool layout — Rocker on the left, Rocker Inline on the right. */}
       <div className="absolute inset-0 px-10 pt-28 pb-16 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 z-10">
         <ToolPanel
-          src="/images/kiosk-images/rocker.png"
+          src="/images/kiosk-images/rocker.webp"
           alt="Rocker"
           label="Rocker"
           sizes="(min-width: 768px) 45vw, 90vw"
         />
         <ToolPanel
-          src="/images/kiosk-images/rocker-inline.png"
+          src="/images/kiosk-images/rocker-inline.webp"
           alt="Rocker Inline"
           label="Rocker Inline"
           sizes="(min-width: 768px) 45vw, 90vw"
@@ -91,11 +87,7 @@ export default function RockerProductScreen({
       </button>
 
       {specsOpen && specs && (
-        <SpecsModal
-          specs={specs}
-          graph={specsGraph}
-          onClose={() => setSpecsOpen(false)}
-        />
+        <SpecsModal specs={specs} graph={specsGraph} onClose={() => setSpecsOpen(false)} />
       )}
     </div>
   );
