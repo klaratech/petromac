@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 const NAV_ITEMS = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Catalog", href: "/catalog" },
-  { name: "Track Record", href: "/track-record" },
-  { name: "Simulation", href: "/simulation" },
-  { name: "Team", href: "/team" },
+  { name: 'Home', href: '/' },
+  { name: 'About', href: '/about' },
+  { name: 'Catalog', href: '/catalog' },
+  { name: 'Track Record', href: '/track-record' },
+  { name: 'Simulation', href: '/simulation' },
+  { name: 'Team', href: '/team' },
 ];
 
-function LinkedInIcon({ className = "w-5 h-5" }: { className?: string }) {
+function LinkedInIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -31,36 +31,52 @@ function LinkedInIcon({ className = "w-5 h-5" }: { className?: string }) {
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // Close the mobile panel whenever the route changes.
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // Lock body scroll while the mobile panel is open.
+  // Lock body scroll while the mobile panel is open. Escape closes the
+  // panel and returns focus to the toggle so keyboard users aren't left
+  // focused on a hidden element.
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    // Move focus to the first link so Tab continues inside the panel
+    // instead of behind the overlay.
+    panelRef.current?.querySelector('a')?.focus();
+
     return () => {
       document.body.style.overflow = prev;
+      document.removeEventListener('keydown', onKeyDown);
     };
   }, [open]);
 
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(href + "/");
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
   /** Desktop link: permanent transparent bottom border so active/inactive
    *  items have identical height (the previous version added pb-1 +
    *  border-b-2 only on active, which nudged active items down 3px). */
   const desktopLinkClass = (active: boolean) =>
     [
-      "inline-block py-1 text-[15px] font-medium tracking-wide",
-      "border-b-2 transition-colors",
+      'inline-block py-1 text-[15px] font-medium tracking-wide',
+      'border-b-2 transition-colors',
       active
-        ? "text-white border-blue-400"
-        : "text-slate-300 border-transparent hover:text-white hover:border-white/30",
-    ].join(" ");
+        ? 'text-white border-blue-400'
+        : 'text-slate-300 border-transparent hover:text-white hover:border-white/30',
+    ].join(' ');
 
   return (
     <header className="sticky top-0 z-40">
@@ -95,7 +111,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                aria-current={isActive(item.href) ? "page" : undefined}
+                aria-current={isActive(item.href) ? 'page' : undefined}
                 className={desktopLinkClass(isActive(item.href))}
               >
                 {item.name}
@@ -107,8 +123,8 @@ export default function Header() {
             <Link
               href="/intranet"
               prefetch={false}
-              aria-current={isActive("/intranet") ? "page" : undefined}
-              className={desktopLinkClass(isActive("/intranet"))}
+              aria-current={isActive('/intranet') ? 'page' : undefined}
+              className={desktopLinkClass(isActive('/intranet'))}
             >
               Intranet
             </Link>
@@ -127,19 +143,42 @@ export default function Header() {
 
           {/* Mobile menu button (below lg) */}
           <button
+            ref={toggleRef}
             onClick={() => setOpen((v) => !v)}
             className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-md text-slate-200 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950 transition-colors"
             aria-expanded={open}
             aria-controls="mobile-nav"
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? 'Close menu' : 'Open menu'}
           >
             {open ? (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             ) : (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             )}
           </button>
@@ -155,6 +194,7 @@ export default function Header() {
       {/* Mobile dropdown panel */}
       {open && (
         <div
+          ref={panelRef}
           id="mobile-nav"
           className="lg:hidden bg-slate-950/95 backdrop-blur-md border-b border-white/10"
         >
@@ -168,13 +208,13 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  aria-current={active ? "page" : undefined}
+                  aria-current={active ? 'page' : undefined}
                   className={[
-                    "px-3 py-3 rounded-lg text-base font-medium transition-colors",
+                    'px-3 py-3 rounded-lg text-base font-medium transition-colors',
                     active
-                      ? "text-white bg-white/10"
-                      : "text-slate-300 hover:text-white hover:bg-white/5",
-                  ].join(" ")}
+                      ? 'text-white bg-white/10'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5',
+                  ].join(' ')}
                 >
                   {item.name}
                 </Link>
@@ -186,13 +226,13 @@ export default function Header() {
             <Link
               href="/intranet"
               prefetch={false}
-              aria-current={isActive("/intranet") ? "page" : undefined}
+              aria-current={isActive('/intranet') ? 'page' : undefined}
               className={[
-                "px-3 py-3 rounded-lg text-base font-medium transition-colors",
-                isActive("/intranet")
-                  ? "text-white bg-white/10"
-                  : "text-slate-300 hover:text-white hover:bg-white/5",
-              ].join(" ")}
+                'px-3 py-3 rounded-lg text-base font-medium transition-colors',
+                isActive('/intranet')
+                  ? 'text-white bg-white/10'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5',
+              ].join(' ')}
             >
               Intranet
             </Link>
