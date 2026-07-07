@@ -1,11 +1,10 @@
 {
   "docKey": "success-stories",
   "title": "Success Stories",
-  "pageCount": 48,
+  "pageCount": 50,
   "pageDigits": 4,
   "pageExtension": "jpg",
   "pagesPath": "pages",
   "sourcePdf": "source.pdf",
-  "emailPdf": "email.pdf",
-  "updatedAt": "2026-02-09"
+  "updatedAt": "2026-07-07"
 }
