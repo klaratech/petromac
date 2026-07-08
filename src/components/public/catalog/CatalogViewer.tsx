@@ -9,11 +9,18 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 // never let a viewer dependency reach for a CDN.
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.mjs';
 
-const PDF_URL = '/flipbooks/catalog/source.pdf';
-// Per-page text extracted at pipeline time (pypdf). Fetching this ~50 KB
-// index instead of scanning the PDF in the browser is what lets the PDF
-// itself stream on demand — reading all 62 pages' text client-side would
-// force the whole 18 MB to download.
+// The viewer loads the COMPRESSED copy (email.pdf, ~4 MB), not the full-res
+// source.pdf (~11 MB). Range-request streaming through Cloudflare proved
+// unreliable — pdf.js/react-pdf still pulls the whole file even with
+// disableStream + a linearized PDF + range-capable headers (measured on
+// live). Rather than ship 11 MB, we serve the compressed copy, which is
+// visually identical at viewing resolution (text and the vector diagrams
+// stay sharp; it's the same page count, so the search index still maps).
+// The full-res original stays on the Download / Email PDF buttons.
+const PDF_URL = '/flipbooks/catalog/email.pdf';
+// Per-page text extracted at pipeline time (pypdf) from the full source.
+// Fetching this ~50 KB index instead of scanning the PDF in the browser
+// keeps search instant and independent of the rendered pages.
 const SEARCH_INDEX_URL = '/flipbooks/catalog/search-index.json';
 // Catalog pages are 1241x1754pt (A4-ish); used to size placeholders so
 // unrendered pages hold their spot and scrolling doesn't jump.
@@ -22,17 +29,10 @@ const PAGE_ASPECT = 1754 / 1241;
 // stay as placeholders. Keeps 62 pages from eating mobile memory.
 const RENDER_MARGIN = '1200px';
 
-// Range-only fetching so we never pull the whole PDF. The PDF is
-// linearized and the server honors range requests, so pages fetch as
-// 206 chunks on demand.
-//   - disableAutoFetch: don't eagerly prefetch every page in the background.
-//   - disableStream: don't open a full-file progressive stream. This one
-//     matters through Cloudflare: with streaming on, the full-file request
-//     runs to completion at edge speed before pdf.js aborts it, so the
-//     whole ~11 MB downloads (measured on live) on top of the range chunks.
+// disableAutoFetch stops pdf.js from eagerly prefetching pages we haven't
+// scrolled to. (Streaming/range behavior is moot now that the file is 4 MB.)
 const DOCUMENT_OPTIONS = {
   disableAutoFetch: true,
-  disableStream: true,
 };
 
 interface PageMatch {
