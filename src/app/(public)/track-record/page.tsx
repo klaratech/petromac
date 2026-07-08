@@ -2,11 +2,17 @@
 
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { preload } from 'react-dom';
 import type { JobRecord } from '@/types/JobRecord';
 import { fetchOperationsData } from '@/lib/map/data';
 import { EXTERNAL_URLS } from '@/constants/app';
+
+// Success Stories opens as an overlay here (via ?stories=1) instead of its
+// own page. Kept out of the bundle until the URL asks for it.
+const StoriesOverlay = dynamic(() => import('@/components/public/track-record/StoriesOverlay'), {
+  ssr: false,
+});
 
 // DrilldownMapCore brings d3 + r3f-adjacent deps; keep it lazy and CSR-only.
 const DrilldownMapCore = dynamic(() => import('@/components/geo/DrilldownMapCore'), {
@@ -64,7 +70,8 @@ export default function TrackRecordPage() {
             Every Petromac job — <span className="text-brand">Mapped</span>.
           </h1>
           <Link
-            href="/success-stories/flipbook"
+            href="/track-record?stories=1"
+            scroll={false}
             className="
               self-start md:self-end inline-flex items-center gap-2 whitespace-nowrap
               px-6 py-3 rounded-full font-semibold text-white
@@ -136,6 +143,12 @@ export default function TrackRecordPage() {
           </div>
         </div>
       </section>
+
+      {/* Success Stories overlay — reads ?stories=1. Suspense is required
+          because it calls useSearchParams. */}
+      <Suspense fallback={null}>
+        <StoriesOverlay />
+      </Suspense>
     </main>
   );
 }
