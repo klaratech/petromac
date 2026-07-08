@@ -102,12 +102,9 @@ export default function ChallengeSelector() {
   return (
     <section id="challenge-selector" className="py-20 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand text-center mb-4">
+        <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand text-center mb-12">
           What challenge are you facing?
         </h2>
-        <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">
-          Select a challenge to see how Petromac solves it in the field.
-        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {challenges.map((c) => {
