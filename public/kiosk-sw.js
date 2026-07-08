@@ -2,12 +2,12 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v17';
+const VERSION = 'v18';
 
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;
 // Media caches split by asset type. The old shared bucket of 60 entries
-// was overwhelmed by the catalog + success-stories flipbooks (which
+// was overwhelmed by the success-stories flipbook (which
 // alone are ~110 page images) and could evict videos/models/images out
 // from under the kiosk. Per-type buckets each have a budget that fits
 // the actual asset graph so a flipbook open doesn't churn out a video.
@@ -21,7 +21,7 @@ const META_CACHE = `kiosk-meta-${VERSION}`;
 const MAX_STATIC_ENTRIES = 80;
 const MAX_VIDEO_ENTRIES = 32; // 540p transcoded default + opt-in 1080p kiosk-hd
 const MAX_MODEL_ENTRIES = 16; // GLB files per product family
-const MAX_FLIPBOOK_ENTRIES = 240; // success-stories (~48) + catalog (~64) + headroom
+const MAX_FLIPBOOK_ENTRIES = 120; // success-stories (~50 pages) + headroom
 const MAX_IMAGE_ENTRIES = 80; // kiosk-images/, system logos, posters
 const MAX_DATA_ENTRIES = 40;
 
@@ -68,7 +68,6 @@ const PRECACHE_ASSETS = [
   '/data/country_labels.json',
   '/flipbooks/success-stories/manifest.json',
   '/flipbooks/success-stories/tags.csv',
-  '/flipbooks/catalog/manifest.json',
   '/data/world-50m.json',
 ];
 

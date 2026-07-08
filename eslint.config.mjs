@@ -14,6 +14,8 @@ const eslintConfig = [
       'scripts/**',
       // Vendored Draco decoder (emscripten output) — not our code.
       'public/draco/**',
+      // Vendored pdf.js worker (minified) — not our code.
+      'public/pdfjs/**',
     ],
   },
   ...nextVitals,

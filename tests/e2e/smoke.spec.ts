@@ -6,9 +6,21 @@ test('public home loads', async ({ page }) => {
   await expect(page.getByRole('banner')).toBeVisible();
 });
 
-test('catalog flipbook loads', async ({ page }) => {
+test('catalog viewer loads with a searchable PDF', async ({ page }) => {
   await page.goto('/catalog');
   await expect(page.getByRole('heading', { name: /product catalog/i })).toBeVisible();
+  // The pdf.js viewer's search box appears once the document + index load.
+  await expect(page.getByLabel('Search the catalog')).toBeVisible({ timeout: 15000 });
+});
+
+test('success stories opens as a Track Record overlay', async ({ page }) => {
+  await page.goto('/track-record');
+  await page.getByRole('link', { name: /read the success stories/i }).click();
+  await expect(page).toHaveURL(/\?stories=1/);
+  await expect(page.getByRole('dialog', { name: 'Success Stories' })).toBeVisible();
+  // Escape closes it and returns to the clean Track Record URL.
+  await page.keyboard.press('Escape');
+  await expect(page).toHaveURL(/\/track-record$/);
 });
 
 test('success stories loads', async ({ page }) => {

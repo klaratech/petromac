@@ -180,7 +180,9 @@ function syncKioskOfflineAssets(): void {
     typeof entry.url === 'string' && /^\/flipbooks\/[^/]+\/pages\//.test(entry.url);
 
   const pageEntries: { kind: string; url: string }[] = [];
-  for (const docKey of ['success-stories', 'catalog']) {
+  // Only success-stories is an image flipbook the kiosk caches. The catalog
+  // is a public-only pdf.js viewer (not in the kiosk) and has no page images.
+  for (const docKey of ['success-stories']) {
     const manifestPath = path.join(ROOT, 'public', 'flipbooks', docKey, 'manifest.json');
     if (!existsSync(manifestPath)) continue;
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));

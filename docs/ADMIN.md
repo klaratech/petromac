@@ -38,10 +38,19 @@ numbers shown publicly need to be current.
 
 ---
 
-## 2. Flipbooks — Catalog & Success Stories
+## 2. Catalog & Success Stories documents
 
-The interactive flipbooks at `/catalog` and `/success-stories/flipbook`.
-Generated bundles live in `public/flipbooks/{catalog,success-stories}/`.
+The **catalog** at `/catalog` (in-browser pdf.js viewer) and the **success
+stories** flipbook at `/success-stories/flipbook`. Generated bundles live in
+`public/flipbooks/{catalog,success-stories}/`.
+
+- **Catalog** — served as the PDF itself through a searchable pdf.js viewer, so
+  updating it is just a PDF swap. The pipeline ships the linearized `source.pdf`,
+  a compressed `email.pdf`, and `search-index.json` (per-page text for search).
+  No page images. Keep the source PDF's real text + links intact (don't flatten
+  to images) — that's what makes it searchable and clickable.
+- **Success stories** — an image flipbook (WebP pages) with the tags-driven
+  filter system; needs its summary `.xlsx` alongside the PDF.
 
 **When:** the catalog PDF is revised, or the Success Stories PDF / summary
 changes.
@@ -52,10 +61,11 @@ changes.
    - catalog PDF → `sources/catalog/`
    - success-stories PDF **and** its tags `.xlsx` → `sources/success-stories/`
 2. Run `pnpm run data:flipbooks` (needs Ghostscript for `email.pdf`:
-   `brew install ghostscript`). The pipeline emits WebP pages, regenerates
-   `email.pdf`, re-syncs the kiosk offline-assets list, and builds whichever flipbooks have
-   a new PDF, validates the published bundles, and archives the inputs into
-   `sources/_archive/`.
+   `brew install ghostscript`; and qpdf to linearize the catalog:
+   `brew install qpdf`). The pipeline builds whichever documents have a new PDF
+   (catalog → linearized PDF + email.pdf + search index; success stories → WebP
+   pages), regenerates `email.pdf`, re-syncs the kiosk offline-assets list,
+   validates the bundles, and archives the inputs into `sources/_archive/`.
 3. Commit `public/flipbooks/**` and push.
 4. **If the kiosk needs the new content offline:** bump `VERSION` in
    `public/kiosk-sw.js` (see [KIOSK.md](KIOSK.md)) so trade-show devices

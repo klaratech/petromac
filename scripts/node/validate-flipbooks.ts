@@ -74,7 +74,9 @@ async function validateFlipbook(docKey: string, requireTags: boolean) {
       const rows = parseSuccessStoriesTagsCsv(csvText);
       const invalid = rows.filter((row) => row.page < 1 || row.page > manifest.pageCount);
       if (invalid.length > 0) {
-        errors.push(`[${docKey}] tags contain ${invalid.length} pages outside range 1-${manifest.pageCount}`);
+        errors.push(
+          `[${docKey}] tags contain ${invalid.length} pages outside range 1-${manifest.pageCount}`
+        );
       }
     }
   }
@@ -82,10 +84,23 @@ async function validateFlipbook(docKey: string, requireTags: boolean) {
   return errors;
 }
 
+async function validateCatalogPdf() {
+  // The catalog is a PDF document served through the pdf.js viewer, not an
+  // image flipbook — validate its artifacts, not a page manifest.
+  const baseDir = path.join(process.cwd(), 'public', 'flipbooks', 'catalog');
+  const errors: string[] = [];
+  for (const file of ['source.pdf', 'email.pdf', 'search-index.json']) {
+    if (!(await fileExists(path.join(baseDir, file)))) {
+      errors.push(`[catalog] ${file} not found`);
+    }
+  }
+  return errors;
+}
+
 async function run() {
   const errors: string[] = [];
   errors.push(...(await validateFlipbook('success-stories', true)));
-  errors.push(...(await validateFlipbook('catalog', false)));
+  errors.push(...(await validateCatalogPdf()));
 
   if (errors.length > 0) {
     console.error('[validate:flipbooks] Issues detected:');

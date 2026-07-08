@@ -63,7 +63,13 @@ def xlsx_to_tags_csv(xlsx_path: Path, output_csv: Path) -> None:
     print(f"Converted {xlsx_path.name} -> {output_csv.name} ({df.height} rows)")
 
 
-def build_flipbook(input_pdf: Path, output_dir: Path, title: str, tags: Path | None) -> None:
+def build_flipbook(
+    input_pdf: Path,
+    output_dir: Path,
+    title: str,
+    tags: Path | None,
+    pdf_only: bool = False,
+) -> None:
     if not input_pdf.exists():
         raise FileNotFoundError(f"Source PDF not found: {input_pdf}")
 
@@ -76,16 +82,20 @@ def build_flipbook(input_pdf: Path, output_dir: Path, title: str, tags: Path | N
         str(output_dir),
         "--title",
         title,
-        # WebP pages are ~60% smaller than the JPEG equivalents — the
-        # flipbook's first-load payload is almost entirely page images.
-        "--format",
-        "webp",
     ]
 
-    if tags:
-        if not tags.exists():
-            raise FileNotFoundError(f"Tags CSV not found: {tags}")
-        cmd.extend(["--tags", str(tags)])
+    if pdf_only:
+        # Catalog: served through the in-browser pdf.js viewer, so ship the
+        # linearized PDF + email.pdf + search index, not per-page images.
+        cmd.append("--pdf-only")
+    else:
+        # WebP pages are ~60% smaller than the JPEG equivalents — the
+        # flipbook's first-load payload is almost entirely page images.
+        cmd.extend(["--format", "webp"])
+        if tags:
+            if not tags.exists():
+                raise FileNotFoundError(f"Tags CSV not found: {tags}")
+            cmd.extend(["--tags", str(tags)])
 
     run(cmd)
 
@@ -129,8 +139,10 @@ def main() -> None:
             build_flipbook(success_pdf, DEFAULT_SUCCESS_OUT, "Success Stories", tags_csv_path)
 
         if catalog_pdf:
-            print("Building Catalog flipbook...")
-            build_flipbook(catalog_pdf, DEFAULT_CATALOG_OUT, "Product Catalog", None)
+            print("Building Catalog PDF document...")
+            build_flipbook(
+                catalog_pdf, DEFAULT_CATALOG_OUT, "Product Catalog", None, pdf_only=True
+            )
 
         if not args.skip_validate:
             print("Validating flipbooks...")

@@ -1,31 +1,21 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { preload } from 'react-dom';
 import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
-import { FLIPBOOK_KEYS, buildFlipbookPageUrls, getFlipbookBasePath } from '@/features/flipbooks';
-import { useFlipbookManifest } from '@/features/flipbooks/hooks/useFlipbookManifest';
+import { FLIPBOOK_KEYS, getFlipbookBasePath } from '@/features/flipbooks';
 
-const Flipbook = dynamic(() => import('@/components/shared/pdf/Flipbook'), {
+// react-pdf (pdf.js) is ~350 KB gzipped — keep it out of every other page's
+// bundle and off the server (pdf.js is browser-only).
+const CatalogViewer = dynamic(() => import('@/components/public/catalog/CatalogViewer'), {
   ssr: false,
   loading: () => (
-    <div className="min-h-[700px] flex items-center justify-center" role="status">
-      Loading flipbook...
+    <div className="min-h-[700px] flex items-center justify-center text-gray-500" role="status">
+      Loading catalog…
     </div>
   ),
 });
 
 export default function CatalogPage() {
-  const { manifest } = useFlipbookManifest(FLIPBOOK_KEYS.catalog);
-  const pages = buildFlipbookPageUrls(FLIPBOOK_KEYS.catalog, manifest);
-
-  // Start the first spread's downloads in parallel with the page-flip
-  // chunk instead of after it — the manifest is known at build time, so
-  // these URLs are available on first render.
-  for (const url of pages.slice(0, 2)) {
-    preload(url, { as: 'image', fetchPriority: 'high' });
-  }
-
   return (
     <main className="min-h-screen bg-gray-100 overflow-x-hidden">
       <div className="container mx-auto px-4 py-8">
@@ -33,7 +23,8 @@ export default function CatalogPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Product Catalog</h1>
             <p className="text-gray-600 mt-1">
-              Browse our complete catalog of wireline logging devices and solutions
+              Browse, search, and follow links through our complete catalog of wireline logging
+              devices and solutions
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -64,9 +55,7 @@ export default function CatalogPage() {
             </a>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <Flipbook pages={pages} width={600} height={840} />
-        </div>
+        <CatalogViewer />
       </div>
     </main>
   );

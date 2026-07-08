@@ -1,4 +1,5 @@
 import argparse
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -58,7 +59,91 @@ def parse_args():
     parser.add_argument("--page-digits", type=int, default=4, help="Zero pad length for page filenames")
     parser.add_argument("--thumbs", action="store_true", help="Generate thumbnail images")
     parser.add_argument("--thumb-width", type=int, default=320, help="Thumbnail width in pixels")
+    parser.add_argument(
+        "--pdf-only",
+        action="store_true",
+        help=(
+            "Ship the PDF itself (linearized) + email.pdf + a search index, "
+            "instead of rendering per-page images. Used by the catalog, which "
+            "is served through an in-browser pdf.js viewer."
+        ),
+    )
     return parser.parse_args()
+
+
+def linearize_pdf(source_pdf: Path, out_path: Path) -> None:
+    """Copy source -> out, linearized ('fast web view') if qpdf is present.
+
+    Linearization lets the pdf.js viewer stream pages via HTTP range
+    requests instead of downloading the whole file. Falls back to a plain
+    copy (with a warning) if qpdf isn't installed — the viewer still works,
+    it just can't stream as efficiently.
+    """
+    try:
+        subprocess.check_call(
+            ["qpdf", "--linearize", str(source_pdf), str(out_path)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        print("   source.pdf: linearized (qpdf)")
+    except subprocess.CalledProcessError:
+        # qpdf returns 3 for warnings but still writes a valid file.
+        if out_path.exists():
+            print("   source.pdf: linearized with warnings (qpdf)")
+        else:
+            shutil.copyfile(source_pdf, out_path)
+            print("   source.pdf: copied (qpdf linearize failed)")
+    except FileNotFoundError:
+        shutil.copyfile(source_pdf, out_path)
+        print("⚠️  qpdf not found — shipping a non-linearized PDF. Install it "
+              "(e.g. `brew install qpdf`) so the viewer can stream pages.")
+
+
+def build_search_index(source_pdf: Path, out_path: Path) -> int:
+    """Extract per-page text into a small JSON the viewer fetches for search.
+
+    The viewer searches this ~50 KB index instead of scanning the PDF in the
+    browser — reading all pages' text client-side would force the whole file
+    to download, defeating range-request streaming.
+    """
+    reader = PdfReader(str(source_pdf))
+    pages = []
+    for pg in reader.pages:
+        text = re.sub(r"\s+", " ", (pg.extract_text() or "")).strip()
+        pages.append(text)
+    payload = {"pageCount": len(pages), "pages": pages}
+    out_path.write_text(
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
+    size_kb = out_path.stat().st_size // 1024
+    print(f"   search-index.json: {len(pages)} pages, {size_kb} KB")
+    return len(pages)
+
+
+def build_pdf_document(args) -> None:
+    """PDF-only build (catalog): linearized source.pdf + email.pdf + search index."""
+    source_pdf = Path(args.input)
+    if not source_pdf.exists():
+        raise FileNotFoundError(f"Source PDF not found: {source_pdf}")
+
+    out_dir = Path(args.out)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Old flipbook artifacts, if this doc used to be image-rendered.
+    stale_pages = out_dir / "pages"
+    stale_manifest = out_dir / "manifest.json"
+    if stale_pages.exists():
+        shutil.rmtree(stale_pages)
+        print("   removed stale pages/ dir")
+    if stale_manifest.exists():
+        stale_manifest.unlink()
+        print("   removed stale manifest.json")
+
+    linearize_pdf(source_pdf, out_dir / "source.pdf")
+    build_email_pdf(source_pdf, out_dir / "email.pdf")
+    build_search_index(source_pdf, out_dir / "search-index.json")
+    print(f"✅ Built PDF document for {args.title} at {out_dir}")
 
 
 def ensure_empty_dir(path: Path):
@@ -82,6 +167,11 @@ def save_image(image, out_path: Path, fmt: str):
 
 def build_flipbook():
     args = parse_args()
+
+    if args.pdf_only:
+        build_pdf_document(args)
+        return
+
     fmt = args.format.lower()
     if fmt not in SUPPORTED_FORMATS:
         raise ValueError(f"Unsupported format: {fmt}")

@@ -7,7 +7,7 @@ The public site and kiosk both read from the same bundle paths.
 
 Source inputs — dropped into the `sources/` drop zone (any filename):
 
-- `sources/catalog/` - Catalog PDF
+- `sources/catalog/` - Catalog PDF (served via the pdf.js viewer, not an image flipbook)
 - `sources/success-stories/` - Success Stories PDF + the summary xlsx (sheet: "Kiosk")
 
 Generated outputs (checked in):

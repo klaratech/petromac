@@ -43,6 +43,7 @@
     "papaparse": "^5.4.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-pdf": "^10.4.1",
     "three": "^0.175.0",
     "topojson-client": "^3.1.0"
   },

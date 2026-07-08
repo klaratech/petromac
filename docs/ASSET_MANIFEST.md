@@ -194,22 +194,23 @@ The website emails PDF attachments to users on request. The current source PDFs 
 
 ---
 
-## 5. Flipbook Pages
+## 5. Document pages
 
-Flipbook pages are auto-generated from source PDFs by the build pipeline. If you update the source PDFs, the pages regenerate automatically via `pnpm run data`.
+**Catalog** is served as the PDF itself through the pdf.js viewer (Jul 2026) — no
+page images. The pipeline ships `source.pdf` (linearized), `email.pdf`, and
+`search-index.json`. Keep the source PDF's real text + links (don't flatten to
+images) so search and links work.
 
-**Current stats (for reference only — no manual action needed):**
+**Success Stories** is still an image flipbook, auto-generated from the source PDF
+by the pipeline via `pnpm run data`.
 
 | Flipbook        | Pages | Dimensions     | Avg Size | Total  | Format |
 | --------------- | ----- | -------------- | -------- | ------ | ------ |
-| Catalog         | 62    | 1241 x 1754 px | ~85 KB   | 5.2 MB | WebP   |
 | Success Stories | 50    | 1241 x 1754 px | ~150 KB  | 7.5 MB | WebP   |
 
 **Display sizes:**
 
-- Catalog: renders at 800 x 600 px (landscape spread)
-- Success Stories: renders at 600 x 800 px (portrait spread)
-- Mobile: single page, ~240-320 px wide
+- Success Stories: renders at 600 x 800 px (portrait spread); mobile single page ~240-320 px wide
 
 > If updating source PDFs, ensure they're print-quality. The build pipeline handles image extraction and sizing.
 
