@@ -51,10 +51,7 @@ export default function FeaturedProducts() {
   return (
     <section className="py-20 px-6 bg-slate-50">
       <div className="max-w-7xl mx-auto">
-        <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold text-center mb-3">
-          Products
-        </p>
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 text-center mb-4">
+        <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand text-center mb-4">
           Purpose-built hardware
         </h2>
         <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">

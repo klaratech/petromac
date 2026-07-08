@@ -102,10 +102,7 @@ export default function ChallengeSelector() {
   return (
     <section id="challenge-selector" className="py-20 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
-        <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold text-center mb-3">
-          Challenges
-        </p>
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 text-center mb-4">
+        <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand text-center mb-4">
           What challenge are you facing?
         </h2>
         <p className="text-slate-600 text-center mb-12 max-w-2xl mx-auto">

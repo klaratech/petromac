@@ -17,8 +17,7 @@ export default function ProofSection() {
   return (
     <section className="py-20 px-6 bg-white">
       <div className="max-w-5xl mx-auto text-center">
-        <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">Proof</p>
-        <h2 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-14">
+        <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand mb-14">
           Proven in the field
         </h2>
 
