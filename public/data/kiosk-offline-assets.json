@@ -473,32 +473,32 @@
     {
       "kind": "video",
       "url": "/videos/kiosk-hd/dice.mp4",
-      "label": "1080p kiosk-hd \u00b7 dice intro"
+      "label": "1080p kiosk-hd · dice intro"
     },
     {
       "kind": "video",
       "url": "/videos/kiosk-hd/WirelineExpress.mp4",
-      "label": "1080p kiosk-hd \u00b7 WirelineExpress"
+      "label": "1080p kiosk-hd · WirelineExpress"
     },
     {
       "kind": "video",
       "url": "/videos/kiosk-hd/WirelineExpress-subtitled.mp4",
-      "label": "1080p kiosk-hd \u00b7 WirelineExpress (subtitled)"
+      "label": "1080p kiosk-hd · WirelineExpress (subtitled)"
     },
     {
       "kind": "video",
       "url": "/videos/kiosk-hd/pf-subtitled.mp4",
-      "label": "1080p kiosk-hd \u00b7 PathFinder (subtitled)"
+      "label": "1080p kiosk-hd · PathFinder (subtitled)"
     },
     {
       "kind": "video",
       "url": "/videos/kiosk-hd/helix-subtitled.mp4",
-      "label": "1080p kiosk-hd \u00b7 Helix (subtitled)"
+      "label": "1080p kiosk-hd · Helix (subtitled)"
     },
     {
       "kind": "video",
       "url": "/videos/kiosk-hd/differential-sticking-subtitled.mp4",
-      "label": "1080p kiosk-hd \u00b7 Differential Sticking (subtitled)"
+      "label": "1080p kiosk-hd · Differential Sticking (subtitled)"
     },
     {
       "kind": "model",
