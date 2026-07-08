@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import LazyVideo from './LazyVideo';
 
 // NOTE: this used to import framer-motion for the card expand + detail-panel
 // animations. framer-motion is ~5 MB of dep and sat in the public common
@@ -130,14 +131,9 @@ export default function ChallengeSelector() {
               >
                 <div className="relative h-48 overflow-hidden bg-slate-800">
                   {c.video ? (
-                    <video
+                    <LazyVideo
                       src={c.video}
                       poster={c.image}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
                       className="absolute inset-0 w-full h-full object-cover"
                     />
                   ) : (

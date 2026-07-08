@@ -1,12 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import LazyVideo from './LazyVideo';
 
 export default function Hero() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
   return (
     <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
       {/* Background video (desktop) / static image (mobile).
@@ -24,18 +22,15 @@ export default function Hero() {
           aria-hidden="true"
           priority
         />
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
+        {/* Desktop only (`hidden md:block`). Routed through LazyVideo so it
+            loads only when its box is on screen — a display:none element
+            never intersects, so mobile serves just the poster image above
+            and never downloads the 13 MB clip. */}
+        <LazyVideo
+          src="/videos/transcoded/WirelineExpress.mp4"
           poster="/images/hero-poster.jpg"
           className="absolute inset-0 w-full h-full object-cover hidden md:block"
-        >
-          <source src="/videos/transcoded/WirelineExpress.mp4" type="video/mp4" />
-        </video>
+        />
       </div>
 
       {/* Dark gradient overlay */}

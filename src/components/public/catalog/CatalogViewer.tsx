@@ -22,13 +22,17 @@ const PAGE_ASPECT = 1754 / 1241;
 // stay as placeholders. Keeps 62 pages from eating mobile memory.
 const RENDER_MARGIN = '1200px';
 
-// Stream pages on demand instead of pdf.js's default: eagerly pulling the
-// whole 18 MB in the background. The PDF is linearized + the server honors
-// range requests, so visible pages (and the small per-page text streams the
-// search index reads) fetch as 206 chunks.
+// Range-only fetching so we never pull the whole PDF. The PDF is
+// linearized and the server honors range requests, so pages fetch as
+// 206 chunks on demand.
+//   - disableAutoFetch: don't eagerly prefetch every page in the background.
+//   - disableStream: don't open a full-file progressive stream. This one
+//     matters through Cloudflare: with streaming on, the full-file request
+//     runs to completion at edge speed before pdf.js aborts it, so the
+//     whole ~11 MB downloads (measured on live) on top of the range chunks.
 const DOCUMENT_OPTIONS = {
   disableAutoFetch: true,
-  disableStream: false,
+  disableStream: true,
 };
 
 interface PageMatch {

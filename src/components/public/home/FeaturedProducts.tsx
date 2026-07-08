@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import LazyVideo from './LazyVideo';
 
 interface Product {
   name: string;
@@ -67,14 +68,9 @@ export default function FeaturedProducts() {
             >
               <div className="relative h-48 bg-slate-100 flex items-center justify-center overflow-hidden">
                 {p.video ? (
-                  <video
+                  <LazyVideo
                     src={p.video}
                     poster={p.image ?? undefined}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 ) : p.image ? (
