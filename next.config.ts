@@ -59,55 +59,53 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
   async headers() {
+    // Cache policy (Jul 2026). Requires Cloudflare's Browser Cache TTL set to
+    // "Respect Existing Headers" — otherwise CF overrides all of this with a
+    // blanket 4 h (and the origin default of max-age=0 for /public assets).
+    //
+    // Content cadence: everything is a ~quarterly refresh except operations
+    // data (weekly). Content swaps reuse the SAME filenames, and browser
+    // caches can't be purged remotely — so instead of huge max-ages we use
+    // moderate max-age + long stale-while-revalidate: the browser serves from
+    // cache instantly, then revalidates in the background (Next sends ETags,
+    // so unchanged files are a tiny 304). Staleness after a swap is bounded
+    // by max-age; speed is a cache hit either way.
+    const day = 86400;
+    const week = 7 * day;
+    const month = 30 * day;
+    // Quarterly-refresh media/documents: fresh within a day of a swap.
+    const quarterlyAssets = `public, max-age=${day}, stale-while-revalidate=${month}`;
+    // Weekly-refresh data: up to a week stale is acceptable per content owner.
+    const weeklyData = `public, max-age=${day}, stale-while-revalidate=${week}`;
+
+    const cacheRule = (source: string, value: string) => ({
+      source,
+      headers: [{ key: 'Cache-Control', value }],
+    });
+
     return [
       {
         source: '/(.*)',
         headers: securityHeaders,
       },
-      {
-        // operations_data.json (slim, ~600 KB) is fetched by Track Record
-        // on every public visit and by the kiosk dashboard. The previous
-        // `no-store` re-downloaded the full payload on every navigation.
-        // With max-age=300 + stale-while-revalidate=86400, browsers serve
-        // from cache for 5 minutes, then revalidate in the background
-        // (Next.js sets an ETag on /public assets, so the revalidation is
-        // usually a 304). The data only changes when the pipeline
-        // regenerates the file (occasional manual run), so this is safe.
-        source: '/data/operations_data.json',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=300, stale-while-revalidate=86400',
-          },
-        ],
-      },
-      {
-        // world-50m.json (~740 KB) is static reference geometry — it only
-        // changes if we swap map resolutions (last done May 2026, with a
-        // filename change). Cache hard for a day and serve stale for a
-        // month while revalidating; without this it fell through to the
-        // default max-age=0 and re-downloaded far too often.
-        source: '/data/world-50m.json',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=86400, stale-while-revalidate=2592000',
-          },
-        ],
-      },
-      {
-        // operations_full.json (~3.5 MB) is the same data with all 33
-        // columns from the source xlsx — only fetched by the staff
-        // diagnostic at /intranet/kiosk/datacheck. Same cache policy as
-        // the slim file (it's behind the intranet anyway).
-        source: '/data/operations_full.json',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=300, stale-while-revalidate=86400',
-          },
-        ],
-      },
+      // --- Quarterly content + stable site assets ---
+      cacheRule('/flipbooks/:path*', quarterlyAssets), // catalog PDFs + success-stories pages
+      cacheRule('/images/:path*', quarterlyAssets),
+      cacheRule('/videos/:path*', quarterlyAssets),
+      cacheRule('/models/:path*', quarterlyAssets), // kiosk GLBs
+      cacheRule('/draco/:path*', quarterlyAssets), // Draco decoder (changes with three.js upgrades)
+      cacheRule('/pdfjs/:path*', quarterlyAssets), // pdf.js worker (changes with react-pdf upgrades)
+      cacheRule('/icons/:path*', quarterlyAssets),
+      // world-50m.json is static reference geometry (last changed May 2026,
+      // with a filename change) — safe to treat like the quarterly bucket.
+      cacheRule('/data/world-50m.json', quarterlyAssets),
+      // --- Weekly-refresh operations data (Track Record, kiosk dashboard,
+      //     datacheck, prime manifest) ---
+      cacheRule('/data/operations_data.json', weeklyData),
+      cacheRule('/data/operations_full.json', weeklyData),
+      cacheRule('/data/operations_stats.json', weeklyData),
+      cacheRule('/data/country_labels.json', weeklyData),
+      cacheRule('/data/kiosk-offline-assets.json', weeklyData),
     ];
   },
 };
