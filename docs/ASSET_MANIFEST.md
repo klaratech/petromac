@@ -194,7 +194,7 @@ to images, that's what makes the catalog searchable and its links clickable.
 ## 5. Document pages
 
 **Catalog** is served as the PDF itself through the pdf.js viewer (Jul 2026) — no
-page images. The pipeline ships one `source.pdf` (compressed <4 MB + linearized) and
+page images. The pipeline ships one `petromac-product-catalog.pdf` (compressed <4 MB + linearized) and
 `search-index.json`. Keep the source PDF's real text + links (don't flatten to
 images) so search and links work.
 
