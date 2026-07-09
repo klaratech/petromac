@@ -1,86 +1,132 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import StaffIdentityCard from '@/components/shared/StaffIdentityCard';
+import { useSearchParams } from 'next/navigation';
+import { useStaffSession } from '@/hooks/useStaffSession';
+
+const LOGIN_HREF = '/auth/microsoft/login?returnTo=/intranet';
+const LOGOUT_HREF = '/auth/microsoft/logout?returnTo=/intranet';
 
 export default function IntranetHome() {
+  return (
+    <Suspense fallback={<GateScreen title="Checking staff session…" />}>
+      <IntranetContent />
+    </Suspense>
+  );
+}
+
+/**
+ * The page is fully gated: signed-out visitors see nothing but a minimal
+ * redirect screen on their way to Microsoft sign-in. Content (the three
+ * tiles) renders only once authenticated — or when staff auth isn't
+ * configured at all (local dev without Entra env vars).
+ */
+function IntranetContent() {
+  const searchParams = useSearchParams();
+  const authError = searchParams.get('authError');
+  const { enabled, authenticated, user, isLoading } = useStaffSession();
+  const [showKioskInstructions, setShowKioskInstructions] = useState(false);
+
   const athenaProdUrl = process.env.NEXT_PUBLIC_ATHENA_PROD_URL || 'https://athena.petromac.co.nz/';
   const athenaTestUrl =
     process.env.NEXT_PUBLIC_ATHENA_TEST_URL || 'https://test.athena.digitaltwins.com.bo/#/login';
-  const [showKioskInstructions, setShowKioskInstructions] = useState(false);
+
+  // Straight to Microsoft — sessions last 12 h, so this only fires without
+  // a valid session. The authError guard prevents a redirect loop when a
+  // sign-in fails or is cancelled.
+  const shouldAutoSignIn = !isLoading && enabled && !authenticated && !authError;
+  useEffect(() => {
+    if (shouldAutoSignIn) window.location.replace(LOGIN_HREF);
+  }, [shouldAutoSignIn]);
+
+  if (isLoading) return <GateScreen title="Checking staff session…" />;
+  if (shouldAutoSignIn)
+    return (
+      <GateScreen
+        title="Redirecting to Microsoft sign-in…"
+        subtitle="Use your Petromac Microsoft 365 account."
+      />
+    );
+  if (enabled && !authenticated)
+    return (
+      <GateScreen
+        title="Microsoft sign-in failed"
+        subtitle={authError ? `Reason: ${authError}` : undefined}
+        retryHref={LOGIN_HREF}
+      />
+    );
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-8 py-12 bg-gray-50 text-gray-900">
-      <h1 className="text-3xl font-bold">Intranet</h1>
-
-      <Suspense
-        fallback={
-          <section className="w-full max-w-5xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-slate-600">Checking Microsoft staff session...</p>
-          </section>
-        }
-      >
-        <StaffIdentityCard />
-      </Suspense>
-
-      <section className="w-full max-w-5xl">
-        <div className="mb-4 text-center">
-          <h2 className="text-xl font-semibold text-gray-900">Quick Links</h2>
+    <main className="min-h-screen bg-gray-50 text-gray-900">
+      {/* Slim identity strip — top right */}
+      {enabled && authenticated && user ? (
+        <div className="w-full border-b border-slate-200 bg-white">
+          <div className="mx-auto flex max-w-5xl items-center justify-end gap-3 px-4 py-2 text-sm text-slate-600">
+            <span>
+              Signed in as <span className="font-medium text-slate-900">{user.email}</span>
+            </span>
+            <a
+              href={LOGOUT_HREF}
+              className="rounded-lg border border-slate-300 px-3 py-1 font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
+            >
+              Sign out
+            </a>
+          </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {/* Athena Production */}
-          <a
-            href={athenaProdUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
-          >
-            <Image
-              src="/images/athena_logo.png"
-              alt="Athena Production"
-              width={64}
-              height={64}
-              className="object-contain"
-            />
-            <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Prod)</h3>
-          </a>
+      ) : null}
 
-          {/* Athena Test */}
-          <a
-            href={athenaTestUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
-          >
-            <Image
-              src="/images/athena_logo_beta.png"
-              alt="Athena Test"
-              width={64}
-              height={64}
-              className="object-contain"
-            />
-            <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Test)</h3>
-          </a>
-        </div>
-      </section>
+      <div className="flex flex-col items-center gap-10 py-16">
+        <h1 className="text-3xl font-bold">Intranet</h1>
 
-      <section className="w-full max-w-5xl">
-        <div className="mb-4 text-center">
-          <h2 className="text-xl font-semibold text-gray-900">Internal Applications</h2>
-        </div>
-        <div className="grid gap-4 justify-items-center">
-          {/* Kiosk */}
-          <button
-            onClick={() => setShowKioskInstructions(true)}
-            className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 cursor-pointer bg-white w-full max-w-xs"
-          >
-            <div className="w-16 h-16 flex items-center justify-center text-3xl">🖥️</div>
-            <h3 className="text-base font-semibold tracking-wide text-gray-900">Kiosk</h3>
-          </button>
-        </div>
-      </section>
+        <section className="w-full max-w-5xl px-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            {/* Athena Production */}
+            <a
+              href={athenaProdUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
+            >
+              <Image
+                src="/images/athena_logo.png"
+                alt="Athena Production"
+                width={64}
+                height={64}
+                className="object-contain"
+              />
+              <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Prod)</h3>
+            </a>
+
+            {/* Athena Test */}
+            <a
+              href={athenaTestUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
+            >
+              <Image
+                src="/images/athena_logo_beta.png"
+                alt="Athena Test"
+                width={64}
+                height={64}
+                className="object-contain"
+              />
+              <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Test)</h3>
+            </a>
+
+            {/* Kiosk */}
+            <button
+              onClick={() => setShowKioskInstructions(true)}
+              className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 cursor-pointer bg-white"
+            >
+              <div className="w-16 h-16 flex items-center justify-center text-3xl">🖥️</div>
+              <h3 className="text-base font-semibold tracking-wide text-gray-900">Kiosk</h3>
+            </button>
+          </div>
+        </section>
+      </div>
 
       {/* Kiosk Instructions Modal */}
       {showKioskInstructions && (
@@ -159,6 +205,31 @@ export default function IntranetHome() {
           </div>
         </div>
       )}
+    </main>
+  );
+}
+
+function GateScreen({
+  title,
+  subtitle,
+  retryHref,
+}: {
+  title: string;
+  subtitle?: string | undefined;
+  retryHref?: string | undefined;
+}) {
+  return (
+    <main className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50 px-4 text-center text-gray-900">
+      <h1 className="text-2xl font-semibold">{title}</h1>
+      {subtitle ? <p className="text-sm text-slate-600">{subtitle}</p> : null}
+      {retryHref ? (
+        <a
+          href={retryHref}
+          className="mt-2 inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand/90"
+        >
+          Sign in with Microsoft
+        </a>
+      ) : null}
     </main>
   );
 }
