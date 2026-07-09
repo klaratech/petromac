@@ -24,6 +24,12 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Security / hardening
 
+- [ ] Migrate outbound email from SMTP basic auth to Microsoft Graph
+      sendMail before Dec 2026 — Microsoft disables SMTP AUTH basic by
+      default at end of Dec 2026 (timeline revised Jan 2026; final removal
+      announced 2027). The "Petromac Intranet" Entra app already has
+      Mail.Send. Until then the app-password SMTP setup is fine.
+
 - [ ] Cloudflare Turnstile on the contact form (org standard; currently
       honeypot + timing only)
 - [ ] PDF-email domain allowlist permits any address in an allowed domain —
