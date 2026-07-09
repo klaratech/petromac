@@ -16,9 +16,12 @@ sign-in + `MAIL_SENDER`.
 all. Creating a licensed service user just for SMTP would be ~$4/mo of
 throwaway work, because Microsoft disables SMTP AUTH basic auth by end of Dec
 2026 anyway (Graph is the forced end-state). Graph sends as a shared mailbox
-with zero extra licensing. Sending "as the signed-in staff member" from the
-kiosk is deferred — that needs delegated tokens persisted server-side; the app
-reserved `Mail.Send` delegated for it.
+with zero extra licensing. Kiosk emails additionally send "as the signed-in staff member" (delegated
+Graph `/me/sendMail`): the delegated access token is kept short-lived in the
+encrypted session cookie (no refresh token), the send happens in a Next.js
+route so the token never reaches FastAPI or client JS, and it falls back to
+`info@` when there's no valid staff token. A cookie-size guard drops the token
+rather than risk an oversized (silently-discarded) cookie.
 
 ## Jul 2026 — Intranet gated server-side; sign-out lands on the homepage
 

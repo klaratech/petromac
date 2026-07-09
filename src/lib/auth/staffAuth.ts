@@ -168,6 +168,14 @@ export function readStaffSessionCookie(value: string | undefined | null): StaffS
   return session;
 }
 
+export function getStaffGraphToken(session: StaffSession | null): string | null {
+  const graph = session?.graph;
+  if (!graph?.accessToken || !graph.expiresAt) return null;
+  // 60 s skew so we don't hand out a token about to expire mid-request.
+  if (graph.expiresAt <= Date.now() + 60_000) return null;
+  return graph.accessToken;
+}
+
 export function readStaffSession(cookies: CookieReader): StaffSession | null {
   try {
     return readStaffSessionCookie(cookies.get(SESSION_COOKIE_NAME)?.value);

@@ -7,6 +7,7 @@ interface StaffSessionState {
   enabled: boolean;
   authenticated: boolean;
   user: StaffUser | null;
+  canSendAsStaff: boolean;
   isLoading: boolean;
 }
 
@@ -14,6 +15,7 @@ const initialState: StaffSessionState = {
   enabled: false,
   authenticated: false,
   user: null,
+  canSendAsStaff: false,
   isLoading: true,
 };
 

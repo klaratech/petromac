@@ -2,6 +2,7 @@
 
 import { useId, useState } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
+import { useStaffSession } from '@/hooks/useStaffSession';
 
 interface EmailPdfButtonProps {
   pdfUrl?: string;
@@ -27,6 +28,9 @@ export function EmailPdfButton({
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  // When a staff member is signed in (kiosk), send AS them via the Next.js
+  // staff route; otherwise send from info@ via the FastAPI backend.
+  const { canSendAsStaff } = useStaffSession();
 
   const handleReveal = () => {
     if (disabled) return;
@@ -39,19 +43,34 @@ export function EmailPdfButton({
     setIsLoading(true);
     setMessage(null);
 
+    const requestBody = JSON.stringify({ email, pdfUrl, pdfType, ...payload });
+
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          pdfUrl,
-          pdfType,
-          ...payload,
-        }),
-      });
+      let response: Response | null = null;
+
+      // Prefer send-as-staff on the kiosk. Same-origin (no NEXT_PUBLIC_API
+      // prefix) — the route reads the httpOnly session cookie. A 401 means
+      // the token lapsed; fall through to the info@ sender.
+      if (canSendAsStaff) {
+        const staffRes = await fetch('/api/staff/send-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: requestBody,
+        });
+        if (staffRes.ok) {
+          response = staffRes;
+        } else if (staffRes.status !== 401) {
+          throw new Error('Failed to send email');
+        }
+      }
+
+      if (!response) {
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: requestBody,
+        });
+      }
 
       if (!response.ok) {
         throw new Error('Failed to send email');

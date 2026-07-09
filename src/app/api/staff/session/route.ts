@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { isStaffAuthConfigured, readStaffSession } from '@/lib/auth/staffAuth';
+import { getStaffGraphToken, isStaffAuthConfigured, readStaffSession } from '@/lib/auth/staffAuth';
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -10,5 +10,8 @@ export async function GET() {
     enabled: isStaffAuthConfigured(),
     authenticated: Boolean(session),
     user: session?.user ?? null,
+    // Whether the kiosk can send email AS this staff member right now (the
+    // delegated Graph token is still valid). Never expose the token itself.
+    canSendAsStaff: getStaffGraphToken(session) !== null,
   });
 }

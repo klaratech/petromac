@@ -51,15 +51,28 @@ export async function GET(request: NextRequest) {
       user,
       issuedAt: now,
       expiresAt: now + getStaffSessionTtlSeconds() * 1000,
+      // Keep the delegated Graph token so the kiosk can send mail as this
+      // staff member. Short-lived (Microsoft ~1 h); no refresh token stored.
+      graph: {
+        accessToken: tokens.access_token,
+        expiresAt: now + (tokens.expires_in ?? 3600) * 1000,
+      },
     };
+
+    // Cookie-size guard: the Graph token can push the encrypted cookie past
+    // the browser's ~4 KB limit, and an oversized Set-Cookie is silently
+    // dropped — which would break the whole session. If it's too big, drop
+    // the token (staff-send falls back to info@) but keep the session.
+    let cookieValue = createStaffSessionCookieValue(session);
+    if (cookieValue.length > 3800) {
+      const { graph: _dropped, ...sessionWithoutToken } = session;
+      void _dropped;
+      cookieValue = createStaffSessionCookieValue(sessionWithoutToken);
+    }
 
     const safeReturnTo = normalizeReturnTo(statePayload.returnTo);
     const response = NextResponse.redirect(new URL(safeReturnTo, getRequestOrigin(request)));
-    response.cookies.set(
-      getSessionCookieName(),
-      createStaffSessionCookieValue(session),
-      buildSessionCookieOptions()
-    );
+    response.cookies.set(getSessionCookieName(), cookieValue, buildSessionCookieOptions());
     response.cookies.set(getOAuthStateCookieName(), '', clearCookieOptions());
     return response;
   } catch (error) {
