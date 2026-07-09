@@ -5,7 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { StaffUser } from '@/types/staffSession';
 
-const LOGOUT_HREF = '/auth/microsoft/logout?returnTo=/intranet';
+// Send sign-outs to the public homepage: returning to /intranet would hit
+// the auth gate and immediately bounce the user into the Microsoft sign-in
+// screen — slow and confusing right after choosing to leave.
+const LOGOUT_HREF = '/auth/microsoft/logout?returnTo=/';
 
 export default function IntranetClient({ user }: { user: StaffUser | null }) {
   const [showKioskInstructions, setShowKioskInstructions] = useState(false);
@@ -19,7 +22,7 @@ export default function IntranetClient({ user }: { user: StaffUser | null }) {
       {/* Identity strip — email + sign out, right-aligned */}
       {user ? (
         <div className="w-full border-b border-slate-200 bg-white">
-          <div className="mx-auto flex max-w-5xl items-center justify-end gap-3 px-4 py-2 text-sm">
+          <div className="flex items-center justify-end gap-3 px-6 py-2 text-sm">
             <span className="font-medium text-slate-900">{user.email}</span>
             <a
               href={LOGOUT_HREF}
