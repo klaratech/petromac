@@ -4,15 +4,16 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Go-live checklist
 
-- [ ] Cloudflare: Browser Cache TTL → **"Respect Existing Headers"** (activates
-      the cadence-based cache policy shipped in `next.config.ts`)
-- [ ] Cloudflare: enable **Brotli** (Speed → Optimization) — free ~15–20% on JS/JSON/HTML
+- [x] Cloudflare: Cache Rule scoped to the petromac hostname with Browser TTL
+      "Respect origin TTL" (done Jul 2026 — cadence cache policy active; HTML
+      kept out of edge cache)
+- [x] Cloudflare: Brotli confirmed on (Jul 2026)
 - [ ] Decide AI-crawler policy (Cloudflare currently blocks GPTBot/ClaudeBot/etc. —
       trade-off: content protection vs. AI assistants knowing Petromac products)
-- [ ] Microsoft Entra app registration for staff sign-in
-      ([docs/MS365_ENTRA_KIOSK_SETUP.md](docs/MS365_ENTRA_KIOSK_SETUP.md)) —
-      works on localhost + petromac.klaratech.it now; add the production
-      domain's callback URL when it exists
+- [x] Microsoft Entra staff sign-in LIVE (Jul 2026) — app "Petromac Intranet",
+      all three redirect URIs incl. petromac.co.nz pre-registered, /intranet
+      server-gated, sign-out lands on the homepage. Secret in 1Password
+      ("Petromac Entra Client Secret", renew ~Jul 2028).
 - [ ] SMTP env vars on the server (`.env-backend`) so contact form + PDF email
       work ([docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md)) — currently NOT
       configured in production; email features are dead until then

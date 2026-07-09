@@ -5,6 +5,40 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Jul 2026 — Intranet gated server-side; sign-out lands on the homepage
+
+**Decision:** `/intranet` verifies the session cookie in the initial request
+and 307s unauthenticated visitors straight to Microsoft sign-in — no page
+shell, no client-side session check. Sign-out redirects to `/` (allowlisted
+in `normalizeReturnTo`).
+**Why:** The client-side gate loaded the page, hydrated, fetched the session,
+and then redirected — slow and it flashed the content. Sign-out previously
+returned to `/intranet`, which bounced freshly signed-out users back into the
+Microsoft sign-in screen. Behind the tunnel, OAuth redirect URIs must come
+from `getRequestOrigin()` (proxy headers) — `request.nextUrl.origin` resolves
+to the container bind address and Microsoft rejects it (AADSTS50011).
+
+## Jul 2026 — Catalog viewer: self-contained scroller + book spreads
+
+**Decision:** The catalog viewer scrolls inside its own fixed-height area
+with the toolbar always visible above it; pages lay out as book spreads
+(cover alone, then 2-3, 4-5, …) at ~80% of the container width on wide
+screens, single column below 1024px. PDF/worker/search-index are preload()ed
+in parallel with the viewer chunk; a progress bar shows download %.
+**Why:** The sticky toolbar never worked — the page shell's
+`overflow-x-hidden` forces `overflow-y` non-visible, which disables
+position:sticky on descendants (CSS spec). Search jumps scrolled the whole
+document and lost the toolbar. Single-column pages wasted desktop width.
+The assets loaded as a serial discovery chain (chunk → worker → PDF).
+
+## Jul 2026 — Nav: Team merged under About
+
+**Decision:** Team left the top bar; About carries a hover/focus dropdown
+(Team, Patents, Publications) and highlights as active for `/team` too. The
+About page sidebar lists the same three in the same order.
+**Why:** Team is company info — one fewer top-level item, and the About
+cluster (team/patents/publications) reads as one destination.
+
 ## Jul 2026 — Single-PDF catalog scheme
 
 **Decision:** When a new catalog lands, compress it to <4 MB (Ghostscript) and

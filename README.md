@@ -27,7 +27,7 @@ pnpm run dev          # http://localhost:3000
 Stories opens as an overlay) · `/success-stories/flipbook` · `/simulation` ·
 `/contact` · `/privacy` · `/terms`
 
-**Staff:** `/intranet` (Microsoft sign-in optional) · `/intranet/kiosk/*`
+**Staff:** `/intranet` (gated behind Microsoft sign-in when Entra is configured; 12 h sessions) · `/intranet/kiosk/*`
 (trade-show kiosk: dashboard, 3d-viewer, lane, ch, successstories, datacheck,
 prime)
 

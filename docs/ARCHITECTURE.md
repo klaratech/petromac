@@ -6,10 +6,14 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
 
 - **Public site** — Next.js 16 App Router route group `(public)`, Tailwind 4.
   Notable pages: `/track-record` (d3 drill-down map, lazy-loaded; Success
-  Stories opens as an overlay via `?stories=1`) and `/catalog` (pdf.js viewer
-  with selectable text, links, and a full-document search box).
-- **Intranet** — `/intranet` staff entry (optional Microsoft Entra sign-in via
-  `/auth/microsoft/*`; AES-GCM session cookie) linking to Athena and the kiosk.
+  Stories opens as an overlay via `?stories=1`) and `/catalog` (pdf.js viewer:
+  book-style two-page spreads on wide screens, self-contained scroll area
+  with an always-visible toolbar, selectable text, links, and a
+  full-document search box).
+- **Intranet** — `/intranet` is server-gated behind Microsoft Entra sign-in
+  (`/auth/microsoft/*`; AES-GCM session cookie, 12 h TTL; unauthenticated
+  visitors 307 straight to Microsoft). Links to Athena and the kiosk.
+  Unconfigured environments (no Entra env vars) skip the gate for dev.
 - **Kiosk** — route group `(kiosk)` under `/intranet/kiosk/*`: splash → Open
   Hole video attractor (`/lane?lane=oh`) or Cased Hole `HelixExperience`
   (`/ch`), plus dashboard, 3d-viewer, successstories, datacheck, and the

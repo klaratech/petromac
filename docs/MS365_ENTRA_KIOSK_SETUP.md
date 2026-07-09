@@ -1,5 +1,11 @@
 # Microsoft 365 / Entra Setup For Staff Sign-In
 
+> **Status: DONE (Jul 2026).** App "Petromac Intranet" is registered and live in
+> production; `/intranet` is gated behind sign-in. This guide remains as the
+> runbook for re-setup or secret rotation. Server config lives in
+> `/root/apps/petromac/.env-frontend`; the tunnel needs the `/api/staff/.*`
+> ingress exception (see DEPLOY.md).
+
 This guide sets up Microsoft sign-in for Petromac intranet and kiosk so staff identity can carry into kiosk-assisted workflows.
 
 ## Goal
