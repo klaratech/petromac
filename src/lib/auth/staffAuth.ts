@@ -1,4 +1,10 @@
-import { createCipheriv, createDecipheriv, createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+import {
+  createCipheriv,
+  createDecipheriv,
+  createHash,
+  randomBytes,
+  timingSafeEqual,
+} from 'node:crypto';
 import type { StaffSession } from '@/types/staffSession';
 
 interface OAuthStatePayload {
@@ -32,10 +38,17 @@ function getEncryptionKey() {
 function encryptJson(payload: Record<string, unknown>): string {
   const iv = randomBytes(12);
   const cipher = createCipheriv('aes-256-gcm', getEncryptionKey(), iv);
-  const ciphertext = Buffer.concat([cipher.update(JSON.stringify(payload), 'utf8'), cipher.final()]);
+  const ciphertext = Buffer.concat([
+    cipher.update(JSON.stringify(payload), 'utf8'),
+    cipher.final(),
+  ]);
   const tag = cipher.getAuthTag();
 
-  return [iv.toString('base64url'), tag.toString('base64url'), ciphertext.toString('base64url')].join('.');
+  return [
+    iv.toString('base64url'),
+    tag.toString('base64url'),
+    ciphertext.toString('base64url'),
+  ].join('.');
 }
 
 function decryptJson<T>(value: string): T | null {
@@ -67,9 +80,9 @@ function secureCookie() {
 export function isStaffAuthConfigured() {
   return Boolean(
     process.env.ENTRA_TENANT_ID &&
-      process.env.ENTRA_CLIENT_ID &&
-      process.env.ENTRA_CLIENT_SECRET &&
-      process.env.STAFF_SESSION_SECRET
+    process.env.ENTRA_CLIENT_ID &&
+    process.env.ENTRA_CLIENT_SECRET &&
+    process.env.STAFF_SESSION_SECRET
   );
 }
 
@@ -100,7 +113,9 @@ export function normalizeReturnTo(value: string | null | undefined) {
   if (parsed.origin !== 'https://petromac.local') return fallback;
 
   const normalized = `${parsed.pathname}${parsed.search}${parsed.hash}`;
-  if (!(normalized === '/intranet' || normalized.startsWith('/intranet/'))) {
+  // Allowlist: intranet paths, plus the public homepage (sign-out lands
+  // there). Everything else falls back — open-redirect protection.
+  if (!(normalized === '/' || normalized === '/intranet' || normalized.startsWith('/intranet/'))) {
     return fallback;
   }
 
