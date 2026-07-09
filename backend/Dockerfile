@@ -24,7 +24,9 @@ COPY backend /app/backend
 # Bake ONLY the public/ subset the backend actually reads.
 # The rest of public/ (videos, 3D models, flipbook page images, etc.)
 # is served by the frontend and intentionally left out of this image.
-# email.pdf is optional per flipbook; the backend falls back to source.pdf.
+# Catalog uses a single-PDF scheme: source.pdf is already compressed <4 MB
+# and serves email too. Success-stories keeps a separate email.pdf (its
+# source stays full-res for page rendering); backend falls back to source.pdf.
 RUN --mount=type=bind,source=public,target=/tmp/public,readonly \
     mkdir -p /app/public/data \
       /app/public/flipbooks/catalog \
@@ -32,7 +34,6 @@ RUN --mount=type=bind,source=public,target=/tmp/public,readonly \
  && cp /tmp/public/data/operations_data.json /app/public/data/operations_data.json \
  && cp /tmp/public/data/country_labels.json /app/public/data/country_labels.json \
  && cp /tmp/public/flipbooks/catalog/source.pdf /app/public/flipbooks/catalog/source.pdf \
- && if [ -f /tmp/public/flipbooks/catalog/email.pdf ]; then cp /tmp/public/flipbooks/catalog/email.pdf /app/public/flipbooks/catalog/email.pdf; fi \
  && cp /tmp/public/flipbooks/success-stories/source.pdf /app/public/flipbooks/success-stories/source.pdf \
  && if [ -f /tmp/public/flipbooks/success-stories/email.pdf ]; then cp /tmp/public/flipbooks/success-stories/email.pdf /app/public/flipbooks/success-stories/email.pdf; fi
 

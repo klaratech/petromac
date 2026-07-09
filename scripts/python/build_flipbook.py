@@ -1,6 +1,7 @@
 import argparse
 import re
 import shutil
+import tempfile
 import subprocess
 from pathlib import Path
 from datetime import date
@@ -12,16 +13,17 @@ from pypdf import PdfReader
 SUPPORTED_FORMATS = {"jpg", "jpeg", "png", "webp"}
 
 # If an /ebook-quality copy is still heavier than this, re-compress at
-# /screen quality so the emailed attachment stays small.
+# /screen quality. Applies to the catalog's single shipped PDF and to the
+# success-stories email copy — both need to stay email-attachable.
 EMAIL_PDF_AGGRESSIVE_THRESHOLD = 4 * 1024 * 1024  # 4 MB
 
 
-def build_email_pdf(source_pdf: Path, out_path: Path) -> bool:
-    """Compress the source PDF into a small, email-friendly copy via Ghostscript.
+def compress_pdf(source_pdf: Path, out_path: Path) -> bool:
+    """Compress a PDF to roughly under 4 MB via Ghostscript.
 
     Tries /ebook quality first, drops to /screen if the result is still heavy.
-    Returns False (with a warning) if Ghostscript isn't installed — the
-    flipbook pages are still built either way.
+    Text and vector graphics stay sharp; only raster images are downsampled.
+    Returns False (with a warning) if Ghostscript isn't installed.
     """
 
     def run_gs(setting: str) -> None:
@@ -44,7 +46,7 @@ def build_email_pdf(source_pdf: Path, out_path: Path) -> bool:
         return False
 
     size_mb = out_path.stat().st_size / (1024 * 1024)
-    print(f"   email.pdf: {size_mb:.1f} MB")
+    print(f"   {out_path.name}: {size_mb:.1f} MB (compressed)")
     return True
 
 
@@ -63,9 +65,9 @@ def parse_args():
         "--pdf-only",
         action="store_true",
         help=(
-            "Ship the PDF itself (linearized) + email.pdf + a search index, "
-            "instead of rendering per-page images. Used by the catalog, which "
-            "is served through an in-browser pdf.js viewer."
+            "Ship ONE compressed, linearized PDF + a search index instead of "
+            "rendering per-page images. Used by the catalog: the same <4 MB "
+            "file serves the pdf.js viewer, downloads, and email."
         ),
     )
     return parser.parse_args()
@@ -122,7 +124,12 @@ def build_search_index(source_pdf: Path, out_path: Path) -> int:
 
 
 def build_pdf_document(args) -> None:
-    """PDF-only build (catalog): linearized source.pdf + email.pdf + search index."""
+    """PDF-only build (catalog): ONE compressed, linearized source.pdf + search index.
+
+    A single <4 MB artifact serves the pdf.js viewer, the Download button,
+    and the emailed attachment — no separate email.pdf. The full-resolution
+    master stays archived in sources/_archive/.
+    """
     source_pdf = Path(args.input)
     if not source_pdf.exists():
         raise FileNotFoundError(f"Source PDF not found: {source_pdf}")
@@ -130,19 +137,34 @@ def build_pdf_document(args) -> None:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Old flipbook artifacts, if this doc used to be image-rendered.
+    # Old artifacts from previous schemes (image flipbook / separate email copy).
     stale_pages = out_dir / "pages"
     stale_manifest = out_dir / "manifest.json"
+    stale_email = out_dir / "email.pdf"
     if stale_pages.exists():
         shutil.rmtree(stale_pages)
         print("   removed stale pages/ dir")
     if stale_manifest.exists():
         stale_manifest.unlink()
         print("   removed stale manifest.json")
+    if stale_email.exists():
+        stale_email.unlink()
+        print("   removed stale email.pdf (single-PDF scheme)")
 
-    linearize_pdf(source_pdf, out_dir / "source.pdf")
-    build_email_pdf(source_pdf, out_dir / "email.pdf")
-    build_search_index(source_pdf, out_dir / "search-index.json")
+    # Compress first (gs), then linearize the compressed output (qpdf) so the
+    # shipped file is both small and fast-web-view. If gs is missing, fall
+    # back to linearizing the original so the build still produces something.
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+        compressed = Path(tmp.name)
+    try:
+        if compress_pdf(source_pdf, compressed):
+            linearize_pdf(compressed, out_dir / "source.pdf")
+        else:
+            linearize_pdf(source_pdf, out_dir / "source.pdf")
+    finally:
+        compressed.unlink(missing_ok=True)
+
+    build_search_index(out_dir / "source.pdf", out_dir / "search-index.json")
     print(f"✅ Built PDF document for {args.title} at {out_dir}")
 
 
@@ -193,7 +215,7 @@ def build_flipbook():
 
     # Small, email-friendly copy for the "Email PDF" feature.
     email_pdf_path = out_dir / "email.pdf"
-    has_email_pdf = build_email_pdf(source_pdf, email_pdf_path)
+    has_email_pdf = compress_pdf(source_pdf, email_pdf_path)
 
     pdf_reader = PdfReader(str(source_pdf))
     page_count = len(pdf_reader.pages)

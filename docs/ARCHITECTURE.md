@@ -40,7 +40,7 @@ The Petromac platform combines a **public-facing website**, an **intranet portal
 
 - Replaces the old PDF viewer/builder modals
 - Source PDFs and tags xlsx dropped into `sources/catalog/` and `sources/success-stories/` (see `sources/README.md`)
-- Generated bundles in `public/flipbooks/<docKey>/` (manifest, pages, `source.pdf`, compressed `email.pdf`, optional tags)
+- Generated bundles in `public/flipbooks/<docKey>/` — success-stories: manifest, WebP pages, `source.pdf`, compressed `email.pdf`, tags; catalog: one compressed+linearized `source.pdf` + `search-index.json`
 - Converted into images with Python (`scripts/python/build_flipbook.py` using pdf2image + pillow)
 - Interactive flipbooks built with **page-flip**
 - Routes:

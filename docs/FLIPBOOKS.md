@@ -14,7 +14,9 @@ Generated outputs (checked in):
 
 - `public/flipbooks/<docKey>/`
   - `source.pdf`
-  - `email.pdf` (compressed copy for the Email-PDF feature; needs Ghostscript)
+  - `email.pdf` (success-stories only — compressed copy for the Email-PDF
+    feature. The catalog needs no separate copy: its `source.pdf` is already
+    compressed to <4 MB on ingest and is used for viewer/download/email alike.)
   - `manifest.json`
   - `pages/0001.webp` (WebP q80 is the pipeline default since Jul 2026; `.jpg` supported for legacy bundles)
   - `thumbs/0001.webp` (optional)
@@ -33,7 +35,8 @@ Current doc keys:
 
 - Python 3.11+
 - Poppler (required by `pdf2image`)
-- Ghostscript (`brew install ghostscript`) — used to generate `email.pdf`; the
+- Ghostscript (`brew install ghostscript`) — compresses the catalog PDF and
+  generates the success-stories `email.pdf`; the
   build warns and skips it if missing
 - Python deps from `scripts/python/requirements.txt`
 

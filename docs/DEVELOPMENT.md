@@ -96,7 +96,7 @@ pnpm run data
 This will:
 
 1. build `public/data/operations_data.json` from the newest `sources/operations/` file
-2. rebuild `public/flipbooks/*` (pages + `email.pdf`) from the newest `sources/catalog/` and `sources/success-stories/` files
+2. rebuild `public/flipbooks/*` from the newest `sources/catalog/` (one compressed PDF + search index) and `sources/success-stories/` (WebP pages + `email.pdf`) files
 3. run flipbook/success-stories validators
 4. move consumed inputs into `sources/_archive/` (date-stamped)
 

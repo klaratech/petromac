@@ -46,7 +46,8 @@ stories** flipbook at `/success-stories/flipbook`. Generated bundles live in
 
 - **Catalog** — served as the PDF itself through a searchable pdf.js viewer, so
   updating it is just a PDF swap. The pipeline ships the linearized `source.pdf`,
-  a compressed `email.pdf`, and `search-index.json` (per-page text for search).
+  compressed to <4 MB on ingest — the same file serves the viewer, downloads,
+  and email — and `search-index.json` (per-page text for search).
   No page images. Keep the source PDF's real text + links intact (don't flatten
   to images) — that's what makes it searchable and clickable.
 - **Success stories** — an image flipbook (WebP pages) with the tags-driven
@@ -60,11 +61,11 @@ changes.
 1. Drop the files into their folders — any filename is fine:
    - catalog PDF → `sources/catalog/`
    - success-stories PDF **and** its tags `.xlsx` → `sources/success-stories/`
-2. Run `pnpm run data:flipbooks` (needs Ghostscript for `email.pdf`:
+2. Run `pnpm run data:flipbooks` (needs Ghostscript for PDF compression:
    `brew install ghostscript`; and qpdf to linearize the catalog:
    `brew install qpdf`). The pipeline builds whichever documents have a new PDF
-   (catalog → linearized PDF + email.pdf + search index; success stories → WebP
-   pages), regenerates `email.pdf`, re-syncs the kiosk offline-assets list,
+   (catalog → one compressed+linearized PDF + search index; success stories →
+   WebP pages + a compressed `email.pdf`), re-syncs the kiosk offline-assets list,
    validates the bundles, and archives the inputs into `sources/_archive/`.
 3. Commit `public/flipbooks/**` and push.
 4. **If the kiosk needs the new content offline:** bump `VERSION` in

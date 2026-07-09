@@ -185,10 +185,9 @@ npx @gltf-transform/cli optimize input.glb output.glb --compress draco
 
 The website emails PDF attachments to users on request. The current source PDFs are too large for email (18 MB catalog). Please provide lightweight email-optimized versions.
 
-| File                                   | Deliver As                          | Target Size | Source                          | Notes                                                |
-| -------------------------------------- | ----------------------------------- | ----------- | ------------------------------- | ---------------------------------------------------- |
-| `/flipbooks/catalog/email.pdf`         | **PDF, compressed images, 150 DPI** | <3 MB       | Full catalog source.pdf         | Reduced image quality suitable for on-screen reading |
-| `/flipbooks/success-stories/email.pdf` | **PDF, compressed images, 150 DPI** | <3 MB       | Full success stories source.pdf | Same treatment                                       |
+| File                                   | Deliver As                          | Target Size | Source                          | Notes          |
+| -------------------------------------- | ----------------------------------- | ----------- | ------------------------------- | -------------- |
+| `/flipbooks/success-stories/email.pdf` | **PDF, compressed images, 150 DPI** | <3 MB       | Full success stories source.pdf | Same treatment |
 
 > Current `source.pdf` files are 18 MB (catalog) and similar for success stories. Email providers typically cap attachments at 10-25 MB. Target < 3 MB for reliable delivery. Use "Save for Web" / "Reduce File Size" in Acrobat or similar. Keep all pages; just reduce image resolution to 150 DPI.
 
@@ -197,7 +196,7 @@ The website emails PDF attachments to users on request. The current source PDFs 
 ## 5. Document pages
 
 **Catalog** is served as the PDF itself through the pdf.js viewer (Jul 2026) — no
-page images. The pipeline ships `source.pdf` (linearized), `email.pdf`, and
+page images. The pipeline ships one `source.pdf` (compressed <4 MB + linearized) and
 `search-index.json`. Keep the source PDF's real text + links (don't flatten to
 images) so search and links work.
 

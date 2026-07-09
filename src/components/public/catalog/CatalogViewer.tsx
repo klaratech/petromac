@@ -9,15 +9,10 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 // never let a viewer dependency reach for a CDN.
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.mjs';
 
-// The viewer loads the COMPRESSED copy (email.pdf, ~4 MB), not the full-res
-// source.pdf (~11 MB). Range-request streaming through Cloudflare proved
-// unreliable — pdf.js/react-pdf still pulls the whole file even with
-// disableStream + a linearized PDF + range-capable headers (measured on
-// live). Rather than ship 11 MB, we serve the compressed copy, which is
-// visually identical at viewing resolution (text and the vector diagrams
-// stay sharp; it's the same page count, so the search index still maps).
-// The full-res original stays on the Download / Email PDF buttons.
-const PDF_URL = '/flipbooks/catalog/email.pdf';
+// Single-PDF scheme (Jul 2026): the pipeline compresses each new catalog
+// to <4 MB on ingest, so source.pdf IS the compressed copy — the same file
+// serves this viewer, the Download button, and emailed attachments.
+const PDF_URL = '/flipbooks/catalog/source.pdf';
 // Per-page text extracted at pipeline time (pypdf) from the full source.
 // Fetching this ~50 KB index instead of scanning the PDF in the browser
 // keeps search instant and independent of the rendered pages.
