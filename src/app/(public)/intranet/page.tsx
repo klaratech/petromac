@@ -1,235 +1,49 @@
-'use client';
-
-import { Suspense, useEffect, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useStaffSession } from '@/hooks/useStaffSession';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { isStaffAuthConfigured, readStaffSession } from '@/lib/auth/staffAuth';
+import IntranetClient from './IntranetClient';
 
 const LOGIN_HREF = '/auth/microsoft/login?returnTo=/intranet';
-const LOGOUT_HREF = '/auth/microsoft/logout?returnTo=/intranet';
-
-export default function IntranetHome() {
-  return (
-    <Suspense fallback={<GateScreen title="Checking staff session…" />}>
-      <IntranetContent />
-    </Suspense>
-  );
-}
 
 /**
- * The page is fully gated: signed-out visitors see nothing but a minimal
- * redirect screen on their way to Microsoft sign-in. Content (the three
- * tiles) renders only once authenticated — or when staff auth isn't
- * configured at all (local dev without Entra env vars).
+ * Server-gated: the session cookie is verified in the initial request, so a
+ * signed-out visitor gets a single 307 straight into Microsoft sign-in —
+ * no page shell, no hydration, no client-side session fetch first. Content
+ * renders only when authenticated (or when staff auth isn't configured,
+ * e.g. local dev without Entra env vars).
  */
-function IntranetContent() {
-  const searchParams = useSearchParams();
-  const authError = searchParams.get('authError');
-  const { enabled, authenticated, user, isLoading } = useStaffSession();
-  const [showKioskInstructions, setShowKioskInstructions] = useState(false);
-
-  const athenaProdUrl = process.env.NEXT_PUBLIC_ATHENA_PROD_URL || 'https://athena.petromac.co.nz/';
-  const athenaTestUrl =
-    process.env.NEXT_PUBLIC_ATHENA_TEST_URL || 'https://test.athena.digitaltwins.com.bo/#/login';
-
-  // Straight to Microsoft — sessions last 12 h, so this only fires without
-  // a valid session. The authError guard prevents a redirect loop when a
-  // sign-in fails or is cancelled.
-  const shouldAutoSignIn = !isLoading && enabled && !authenticated && !authError;
-  useEffect(() => {
-    if (shouldAutoSignIn) window.location.replace(LOGIN_HREF);
-  }, [shouldAutoSignIn]);
-
-  if (isLoading) return <GateScreen title="Checking staff session…" />;
-  if (shouldAutoSignIn)
-    return (
-      <GateScreen
-        title="Redirecting to Microsoft sign-in…"
-        subtitle="Use your Petromac Microsoft 365 account."
-      />
-    );
-  if (enabled && !authenticated)
-    return (
-      <GateScreen
-        title="Microsoft sign-in failed"
-        subtitle={authError ? `Reason: ${authError}` : undefined}
-        retryHref={LOGIN_HREF}
-      />
-    );
-
-  return (
-    <main className="min-h-screen bg-gray-50 text-gray-900">
-      {/* Slim identity strip — top right */}
-      {enabled && authenticated && user ? (
-        <div className="w-full border-b border-slate-200 bg-white">
-          <div className="mx-auto flex max-w-5xl items-center justify-end gap-3 px-4 py-2 text-sm text-slate-600">
-            <span>
-              Signed in as <span className="font-medium text-slate-900">{user.email}</span>
-            </span>
-            <a
-              href={LOGOUT_HREF}
-              className="rounded-lg border border-slate-300 px-3 py-1 font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
-            >
-              Sign out
-            </a>
-          </div>
-        </div>
-      ) : null}
-
-      <div className="flex flex-col items-center gap-10 py-16">
-        <h1 className="text-3xl font-bold">Intranet</h1>
-
-        <section className="w-full max-w-5xl px-4">
-          <div className="grid gap-4 md:grid-cols-3">
-            {/* Athena Production */}
-            <a
-              href={athenaProdUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
-            >
-              <Image
-                src="/images/athena_logo.png"
-                alt="Athena Production"
-                width={64}
-                height={64}
-                className="object-contain"
-              />
-              <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Prod)</h3>
-            </a>
-
-            {/* Athena Test */}
-            <a
-              href={athenaTestUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
-            >
-              <Image
-                src="/images/athena_logo_beta.png"
-                alt="Athena Test"
-                width={64}
-                height={64}
-                className="object-contain"
-              />
-              <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Test)</h3>
-            </a>
-
-            {/* Kiosk */}
-            <button
-              onClick={() => setShowKioskInstructions(true)}
-              className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 cursor-pointer bg-white"
-            >
-              <div className="w-16 h-16 flex items-center justify-center text-3xl">🖥️</div>
-              <h3 className="text-base font-semibold tracking-wide text-gray-900">Kiosk</h3>
-            </button>
-          </div>
-        </section>
-      </div>
-
-      {/* Kiosk Instructions Modal */}
-      {showKioskInstructions && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-3xl font-bold text-gray-900">Kiosk Setup Instructions</h2>
-                <button
-                  onClick={() => setShowKioskInstructions(false)}
-                  className="text-gray-400 hover:text-gray-600 transition"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="space-y-6 text-gray-700">
-                <p className="text-lg">
-                  The kiosk view is developed to be shown at trade shows. The ideal way to use it is
-                  to mirror an Android tablet to an Amazon Fire Stick connected to a TV. That way
-                  you can control the application with a tablet but also display the videos on a big
-                  screen.
-                </p>
-                <p className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                  If a team member signs in with Microsoft on this intranet page first, that staff
-                  identity will continue into kiosk mode and can be used for future staff-assisted
-                  email workflows.
-                </p>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Setup Steps:</h3>
-                  <ol className="space-y-3 list-decimal list-inside">
-                    <li className="text-gray-800">
-                      <span className="font-medium">Open the link below</span> with Chrome or Edge
-                      on your Android tablet
-                    </li>
-                    <li className="text-gray-800">
-                      <span className="font-medium">Click on the 3 dots</span> (browser menu) and
-                      select &ldquo;Install app&rdquo; or &ldquo;Add to Home Screen&rdquo;
-                    </li>
-                    <li className="text-gray-800">
-                      This enables{' '}
-                      <span className="font-medium">full-screen and offline functionality</span>
-                    </li>
-                    <li className="text-gray-800">
-                      <span className="font-medium">On your streaming stick</span> (Amazon Fire
-                      Stick), choose the mirroring/screen casting option
-                    </li>
-                    <li className="text-gray-800">
-                      <span className="font-medium">Mirror your tablet</span> to the TV
-                    </li>
-                    <li className="text-gray-800">
-                      <span className="font-medium">Open the installed application</span> on your
-                      tablet and you&apos;re done!
-                    </li>
-                  </ol>
-                </div>
-
-                <div className="pt-4">
-                  <Link
-                    href="/intranet/kiosk"
-                    className="block w-full bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition text-center font-semibold text-lg"
-                  >
-                    Open Kiosk Application
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </main>
-  );
-}
-
-function GateScreen({
-  title,
-  subtitle,
-  retryHref,
+export default async function IntranetHome({
+  searchParams,
 }: {
-  title: string;
-  subtitle?: string | undefined;
-  retryHref?: string | undefined;
+  searchParams: Promise<{ authError?: string }>;
 }) {
-  return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50 px-4 text-center text-gray-900">
-      <h1 className="text-2xl font-semibold">{title}</h1>
-      {subtitle ? <p className="text-sm text-slate-600">{subtitle}</p> : null}
-      {retryHref ? (
-        <a
-          href={retryHref}
-          className="mt-2 inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand/90"
-        >
-          Sign in with Microsoft
-        </a>
-      ) : null}
-    </main>
-  );
+  const { authError } = await searchParams;
+
+  if (!isStaffAuthConfigured()) {
+    return <IntranetClient user={null} />;
+  }
+
+  const session = readStaffSession(await cookies());
+
+  if (!session) {
+    // authError guard: a failed/cancelled sign-in shows a retry screen
+    // instead of bouncing straight back to Microsoft in a loop.
+    if (authError) {
+      return (
+        <main className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50 px-4 text-center text-gray-900">
+          <h1 className="text-2xl font-semibold">Microsoft sign-in failed</h1>
+          <p className="text-sm text-slate-600">Reason: {authError}</p>
+          <a
+            href={LOGIN_HREF}
+            className="mt-2 inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand/90"
+          >
+            Sign in with Microsoft
+          </a>
+        </main>
+      );
+    }
+    redirect(LOGIN_HREF);
+  }
+
+  return <IntranetClient user={session.user} />;
 }
