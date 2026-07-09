@@ -9,7 +9,7 @@ The repository contains:
 1. **Public Website** - Public-facing marketing site at `/`
 2. **Intranet Portal** - Internal portal at `/intranet`
 3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
-4. **Flipbook Module** - Interactive PDF flipbooks for product catalog and success stories
+4. **Document Viewers** - Searchable pdf.js viewer for the catalog; interactive image flipbook for success stories
 5. **Backend Service** - FastAPI service for contact email, PDFs, and data passthrough endpoints
 
 ## Directory Structure
@@ -25,7 +25,7 @@ website/
 │   │   ├── (public)/                     # 🌐 Public shell routes
 │   │   │   ├── page.tsx                  # Homepage
 │   │   │   ├── about/                    # About pages
-│   │   │   ├── catalog/                  # Catalog + flipbook
+│   │   │   ├── catalog/                  # Catalog (pdf.js viewer)
 │   │   │   ├── track-record/             # Global deployment map
 │   │   │   ├── simulation/               # Athena planning/simulation page
 │   │   │   ├── contact/                  # Contact page (submits to backend API)
@@ -114,7 +114,7 @@ website/
 
 ### Overview
 
-The repository supports interactive flipbooks for **Product Catalog** and **Success Stories**. Source PDFs and the tags xlsx are dropped into the `sources/` drop zone (see [sources/README.md](../sources/README.md)).
+The repository ships two documents: the **Product Catalog** (one compressed+linearized PDF served through a pdf.js viewer) and **Success Stories** (an image flipbook). Source PDFs and the tags xlsx are dropped into the `sources/` drop zone (see [sources/README.md](../sources/README.md)).
 
 ### File Locations
 
@@ -130,7 +130,7 @@ The repository supports interactive flipbooks for **Product Catalog** and **Succ
   - `src/components/shared/pdf/Flipbook.tsx`
 
 - **Routes**:
-  - `/catalog` → Product Catalog flipbook
+  - `/catalog` → Product Catalog (searchable PDF viewer)
   - `/success-stories/flipbook` → Success Stories flipbook
 
 ### Update Workflow

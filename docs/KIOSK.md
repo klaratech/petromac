@@ -4,7 +4,7 @@
 
 The kiosk Service Worker is designed for trade‑show use where connectivity can be poor.
 We pre-cache the kiosk shell and small data files, and runtime‑cache large media
-(videos/flipbooks/images) with limits and expiry to keep storage bounded and reliable.
+(videos/flipbook pages/images) with limits and expiry to keep storage bounded and reliable. (The public catalog PDF viewer is not part of the kiosk.)
 
 ## Routes & flow
 

@@ -24,9 +24,9 @@ Next.js 16 + React 19 website for Petromac's public site, protected intranet, tr
 - `/about/patents` - Patents
 - `/about/publications` - Publications
 - `/team` - Team
-- `/catalog` - Product catalog flipbook
+- `/catalog` - Product catalog (searchable in-browser PDF viewer)
 - `/track-record` - Interactive global deployment map
-- `/success-stories/flipbook` - Success Stories flipbook with filters
+- `/success-stories/flipbook` - Success Stories flipbook with filters (also opens as an overlay on `/track-record`)
 - `/simulation` - Athena planning and simulation page
 - `/contact` - Contact form
 - `/privacy` and `/terms` - Legal pages

@@ -10,14 +10,14 @@ The Petromac platform combines a **public-facing website**, an **intranet portal
 - Styled with **Tailwind CSS 4** using Petromac brand theme
 - Pages: Home, About, Team, Catalog, Track Record, Simulation, Contact, Privacy, and Terms
 - **Track Record** (`/track-record`) - Interactive global deployment map using shared DrilldownMapCore
-- Flipbooks for **Catalog** and **Success Stories** provide interactive PDF viewing
+- **Catalog**: searchable in-browser pdf.js viewer (selectable text, links, full-document search). **Success Stories**: interactive image flipbook with filters
 
 ### Intranet Portal
 
 - Homepage with tiles:
   - Athena (external portal)
   - Kiosk (internal dashboard app)
-  - Catalog (flipbook)
+  - Catalog (pdf.js viewer)
   - Success Stories (flipbook + filters, reusing shared components)
 - Optional **Microsoft Entra staff sign-in** establishes a staff identity that carries into kiosk mode
 - Kiosk app includes:
