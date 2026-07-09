@@ -86,11 +86,17 @@ Go to:
 - `Client secrets`
 - `New client secret`
 
-Create one and copy the value immediately.
+Create one and copy the **Value** immediately (shown once; the "Secret ID"
+column is just a reference identifier, not the credential).
 
 Map it to:
 
 - `ENTRA_CLIENT_SECRET`
+
+> Current secret (created Jul 2026, 24-month expiry ≈ Jul 2028): stored in
+> 1Password as secure note **"Petromac Entra Client Secret"**. Set a renewal
+> reminder — sign-in fails silently when the secret expires; create a new
+> secret here and update `ENTRA_CLIENT_SECRET` on the server.
 
 ### 5. Add API Permissions
 
