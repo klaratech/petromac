@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useStaffSession } from '@/hooks/useStaffSession';
 
@@ -12,32 +12,56 @@ export default function StaffIdentityCard() {
   const loginHref = useMemo(() => '/auth/microsoft/login?returnTo=/intranet', []);
   const logoutHref = useMemo(() => '/auth/microsoft/logout?returnTo=/intranet', []);
 
+  // Clicking "Intranet" should land staff straight in the Microsoft sign-in
+  // window — no intermediate button. Sessions last 12 h, so this only fires
+  // when there's no valid session. The authError guard stops a redirect
+  // loop when sign-in fails/cancels: the card then shows the error and a
+  // manual retry button.
+  const shouldAutoSignIn = !isLoading && enabled && !authenticated && !authError;
+  useEffect(() => {
+    if (shouldAutoSignIn) window.location.replace(loginHref);
+  }, [shouldAutoSignIn, loginHref]);
+
   return (
     <section className="w-full max-w-5xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Staff Identity</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+            Staff Identity
+          </p>
           {isLoading ? (
             <p className="text-sm text-slate-600">Checking Microsoft staff session…</p>
           ) : authenticated && user ? (
             <>
               <h2 className="text-xl font-semibold text-slate-900">{user.name}</h2>
               <p className="text-sm text-slate-600">
-                Signed in as <span className="font-medium text-slate-800">{user.email}</span>. This identity will carry into kiosk mode for staff-assisted workflows.
+                Signed in as <span className="font-medium text-slate-800">{user.email}</span>. This
+                identity will carry into kiosk mode for staff-assisted workflows.
               </p>
+            </>
+          ) : enabled && shouldAutoSignIn ? (
+            <>
+              <h2 className="text-xl font-semibold text-slate-900">
+                Redirecting to Microsoft sign-in…
+              </h2>
+              <p className="text-sm text-slate-600">Use your Petromac Microsoft 365 account.</p>
             </>
           ) : enabled ? (
             <>
               <h2 className="text-xl font-semibold text-slate-900">Microsoft sign-in not active</h2>
               <p className="text-sm text-slate-600">
-                Sign in with your Petromac Microsoft 365 account before entering kiosk mode if you want future sends to be linked to your own mailbox.
+                Sign in with your Petromac Microsoft 365 account before entering kiosk mode if you
+                want future sends to be linked to your own mailbox.
               </p>
             </>
           ) : (
             <>
-              <h2 className="text-xl font-semibold text-slate-900">Microsoft sign-in not configured yet</h2>
+              <h2 className="text-xl font-semibold text-slate-900">
+                Microsoft sign-in not configured yet
+              </h2>
               <p className="text-sm text-slate-600">
-                Add the Entra app credentials in the environment before enabling staff identity in intranet and kiosk.
+                Add the Entra app credentials in the environment before enabling staff identity in
+                intranet and kiosk.
               </p>
             </>
           )}
@@ -50,7 +74,7 @@ export default function StaffIdentityCard() {
         </div>
 
         <div className="flex gap-3">
-          {enabled && !authenticated ? (
+          {enabled && !authenticated && !shouldAutoSignIn ? (
             <a
               href={loginHref}
               className="inline-flex items-center justify-center rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brandblack"

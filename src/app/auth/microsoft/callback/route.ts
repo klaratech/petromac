@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getRequestOrigin } from '@/lib/auth/requestOrigin';
 import {
   buildSessionCookieOptions,
   clearCookieOptions,
@@ -14,7 +15,7 @@ import {
 import { exchangeMicrosoftCode, fetchMicrosoftUser } from '@/lib/auth/entra';
 
 function errorRedirect(request: NextRequest, message: string) {
-  const redirectUrl = new URL('/intranet', request.nextUrl.origin);
+  const redirectUrl = new URL('/intranet', getRequestOrigin(request));
   redirectUrl.searchParams.set('authError', message);
   return NextResponse.redirect(redirectUrl);
 }
@@ -53,8 +54,12 @@ export async function GET(request: NextRequest) {
     };
 
     const safeReturnTo = normalizeReturnTo(statePayload.returnTo);
-    const response = NextResponse.redirect(new URL(safeReturnTo, request.nextUrl.origin));
-    response.cookies.set(getSessionCookieName(), createStaffSessionCookieValue(session), buildSessionCookieOptions());
+    const response = NextResponse.redirect(new URL(safeReturnTo, getRequestOrigin(request)));
+    response.cookies.set(
+      getSessionCookieName(),
+      createStaffSessionCookieValue(session),
+      buildSessionCookieOptions()
+    );
     response.cookies.set(getOAuthStateCookieName(), '', clearCookieOptions());
     return response;
   } catch (error) {

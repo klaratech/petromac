@@ -7,6 +7,7 @@ import {
   normalizeReturnTo,
 } from '@/lib/auth/staffAuth';
 import { buildMicrosoftAuthorizeUrl } from '@/lib/auth/entra';
+import { getRequestOrigin } from '@/lib/auth/requestOrigin';
 
 export async function GET(request: NextRequest) {
   if (!isStaffAuthConfigured()) {
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
   }
 
   const returnTo = normalizeReturnTo(request.nextUrl.searchParams.get('returnTo'));
-  const redirectUri = new URL('/auth/microsoft/callback', request.nextUrl.origin).toString();
+  const redirectUri = new URL('/auth/microsoft/callback', getRequestOrigin(request)).toString();
   const { cookieValue, state } = createOAuthStateValue(returnTo, redirectUri);
   const response = NextResponse.redirect(buildMicrosoftAuthorizeUrl(redirectUri, state));
 
