@@ -5,6 +5,21 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Jul 2026 — Email via Microsoft Graph (app-only), not SMTP
+
+**Decision:** All outbound mail (contact form + PDF sends) goes through
+Microsoft Graph `sendMail` using the Entra app's **application** `Mail.Send`
+permission, sending as the `info@petromac.co.nz` shared mailbox. No SMTP, no
+mailbox password, no license. Backend reuses the same `ENTRA_*` creds as staff
+sign-in + `MAIL_SENDER`.
+**Why:** `info@` is a shared mailbox — shared mailboxes can't do SMTP AUTH at
+all. Creating a licensed service user just for SMTP would be ~$4/mo of
+throwaway work, because Microsoft disables SMTP AUTH basic auth by end of Dec
+2026 anyway (Graph is the forced end-state). Graph sends as a shared mailbox
+with zero extra licensing. Sending "as the signed-in staff member" from the
+kiosk is deferred — that needs delegated tokens persisted server-side; the app
+reserved `Mail.Send` delegated for it.
+
 ## Jul 2026 — Intranet gated server-side; sign-out lands on the homepage
 
 **Decision:** `/intranet` verifies the session cookie in the initial request
@@ -102,7 +117,7 @@ and autoplay as they scroll in, deduped by the HTTP cache.
 
 **Decision:** The email-log feature (backend JSONL log + config endpoints +
 staff-gated intranet page + data volume) was deleted entirely.
-**Why:** All mail sends from `info@petromac.co.nz` via Office 365 SMTP, so the
+**Why:** All mail sends as `info@petromac.co.nz` (Microsoft Graph), so the
 mailbox's Sent Items already records every send. The JSONL copy was redundant
 recipient PII on a server volume with an unsolved retention question. The
 backend staff-session verification went with it (it gated only this feature);
@@ -174,7 +189,5 @@ no dependency may silently fall back to a CDN.
 - **Tags CSV is the single source of truth** for success-stories filtering.
 - **Frontend reads `/data/*.json` statically**, never via the backend — the
   site must work even if the FastAPI backend is down.
-- **M365 SMTP over Brevo** (org standard deviation): Petromac already lives in
-  Microsoft; one mailbox, one app password. Revisit if it becomes a burden.
-- **Staff auth (Entra OAuth) and email (SMTP app password) are decoupled** —
-  identity display today, Graph "send as me" is a possible later phase.
+- **Email over Microsoft (not Brevo)** (org standard deviation): Petromac
+  lives in Microsoft 365; mail sends via Graph as the `info@` shared mailbox.

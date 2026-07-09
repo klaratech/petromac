@@ -14,9 +14,11 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       all three redirect URIs incl. petromac.co.nz pre-registered, /intranet
       server-gated, sign-out lands on the homepage. Secret in 1Password
       ("Petromac Entra Client Secret", renew ~Jul 2028).
-- [ ] SMTP env vars on the server (`.env-backend`) so contact form + PDF email
-      work ([docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md)) — currently NOT
-      configured in production; email features are dead until then
+- [ ] Email go-live ([docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md)): add Graph
+      **application** `Mail.Send` permission + admin consent to the Entra app,
+      then set ENTRA*\* / MAIL_SENDER / CONTACT_TO_EMAIL / ALLOWED_EMAIL*\* in
+      `.env-backend`. Email features are dead in prod until then. (Code is
+      done — app-only Graph sender.)
 - [ ] Production domain cutover: Cloudflare zone/tunnel hostname, then update
       `NEXT_PUBLIC_SITE_URL`/`NEXT_PUBLIC_BASE_URL`, `ALLOWED_ORIGINS` (both env
       files), and add the new Entra callback URL
@@ -24,11 +26,9 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Security / hardening
 
-- [ ] Migrate outbound email from SMTP basic auth to Microsoft Graph
-      sendMail before Dec 2026 — Microsoft disables SMTP AUTH basic by
-      default at end of Dec 2026 (timeline revised Jan 2026; final removal
-      announced 2027). The "Petromac Intranet" Entra app already has
-      Mail.Send. Until then the app-password SMTP setup is fine.
+- [ ] (Future) Send kiosk emails as the signed-in staff member — needs the
+      staff member's delegated Graph token persisted + refreshed server-side.
+      App already reserved Mail.Send delegated. Default stays info@.
 
 - [ ] Cloudflare Turnstile on the contact form (org standard; currently
       honeypot + timing only)

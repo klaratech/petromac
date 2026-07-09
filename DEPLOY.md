@@ -48,7 +48,7 @@ On `klaratech-1`:
 2. Copy `deploy/docker-compose.prod.yml` from this repo to `/root/apps/petromac/docker-compose.yml`.
 3. Create the env files (use `.env.example` as the reference for which keys go where; never commit either):
    - `/root/apps/petromac/.env-frontend` — public-facing config (NEXT*PUBLIC*\* vars, API URLs)
-   - `/root/apps/petromac/.env-backend` — backend secrets (SMTP creds, ENTRA_CLIENT_SECRET, STAFF_SESSION_SECRET, etc.)
+   - `/root/apps/petromac/.env-backend` — backend secrets (ENTRA\_\* for Graph email + staff auth, MAIL_SENDER, STAFF_SESSION_SECRET, etc.)
      Splitting the env files keeps backend secrets out of the frontend container.
 4. CI logs Docker into GHCR during each deploy before pulling images. For manual server-side pulls or rollbacks, run `docker login ghcr.io` first with a token that has `read:packages`.
 5. Add the cloudflared ingress (already documented in Tech Standards `Hetzner Server.md`):

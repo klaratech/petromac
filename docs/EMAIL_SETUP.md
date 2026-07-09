@@ -1,190 +1,82 @@
-# Email Configuration Guide
+# Email Setup (Microsoft Graph)
 
-This guide explains how to configure email functionality for the Petromac website, including:
+All outbound mail — contact form + catalog/success-stories PDF sends — goes
+through **Microsoft Graph** using the Entra app's **application** `Mail.Send`
+permission. It sends **as the shared mailbox** `info@petromac.co.nz` (and
+saves to its Sent Items). No SMTP, no mailbox password, no license.
 
-- Contact form submissions
-- PDF email delivery (Product Catalog & Success Stories)
+Why Graph (not SMTP): `info@` is a shared mailbox (can't do SMTP AUTH), and
+Microsoft is retiring SMTP AUTH basic auth by end of Dec 2026 anyway. See
+[DECISIONS.md](DECISIONS.md).
 
-## Prerequisites
+## One-time admin step (Entra portal)
 
-Before configuring SMTP, you need:
+The "Petromac Intranet" app already exists (staff sign-in). Add mail sending:
 
-1. An email account that supports SMTP (using Office365: info@petromac.co.nz)
-2. App-specific password for Office365
+1. https://entra.microsoft.com → **Applications → App registrations →
+   Petromac Intranet → API permissions**
+2. **Add a permission → Microsoft Graph → Application permissions** (NOT
+   Delegated) → search **`Mail.Send`** → add
+3. **Grant admin consent for PETROMAC LTD** → confirm (green checks)
 
----
+That's the entire Microsoft-side setup. Nothing in the M365 admin center,
+no app password, no new user.
 
-## Step 1: Generate App Password (Outlook)
+## Server environment (`/root/apps/petromac/.env-backend`)
 
-### For Office365/Outlook (Petromac Configuration):
-
-1. Go to https://account.microsoft.com/security
-2. Navigate to Security → **Advanced security options**
-3. Enable 2-Step Verification (if not already enabled)
-4. Under **App passwords**, select **Create a new app password**
-5. Enter "Petromac Website" as the name
-6. Copy the generated password (you'll need this for both contact form and PDF email functionality)
-
-**Note:** If your organization uses Office365 Business, you may need to contact your IT administrator to:
-
-- Enable SMTP authentication for the account
-- Generate an app password or provide SMTP credentials
-
----
-
-## Step 2: Configure Environment Variables
-
-Set the following variables in:
-
-1. `.env.dev` for local Docker/backend development
-2. `/root/apps/petromac/.env-backend` on `klaratech-1` for production
-
-### Required Variables:
-
-#### For Contact Form:
-
-| Variable Name        | Value                 | Description                              |
-| -------------------- | --------------------- | ---------------------------------------- |
-| `SMTP_HOST`          | `smtp.office365.com`  | Office365 SMTP server                    |
-| `SMTP_PORT`          | `587`                 | SMTP server port (TLS)                   |
-| `SMTP_USER`          | `info@petromac.co.nz` | Petromac email address                   |
-| `SMTP_PASS`          | `[app-password]`      | App password from Office365              |
-| `CONTACT_FROM_EMAIL` | `info@petromac.co.nz` | Email address to send from               |
-| `CONTACT_TO_EMAIL`   | `info@petromac.co.nz` | Where contact form emails should be sent |
-
-**Note:** The `SMTP_*` variables are shared by both the contact form and PDF email delivery endpoints. There is no separate `EMAIL_*` configuration.
-
-#### Security Allowlists (Recommended):
-
-| Variable Name              | Example Value                                  | Description                                   |
-| -------------------------- | ---------------------------------------------- | --------------------------------------------- |
-| `ALLOWED_ORIGINS`          | `https://petromac.klaratech.it`                | Allowed origins/referrers for email endpoints |
-| `ALLOWED_EMAIL_DOMAINS`    | `petromac.com,petromac.co.nz`                  | Domains allowed to receive PDFs               |
-| `ALLOWED_EMAIL_RECIPIENTS` | `info@petromac.co.nz,marketing@petromac.co.nz` | Explicit allowlist of recipient emails        |
-
-### Petromac Office365 Configuration:
-
-**Complete Environment Variables Setup:**
+The backend needs the Entra app credentials (same app as staff sign-in) plus
+the sender/recipient config:
 
 ```env
-# Unified SMTP (used by contact form + PDF email endpoints)
-SMTP_HOST=smtp.office365.com
-SMTP_PORT=587
-SMTP_USER=info@petromac.co.nz
-SMTP_PASS=[your-office365-app-password]
-CONTACT_FROM_EMAIL=info@petromac.co.nz
-CONTACT_TO_EMAIL=info@petromac.co.nz
-
-# Email Endpoint Security
+ENTRA_TENANT_ID=<tenant id>
+ENTRA_CLIENT_ID=<client id>
+ENTRA_CLIENT_SECRET=<client secret>   # same secret as the frontend uses
+MAIL_SENDER=info@petromac.co.nz       # mailbox mail is sent as
+CONTACT_TO_EMAIL=info@petromac.co.nz  # where contact-form mail is delivered
 ALLOWED_ORIGINS=https://petromac.klaratech.it
-ALLOWED_EMAIL_DOMAINS=petromac.com,petromac.co.nz
-ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz
+# PDF-email recipient allowlist (unset => only CONTACT_TO_EMAIL allowed):
+ALLOWED_EMAIL_DOMAINS=petromac.co.nz,petromac.com
+# ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz,marketing@petromac.co.nz
 ```
 
-## Step 3: Deploy
+Then `cd /root/apps/petromac && docker compose up -d`.
 
-After adding all environment variables:
+## What each endpoint does
 
-1. Restart the local backend or Docker Compose stack if you changed `.env.dev`
-2. Redeploy/restart the production app stack if you changed `/root/apps/petromac/.env-backend`
+- **Contact form** (`/api/contact`): delivers to `CONTACT_TO_EMAIL`; the
+  submitter's address goes in `Reply-To`.
+- **Catalog / Success-stories PDF email** (`/api/email/send-pdf`,
+  `/api/pdf/success-stories`): sends to the address the user entered, only if
+  the recipient allowlist permits it.
 
----
+## How it works (code)
 
-## Step 4: Test Email Functionality
+`backend/app/main.py` → `send_email()`:
 
-### Test Contact Form:
+1. `get_graph_token()` — client-credentials token (cached ~1 h) from
+   `login.microsoftonline.com/{tenant}/oauth2/v2.0/token`, scope
+   `https://graph.microsoft.com/.default`.
+2. `POST https://graph.microsoft.com/v1.0/users/{MAIL_SENDER}/sendMail` with
+   the HTML body + optional base64 PDF attachment, `saveToSentItems: true`.
 
-1. Visit your production site
-2. Navigate to the Contact page
-3. Fill out and submit the form
-4. Check info@petromac.co.nz for the message
+## Verify / troubleshoot
 
-### Test PDF Email Delivery:
-
-1. Navigate to the Product Catalog page (`/catalog`) or Success Stories page (`/success-stories/flipbook`)
-2. Click the green **"Email PDF"** button
-3. Enter your email address
-4. Click **"Send"**
-5. Check your email inbox for the PDF attachment
-
----
-
-## Verification Checklist (Recommended)
-
-- ✅ `ALLOWED_ORIGINS` is set for your production domain(s)
-- ✅ `ALLOWED_EMAIL_DOMAINS` or `ALLOWED_EMAIL_RECIPIENTS` is set (email allowlist)
-- ✅ `SMTP_*` variables are set in the active environment file
-- ✅ Email endpoints return **clear errors** if allowlists are missing
-- ✅ Success Stories PDF endpoint works through the backend: `POST <backend>/api/pdf/success-stories`
-
----
-
-## Troubleshooting
-
-Check backend logs first:
+Test on the server:
 
 ```bash
 ssh klaratech-1 "docker logs --tail 120 petromac-backend"
 ```
 
-### Error: "Authentication failed"
+- **AADSTS errors on token fetch** → wrong `ENTRA_*` values, or the client
+  secret expired (rotate in the Entra app; 1Password note "Petromac Entra
+  Client Secret").
+- **403 `ErrorAccessDenied` on sendMail** → the `Mail.Send` _application_
+  permission isn't consented (redo the admin step above), or `MAIL_SENDER`
+  isn't a real mailbox in the tenant.
+- **Contact form returns "not configured"** → `CONTACT_TO_EMAIL` unset.
 
-- If the tenant blocks SMTP AUTH globally, enable it for the tenant or exempt
-  the sending mailbox (M365 Admin → mailbox → Mail → Manage email apps →
-  "Authenticated SMTP").
-- Double-check `SMTP_USER` and `SMTP_PASS` are correct
-- Ensure you're using an **app password**, not your regular email password
-- For Gmail, ensure 2-Step Verification is enabled
+## Future: send as the signed-in staff member (kiosk)
 
-### Error: "Connection timeout"
-
-- Verify `SMTP_HOST` and `SMTP_PORT` are correct
-- Try port 587 if 465 doesn't work (and vice versa)
-- Check if your hosting provider blocks SMTP ports
-
-### Emails not arriving
-
-- Check spam/junk folder
-- Verify `CONTACT_TO_EMAIL` is correct
-- Check the backend container logs for errors
-
-## Security Best Practices
-
-✅ **DO:**
-
-- Use app-specific passwords
-- Enable 2-Factor Authentication on your email account
-- Keep SMTP credentials private (never commit to Git)
-- Use different passwords for development and production
-
-❌ **DON'T:**
-
-- Use your regular email password
-- Commit .env files to version control
-- Share SMTP credentials
-- Use personal email for production (consider a dedicated account)
-
----
-
-## Email Features
-
-### Contact Form Features:
-
-- ✅ Honeypot spam protection (invisible company field)
-- ✅ Timing check (minimum 3 seconds to fill form)
-- ✅ Form validation with Zod (including input length limits)
-- ✅ Rate limiting (3 requests/minute per IP)
-- ✅ HTML escaping to prevent XSS in email content
-- ✅ HTML and plain text email formats
-- ✅ Reply-to header set to user's email
-
-### PDF Email Delivery Features:
-
-- ✅ Email Product Catalog directly to users
-- ✅ Email Success Stories document directly to users
-- ✅ Professional email template with Petromac branding
-- ✅ PDF attachments included automatically
-- ✅ Modal interface with email validation
-- ✅ Success/error feedback
-
----
+Deferred. Sending kiosk emails as the signed-in staffer (rather than `info@`)
+needs their _delegated_ Graph token persisted + refreshed server-side. The
+app already reserved `Mail.Send` _delegated_ for this. See TODO.md.

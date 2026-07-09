@@ -3,12 +3,15 @@ from __future__ import annotations
 import html
 import io
 import json
+import base64
+import threading
+import time
+import urllib.parse
+import urllib.request
 import os
-import smtplib
 import threading
 import time
 from datetime import datetime, timezone
-from email.message import EmailMessage
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -156,24 +159,64 @@ def allowlists_configured() -> bool:
     )
 
 
-def get_from_address() -> str:
-    return os.getenv("CONTACT_FROM_EMAIL") or os.getenv("SMTP_USER") or ""
+# --- Microsoft Graph email (app-only) ---
+#
+# Mail sends from the MAIL_SENDER shared mailbox (info@petromac.co.nz) using
+# the Entra app's *application* Mail.Send permission — no SMTP, no license,
+# no per-mailbox Send-As. Microsoft is retiring SMTP AUTH basic auth
+# (end of Dec 2026), so this is also the long-term path. (Sending "as the
+# signed-in staff member" from the kiosk would need delegated tokens
+# persisted server-side — deferred; see TODO.)
+GRAPH_SCOPE = "https://graph.microsoft.com/.default"
+_graph_token: dict[str, object] = {"value": None, "expires_at": 0.0}
+_graph_token_lock = threading.Lock()
 
 
-def create_smtp_client():
-    host = os.getenv("SMTP_HOST")
-    port = int(os.getenv("SMTP_PORT", "465"))
-    user = os.getenv("SMTP_USER")
-    password = os.getenv("SMTP_PASS")
+def get_mail_sender() -> str:
+    return os.getenv("MAIL_SENDER") or os.getenv("CONTACT_FROM_EMAIL") or ""
 
-    if not host or not user or not password:
-        raise RuntimeError("SMTP not configured. Set SMTP_HOST, SMTP_USER, and SMTP_PASS.")
 
-    client = smtplib.SMTP(host, port, timeout=30)
-    if port == 587:
-        client.starttls()
-    client.login(user, password)
-    return client
+def is_email_configured() -> bool:
+    return bool(
+        os.getenv("ENTRA_TENANT_ID")
+        and os.getenv("ENTRA_CLIENT_ID")
+        and os.getenv("ENTRA_CLIENT_SECRET")
+        and get_mail_sender()
+    )
+
+
+def _fetch_graph_token() -> str:
+    tenant = os.getenv("ENTRA_TENANT_ID")
+    data = urllib.parse.urlencode(
+        {
+            "client_id": os.getenv("ENTRA_CLIENT_ID", ""),
+            "client_secret": os.getenv("ENTRA_CLIENT_SECRET", ""),
+            "scope": GRAPH_SCOPE,
+            "grant_type": "client_credentials",
+        }
+    ).encode("utf-8")
+    req = urllib.request.Request(
+        f"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token",
+        data=data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+    return payload
+
+
+def get_graph_token() -> str:
+    with _graph_token_lock:
+        now = time.time()
+        if _graph_token["value"] and now < float(_graph_token["expires_at"]):
+            return str(_graph_token["value"])
+        payload = _fetch_graph_token()
+        token = payload["access_token"]
+        # Refresh a minute before the real expiry.
+        _graph_token["value"] = token
+        _graph_token["expires_at"] = now + int(payload.get("expires_in", 3600)) - 60
+        return token
 
 
 def send_email(
@@ -186,25 +229,44 @@ def send_email(
     attachment_name: str | None = None,
     attachment_bytes: bytes | None = None,
 ) -> None:
-    message = EmailMessage()
-    message["From"] = get_from_address()
-    message["To"] = to_address
-    message["Subject"] = subject
-    if reply_to:
-        message["Reply-To"] = reply_to
-    message.set_content(text_body)
-    message.add_alternative(html_body, subtype="html")
-
-    if attachment_name and attachment_bytes is not None:
-        message.add_attachment(
-            attachment_bytes,
-            maintype="application",
-            subtype="pdf",
-            filename=attachment_name,
+    if not is_email_configured():
+        raise RuntimeError(
+            "Email not configured. Set ENTRA_TENANT_ID / ENTRA_CLIENT_ID / "
+            "ENTRA_CLIENT_SECRET and MAIL_SENDER."
         )
 
-    with create_smtp_client() as client:
-        client.send_message(message)
+    # text_body is accepted for API compatibility; Graph sends the HTML body.
+    message: dict = {
+        "subject": subject,
+        "body": {"contentType": "HTML", "content": html_body},
+        "toRecipients": [{"emailAddress": {"address": to_address}}],
+    }
+    if reply_to:
+        message["replyTo"] = [{"emailAddress": {"address": reply_to}}]
+    if attachment_name and attachment_bytes is not None:
+        message["attachments"] = [
+            {
+                "@odata.type": "#microsoft.graph.fileAttachment",
+                "name": attachment_name,
+                "contentType": "application/pdf",
+                "contentBytes": base64.b64encode(attachment_bytes).decode("ascii"),
+            }
+        ]
+
+    sender = urllib.parse.quote(get_mail_sender())
+    body = json.dumps({"message": message, "saveToSentItems": True}).encode("utf-8")
+    req = urllib.request.Request(
+        f"https://graph.microsoft.com/v1.0/users/{sender}/sendMail",
+        data=body,
+        headers={
+            "Authorization": f"Bearer {get_graph_token()}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    # Graph returns 202 Accepted with an empty body on success.
+    with urllib.request.urlopen(req, timeout=30):
+        pass
 
 
 def build_filtered_filename(filters: dict[str, list[str]] | None = None) -> str:

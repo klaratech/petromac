@@ -68,7 +68,7 @@ All docs live in `docs/`:
 - [docs/FLIPBOOKS.md](docs/FLIPBOOKS.md) — Flipbook build pipeline & troubleshooting
 - [docs/KIOSK.md](docs/KIOSK.md) — Kiosk operations & offline caching
 - [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) — Brand colors & typography
-- [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) — Email/SMTP configuration
+- [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) — Email (Microsoft Graph) configuration
 
 ## Current Tasks
 

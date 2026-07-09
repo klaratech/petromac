@@ -47,7 +47,7 @@ filename), run `pnpm run data`, commit the changes under `public/`. See
 | [docs/ADMIN.md](docs/ADMIN.md)                                     | Recurring content updates                |
 | [docs/FLIPBOOKS.md](docs/FLIPBOOKS.md)                             | Catalog + success-stories build pipeline |
 | [docs/KIOSK.md](docs/KIOSK.md)                                     | Kiosk operations + offline priming       |
-| [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md)                         | SMTP / email configuration               |
+| [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md)                         | Email (Microsoft Graph) configuration    |
 | [docs/MS365_ENTRA_KIOSK_SETUP.md](docs/MS365_ENTRA_KIOSK_SETUP.md) | Microsoft staff sign-in setup            |
 | [DEPLOY.md](DEPLOY.md)                                             | Production deploy + rollback             |
 | [docs/REPO_STRUCTURE.md](docs/REPO_STRUCTURE.md)                   | Directory tree                           |
