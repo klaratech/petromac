@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { preload } from 'react-dom';
 import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
 import { FLIPBOOK_KEYS, getFlipbookBasePath } from '@/features/flipbooks';
 
@@ -16,8 +17,15 @@ const CatalogViewer = dynamic(() => import('@/components/public/catalog/CatalogV
 });
 
 export default function CatalogPage() {
+  // The viewer chunk, pdf.js worker, PDF, and search index used to load as
+  // a serial chain (each discovered by the previous). Preload the three big
+  // fetches so they download in parallel with the viewer chunk.
+  preload('/flipbooks/catalog/petromac-product-catalog.pdf', { as: 'fetch' });
+  preload('/pdfjs/pdf.worker.min.mjs', { as: 'script' });
+  preload('/flipbooks/catalog/search-index.json', { as: 'fetch' });
+
   return (
-    <main className="min-h-screen bg-gray-100 overflow-x-hidden">
+    <main className="min-h-screen bg-gray-100">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-6">
           <div>

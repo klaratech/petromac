@@ -47,7 +47,9 @@ interface PageMatch {
 
 export default function CatalogViewer() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [loadProgress, setLoadProgress] = useState<number | null>(null);
   const [numPages, setNumPages] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
@@ -90,6 +92,7 @@ export default function CatalogViewer() {
   // the "Page X of N" indicator.
   useEffect(() => {
     if (!numPages) return;
+    const root = scrollerRef.current;
     const io = new IntersectionObserver(
       (entries) => {
         setVisiblePages((prev) => {
@@ -102,7 +105,7 @@ export default function CatalogViewer() {
           return next;
         });
       },
-      { rootMargin: RENDER_MARGIN }
+      { root, rootMargin: RENDER_MARGIN }
     );
     const indicator = new IntersectionObserver(
       (entries) => {
@@ -112,7 +115,7 @@ export default function CatalogViewer() {
           .sort((a, b) => a - b)[0];
         if (topmost) setCurrentPage(topmost);
       },
-      { rootMargin: '-40% 0px -55% 0px' }
+      { root, rootMargin: '-40% 0px -55% 0px' }
     );
     pageRefs.current.forEach((el) => {
       if (el) {
@@ -167,7 +170,12 @@ export default function CatalogViewer() {
   const totalMatches = useMemo(() => matches.reduce((s, m) => s + m.count, 0), [matches]);
 
   const scrollToPage = useCallback((page: number) => {
-    pageRefs.current[page - 1]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const el = pageRefs.current[page - 1];
+    const scroller = scrollerRef.current;
+    if (!el || !scroller) return;
+    // Scroll ONLY the internal viewer — scrollIntoView also scrolls window
+    // ancestors, nudging the whole document and the toolbar with it.
+    scroller.scrollTo({ top: el.offsetTop - scroller.offsetTop - 8, behavior: 'smooth' });
   }, []);
 
   const goToMatch = useCallback(
@@ -234,8 +242,9 @@ export default function CatalogViewer() {
 
   return (
     <div ref={containerRef} className="w-full">
-      {/* Toolbar — sticky under the site header */}
-      <div className="sticky top-[74px] z-20 flex flex-wrap items-center gap-3 bg-white/95 backdrop-blur rounded-lg border border-gray-200 shadow-sm px-4 py-2.5 mb-4">
+      {/* Toolbar — always visible; the pages scroll in their own area below,
+          so jumping to a search match never moves the toolbar off screen. */}
+      <div className="flex flex-wrap items-center gap-3 bg-white rounded-lg border border-gray-200 shadow-sm px-4 py-2.5 mb-4">
         {/* Search */}
         <div className="flex items-center gap-2 min-w-0 grow sm:grow-0">
           <svg
@@ -346,11 +355,16 @@ export default function CatalogViewer() {
       </div>
 
       {/* Pages */}
-      {/* overflow-x-auto: zoomed pages wider than the container scroll
-          horizontally instead of clipping (the page shell hides overflow).
-          Rendering waits for a real container measurement so placeholders
-          get correct dimensions on first paint (no layout shift). */}
-      <div className="overflow-x-auto">
+      {/* The viewer scrolls INSIDE this area (like a real PDF app): search
+          jumps move these pages, not the whole document, so the toolbar
+          stays put. overflow:auto also gives horizontal panning when
+          zoomed. Rendering waits for a real container measurement so
+          placeholders get correct dimensions on first paint. */}
+      <div
+        ref={scrollerRef}
+        className="overflow-auto overscroll-contain rounded-lg bg-gray-100"
+        style={{ height: 'calc(100vh - 260px)', minHeight: 480 }}
+      >
         {containerWidth == null ? (
           <div className="min-h-[700px]" aria-hidden="true" />
         ) : (
@@ -362,12 +376,24 @@ export default function CatalogViewer() {
             externalLinkRel="noopener noreferrer"
             onLoadSuccess={onDocumentLoad}
             onLoadError={(err) => setLoadError(err.message)}
+            onLoadProgress={({ loaded, total }) =>
+              setLoadProgress(total ? Math.min(1, loaded / total) : null)
+            }
             loading={
               <div
-                className="min-h-[700px] flex items-center justify-center text-gray-500"
+                className="min-h-[460px] flex flex-col items-center justify-center gap-3 text-gray-500"
                 role="status"
               >
-                Loading catalog…
+                <span>
+                  Loading catalog…
+                  {loadProgress != null ? ` ${Math.round(loadProgress * 100)}%` : ''}
+                </span>
+                <span className="block h-1.5 w-56 overflow-hidden rounded-full bg-gray-200">
+                  <span
+                    className="block h-full rounded-full bg-brand transition-[width] duration-200"
+                    style={{ width: `${Math.round((loadProgress ?? 0) * 100)}%` }}
+                  />
+                </span>
               </div>
             }
             className="flex flex-col items-center gap-4"
@@ -382,8 +408,7 @@ export default function CatalogViewer() {
                     pageRefs.current[idx] = el;
                   }}
                   data-page={pageNumber}
-                  // scroll-margin clears the sticky toolbar on jump-to-page
-                  style={{ minHeight: placeholderHeight, scrollMarginTop: 140 }}
+                  style={{ minHeight: placeholderHeight, scrollMarginTop: 8 }}
                   className="w-full flex justify-center"
                 >
                   {shouldRender && pageWidth ? (
