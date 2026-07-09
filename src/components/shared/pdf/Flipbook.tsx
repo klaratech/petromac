@@ -233,17 +233,31 @@ export default function Flipbook({ pages, width = 800, height = 600 }: FlipbookP
           keying the div as well used to cause an unmount race where
           destroy() ran against a detached DOM element and sometimes
           bubbled an error up to the global error boundary. */}
-      <div
-        ref={bookRef}
-        className="flipbook-container"
-        style={{
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-          background: '#fff',
-          transform: `scale(${zoom})`,
-          transformOrigin: 'center center',
-          transition: 'transform 0.2s ease-out',
-        }}
-      />
+      {/* Zoom panning: CSS transforms don't grow the scroll box, so the
+          inner sizer takes the SCALED dimensions explicitly and the outer
+          div scrolls — without this, zoomed pages clipped with no way to
+          pan (worst on mobile). */}
+      <div className="w-full overflow-auto">
+        <div
+          className="mx-auto"
+          style={{
+            width: pageWidth * (isMobile ? 1 : 2) * zoom,
+            height: pageHeight * zoom,
+          }}
+        >
+          <div
+            ref={bookRef}
+            className="flipbook-container"
+            style={{
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+              background: '#fff',
+              transform: `scale(${zoom})`,
+              transformOrigin: 'top left',
+              transition: 'transform 0.2s ease-out',
+            }}
+          />
+        </div>
+      </div>
 
       {/* Controls Bar */}
       {!isLoading && (

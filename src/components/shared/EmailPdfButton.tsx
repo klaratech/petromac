@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { buildClientApiUrl } from "@/lib/api";
+import { useId, useState } from 'react';
+import { buildClientApiUrl } from '@/lib/api';
 
 interface EmailPdfButtonProps {
   pdfUrl?: string;
-  pdfType: "catalog" | "success-stories";
+  pdfType: 'catalog' | 'success-stories';
   endpoint?: string;
   payload?: Record<string, unknown>;
   disabled?: boolean;
@@ -15,15 +15,18 @@ interface EmailPdfButtonProps {
 export function EmailPdfButton({
   pdfUrl,
   pdfType,
-  endpoint = buildClientApiUrl("/api/email/send-pdf"),
+  endpoint = buildClientApiUrl('/api/email/send-pdf'),
   payload,
   disabled = false,
-  buttonLabel = "Email PDF",
+  buttonLabel = 'Email PDF',
 }: EmailPdfButtonProps) {
   const [revealed, setRevealed] = useState(false);
-  const [email, setEmail] = useState("");
+  // Unique per instance — a hardcoded id={emailInputId} produced duplicate DOM
+  // ids when two of these buttons rendered on one page.
+  const emailInputId = useId();
+  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const handleReveal = () => {
     if (disabled) return;
@@ -38,9 +41,9 @@ export function EmailPdfButton({
 
     try {
       const response = await fetch(endpoint, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email,
@@ -51,17 +54,17 @@ export function EmailPdfButton({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to send email");
+        throw new Error('Failed to send email');
       }
 
-      setMessage({ type: "success", text: "PDF sent successfully!" });
-      setEmail("");
+      setMessage({ type: 'success', text: 'PDF sent successfully!' });
+      setEmail('');
       setTimeout(() => {
         setRevealed(false);
         setMessage(null);
       }, 2000);
     } catch {
-      setMessage({ type: "error", text: "Failed to send. Please try again." });
+      setMessage({ type: 'error', text: 'Failed to send. Please try again.' });
     } finally {
       setIsLoading(false);
     }
@@ -74,8 +77,19 @@ export function EmailPdfButton({
         disabled={revealed || disabled}
         className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed"
       >
-        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2" />
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2"
+          />
         </svg>
         {buttonLabel}
       </button>
@@ -86,7 +100,7 @@ export function EmailPdfButton({
             <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full">
               <input
                 type="email"
-                id="email"
+                id={emailInputId}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -105,7 +119,14 @@ export function EmailPdfButton({
               >
                 {isLoading ? (
                   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
                     <path
                       className="opacity-75"
                       fill="currentColor"
@@ -114,7 +135,12 @@ export function EmailPdfButton({
                   </svg>
                 ) : (
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14m-7-7l7 7-7 7" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 12h14m-7-7l7 7-7 7"
+                    />
                   </svg>
                 )}
               </button>
@@ -123,7 +149,7 @@ export function EmailPdfButton({
                 type="button"
                 onClick={() => {
                   setRevealed(false);
-                  setEmail("");
+                  setEmail('');
                   setMessage(null);
                 }}
                 className="h-8 w-8 flex items-center justify-center text-gray-400 hover:text-gray-600"
@@ -131,7 +157,12 @@ export function EmailPdfButton({
                 title="Close"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </form>
@@ -139,9 +170,9 @@ export function EmailPdfButton({
           {message && (
             <div
               className={`mt-2 px-3 py-2 rounded text-xs ${
-                message.type === "success"
-                  ? "bg-green-50 text-green-800 border border-green-200"
-                  : "bg-red-50 text-red-800 border border-red-200"
+                message.type === 'success'
+                  ? 'bg-green-50 text-green-800 border border-green-200'
+                  : 'bg-red-50 text-red-800 border border-red-200'
               }`}
             >
               {message.text}

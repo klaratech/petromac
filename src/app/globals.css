@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -22,11 +22,11 @@ body {
 
 /* Force brand colors to override any dark mode issues */
 .bg-brand {
-  background-color: #1E4A9A !important;
+  background-color: #1e4a9a !important;
 }
 
 .text-brand {
-  color: #1E4A9A !important;
+  color: #1e4a9a !important;
 }
 
 /* Hide horizontal scrollbars */
@@ -76,4 +76,11 @@ body {
 
 .group:hover .group-hover\:rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+/* Country paths on the drill-down map are keyboard-focusable (tabindex is
+   set for countries with data) but had no visible focus indicator. */
+svg path[tabindex='0']:focus-visible {
+  outline: 2px solid #1e4a9a;
+  outline-offset: 1px;
 }
