@@ -1,128 +1,50 @@
-# Flipbooks
+# Catalog & Success Stories — Build Pipeline
 
-This repo treats flipbooks as **versioned asset bundles** generated from source PDFs.
-The public site and kiosk both read from the same bundle paths.
+How the two documents are built and updated. Rationale: [DECISIONS.md](DECISIONS.md).
 
-## Folder layout
+## Update workflow
 
-Source inputs — dropped into the `sources/` drop zone (any filename):
+1. Drop the new file(s) into the drop zone (any filename):
+   - catalog PDF → `sources/catalog/`
+   - success-stories PDF **and** its tags `.xlsx` ("Kiosk" sheet) → `sources/success-stories/`
+2. `pnpm run data:flipbooks` (or `pnpm run data` for everything)
+3. Commit the changes under `public/` and push. Deploy is automatic.
 
-- `sources/catalog/` - Catalog PDF (served via the pdf.js viewer, not an image flipbook)
-- `sources/success-stories/` - Success Stories PDF + the summary xlsx (sheet: "Kiosk")
+The pipeline picks the newest file per folder, builds, validates, re-syncs the
+kiosk offline-asset list, and archives inputs to `sources/_archive/`.
 
-Generated outputs (checked in):
+## What gets built
 
-- `public/flipbooks/<docKey>/`
-  - `source.pdf`
-  - `email.pdf` (success-stories only — compressed copy for the Email-PDF
-    feature. The catalog needs no separate copy: its `source.pdf` is already
-    compressed to <4 MB on ingest and is used for viewer/download/email alike.)
-  - `manifest.json`
-  - `pages/0001.webp` (WebP q80 is the pipeline default since Jul 2026; `.jpg` supported for legacy bundles)
-  - `thumbs/0001.webp` (optional)
-  - `tags.csv` (success-stories only, auto-generated from xlsx)
+**Catalog** → `public/flipbooks/catalog/`
 
-Current doc keys:
+- `source.pdf` — compressed to <4 MB (Ghostscript) + linearized (qpdf).
+  This ONE file serves the pdf.js viewer, the Download button, and email.
+- `search-index.json` — per-page text for the viewer's search box.
 
-- `success-stories`
-- `catalog`
+**Success stories** → `public/flipbooks/success-stories/`
 
-> Note: Source PDFs dropped into `sources/` are gitignored and get archived to
-> `sources/_archive/` after a build. The deployable source of truth is
-> `public/flipbooks/**`, which must be committed.
+- `pages/NNNN.webp` — page images (WebP q80), rendered at 150 DPI
+- `manifest.json` — page count/format (imported at build time by the app)
+- `tags.csv` — filter data, generated from the xlsx "Kiosk" sheet
+- `source.pdf` (full-res master) + `email.pdf` (compressed, for the email feature)
 
 ## Prerequisites (local build)
 
-- Python 3.11+
-- Poppler (required by `pdf2image`)
-- Ghostscript (`brew install ghostscript`) — compresses the catalog PDF and
-  generates the success-stories `email.pdf`; the
-  build warns and skips it if missing
-- Python deps from `scripts/python/requirements.txt`
+- Python 3.11+ with deps from `scripts/python/requirements.txt`
+- Poppler (`brew install poppler`) — page rendering
+- Ghostscript (`brew install ghostscript`) — PDF compression
+- qpdf (`brew install qpdf`) — linearization
 
-Example setup (macOS/Linux):
+The build warns and degrades gracefully if gs/qpdf are missing.
 
-```bash
-cd scripts/python
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+## Validation & troubleshooting
 
-# macOS
-brew install poppler
-```
-
-## Update workflow (deterministic)
-
-1. Drop the new files into the drop zone — any filename works:
-   - catalog PDF → `sources/catalog/`
-   - success-stories PDF + the "Kiosk"-sheet summary `.xlsx` → `sources/success-stories/`
-2. Regenerate flipbooks (builds whichever has a new PDF, validates the bundles,
-   and archives the inputs to `sources/_archive/`):
-
-```bash
-pnpm run data:flipbooks
-```
-
-`pnpm run data` does flipbooks and operations together. Both variants also
-re-sync the flipbook page entries in `public/data/kiosk-offline-assets.json`
-from the manifests, so the kiosk prime list follows page-count/format changes
-automatically.
-
-Note: manifests are imported into the JS bundle at build time
-(`src/features/flipbooks/manifests.ts`), so a regenerated bundle shows up
-after the next commit + deploy — there is no runtime manifest fetch.
-
-3. Commit the updated `public/flipbooks/**` outputs (including `source.pdf`).
-
-> There is no watch script in this repo; flipbooks are generated manually via the
-> commands above.
-
-## CI automation
-
-The GitHub Action `.github/workflows/pdf-flipbooks-build.yml` runs when flipbook
-tooling changes. It validates manifests/tags and commits updated outputs.
-
-The unified data pipeline `.github/workflows/data-build.yaml` also rebuilds flipbooks
-as part of the weekly scheduled run.
-
-## Success Stories tags format
-
-`public/flipbooks/success-stories/tags.csv` is auto-generated from the xlsx and serves
-as the single source of truth for filtering and page mapping. Required columns:
-
-- `Page`
-- `Area`
-- `WL Co`
-- `Device`
-
-Optional columns:
-
-- `Year`, `Country`, `Category 1`, `Category 2`
-
-Notes:
-
-- The xlsx "Kiosk" sheet column `Kiosk v1` is mapped to the CSV `Device` column.
-- Multi-value cells may be comma-separated.
-- Normalization (Area/Company/Technology) happens in
-  `src/features/success-stories/services/successStories.shared.ts`.
-
-## Kiosk offline expectations
-
-The kiosk service worker caches `/flipbooks/**` via runtime cache.
-To validate offline readiness:
-
-1. Visit kiosk route (e.g., `/intranet/kiosk/successstories`).
-2. Browse several flipbook pages to warm the cache.
-3. Toggle DevTools → Network → Offline and refresh.
-
-If you change flipbook assets, bump the kiosk SW version in `public/kiosk-sw.js`
-so caches refresh (see [KIOSK.md](KIOSK.md)).
-
-## Troubleshooting
-
-- `ModuleNotFoundError: pdf2image`:
-  - Install Python deps: `pip install -r scripts/python/requirements.txt`
-  - Ensure you run the build with the same Python/venv where deps are installed.
-- `pdf2image` errors about Poppler / `pdftoppm`:
-  - Install Poppler and ensure it is on your PATH.
+- `pnpm run validate:flipbooks` — artifacts present and consistent
+- `pnpm run validate:successstories` — tags.csv ↔ manifest page mapping
+- Tags xlsx must have a "Kiosk" sheet with columns: Year, Area, Country,
+  WL Co, Category 1, Category 2, Kiosk v1, Page. Rows without a valid Page
+  number are dropped (summary/formula rows are fine to leave in).
+- If a success-stories PDF is updated WITHOUT a new tags xlsx, filters run on
+  the old tags — pages may mismatch. Always drop both together.
+- App reads manifests at build time: content changes appear after the next
+  commit + deploy, not on a CDN refresh.

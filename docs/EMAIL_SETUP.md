@@ -1,12 +1,14 @@
 # Email Configuration Guide
 
 This guide explains how to configure email functionality for the Petromac website, including:
+
 - Contact form submissions
 - PDF email delivery (Product Catalog & Success Stories)
 
 ## Prerequisites
 
 Before configuring SMTP, you need:
+
 1. An email account that supports SMTP (using Office365: info@petromac.co.nz)
 2. App-specific password for Office365
 
@@ -14,9 +16,8 @@ Before configuring SMTP, you need:
 
 ## Step 1: Generate App Password (Outlook)
 
-
-
 ### For Office365/Outlook (Petromac Configuration):
+
 1. Go to https://account.microsoft.com/security
 2. Navigate to Security → **Advanced security options**
 3. Enable 2-Step Verification (if not already enabled)
@@ -25,42 +26,46 @@ Before configuring SMTP, you need:
 6. Copy the generated password (you'll need this for both contact form and PDF email functionality)
 
 **Note:** If your organization uses Office365 Business, you may need to contact your IT administrator to:
+
 - Enable SMTP authentication for the account
 - Generate an app password or provide SMTP credentials
-
 
 ---
 
 ## Step 2: Configure Environment Variables
 
 Set the following variables in:
+
 1. `.env.dev` for local Docker/backend development
 2. `/root/apps/petromac/.env-backend` on `klaratech-1` for production
 
 ### Required Variables:
 
 #### For Contact Form:
-| Variable Name | Value | Description |
-|--------------|-------|-------------|
-| `SMTP_HOST` | `smtp.office365.com` | Office365 SMTP server |
-| `SMTP_PORT` | `587` | SMTP server port (TLS) |
-| `SMTP_USER` | `info@petromac.co.nz` | Petromac email address |
-| `SMTP_PASS` | `[app-password]` | App password from Office365 |
-| `CONTACT_FROM_EMAIL` | `info@petromac.co.nz` | Email address to send from |
-| `CONTACT_TO_EMAIL` | `info@petromac.co.nz` | Where contact form emails should be sent |
+
+| Variable Name        | Value                 | Description                              |
+| -------------------- | --------------------- | ---------------------------------------- |
+| `SMTP_HOST`          | `smtp.office365.com`  | Office365 SMTP server                    |
+| `SMTP_PORT`          | `587`                 | SMTP server port (TLS)                   |
+| `SMTP_USER`          | `info@petromac.co.nz` | Petromac email address                   |
+| `SMTP_PASS`          | `[app-password]`      | App password from Office365              |
+| `CONTACT_FROM_EMAIL` | `info@petromac.co.nz` | Email address to send from               |
+| `CONTACT_TO_EMAIL`   | `info@petromac.co.nz` | Where contact form emails should be sent |
 
 **Note:** The `SMTP_*` variables are shared by both the contact form and PDF email delivery endpoints. There is no separate `EMAIL_*` configuration.
 
 #### Security Allowlists (Recommended):
-| Variable Name | Example Value | Description |
-|--------------|---------------|-------------|
-| `ALLOWED_ORIGINS` | `https://petromac.klaratech.it` | Allowed origins/referrers for email endpoints |
-| `ALLOWED_EMAIL_DOMAINS` | `petromac.com,petromac.co.nz` | Domains allowed to receive PDFs |
-| `ALLOWED_EMAIL_RECIPIENTS` | `info@petromac.co.nz,marketing@petromac.co.nz` | Explicit allowlist of recipient emails |
+
+| Variable Name              | Example Value                                  | Description                                   |
+| -------------------------- | ---------------------------------------------- | --------------------------------------------- |
+| `ALLOWED_ORIGINS`          | `https://petromac.klaratech.it`                | Allowed origins/referrers for email endpoints |
+| `ALLOWED_EMAIL_DOMAINS`    | `petromac.com,petromac.co.nz`                  | Domains allowed to receive PDFs               |
+| `ALLOWED_EMAIL_RECIPIENTS` | `info@petromac.co.nz,marketing@petromac.co.nz` | Explicit allowlist of recipient emails        |
 
 ### Petromac Office365 Configuration:
 
 **Complete Environment Variables Setup:**
+
 ```env
 # Unified SMTP (used by contact form + PDF email endpoints)
 SMTP_HOST=smtp.office365.com
@@ -76,29 +81,10 @@ ALLOWED_EMAIL_DOMAINS=petromac.com,petromac.co.nz
 ALLOWED_EMAIL_RECIPIENTS=info@petromac.co.nz
 ```
 
-### Other SMTP Configurations (for reference):
-
-**Gmail:**
-```
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=465
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-```
-
-**Yahoo:**
-```
-SMTP_HOST=smtp.mail.yahoo.com
-SMTP_PORT=465
-SMTP_USER=your-email@yahoo.com
-SMTP_PASS=your-app-password
-```
-
----
-
 ## Step 3: Deploy
 
 After adding all environment variables:
+
 1. Restart the local backend or Docker Compose stack if you changed `.env.dev`
 2. Redeploy/restart the production app stack if you changed `/root/apps/petromac/.env-backend`
 
@@ -107,12 +93,14 @@ After adding all environment variables:
 ## Step 4: Test Email Functionality
 
 ### Test Contact Form:
+
 1. Visit your production site
 2. Navigate to the Contact page
 3. Fill out and submit the form
 4. Check info@petromac.co.nz for the message
 
 ### Test PDF Email Delivery:
+
 1. Navigate to the Product Catalog page (`/catalog`) or Success Stories page (`/success-stories/flipbook`)
 2. Click the green **"Email PDF"** button
 3. Enter your email address
@@ -122,6 +110,7 @@ After adding all environment variables:
 ---
 
 ## Verification Checklist (Recommended)
+
 - ✅ `ALLOWED_ORIGINS` is set for your production domain(s)
 - ✅ `ALLOWED_EMAIL_DOMAINS` or `ALLOWED_EMAIL_RECIPIENTS` is set (email allowlist)
 - ✅ `SMTP_*` variables are set in the active environment file
@@ -132,36 +121,44 @@ After adding all environment variables:
 
 ## Troubleshooting
 
+Check backend logs first:
+
+```bash
+ssh klaratech-1 "docker logs --tail 120 petromac-backend"
+```
+
 ### Error: "Authentication failed"
+
+- If the tenant blocks SMTP AUTH globally, enable it for the tenant or exempt
+  the sending mailbox (M365 Admin → mailbox → Mail → Manage email apps →
+  "Authenticated SMTP").
 - Double-check `SMTP_USER` and `SMTP_PASS` are correct
 - Ensure you're using an **app password**, not your regular email password
 - For Gmail, ensure 2-Step Verification is enabled
 
 ### Error: "Connection timeout"
+
 - Verify `SMTP_HOST` and `SMTP_PORT` are correct
 - Try port 587 if 465 doesn't work (and vice versa)
 - Check if your hosting provider blocks SMTP ports
 
 ### Emails not arriving
+
 - Check spam/junk folder
 - Verify `CONTACT_TO_EMAIL` is correct
 - Check the backend container logs for errors
 
-### "Less secure app access" (Gmail)
-- This setting is deprecated - use App Passwords instead
-- Enable 2-Step Verification and generate an App Password
-
----
-
 ## Security Best Practices
 
 ✅ **DO:**
+
 - Use app-specific passwords
 - Enable 2-Factor Authentication on your email account
 - Keep SMTP credentials private (never commit to Git)
 - Use different passwords for development and production
 
 ❌ **DON'T:**
+
 - Use your regular email password
 - Commit .env files to version control
 - Share SMTP credentials
@@ -169,19 +166,10 @@ After adding all environment variables:
 
 ---
 
-## Alternative: SendGrid/Mailgun
-
-If you prefer a dedicated email service:
-1. Sign up for SendGrid (free tier: 100 emails/day) or Mailgun
-2. Get API credentials
-3. Update the backend email sender in `backend/app/main.py` or add a dedicated backend provider integration
-4. Set API credentials as environment variables in the active environment file
-
----
-
 ## Email Features
 
 ### Contact Form Features:
+
 - ✅ Honeypot spam protection (invisible company field)
 - ✅ Timing check (minimum 3 seconds to fill form)
 - ✅ Form validation with Zod (including input length limits)
@@ -191,6 +179,7 @@ If you prefer a dedicated email service:
 - ✅ Reply-to header set to user's email
 
 ### PDF Email Delivery Features:
+
 - ✅ Email Product Catalog directly to users
 - ✅ Email Success Stories document directly to users
 - ✅ Professional email template with Petromac branding
@@ -199,10 +188,3 @@ If you prefer a dedicated email service:
 - ✅ Success/error feedback
 
 ---
-
-## Questions?
-
-If you encounter issues, check:
-1. Backend container logs on `klaratech-1`: `docker logs --tail 120 petromac-backend`
-2. Email provider's SMTP documentation
-3. `.env.dev` or `/root/apps/petromac/.env-backend` is configured correctly

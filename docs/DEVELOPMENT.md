@@ -26,29 +26,10 @@ pnpm run dev
 - Intranet: http://localhost:3000/intranet
 - Track Record (map): http://localhost:3000/track-record
 
-### Flipbooks
+### Documents (catalog + success stories)
 
-- Source PDFs and the tags xlsx are dropped into `sources/catalog/` and `sources/success-stories/` (see `sources/README.md`)
-- Generated bundles live in `public/flipbooks/<docKey>/`
-- Preferred unified pipeline (operations + flipbooks):
-  ```bash
-  pnpm run data
-  ```
-- View flipbooks:
-  - http://localhost:3000/catalog
-  - http://localhost:3000/success-stories/flipbook
-
-### Success Stories Filters
-
-Filters are derived from the tags file at `public/flipbooks/success-stories/tags.csv`.
-This CSV is auto-generated from the `Success Stories_Summary.xlsx` file (sheet: "Kiosk") during the build pipeline.
-Normalization rules live in `src/features/success-stories/services/successStories.shared.ts`.
-
-To update filters:
-
-1. Edit the "Kiosk" sheet in the success-stories summary `.xlsx` and drop it into `sources/success-stories/`
-2. Run `pnpm run data` (or `pnpm run data:flipbooks`)
-3. Commit generated outputs
+See [FLIPBOOKS.md](FLIPBOOKS.md) for the build pipeline and
+[ADMIN.md](ADMIN.md) for update recipes.
 
 ## Code Organization
 
@@ -100,7 +81,7 @@ This will:
 3. run flipbook/success-stories validators
 4. move consumed inputs into `sources/_archive/` (date-stamped)
 
-An empty `sources/` subfolder is simply skipped. See [sources/README.md](../../sources/README.md).
+An empty `sources/` subfolder is simply skipped. See [sources/README.md](../sources/README.md).
 
 ## Testing
 
@@ -111,19 +92,9 @@ An empty `sources/` subfolder is simply skipped. See [sources/README.md](../../s
 - Production deploys build in GitHub Actions and run on Hetzner (`klaratech-1`) via Docker Compose — see [DEPLOY.md](../DEPLOY.md)
 - If you are testing Microsoft staff sign-in locally, add the localhost callback URL to the Entra app and populate the Entra env vars in `.env.dev`
 
-## Kiosk Offline Refresh (Trade Shows)
+## Kiosk offline refresh
 
-To refresh kiosk content before going offline:
-
-1. Connect the kiosk device to a stable network.
-2. Visit key kiosk routes at least once:
-   - `/intranet/kiosk`
-   - `/intranet/kiosk/dashboard`
-   - `/intranet/kiosk/successstories`
-3. Wait for videos/models/flipbooks to finish loading (first load caches assets).
-4. If a new release ships, hard refresh once while online to update caches.
-
-If assets appear stale, clear site data for the kiosk domain in the browser settings.
+See [KIOSK.md](KIOSK.md) — bump the SW `VERSION` + re-prime devices.
 
 ## Data Conventions
 

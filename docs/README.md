@@ -4,6 +4,7 @@
 
 ## Docs
 
+- [DECISIONS.md](DECISIONS.md) - Decision log — why things are this way
 - [REPO_STRUCTURE.md](REPO_STRUCTURE.md) - File layout
 - [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture overview
 - [DEVELOPMENT.md](DEVELOPMENT.md) - Development workflow
@@ -13,6 +14,5 @@
 - [TAILWIND_THEME.md](TAILWIND_THEME.md) - Brand theme
 - [EMAIL_SETUP.md](EMAIL_SETUP.md) - Email configuration
 - [MS365_ENTRA_KIOSK_SETUP.md](MS365_ENTRA_KIOSK_SETUP.md) - Microsoft staff sign-in setup
-- [MS365_EMAIL_TODO.md](MS365_EMAIL_TODO.md) - Historical Microsoft 365 SMTP checklist
 - [ASSET_MANIFEST.md](ASSET_MANIFEST.md) - Image/video/3D model optimization specs for designers
 - [BrandBook.pdf](BrandBook.pdf) - Petromac brand book

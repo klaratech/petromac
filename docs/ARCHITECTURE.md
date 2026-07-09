@@ -1,138 +1,66 @@
 # Architecture
 
-The Petromac platform combines a **public-facing website**, an **intranet portal**, a **kiosk shell**, and supporting **data processing pipelines**.
+Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISIONS.md).
 
 ## Components
 
-### Public Website (Route Group: `(public)`)
+- **Public site** — Next.js 16 App Router route group `(public)`, Tailwind 4.
+  Notable pages: `/track-record` (d3 drill-down map, lazy-loaded; Success
+  Stories opens as an overlay via `?stories=1`) and `/catalog` (pdf.js viewer
+  with selectable text, links, and a full-document search box).
+- **Intranet** — `/intranet` staff entry (optional Microsoft Entra sign-in via
+  `/auth/microsoft/*`; AES-GCM session cookie) linking to Athena and the kiosk.
+- **Kiosk** — route group `(kiosk)` under `/intranet/kiosk/*`: splash → Open
+  Hole video attractor (`/lane?lane=oh`) or Cased Hole `HelixExperience`
+  (`/ch`), plus dashboard, 3d-viewer, successstories, datacheck, and the
+  offline-prime utility. Scoped service worker (`public/kiosk-sw.js`) caches
+  everything for offline trade-show use. See [KIOSK.md](KIOSK.md).
+- **Backend** — single-file FastAPI (`backend/app/main.py`): contact form,
+  PDF email sends, filtered success-stories PDF builder, data passthroughs.
+  Rate-limited (keyed on `CF-Connecting-IP`), origin-validated, recipient
+  allowlists. See [EMAIL_SETUP.md](EMAIL_SETUP.md).
+- **Data pipeline** — `pnpm run data` scans the `sources/` drop zone, builds
+  published artifacts into `public/`, archives inputs. See [ADMIN.md](ADMIN.md).
 
-- Built with **Next.js 16** (App Router) and **React 19**
-- Styled with **Tailwind CSS 4** using Petromac brand theme
-- Pages: Home, About, Team, Catalog, Track Record, Simulation, Contact, Privacy, and Terms
-- **Track Record** (`/track-record`) - Interactive global deployment map using shared DrilldownMapCore
-- **Catalog**: searchable in-browser pdf.js viewer (selectable text, links, full-document search). **Success Stories**: interactive image flipbook with filters
+## Documents
 
-### Intranet Portal
+- **Catalog**: ONE compressed (<4 MB) + linearized `source.pdf` + a
+  `search-index.json` (per-page text). Serves the viewer, downloads, and email.
+- **Success stories**: WebP page images (rendered from a full-res
+  `source.pdf`) + manifest + `tags.csv` (single source of truth for filters)
+  - compressed `email.pdf`. Flipbook (page-flip) loads a ±4-page window.
 
-- Homepage with tiles:
-  - Athena (external portal)
-  - Kiosk (internal dashboard app)
-  - Catalog (pdf.js viewer)
-  - Success Stories (flipbook + filters, reusing shared components)
-- Optional **Microsoft Entra staff sign-in** establishes a staff identity that carries into kiosk mode
-- Kiosk app includes:
-  - Operations dashboard with map visualization (shared DrilldownMapCore)
-  - Product lines explorer
-  - Data validation tools
+## Data tiers
 
-### Kiosk Shell (Route Group: `(kiosk)`)
+1. **`sources/`** — pipeline inputs; gitignored, archived after each run.
+2. **`public/data/`** — published JSON, fetched at runtime from `/data/*`
+   (never imported), so map surfaces work without the backend. Two deliberate
+   build-time-import exceptions: `operations_stats.json` (homepage numbers)
+   and the flipbook manifests.
+3. **`src/data/`** — small typed TS modules only (e.g. `team.ts`).
 
-- Kiosk-only layout provides fullscreen UX, dedicated service worker registration, and kiosk manifest/viewport metadata
-- All kiosk routes live under `/intranet/kiosk/*` but are isolated by the kiosk route group shell
+Operations artifacts: `operations_data.json` (slim, all map surfaces),
+`operations_full.json` (staff datacheck only), `operations_stats.json`
+(homepage). Schema: `src/types/JobRecord.ts`.
 
-### Shared Map Components
+## Shared components
 
-- **DrilldownMapCore** (`src/components/geo/DrilldownMapCore.tsx`) - Reusable map logic for both public and kiosk surfaces. The public `/track-record` page now imports it directly via `next/dynamic` (lazy-loaded), and computes its own hero stats from the same dataset.
-- **DrilldownMapKiosk** (`src/components/geo/DrilldownMapKiosk.tsx`) - Kiosk wrapper for the operations dashboard.
-- **Map Data Utilities** (`src/lib/map/data.ts`) - Typed fetchers that read the published JSON directly from `/data/operations_data.json` and `/data/country_labels.json`. Backend `/api/data/*` routes still exist as passthroughs, but the frontend should use the static `/data/*` paths for map data.
+- `src/components/geo/DrilldownMapCore.tsx` — one map for public + kiosk
+  (`DrilldownMapKiosk` wraps it for the dashboard).
+- `src/features/` — success-stories filtering/services, flipbooks, catalog.
+- Self-hosted decoders — Draco at `public/draco/`, pdf.js worker at
+  `public/pdfjs/`. Never let these fall back to a CDN (offline kiosk + CSP).
 
-### Flipbook Module
+## Deployment
 
-- Replaces the old PDF viewer/builder modals
-- Source PDFs and tags xlsx dropped into `sources/catalog/` and `sources/success-stories/` (see `sources/README.md`)
-- Generated bundles in `public/flipbooks/<docKey>/` — success-stories: manifest, WebP pages, `source.pdf`, compressed `email.pdf`, tags; catalog: one compressed+linearized `source.pdf` + `search-index.json`
-- Converted into images with Python (`scripts/python/build_flipbook.py` using pdf2image + pillow)
-- Interactive flipbooks built with **page-flip**
-- Routes:
-  - `/catalog`
-  - `/success-stories/flipbook`
-
-#### Success Stories Filters Architecture (Single Source of Truth)
-
-Success Stories are implemented as a **single feature module**:
-
-**CSV Parsing + Filtering** (`src/features/success-stories/services/successStories.shared.ts`):
-
-- Loads `public/flipbooks/success-stories/tags.csv`
-- Parses CSV with PapaParse
-- Applies normalization and derives filtered page numbers
-- Produces a validation report for unmapped/invalid values
-
-**Key Design Decision**: Tags CSV is the single source of truth for filtering, with normalization rules applied for stable, predictable filter values.
-
-### Data Pipeline
-
-- `scripts/node/data-pipeline.ts` scans the `sources/` drop zone, builds the published artifacts, and archives consumed inputs to `sources/_archive/`
-- Python scripts process Excel data into JSON; `scripts/python/build_flipbook.py` renders flipbook bundles
-- Pipeline inputs are dropped into `sources/` (gitignored, never deployed)
-- Published data artifacts stored in `public/data/`
-- The frontend fetches published operations and country-label data directly from `/data/*`
-
-### Email & Security
-
-- SMTP, PDF generation, recipient allowlists, and origin validation live in the backend service
-- Frontend calls the backend over env-configured API base URLs
-- Contact form: HTML escaping, honeypot, timing check, input length limits enforced by the backend
-- Microsoft staff identity uses Entra OAuth routes and an encrypted session cookie
-
-### Deployment
-
-- Frontend and backend run as Docker containers on **`klaratech-1`** (Hetzner) under `/root/apps/petromac/`
-- Public traffic routed through a **Cloudflare Tunnel** (`klaratech-1` tunnel) to localhost ports `3015` (frontend) and `8012` (backend `/api/*`)
-- No public ports open on the server — cloudflared connects outbound; SSH is via Tailscale or the deploy key
-- Container images published to **GHCR** by GitHub Actions: `ghcr.io/klaratech/petromac-frontend` and `petromac-backend`, both `linux/amd64` only
-- Flipbooks generated automatically by `.github/workflows/pdf-flipbooks-build.yml`
-- Operations data pipeline automated via `.github/workflows/data-build.yaml`
-- See [DEPLOY.md](../DEPLOY.md) for the full pipeline and rollback flow
-
-## Data Architecture
-
-### Three-Tier Data Organization
-
-#### Pipeline Inputs (`sources/`)
-
-- **Never deployed or committed** — dropped files are gitignored; only the folder structure + `sources/README.md` are tracked
-- `sources/operations/` (job-history `.xlsx`), `sources/catalog/` and `sources/success-stories/` (PDFs + tags `.xlsx`)
-- `pnpm run data` consumes the newest file in each folder and moves it to `sources/_archive/`
-
-#### Published Artifacts (`public/data/`)
-
-- **Bundled with the frontend image** and served by Next.js
-- Contains all data files consumed by the application
-- The backend can read the same operations and country-label JSON for passthrough/debug endpoints, but frontend map surfaces should read `/data/*` directly
-- Includes:
-  - Operations data — slim `operations_data.json` (~600 KB, 6 columns) for every map surface and full `operations_full.json` (~3.5 MB, 33 columns) for the staff diagnostic at `/intranet/kiosk/datacheck`. See `src/types/JobRecord.ts` for the slim schema and the full-column inventory.
-  - Map data (country_labels.json, world-50m.json)
-  - Flipbook assets live under `public/flipbooks/`
-
-#### TypeScript Modules (`src/data/`)
-
-- **Small, typed data modules** imported directly by components
-- Contains TypeScript files with interfaces and typed data
-- Example: `team.ts` with team member information
-- **Do not store large JSON files here** - use `public/data/` instead
-
-### Data Access Patterns
-
-#### For Published Data (public/data/)
-
-Components should fetch data at runtime rather than importing:
-
-```tsx
-// Client component
-const response = await fetch('/data/operations_data.json');
-const data = await response.json();
-
-// Server component with caching
-const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/data/operations_data.json`, {
-  next: { revalidate: 3600 },
-});
+```
+Browser → Cloudflare edge → cloudflared tunnel (klaratech-1)
+                              ├→ 127.0.0.1:3015  frontend (Next standalone)
+                              └→ 127.0.0.1:8012  backend  (/api/*)
 ```
 
-#### For TypeScript Modules (src/data/)
-
-Import directly for small, typed datasets:
-
-```tsx
-import { regionalManagers, hqTeam } from '@/data/team';
-```
+GitHub Actions builds both images to GHCR on push to `main` and SSH-redeploys.
+Containers MUST bind `127.0.0.1:` only. Security headers incl. CSP in
+`next.config.ts`; cache policy is cadence-based (quarterly assets / weekly
+data) and requires Cloudflare "Respect Existing Headers". Details:
+[DEPLOY.md](../DEPLOY.md).
