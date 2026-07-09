@@ -175,3 +175,7 @@ ICOTA*.pptx
 
 # Python build artifacts
 *.egg-info/
+
+# Stray installers
+*.pkg
+*.dmg
