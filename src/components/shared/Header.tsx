@@ -11,7 +11,14 @@ const NAV_ITEMS = [
   { name: 'Catalog', href: '/catalog' },
   { name: 'Track Record', href: '/track-record' },
   { name: 'Simulation', href: '/simulation' },
+];
+
+// About's dropdown (desktop hover / focus) and mobile sub-links. Team lives
+// here rather than in the top bar.
+const ABOUT_SUBLINKS = [
   { name: 'Team', href: '/team' },
+  { name: 'Patents', href: '/about/patents' },
+  { name: 'Publications', href: '/about/publications' },
 ];
 
 function LinkedInIcon({ className = 'w-5 h-5' }: { className?: string }) {
@@ -66,6 +73,9 @@ export default function Header() {
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
+  // About owns /about/* and /team now that Team moved into its dropdown.
+  const isAboutActive = () => isActive('/about') || isActive('/team');
+
   /** Desktop link: permanent transparent bottom border so active/inactive
    *  items have identical height (the previous version added pb-1 +
    *  border-b-2 only on active, which nudged active items down 3px). */
@@ -107,16 +117,48 @@ export default function Header() {
 
           {/* Desktop nav (lg+) */}
           <nav className="hidden lg:flex items-center gap-7">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-                className={desktopLinkClass(isActive(item.href))}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {NAV_ITEMS.map((item) =>
+              item.href === '/about' ? (
+                // About is a link AND a dropdown: hover (or keyboard focus
+                // within) reveals Team / Patents / Publications.
+                <div key={item.href} className="relative group">
+                  <Link
+                    href={item.href}
+                    aria-current={isAboutActive() ? 'page' : undefined}
+                    className={desktopLinkClass(isAboutActive())}
+                  >
+                    {item.name}
+                  </Link>
+                  <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity duration-150 absolute left-1/2 -translate-x-1/2 top-full pt-3 z-50">
+                    <div className="min-w-44 rounded-xl bg-slate-950/95 backdrop-blur-md border border-white/10 shadow-xl py-2">
+                      {ABOUT_SUBLINKS.map((sub) => (
+                        <Link
+                          key={sub.href}
+                          href={sub.href}
+                          aria-current={isActive(sub.href) ? 'page' : undefined}
+                          className={`block px-4 py-2 text-sm transition-colors ${
+                            isActive(sub.href)
+                              ? 'text-white bg-white/10'
+                              : 'text-slate-300 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  className={desktopLinkClass(isActive(item.href))}
+                >
+                  {item.name}
+                </Link>
+              )
+            )}
 
             <div className="h-6 w-px bg-white/15" aria-hidden="true" />
 
@@ -203,21 +245,41 @@ export default function Header() {
             aria-label="Main navigation"
           >
             {NAV_ITEMS.map((item) => {
-              const active = isActive(item.href);
+              const active = item.href === '/about' ? isAboutActive() : isActive(item.href);
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={active ? 'page' : undefined}
-                  className={[
-                    'px-3 py-3 rounded-lg text-base font-medium transition-colors',
-                    active
-                      ? 'text-white bg-white/10'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5',
-                  ].join(' ')}
-                >
-                  {item.name}
-                </Link>
+                <div key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={active ? 'page' : undefined}
+                    className={[
+                      'block px-3 py-3 rounded-lg text-base font-medium transition-colors',
+                      active
+                        ? 'text-white bg-white/10'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5',
+                    ].join(' ')}
+                  >
+                    {item.name}
+                  </Link>
+                  {item.href === '/about' ? (
+                    <div className="ml-4 border-l border-white/10 pl-2 flex flex-col gap-1 mt-1 mb-1">
+                      {ABOUT_SUBLINKS.map((sub) => (
+                        <Link
+                          key={sub.href}
+                          href={sub.href}
+                          aria-current={isActive(sub.href) ? 'page' : undefined}
+                          className={[
+                            'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                            isActive(sub.href)
+                              ? 'text-white bg-white/10'
+                              : 'text-slate-400 hover:text-white hover:bg-white/5',
+                          ].join(' ')}
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
               );
             })}
 

@@ -1,9 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
-import type { Metadata } from "next";
+import Image from 'next/image';
+import Link from 'next/link';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "About",
+  title: 'About',
   description:
     "Learn about Petromac's origins, our founder Stephen McCormick, and the engineering drive behind our wireline logging solutions.",
 };
@@ -14,16 +14,13 @@ export default function AboutPage() {
       <div className="container mx-auto px-4 py-12 md:py-16">
         {/* Header band */}
         <header className="mb-10 md:mb-12 max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">
-            About
-          </p>
+          <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">About</p>
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4">
             Origins of Petromac
           </h1>
           <p className="text-base md:text-lg text-slate-600 leading-relaxed">
-            Founded out of decades of wireline logging experience and a
-            persistent frustration with the limitations of conventional
-            conveyance.
+            Founded out of decades of wireline logging experience and a persistent frustration with
+            the limitations of conventional conveyance.
           </p>
         </header>
 
@@ -45,32 +42,27 @@ export default function AboutPage() {
               {/* Story body */}
               <div className="md:w-3/4 space-y-4 text-slate-700 leading-relaxed">
                 <p>
-                  Throughout my career in petrophysics, I became increasingly
-                  frustrated with the poor log data from drill pipe conveyance
-                  and logging while drilling measurements. It is well
-                  recognised that wireline logs can deliver the most accurate,
-                  high resolution information in a very efficient manner.
-                  Wireline logging operations however, do not always run
-                  smoothly. Ledges, cuttings and high deviation can impede
-                  tool-string descent. Tool sticking compromises data quality
-                  and often leads to considerable unplanned expense.
+                  Throughout my career in petrophysics, I became increasingly frustrated with the
+                  poor log data from drill pipe conveyance and logging while drilling measurements.
+                  It is well recognised that wireline logs can deliver the most accurate, high
+                  resolution information in a very efficient manner. Wireline logging operations
+                  however, do not always run smoothly. Ledges, cuttings and high deviation can
+                  impede tool-string descent. Tool sticking compromises data quality and often leads
+                  to considerable unplanned expense.
                 </p>
 
                 <p>
-                  Qualified as a mechanical engineer, with a drive for
-                  perfection, I set out to design, validate and manufacture a
-                  range of bespoke devices with the aim to minimise wireline
-                  logging risk, improve operational efficiency and data
-                  quality. The Petromac wireline express system was born to
-                  resolve the challenges that have plagued wireline logging
-                  for over 50&nbsp;years.
+                  Qualified as a mechanical engineer, with a drive for perfection, I set out to
+                  design, validate and manufacture a range of bespoke devices with the aim to
+                  minimise wireline logging risk, improve operational efficiency and data quality.
+                  The Petromac wireline express system was born to resolve the challenges that have
+                  plagued wireline logging for over 50&nbsp;years.
                 </p>
 
                 <p>
-                  Our passionate team of highly experienced regional managers
-                  pride themselves on delivery of exceptional outcomes to
-                  customers through the use of our world&nbsp;leading bespoke
-                  devices.
+                  Our passionate team of highly experienced regional managers pride themselves on
+                  delivery of exceptional outcomes to customers through the use of our
+                  world&nbsp;leading bespoke devices.
                 </p>
 
                 {/* Founder credit */}
@@ -78,9 +70,7 @@ export default function AboutPage() {
                   <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-semibold mb-1">
                     Founder
                   </p>
-                  <p className="text-xl font-bold text-slate-900">
-                    Stephen McCormick
-                  </p>
+                  <p className="text-xl font-bold text-slate-900">Stephen McCormick</p>
                 </div>
               </div>
             </div>
@@ -93,6 +83,11 @@ export default function AboutPage() {
             </p>
             <div className="space-y-3">
               <SidebarLink
+                href="/team"
+                title="Team"
+                description="Regional managers across the major oil & gas basins, plus the HQ engineering team."
+              />
+              <SidebarLink
                 href="/about/patents"
                 title="Patents"
                 description="44 granted patents across 9 device categories."
@@ -101,11 +96,6 @@ export default function AboutPage() {
                 href="/about/publications"
                 title="Publications"
                 description="SPE, SPWLA, IPTC and related peer-reviewed papers."
-              />
-              <SidebarLink
-                href="/team"
-                title="Team"
-                description="Regional managers across the major oil & gas basins, plus the HQ engineering team."
               />
             </div>
           </aside>
