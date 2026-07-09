@@ -32,7 +32,7 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 ## Content & assets (designer-dependent)
 
 - [ ] ChallengeSelector card thumbnails — `conveyance/ledges/orientation/
-  sampling/sticking.jpg` are dev placeholders; three cards show them permanently
+sampling/sticking.jpg` are dev placeholders; three cards show them permanently
 - [ ] Helix product image (homepage FeaturedProducts card uses the focus.png logo)
 - [ ] Case Studies images: `helix-cbl-setup.png`, `rocker-logs-1.png`
 - [ ] OH lane mechanism videos + case-study log images (Formation Testing /
@@ -44,6 +44,9 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Backlog
 
+- [ ] MapRenderer: split base path generation from style updates so filter
+      clicks restyle instead of rebuilding all ~244 paths (from the Jul 2026
+      audit; deferred — delicate component, clicks already debounced)
 - [ ] Catalog viewer a11y: move keyboard focus to the target page when
       jumping between search matches (screen-reader users currently only get
       the visual scroll) — from the Jul 2026 catalog audit
