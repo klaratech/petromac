@@ -48,13 +48,13 @@ interface PageMatch {
 export default function CatalogViewer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [loadProgress, setLoadProgress] = useState<number | null>(null);
   const [numPages, setNumPages] = useState(0);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
   const [zoom, setZoom] = useState(1);
-  const [visiblePages, setVisiblePages] = useState<Set<number>>(new Set([1, 2]));
+  const [visibleRows, setVisibleRows] = useState<Set<number>>(new Set([0, 1]));
   const [currentPage, setCurrentPage] = useState(1);
 
   // Search state. pageTexts is built once from the PDF's text content —
@@ -64,9 +64,25 @@ export default function CatalogViewer() {
   const [query, setQuery] = useState('');
   const [activeMatch, setActiveMatch] = useState(0);
 
+  // Book-style spreads on wide screens: cover alone, then 2-3, 4-5, …
+  // The spread takes ~80% of the container width; single column below 1024px.
+  const twoUp = (containerWidth ?? 0) >= 1024;
   const pageWidth = containerWidth
-    ? Math.round(Math.min(900, containerWidth - 16) * zoom)
+    ? Math.round(
+        (twoUp ? Math.min((containerWidth * 0.8) / 2, 660) : Math.min(900, containerWidth - 16)) *
+          zoom
+      )
     : undefined;
+
+  const rows = useMemo(() => {
+    if (!numPages) return [] as number[][];
+    if (!twoUp) return Array.from({ length: numPages }, (_, i) => [i + 1]);
+    const result: number[][] = [[1]];
+    for (let pg = 2; pg <= numPages; pg += 2) {
+      result.push(pg + 1 <= numPages ? [pg, pg + 1] : [pg]);
+    }
+    return result;
+  }, [numPages, twoUp]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -91,16 +107,17 @@ export default function CatalogViewer() {
   // viewport get real canvases. Also tracks the topmost visible page for
   // the "Page X of N" indicator.
   useEffect(() => {
-    if (!numPages) return;
+    if (!rows.length) return;
+    rowRefs.current.length = rows.length;
     const root = scrollerRef.current;
     const io = new IntersectionObserver(
       (entries) => {
-        setVisiblePages((prev) => {
+        setVisibleRows((prev) => {
           const next = new Set(prev);
           for (const entry of entries) {
-            const page = Number((entry.target as HTMLElement).dataset.page);
-            if (entry.isIntersecting) next.add(page);
-            else next.delete(page);
+            const row = Number((entry.target as HTMLElement).dataset.row);
+            if (entry.isIntersecting) next.add(row);
+            else next.delete(row);
           }
           return next;
         });
@@ -111,13 +128,13 @@ export default function CatalogViewer() {
       (entries) => {
         const topmost = entries
           .filter((e) => e.isIntersecting)
-          .map((e) => Number((e.target as HTMLElement).dataset.page))
+          .map((e) => Number((e.target as HTMLElement).dataset.row))
           .sort((a, b) => a - b)[0];
-        if (topmost) setCurrentPage(topmost);
+        if (topmost != null && rows[topmost]) setCurrentPage(rows[topmost][0]);
       },
       { root, rootMargin: '-40% 0px -55% 0px' }
     );
-    pageRefs.current.forEach((el) => {
+    rowRefs.current.forEach((el) => {
       if (el) {
         io.observe(el);
         indicator.observe(el);
@@ -127,7 +144,7 @@ export default function CatalogViewer() {
       io.disconnect();
       indicator.disconnect();
     };
-  }, [numPages]);
+  }, [rows]);
 
   const onDocumentLoad = useCallback((pdf: { numPages: number }) => {
     setNumPages(pdf.numPages);
@@ -169,14 +186,18 @@ export default function CatalogViewer() {
 
   const totalMatches = useMemo(() => matches.reduce((s, m) => s + m.count, 0), [matches]);
 
-  const scrollToPage = useCallback((page: number) => {
-    const el = pageRefs.current[page - 1];
-    const scroller = scrollerRef.current;
-    if (!el || !scroller) return;
-    // Scroll ONLY the internal viewer — scrollIntoView also scrolls window
-    // ancestors, nudging the whole document and the toolbar with it.
-    scroller.scrollTo({ top: el.offsetTop - scroller.offsetTop - 8, behavior: 'smooth' });
-  }, []);
+  const scrollToPage = useCallback(
+    (page: number) => {
+      const rowIdx = rows.findIndex((r) => r.includes(page));
+      const el = rowRefs.current[rowIdx];
+      const scroller = scrollerRef.current;
+      if (!el || !scroller) return;
+      // Scroll ONLY the internal viewer — scrollIntoView also scrolls window
+      // ancestors, nudging the whole document and the toolbar with it.
+      scroller.scrollTo({ top: el.offsetTop - scroller.offsetTop - 8, behavior: 'smooth' });
+    },
+    [rows]
+  );
 
   const goToMatch = useCallback(
     (index: number) => {
@@ -398,38 +419,41 @@ export default function CatalogViewer() {
             }
             className="flex flex-col items-center gap-4"
           >
-            {Array.from({ length: numPages }, (_, idx) => {
-              const pageNumber = idx + 1;
-              const shouldRender = visiblePages.has(pageNumber);
+            {rows.map((rowPages, rowIdx) => {
+              const shouldRender = visibleRows.has(rowIdx);
               return (
                 <div
-                  key={pageNumber}
+                  key={rowPages[0]}
                   ref={(el) => {
-                    pageRefs.current[idx] = el;
+                    rowRefs.current[rowIdx] = el;
                   }}
-                  data-page={pageNumber}
+                  data-row={rowIdx}
                   style={{ minHeight: placeholderHeight, scrollMarginTop: 8 }}
-                  className="w-full flex justify-center"
+                  className="w-full flex justify-center gap-3"
                 >
-                  {shouldRender && pageWidth ? (
-                    <Page
-                      pageNumber={pageNumber}
-                      width={pageWidth}
-                      customTextRenderer={highlight}
-                      className="shadow-md"
-                      loading={
-                        <div
-                          style={{ width: pageWidth, height: placeholderHeight }}
-                          className="bg-white shadow-md animate-pulse"
-                        />
-                      }
-                    />
-                  ) : (
-                    <div
-                      style={{ width: pageWidth, height: placeholderHeight }}
-                      className="bg-white shadow-md"
-                      aria-hidden="true"
-                    />
+                  {rowPages.map((pageNumber) =>
+                    shouldRender && pageWidth ? (
+                      <Page
+                        key={pageNumber}
+                        pageNumber={pageNumber}
+                        width={pageWidth}
+                        customTextRenderer={highlight}
+                        className="shadow-md"
+                        loading={
+                          <div
+                            style={{ width: pageWidth, height: placeholderHeight }}
+                            className="bg-white shadow-md animate-pulse"
+                          />
+                        }
+                      />
+                    ) : (
+                      <div
+                        key={pageNumber}
+                        style={{ width: pageWidth, height: placeholderHeight }}
+                        className="bg-white shadow-md"
+                        aria-hidden="true"
+                      />
+                    )
                   )}
                 </div>
               );
