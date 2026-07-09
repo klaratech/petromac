@@ -62,6 +62,53 @@ On `klaratech-1`:
 6. `systemctl restart cloudflared`.
 7. Add a Cloudflare DNS CNAME for `petromac.klaratech.it` → tunnel ID, proxied.
 
+## Cloudflare settings (klaratech.it zone)
+
+Cloudflare settings are **per zone**, and `petromac.klaratech.it` shares the
+`klaratech.it` zone with other apps — so petromac-specific behavior is done
+with **Cache Rules** scoped to the hostname, not zone-wide toggles:
+
+- **Browser TTL**: a Cache Rule matching `hostname eq petromac.klaratech.it`
+  with Browser TTL = "Respect origin TTL". This activates the cadence-based
+  Cache-Control headers set in `next.config.ts` (without it, Cloudflare's
+  zone default of 4 h overrides them).
+- Zone-wide settings that are fine to share: Brotli compression, bot
+  protections (note: "Block AI bots" is a content-policy decision).
+
+## Domain cutover: petromac.klaratech.it → petromac.co.nz
+
+The plan when testing completes. The zone can be **pre-built in Cloudflare
+while `petromac.co.nz` still serves the old site elsewhere** — nothing goes
+live until the nameservers change at the registrar.
+
+1. **Add the `petromac.co.nz` zone** in Cloudflare (free plan is fine). It sits
+   in "pending nameserver update" — fully configurable, not yet serving.
+2. **Replicate ALL existing DNS records** into the zone before flipping —
+   ⚠️ especially **MX / SPF / DKIM / DMARC for Microsoft 365 mail**. Missing
+   these breaks company email the moment nameservers move. Cloudflare's
+   import scans the current DNS but verify against M365 admin's DNS page.
+3. **Add the site records**: CNAME `petromac.co.nz` → `<tunnel-id>.cfargotunnel.com`
+   (proxied) and CNAME `www` → same (or a redirect rule www → apex).
+4. **cloudflared ingress** on klaratech-1: duplicate the two petromac ingress
+   blocks for the new hostname (keep the old ones during transition);
+   `systemctl restart cloudflared`.
+5. **Zone settings**: Cache Rule (Browser TTL = respect origin), Brotli,
+   bot policy, SSL/TLS mode **Full (strict)**.
+6. **App config for the new domain**:
+   - `/root/apps/petromac/.env-frontend`: `NEXT_PUBLIC_SITE_URL=https://petromac.co.nz`
+     (+ legacy `NEXT_PUBLIC_BASE_URL`)
+   - `/root/apps/petromac/.env-backend`: add the new origin to `ALLOWED_ORIGINS`
+     (keep the klaratech.it origin during transition)
+   - Entra app: add `https://petromac.co.nz/auth/microsoft/callback`
+   - `docker compose up -d` to reload env
+7. **Flip**: change the nameservers at the .co.nz registrar to the pair
+   Cloudflare assigned. Propagation is minutes-to-48 h; the old site keeps
+   serving until each resolver picks up the change.
+8. **After cutover**: keep `petromac.klaratech.it` working for a while
+   (bookmarks, emailed links), verify email flow (send/receive a test M365
+   message), re-run the smoke tests against the new domain, and submit the
+   new sitemap in Google Search Console.
+
 ## Rollback
 
 ```bash
