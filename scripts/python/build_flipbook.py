@@ -62,6 +62,11 @@ def parse_args():
     parser.add_argument("--thumbs", action="store_true", help="Generate thumbnail images")
     parser.add_argument("--thumb-width", type=int, default=320, help="Thumbnail width in pixels")
     parser.add_argument(
+        "--pdf-name",
+        default="source.pdf",
+        help="Output filename for the shipped PDF in --pdf-only mode",
+    )
+    parser.add_argument(
         "--pdf-only",
         action="store_true",
         help=(
@@ -87,14 +92,14 @@ def linearize_pdf(source_pdf: Path, out_path: Path) -> None:
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-        print("   source.pdf: linearized (qpdf)")
+        print(f"   {out_path.name}: linearized (qpdf)")
     except subprocess.CalledProcessError:
         # qpdf returns 3 for warnings but still writes a valid file.
         if out_path.exists():
-            print("   source.pdf: linearized with warnings (qpdf)")
+            print(f"   {out_path.name}: linearized with warnings (qpdf)")
         else:
             shutil.copyfile(source_pdf, out_path)
-            print("   source.pdf: copied (qpdf linearize failed)")
+            print(f"   {out_path.name}: copied (qpdf linearize failed)")
     except FileNotFoundError:
         shutil.copyfile(source_pdf, out_path)
         print("⚠️  qpdf not found — shipping a non-linearized PDF. Install it "
@@ -124,7 +129,7 @@ def build_search_index(source_pdf: Path, out_path: Path) -> int:
 
 
 def build_pdf_document(args) -> None:
-    """PDF-only build (catalog): ONE compressed, linearized source.pdf + search index.
+    """PDF-only build (catalog): ONE compressed, linearized PDF + search index.
 
     A single <4 MB artifact serves the pdf.js viewer, the Download button,
     and the emailed attachment — no separate email.pdf. The full-resolution
@@ -137,10 +142,17 @@ def build_pdf_document(args) -> None:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Old artifacts from previous schemes (image flipbook / separate email copy).
+    pdf_name = args.pdf_name
+
+    # Old artifacts from previous schemes (image flipbook / separate email
+    # copy / previous PDF filename).
     stale_pages = out_dir / "pages"
     stale_manifest = out_dir / "manifest.json"
     stale_email = out_dir / "email.pdf"
+    for old_pdf in out_dir.glob("*.pdf"):
+        if old_pdf.name not in (pdf_name, "email.pdf"):
+            old_pdf.unlink()
+            print(f"   removed stale {old_pdf.name} (renamed scheme)")
     if stale_pages.exists():
         shutil.rmtree(stale_pages)
         print("   removed stale pages/ dir")
@@ -158,13 +170,13 @@ def build_pdf_document(args) -> None:
         compressed = Path(tmp.name)
     try:
         if compress_pdf(source_pdf, compressed):
-            linearize_pdf(compressed, out_dir / "source.pdf")
+            linearize_pdf(compressed, out_dir / pdf_name)
         else:
-            linearize_pdf(source_pdf, out_dir / "source.pdf")
+            linearize_pdf(source_pdf, out_dir / pdf_name)
     finally:
         compressed.unlink(missing_ok=True)
 
-    build_search_index(out_dir / "source.pdf", out_dir / "search-index.json")
+    build_search_index(out_dir / pdf_name, out_dir / "search-index.json")
     print(f"✅ Built PDF document for {args.title} at {out_dir}")
 
 

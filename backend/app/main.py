@@ -33,10 +33,10 @@ def _emailable_pdf(doc_key: str) -> Path:
 
 
 # Catalog uses a single-PDF scheme (Jul 2026): the pipeline compresses each
-# new catalog to <4 MB on ingest, so source.pdf is already email-sized.
+# new catalog to <4 MB on ingest, so the shipped PDF is already email-sized.
 # Success stories still keeps a separate compressed email.pdf (its source
 # is full-res because the flipbook page images are rendered from it).
-CATALOG_PDF_PATH = PUBLIC_DIR / "flipbooks" / "catalog" / "source.pdf"
+CATALOG_PDF_PATH = PUBLIC_DIR / "flipbooks" / "catalog" / "petromac-product-catalog.pdf"
 SUCCESS_STORIES_PDF_PATH = _emailable_pdf("success-stories")
 
 CONTACT_RATE_LIMIT = {"limit": 3, "window_ms": 60_000}

@@ -17,8 +17,10 @@ kiosk offline-asset list, and archives inputs to `sources/_archive/`.
 
 **Catalog** → `public/flipbooks/catalog/`
 
-- `source.pdf` — compressed to <4 MB (Ghostscript) + linearized (qpdf).
-  This ONE file serves the pdf.js viewer, the Download button, and email.
+- `petromac-product-catalog.pdf` — compressed to <4 MB (Ghostscript) +
+  linearized (qpdf). This ONE file serves the pdf.js viewer, the Download
+  button, and email. Descriptive filename on purpose: it's what users see
+  when they download.
 - `search-index.json` — per-page text for the viewer's search box.
 
 **Success stories** → `public/flipbooks/success-stories/`

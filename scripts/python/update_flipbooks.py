@@ -85,8 +85,10 @@ def build_flipbook(
     ]
 
     if pdf_only:
-        # Catalog: served through the in-browser pdf.js viewer, so ship the
-        # linearized PDF + email.pdf + search index, not per-page images.
+        # Human-readable filename — this is what users see when downloading.
+        cmd.extend(["--pdf-name", "petromac-product-catalog.pdf"])
+        # Catalog: served through the in-browser pdf.js viewer, so ship one
+        # compressed+linearized PDF + a search index, not per-page images.
         cmd.append("--pdf-only")
     else:
         # WebP pages are ~60% smaller than the JPEG equivalents — the

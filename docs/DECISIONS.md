@@ -8,8 +8,10 @@ _current state_ and _how to operate it_; the reasoning lives here.
 ## Jul 2026 — Single-PDF catalog scheme
 
 **Decision:** When a new catalog lands, compress it to <4 MB (Ghostscript) and
-linearize it (qpdf); that one `source.pdf` serves the viewer, the Download
-button, and emailed attachments. No separate `email.pdf` for the catalog.
+linearize it (qpdf); that one PDF serves the viewer, the Download button,
+and emailed attachments. No separate `email.pdf` for the catalog. Named
+`petromac-product-catalog.pdf` (Jul 2026) — the artifact is user-facing
+when downloaded, so `source.pdf` was a bad name.
 **Why:** The viewer was already serving the compressed copy (see next entry),
 so two files were redundant. Text/vector content survives compression sharp;
 only photos downsample. The full-res master is always in `sources/_archive/`.

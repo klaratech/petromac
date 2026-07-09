@@ -45,7 +45,8 @@ stories** flipbook at `/success-stories/flipbook`. Generated bundles live in
 `public/flipbooks/{catalog,success-stories}/`.
 
 - **Catalog** — served as the PDF itself through a searchable pdf.js viewer, so
-  updating it is just a PDF swap. The pipeline ships the linearized `source.pdf`,
+  updating it is just a PDF swap. The pipeline ships the linearized
+  `petromac-product-catalog.pdf`,
   compressed to <4 MB on ingest — the same file serves the viewer, downloads,
   and email — and `search-index.json` (per-page text for search).
   No page images. Keep the source PDF's real text + links intact (don't flatten

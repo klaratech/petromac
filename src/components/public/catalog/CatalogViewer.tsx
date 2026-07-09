@@ -10,9 +10,10 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 pdfjs.GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.min.mjs';
 
 // Single-PDF scheme (Jul 2026): the pipeline compresses each new catalog
-// to <4 MB on ingest, so source.pdf IS the compressed copy — the same file
-// serves this viewer, the Download button, and emailed attachments.
-const PDF_URL = '/flipbooks/catalog/source.pdf';
+// to <4 MB on ingest — the same file serves this viewer, the Download
+// button, and emailed attachments. Descriptive filename because it's also
+// what users see when they download.
+const PDF_URL = '/flipbooks/catalog/petromac-product-catalog.pdf';
 // Per-page text extracted at pipeline time (pypdf) from the full source.
 // Fetching this ~50 KB index instead of scanning the PDF in the browser
 // keeps search instant and independent of the rendered pages.
@@ -29,6 +30,15 @@ const RENDER_MARGIN = '1200px';
 const DOCUMENT_OPTIONS = {
   disableAutoFetch: true,
 };
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
 
 interface PageMatch {
   page: number;
@@ -59,11 +69,20 @@ export default function CatalogViewer() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const set = () => setContainerWidth(el.clientWidth);
-    set();
+    // rAF-throttled: un-throttled ResizeObserver callbacks re-measure and
+    // re-render on every resize tick, thrashing layout with 62 pages.
+    let frame = 0;
+    const set = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => setContainerWidth(el.clientWidth));
+    };
+    setContainerWidth(el.clientWidth);
     const obs = new ResizeObserver(set);
     obs.observe(el);
-    return () => obs.disconnect();
+    return () => {
+      cancelAnimationFrame(frame);
+      obs.disconnect();
+    };
   }, []);
 
   // Windowed rendering: placeholders are observed, and pages near the
@@ -161,23 +180,37 @@ export default function CatalogViewer() {
     [matches, scrollToPage]
   );
 
-  // Reset match cursor when the query changes; jump to the first hit.
+  // Reset the match cursor when the query changes — but do NOT scroll:
+  // jumping the viewport on every keystroke made typing a search term
+  // nauseating. Enter (or the arrows) navigates instead.
+  const hasNavigatedRef = useRef(false);
   useEffect(() => {
     setActiveMatch(0);
-    if (matches.length > 0) scrollToPage(matches[0].page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    hasNavigatedRef.current = false;
   }, [query]);
 
-  // Highlight search hits inside the text layer of rendered pages.
+  // Highlight search hits inside the text layer of rendered pages. The
+  // return value is rendered as HTML by react-pdf, so every text fragment
+  // is HTML-escaped — match positions are found on the raw string, then
+  // the output is rebuilt from escaped slices.
   const highlight = useCallback(
     (textItem: { str: string }) => {
+      const raw = textItem.str;
       const q = query.trim();
-      if (q.length < 2) return textItem.str;
-      const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      return textItem.str.replace(
-        new RegExp(`(${escaped})`, 'gi'),
-        '<mark style="background:#fde047;color:inherit;border-radius:2px;">$1</mark>'
-      );
+      if (q.length < 2) return escapeHtml(raw);
+      const lower = raw.toLowerCase();
+      const needle = q.toLowerCase();
+      let out = '';
+      let pos = 0;
+      let hit = lower.indexOf(needle);
+      while (hit !== -1) {
+        out += escapeHtml(raw.slice(pos, hit));
+        out += `<mark style="background:#fde047;color:inherit;border-radius:2px;">${escapeHtml(raw.slice(hit, hit + q.length))}</mark>`;
+        pos = hit + q.length;
+        hit = lower.indexOf(needle, pos);
+      }
+      out += escapeHtml(raw.slice(pos));
+      return out;
     },
     [query]
   );
@@ -224,7 +257,11 @@ export default function CatalogViewer() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') goToMatch(activeMatch + (e.shiftKey ? -1 : 1));
+              if (e.key !== 'Enter') return;
+              // First Enter goes to the first hit; subsequent Enters step.
+              const step = hasNavigatedRef.current ? (e.shiftKey ? -1 : 1) : 0;
+              hasNavigatedRef.current = true;
+              goToMatch(activeMatch + step);
             }}
             placeholder={pageTexts === null ? 'Indexing…' : 'Search the catalog…'}
             disabled={pageTexts === null}
@@ -309,62 +346,72 @@ export default function CatalogViewer() {
       </div>
 
       {/* Pages */}
-      <Document
-        file={PDF_URL}
-        options={DOCUMENT_OPTIONS}
-        // Open catalog links (petromac.co.nz etc.) in a new tab.
-        externalLinkTarget="_blank"
-        externalLinkRel="noopener noreferrer"
-        onLoadSuccess={onDocumentLoad}
-        onLoadError={(err) => setLoadError(err.message)}
-        loading={
-          <div
-            className="min-h-[700px] flex items-center justify-center text-gray-500"
-            role="status"
+      {/* overflow-x-auto: zoomed pages wider than the container scroll
+          horizontally instead of clipping (the page shell hides overflow).
+          Rendering waits for a real container measurement so placeholders
+          get correct dimensions on first paint (no layout shift). */}
+      <div className="overflow-x-auto">
+        {containerWidth == null ? (
+          <div className="min-h-[700px]" aria-hidden="true" />
+        ) : (
+          <Document
+            file={PDF_URL}
+            options={DOCUMENT_OPTIONS}
+            // Open catalog links (petromac.co.nz etc.) in a new tab.
+            externalLinkTarget="_blank"
+            externalLinkRel="noopener noreferrer"
+            onLoadSuccess={onDocumentLoad}
+            onLoadError={(err) => setLoadError(err.message)}
+            loading={
+              <div
+                className="min-h-[700px] flex items-center justify-center text-gray-500"
+                role="status"
+              >
+                Loading catalog…
+              </div>
+            }
+            className="flex flex-col items-center gap-4"
           >
-            Loading catalog…
-          </div>
-        }
-        className="flex flex-col items-center gap-4"
-      >
-        {Array.from({ length: numPages }, (_, idx) => {
-          const pageNumber = idx + 1;
-          const shouldRender = visiblePages.has(pageNumber);
-          return (
-            <div
-              key={pageNumber}
-              ref={(el) => {
-                pageRefs.current[idx] = el;
-              }}
-              data-page={pageNumber}
-              // scroll-margin clears the sticky toolbar on jump-to-page
-              style={{ minHeight: placeholderHeight, scrollMarginTop: 140 }}
-              className="w-full flex justify-center"
-            >
-              {shouldRender && pageWidth ? (
-                <Page
-                  pageNumber={pageNumber}
-                  width={pageWidth}
-                  customTextRenderer={highlight}
-                  className="shadow-md"
-                  loading={
+            {Array.from({ length: numPages }, (_, idx) => {
+              const pageNumber = idx + 1;
+              const shouldRender = visiblePages.has(pageNumber);
+              return (
+                <div
+                  key={pageNumber}
+                  ref={(el) => {
+                    pageRefs.current[idx] = el;
+                  }}
+                  data-page={pageNumber}
+                  // scroll-margin clears the sticky toolbar on jump-to-page
+                  style={{ minHeight: placeholderHeight, scrollMarginTop: 140 }}
+                  className="w-full flex justify-center"
+                >
+                  {shouldRender && pageWidth ? (
+                    <Page
+                      pageNumber={pageNumber}
+                      width={pageWidth}
+                      customTextRenderer={highlight}
+                      className="shadow-md"
+                      loading={
+                        <div
+                          style={{ width: pageWidth, height: placeholderHeight }}
+                          className="bg-white shadow-md animate-pulse"
+                        />
+                      }
+                    />
+                  ) : (
                     <div
                       style={{ width: pageWidth, height: placeholderHeight }}
-                      className="bg-white shadow-md animate-pulse"
+                      className="bg-white shadow-md"
+                      aria-hidden="true"
                     />
-                  }
-                />
-              ) : (
-                <div
-                  style={{ width: pageWidth, height: placeholderHeight }}
-                  className="bg-white shadow-md"
-                  aria-hidden="true"
-                />
-              )}
-            </div>
-          );
-        })}
-      </Document>
+                  )}
+                </div>
+              );
+            })}
+          </Document>
+        )}
+      </div>
     </div>
   );
 }

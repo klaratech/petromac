@@ -32,7 +32,7 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 ## Content & assets (designer-dependent)
 
 - [ ] ChallengeSelector card thumbnails — `conveyance/ledges/orientation/
-    sampling/sticking.jpg` are dev placeholders; three cards show them permanently
+  sampling/sticking.jpg` are dev placeholders; three cards show them permanently
 - [ ] Helix product image (homepage FeaturedProducts card uses the focus.png logo)
 - [ ] Case Studies images: `helix-cbl-setup.png`, `rocker-logs-1.png`
 - [ ] OH lane mechanism videos + case-study log images (Formation Testing /
@@ -43,6 +43,10 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 - [ ] Rocker mechanism force-section schematic (interim crop in place)
 
 ## Backlog
+
+- [ ] Catalog viewer a11y: move keyboard focus to the target page when
+      jumping between search matches (screen-reader users currently only get
+      the visual scroll) — from the Jul 2026 catalog audit
 
 - [ ] Full SEO audit remainder (structured data / JSON-LD, performance scores)
 - [ ] Kiosk CH lane "Other" experience (Coming-soon placeholder; build last)

@@ -24,7 +24,7 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
 
 ## Documents
 
-- **Catalog**: ONE compressed (<4 MB) + linearized `source.pdf` + a
+- **Catalog**: ONE compressed (<4 MB) + linearized `petromac-product-catalog.pdf` + a
   `search-index.json` (per-page text). Serves the viewer, downloads, and email.
 - **Success stories**: WebP page images (rendered from a full-res
   `source.pdf`) + manifest + `tags.csv` (single source of truth for filters)

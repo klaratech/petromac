@@ -29,11 +29,11 @@ export default function CatalogPage() {
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <EmailPdfButton
-              pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.catalog)}/source.pdf`}
+              pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.catalog)}/petromac-product-catalog.pdf`}
               pdfType="catalog"
             />
             <a
-              href={`${getFlipbookBasePath(FLIPBOOK_KEYS.catalog)}/source.pdf`}
+              href={`${getFlipbookBasePath(FLIPBOOK_KEYS.catalog)}/petromac-product-catalog.pdf`}
               download
               className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20 ring-1 ring-blue-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
             >

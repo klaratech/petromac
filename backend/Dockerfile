@@ -24,7 +24,7 @@ COPY backend /app/backend
 # Bake ONLY the public/ subset the backend actually reads.
 # The rest of public/ (videos, 3D models, flipbook page images, etc.)
 # is served by the frontend and intentionally left out of this image.
-# Catalog uses a single-PDF scheme: source.pdf is already compressed <4 MB
+# Catalog uses a single-PDF scheme: one compressed (<4 MB) descriptive-named PDF
 # and serves email too. Success-stories keeps a separate email.pdf (its
 # source stays full-res for page rendering); backend falls back to source.pdf.
 RUN --mount=type=bind,source=public,target=/tmp/public,readonly \
@@ -33,7 +33,7 @@ RUN --mount=type=bind,source=public,target=/tmp/public,readonly \
       /app/public/flipbooks/success-stories \
  && cp /tmp/public/data/operations_data.json /app/public/data/operations_data.json \
  && cp /tmp/public/data/country_labels.json /app/public/data/country_labels.json \
- && cp /tmp/public/flipbooks/catalog/source.pdf /app/public/flipbooks/catalog/source.pdf \
+ && cp /tmp/public/flipbooks/catalog/petromac-product-catalog.pdf /app/public/flipbooks/catalog/petromac-product-catalog.pdf \
  && cp /tmp/public/flipbooks/success-stories/source.pdf /app/public/flipbooks/success-stories/source.pdf \
  && if [ -f /tmp/public/flipbooks/success-stories/email.pdf ]; then cp /tmp/public/flipbooks/success-stories/email.pdf /app/public/flipbooks/success-stories/email.pdf; fi
 

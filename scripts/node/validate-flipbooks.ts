@@ -89,7 +89,7 @@ async function validateCatalogPdf() {
   // image flipbook — validate its artifacts, not a page manifest.
   const baseDir = path.join(process.cwd(), 'public', 'flipbooks', 'catalog');
   const errors: string[] = [];
-  for (const file of ['source.pdf', 'search-index.json']) {
+  for (const file of ['petromac-product-catalog.pdf', 'search-index.json']) {
     if (!(await fileExists(path.join(baseDir, file)))) {
       errors.push(`[catalog] ${file} not found`);
     }
