@@ -52,13 +52,24 @@ On `klaratech-1`:
      Splitting the env files keeps backend secrets out of the frontend container.
 4. CI logs Docker into GHCR during each deploy before pulling images. For manual server-side pulls or rollbacks, run `docker login ghcr.io` first with a token that has `read:packages`.
 5. Add the cloudflared ingress (already documented in Tech Standards `Hetzner Server.md`):
+
    ```yaml
+   # Next.js staff-session route lives in the FRONTEND — must match before /api/.*
+   - hostname: petromac.klaratech.it
+     path: /api/staff/.*
+     service: http://localhost:3015
    - hostname: petromac.klaratech.it
      path: /api/.*
      service: http://localhost:8012
    - hostname: petromac.klaratech.it
      service: http://localhost:3015
    ```
+
+   Ingress rules are first-match-wins: without the `/api/staff/.*` exception,
+   the backend answers 404 for the Next.js session route and the intranet
+   sign-in card can't detect that auth is configured. Duplicate all three
+   blocks for `petromac.co.nz` at cutover.
+
 6. `systemctl restart cloudflared`.
 7. Add a Cloudflare DNS CNAME for `petromac.klaratech.it` → tunnel ID, proxied.
 
