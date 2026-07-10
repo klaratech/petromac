@@ -5,6 +5,29 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Jul 2026 — HTML catalog from a curated content model (not a live IDML scraper)
+
+**Decision:** `/catalog` is being rebuilt as a native HTML catalog (refining
+at `/catalogtest`). Source of truth is a **curated content model**:
+`scripts/python/catalog_config.json` (product↔spread mapping, summaries,
+image picks, text fixes) + the generated
+`src/features/catalog/content/catalog.json`. The IDML extractor stays in the
+repo as the re-import/diff tool for future editions — but product boundaries
+and editorial text are config, not inferred.
+**Why:** the InDesign source is an art-directed brochure, not a database —
+grouping is spatial (absolute positions), styles are visual not semantic, and
+~40% of Links assets are design files. A fully automatic per-edition scraper
+would break on every redesign. The curated split keeps re-import mechanical
+where it's reliable (text, spec tables, images) and human where it's judgment
+(what's a product, what's its summary). Spec edits go in the config +
+`pnpm run data:catalog`, never hand-edits to `catalog.json` (ADMIN.md §2b).
+**Extraction verified against the print PDF (2026-07-10):** all 1,665
+extracted strings classified — 93.3% exact matches, 3.9% word-level matches
+(pdftotext interleaves two-column layouts), 1.7% deliberately curated text,
+and the remaining 1.1% is content that exists only in the IDML because the
+designer's PDF export is older (TTB-S75U pages, SWHF configuration page,
+H2S/sour-service footnotes on RO17/TWT-28/TWS-30). **Zero extraction errors.**
+
 ## Jul 2026 — Email via Microsoft Graph (app-only), not SMTP
 
 **Decision:** All outbound mail (contact form + PDF sends) goes through

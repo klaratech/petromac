@@ -1,0 +1,754 @@
+{
+  "$comment": "Curation config for the HTML catalog pipeline. Maps IDML spreads to the site's content model (categories/products), selects which Links images each product uses, and applies text fixes. build_catalog_content.py combines this with the raw extraction (extract_catalog_idml.py) to produce src/features/catalog/content/catalog.json + web images. Spread indices are 0-based IDML spread order (spread N = catalog page N+1 in the 2026 edition).",
+  "edition": "2026",
+  "replacements": [
+    ["0..9”", "0.9”"],
+    ["17..8”", "17.8”"],
+    ["depnts", "depends"],
+    ["amount the central mandrel", "around the central mandrel"],
+    ["imagging", "imaging"],
+    ["FOcus™", "Focus™"],
+    [
+      "descent by gravity to world record deviations",
+      "descend by gravity to world-record deviations"
+    ],
+    [
+      "It design provides greater standoff allowing the combination of grater OD tools",
+      "Its design provides greater standoff, allowing the combination of greater-OD tools"
+    ],
+    ["Suitable for hole small and Large hole sizes", "Suitable for small and large hole sizes"],
+    [
+      "the need inefficient drag-inducing centralisers",
+      "the need for inefficient drag-inducing centralisers"
+    ],
+    ["conditions.  Unlike", "conditions. Unlike"],
+    ["solution   provided", "solution provided"]
+  ],
+  "about": {
+    "intro": [
+      "At Petromac we design and manufacture a broad range of bespoke devices for the wireline logging industry. Petromac devices provide a quantum improvement in risk control for both the wireline logging companies and the operators we serve to deliver significant cost and time saving benefits."
+    ],
+    "quote": {
+      "text": "Petromac started with the sole aim of improving wireline logging efficiency and enhancing log data quality for Operators, particularly in challenging wellbore conditions. Our dedicated regional managers have a wealth of wireline logging experience, and continually strive to push the boundaries through innovation and expertise.",
+      "attribution": "Stephen McCormick"
+    },
+    "pillars": [
+      {
+        "title": "Operational Efficiency",
+        "text": "Ultra-low friction wheels reduce whole-tool drag to enable gravity descents to 80° deviation — conventional wireline operations in wellbores usually logged by pipe-conveyed logging, tractors or LWD."
+      },
+      {
+        "title": "Sticking Prevention",
+        "text": "Carrying logging tools on wheeled carriages cuts contact area with the borehole wall by ~99% and lets tools roll out of differential-sticking scenarios."
+      },
+      {
+        "title": "Well Access",
+        "text": "Orientation-positioned holefinders navigate ledges and washouts without losing momentum, with a far higher success rate than traditional holefinders."
+      },
+      {
+        "title": "Sensor Orientation",
+        "text": "Orienting the logging tool sensors enables low-side pad contact, high-side fluid sampling, X-Y density, oriented side-wall coring and valid density down-logs."
+      },
+      {
+        "title": "Centralization",
+        "text": "Focus™ centralisers achieve near-perfect centralization while minimizing drag — better log quality and deeper reach in deviated wells."
+      }
+    ],
+    "productLines": [
+      {
+        "id": "wireline-express",
+        "name": "Wireline Express™",
+        "text": "A diverse range of Taxis and Guides for wireline logging tools which provide conveyance, orientation and well access solutions to deliver improved operational efficiency and data quality."
+      },
+      {
+        "id": "focus",
+        "name": "Focus™ Precision Centralisers",
+        "text": "Evolved from Wireline Express™: a ground-up analysis of centraliser mechanics and logging applications led to devices that achieve near perfect centralisation and enable gravity descent, regardless of deviation."
+      }
+    ],
+    "patents": "Petromac devices are protected by one or more patents in the US and elsewhere.",
+    "patentsUrl": "https://www.petromac.co.nz/patents/"
+  },
+  "categories": [
+    {
+      "slug": "tool-taxis",
+      "name": "Tool Taxis",
+      "productLine": "wireline-express",
+      "tagline": "The Wireline Express™ Tool Taxi system — wheeled carriages that carry logging tools for orientation, conveyance, centering and formation testing.",
+      "intro": [
+        "Tool Taxis carry the logging string on ultra-low-friction wheels. Two bearing families cover every application: Type A taxis use tungsten carbide bush bearings (gravity logging to 70° deviation), while Type B taxis run on sealed, pressure-compensated ball bearings in a lubricant bath — the lowest friction in class, for gravity logging to 80° deviation."
+      ],
+      "groups": [
+        "Orienting Taxis",
+        "Conveyance Taxis",
+        "Centering",
+        "Formation Testing",
+        "In-Line Tool Taxis"
+      ]
+    },
+    {
+      "slug": "guides-holefinders",
+      "name": "Guides & Holefinders",
+      "productLine": "wireline-express",
+      "tagline": "Universal hole finders that navigate ledges, washouts and restrictions without losing momentum.",
+      "intro": [
+        "Petromac offers a range of holefinders to fit various logging tools. These guides enable passing through washouts and ledges seamlessly and without losing momentum."
+      ],
+      "groups": ["Universal Hole Finder"]
+    },
+    {
+      "slug": "fixed-angle-guides",
+      "name": "Fixed Angle Guides",
+      "productLine": "wireline-express",
+      "tagline": "Tool-specific guides with fixed or adjustable nose angles for SLB, Halliburton and Baker Hughes logging strings.",
+      "intro": [],
+      "groups": ["For SLB Tools", "For Halliburton Tools", "For Baker Hughes Tools"]
+    },
+    {
+      "slug": "focus-centralisers",
+      "name": "Focus™ Centralisers",
+      "productLine": "focus",
+      "tagline": "Precision roller centralisers for open and cased hole — perfect centralization with minimal drag.",
+      "intro": [
+        "The Focus™ range was developed with two objectives: achieve perfect centralization, and minimize the drag associated with achieving it — giving operators the perfect log."
+      ],
+      "groups": ["Open Hole", "Cased Hole"]
+    },
+    {
+      "slug": "well-intervention",
+      "name": "Well Intervention Accessories",
+      "productLine": "wireline-express",
+      "tagline": "Rollers and weight-bar taxis for cased hole conveyance and production logging.",
+      "intro": [],
+      "groups": []
+    }
+  ],
+  "products": [
+    {
+      "slug": "tta-505-ttb-505",
+      "category": "tool-taxis",
+      "group": "Orienting Taxis",
+      "name": "Orienting Taxis TTA-505 & TTB-505",
+      "models": ["TTA-505", "TTB-505"],
+      "spreads": [6, 7, 8],
+      "summary": "Slip-over orienting taxis with 0.5” standoff in an 8.5” wellbore — tungsten carbide (TTA) or sealed ball bearing (TTB).",
+      "variants": [
+        {
+          "title": "TTA-505 — Type A, Tungsten Carbide Bearing",
+          "description": [
+            "Slip-over tool taxis with tungsten carbide bush bearings, designed to orient & reduce the drag coefficient of a logging tool string.",
+            "Taxis lock securely onto the tool housings or into c-spanner recess holes and fit both 3 5/8” and 3 3/8” logging tool housings."
+          ],
+          "applications": [
+            "Gravity logging up to 70 degrees well deviation using a slip-over wheel design",
+            "Orient logging tool sensors, cores, pressure measurements and samples without the need for standoffs, bow springs, tool turners etc.",
+            "Stick-slip and cable tension reduction",
+            "Eliminate risk of tool differential sticking by offsetting tools from the wellbore wall",
+            "Robust design. Very low maintenance requirement."
+          ]
+        },
+        {
+          "title": "TTB-505 — Type B, Ball Bearing",
+          "description": [
+            "Slip-over tool taxis designed to orient & reduce the drag coefficient of a logging tool string.",
+            "Taxi wheels run on ball bearings in a sealed, pressure compensated, lubricant bath providing the lowest friction in class.",
+            "Taxis lock securely onto the housings or into c-spanner recess holes and fit a range of logging tool housing OD."
+          ],
+          "applications": [
+            "Gravity logging up to 80 degrees well deviation using a slip-over wheel design",
+            "Orient logging tool sensors, cores, and pressure measurements and samples without the need for standoffs, bow springs, tool turners etc.",
+            "Stick-slip and cable tension reduction",
+            "Eliminate risk of tool differential sticking by offsetting tools from the borehole",
+            "Robust design. Very low maintenance requirement."
+          ]
+        }
+      ],
+      "description": [
+        "The 505 series orienting taxis provide 0.5” standoff in an 8.5” wellbore. Two bearing options are available: the TTA-505 with tungsten carbide bush bearings and the TTB-505 with sealed ball bearings."
+      ],
+      "applications": [],
+      "images": [
+        {
+          "file": "TTA-505_rev2_ElectroPolish_Shadow.855.png",
+          "alt": "TTA-505 orienting tool taxi",
+          "caption": "TTA-505"
+        },
+        {
+          "file": "TTB-505_rev2_ElectroPolish_Catalog.png",
+          "alt": "TTB-505 orienting tool taxi",
+          "caption": "TTB-505"
+        },
+        {
+          "file": "Orientation Moment Updated_V2_transparent.png",
+          "alt": "Orientation moment diagram for the 505 taxi",
+          "caption": "Orientation principle",
+          "role": "figure"
+        },
+        {
+          "file": "Standoff.png",
+          "alt": "Standoff of a 505 taxi on a 3-5/8” tool",
+          "caption": "Standoff on a 3-5⁄8” tool",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "tta-515-ttb-515",
+      "category": "tool-taxis",
+      "group": "Conveyance Taxis",
+      "name": "Conveyance Taxis TTA-515 & TTB-515",
+      "models": ["TTA-515", "TTB-515"],
+      "spreads": [9, 10, 11],
+      "summary": "Slip-over conveyance taxis with 1.5” standoff in an 8.5” wellbore for hole sizes up to 24”.",
+      "description": [
+        "The 515 series conveyance taxis provide 1.5” standoff in an 8.5” wellbore and run in hole sizes up to 24”. Two bearing options are available: the TTA-515 with tungsten carbide bush bearings (gravity logging to 70° deviation) and the TTB-515 with sealed ball bearings (to 80° deviation).",
+        "Taxis lock securely onto the tool housings or into c-spanner recess holes and fit both 3 5/8” and 3 3/8” logging tool housings."
+      ],
+      "applications": [
+        "Gravity logging in high deviation wells using a slip-over wheel design",
+        "Orient logging tool sensors, cores, pressure measurements and samples without the need for standoffs, bow springs, tool turners etc.",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the wellbore wall",
+        "Robust design. Very low maintenance requirement."
+      ],
+      "images": [
+        {
+          "file": "TTA-515_rev2_ElectroPolish_Catalog.png",
+          "alt": "TTA-515 conveyance tool taxi",
+          "caption": "TTA-515"
+        },
+        {
+          "file": "TTA-505_rev2_ElectroPolish_Catalog.png",
+          "alt": "TTB-515 conveyance tool taxi",
+          "caption": "TTB-515"
+        },
+        {
+          "file": "Standoff@0.25x@0.25x.png",
+          "alt": "Standoff of a 515 taxi on a 3-5/8” tool",
+          "caption": "515 standoff on a 3-5⁄8” tool",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-715",
+      "category": "tool-taxis",
+      "group": "Conveyance Taxis",
+      "name": "Conveyance Taxi TTB-715",
+      "models": ["TTB-715"],
+      "spreads": [12, 13],
+      "summary": "Ball-bearing conveyance taxi with a 3-7/8” bore providing 1.4” standoff in an 8.5” wellbore.",
+      "description": [
+        "Slip-over ball-bearing conveyance taxi with a larger 3-7⁄8” bore, providing 1.4” standoff in an 8.5” wellbore for hole sizes from 8.5” to 24”."
+      ],
+      "applications": [
+        "Gravity logging up to 80 degrees well deviation using a slip-over wheel design",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the borehole",
+        "Robust design. Very low maintenance requirement."
+      ],
+      "images": [
+        { "file": "TTB-X715_ISO.775@0.3x.png", "alt": "TTB-715 conveyance tool taxi" },
+        {
+          "file": "TTB-715_standoff@0.5x.png",
+          "alt": "TTB-715 standoff diagram",
+          "caption": "TTB-715 standoff",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-x-515",
+      "category": "tool-taxis",
+      "group": "Centering",
+      "name": "Centering Taxi TTB-X-515",
+      "models": ["TTB-X-515"],
+      "spreads": [14, 15, 16],
+      "summary": "Centralises tool strings in an 8.5” wellbore and 9-5/8” casing with < 0.01” eccentralisation.",
+      "images": [
+        {
+          "file": "TTB-X515_V2_electro polished_Shadow.857.png",
+          "alt": "TTB-X-515 centering tool taxi"
+        },
+        {
+          "file": "Offcentre in Casing.jpg",
+          "alt": "TTB-X-515 centralization examples in 9-5/8” and 9-7/8” casings",
+          "caption": "TTB-X-515 centralization in 9-5⁄8” & 9-7⁄8” casings",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-s75-ttb-s85",
+      "category": "tool-taxis",
+      "group": "Formation Testing",
+      "name": "Formation Tester Taxis TTB-S75 & TTB-S85",
+      "models": ["TTB-S75", "TTB-S85"],
+      "spreads": [17, 18, 19],
+      "summary": "Slip-over taxis for pressure and sampling tools — carry heavy formation-testing strings fully on wheels.",
+      "images": [
+        {
+          "file": "TTBS75_TTBS85_shadows.856.png",
+          "alt": "TTB-S75 and TTB-S85 formation tester taxis"
+        },
+        {
+          "file": "TTB S 75_standoff@0.33x_Trans.png",
+          "alt": "TTB-S75 standoff for a 4-3/4” tool",
+          "caption": "TTB-S75 standoff for a 4-3⁄4” tool",
+          "role": "figure"
+        },
+        {
+          "file": "S85 Standoff_2304@0.25x_Trans.png",
+          "alt": "TTB-S85 standoff for a 4-3/4” tool",
+          "caption": "TTB-S85 standoff for a 4-3⁄4” tool",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-s75u-ttb-s85",
+      "category": "tool-taxis",
+      "group": "Formation Testing",
+      "name": "Formation Tester Taxis TTB-S75U & TTB-S85",
+      "models": ["TTB-S75U", "TTB-S85"],
+      "spreads": [20, 21, 22],
+      "summary": "Updated formation tester taxi with 5-¼” bore for ultra-high-pressure 30 kpsi tools.",
+      "images": [
+        { "file": "TTB-S85_S75U.56.png", "alt": "TTB-S75U and TTB-S85 formation tester taxis" },
+        {
+          "file": "TTB S 75_standoff@0.33x_Trans.png",
+          "alt": "TTB-S75U standoff for a 4-3/4” tool",
+          "caption": "TTB-S75U standoff for a 4-3⁄4” tool",
+          "role": "figure"
+        },
+        {
+          "file": "S85 Standoff_2304@0.25x_Trans.png",
+          "alt": "TTB-S85 standoff for a 4-3/4” tool",
+          "caption": "TTB-S85 standoff for a 4-3⁄4” tool",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-ttc-il6o",
+      "category": "tool-taxis",
+      "group": "In-Line Tool Taxis",
+      "name": "In-line Orienting Tool Taxi TTB/TTC-IL6O",
+      "models": ["TTC-IL6O", "TTB-IL6O"],
+      "spreads": [23, 24],
+      "summary": "In-line orienting taxis for small wellbores (6.0”+) — make up directly to the tool string, no adapters.",
+      "images": [
+        { "file": "TTC-IL6_ISO.858.png", "alt": "TTC-IL6O in-line orienting tool taxi" },
+        {
+          "file": "TTC-IL6 Standoff@0.25x_trans.png",
+          "alt": "TTC-IL6O standoff diagram",
+          "caption": "IL6O standoff",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-il6c",
+      "category": "tool-taxis",
+      "group": "In-Line Tool Taxis",
+      "name": "In-line Conveyance Tool Taxi TTB-IL6C",
+      "models": ["TTB-IL6C"],
+      "spreads": [25, 26],
+      "summary": "In-line conveyance taxi for small wellbores — greater standoff to combine larger-OD tools in the string.",
+      "images": [
+        { "file": "TTB-IL6C.153.png", "alt": "TTB-IL6C in-line conveyance tool taxi" },
+        {
+          "file": "Standoff TTB IL6C@0.25x.png",
+          "alt": "TTB-IL6C standoff diagram",
+          "caption": "IL6C standoff",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "pathfinder",
+      "category": "guides-holefinders",
+      "group": "Universal Hole Finder",
+      "name": "Pathfinder",
+      "models": ["PathFinder"],
+      "spreads": [27],
+      "summary": "Carbon-fibre universal hole finder with integrated flex joint and swivel — navigates any step ledge height.",
+      "images": [{ "file": "pathfinder.80.png", "alt": "Pathfinder universal hole finder" }]
+    },
+    {
+      "slug": "pathfinder-ht",
+      "category": "guides-holefinders",
+      "group": "Universal Hole Finder",
+      "name": "Pathfinder HT",
+      "models": ["PathFinder HT", "PathFinder HT (Titanium)"],
+      "spreads": [28],
+      "summary": "High-temperature Pathfinder in stainless or titanium with dual leaf bowspring centralizer — rated to 400°F.",
+      "images": [{ "file": "Pathfinder HT.128.png", "alt": "Pathfinder HT hole finder" }]
+    },
+    {
+      "slug": "ahfc",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Adjustable Angle Guide AHFC",
+      "models": ["AHFC"],
+      "spreads": [29, 30, 31],
+      "summary": "Adjustable nose angle (3, 4, 6 or 9°) to suit hole size and standoff — attaches to any through-wired tool.",
+      "images": [
+        { "file": "AHFC_shadow.867.png", "alt": "AHFC adjustable angle guide" },
+        { "file": "AHFC_9deg_sticker_catalog.png", "alt": "AHFC guide set to 9 degrees" },
+        {
+          "file": "AHFC_2007_3-4-6-9deg_dim_catalog_x0.20.png",
+          "alt": "AHFC dimensions at 3, 4, 6 and 9 degree settings",
+          "caption": "AHFC nose angle settings",
+          "role": "figure"
+        },
+        {
+          "file": "SWHF.656_Catalog.png",
+          "alt": "Toolstring configuration for 8-1/2” and larger holes",
+          "caption": "8-1⁄2” and larger configuration",
+          "role": "figure"
+        },
+        {
+          "file": "SWHF_BHI_6in.816.png",
+          "alt": "Toolstring configuration for holes smaller than 8-1/2”",
+          "caption": "8-1⁄2” and smaller configuration",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "hf-ait-zait",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide for AIT & ZAIT",
+      "models": ["HF6-AIT/ZAIT", "HF4-AIT/ZAIT"],
+      "spreads": [32],
+      "summary": "Carbon-fibre induction guides for the bottom of AIT/ZAIT strings — no electrical interference.",
+      "images": [{ "file": "HF6-AIT_shadow.868.png", "alt": "HF6-AIT fixed angle guide" }]
+    },
+    {
+      "slug": "shf-ait",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide SHF-AIT",
+      "models": ["SHF-AIT"],
+      "spreads": [33],
+      "summary": "Short guide for AIT/ZAIT designed for the greatest clearance possible in small holes (6-1/8” and smaller).",
+      "images": [{ "file": "SHF-AIT.782.png", "alt": "SHF-AIT fixed angle guide" }]
+    },
+    {
+      "slug": "hf-qait",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide QAIT",
+      "models": ["HF12-QAIT", "HF9-QAIT"],
+      "spreads": [34],
+      "summary": "Hole finders for QAIT tools in high-temperature and slim-hole applications — rated to 400°F.",
+      "images": [{ "file": "HF9-QAIT.780.png", "alt": "HF9-QAIT fixed angle guide" }]
+    },
+    {
+      "slug": "hf-fmi",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide FMI",
+      "models": ["HF5-FMI", "HF4-FMI"],
+      "spreads": [35],
+      "summary": "Ultra-lightweight, virtually buoyant guide for the Formation Micro-Imager — no interference with pad contact.",
+      "images": [{ "file": "HF5-FMI.869.png", "alt": "HF5-FMI fixed angle guide" }]
+    },
+    {
+      "slug": "shf-fmi",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide SHF-FMI",
+      "models": ["SHF-FMI"],
+      "spreads": [36],
+      "summary": "Titanium short guide for the FMI with the greatest clearance possible in small holes — 2.2 lbs.",
+      "images": [{ "file": "SHF-FMI_shadow.870.png", "alt": "SHF-FMI fixed angle guide" }]
+    },
+    {
+      "slug": "hf8-msct",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide HF8-MSCT",
+      "models": ["HF8-MSCT"],
+      "spreads": [37],
+      "summary": "Guide for sidewall coring tools (XL-Rock, MSCT) — orients the coring tool for optimal core recovery.",
+      "images": [{ "file": "HF8-MSCT_shadow.871.png", "alt": "HF8-MSCT fixed angle guide" }]
+    },
+    {
+      "slug": "hf6-mdt",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide HF6-MDT",
+      "models": ["HF6-MDT"],
+      "spreads": [38],
+      "summary": "Guide for formation testing strings with a fixed angle that does not interfere with probe setting.",
+      "images": [{ "file": "HF6-MDT.872.png", "alt": "HF6-MDT fixed angle guide" }]
+    },
+    {
+      "slug": "hf9-bn6",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide HF9-BN6",
+      "models": ["HF9-BN6"],
+      "spreads": [39],
+      "summary": "Short 9° guide for small holes, used in combination with the in-line taxis (TTC-IL6).",
+      "images": [{ "file": "HF9-BN6_shadow.873.png", "alt": "HF9-BN6 fixed angle guide" }]
+    },
+    {
+      "slug": "hf9j",
+      "category": "fixed-angle-guides",
+      "group": "For Halliburton Tools",
+      "name": "Hole Finder Guide J-Latch HF9J",
+      "models": ["HF9J"],
+      "spreads": [40],
+      "summary": "Fixed-angle hole finder for the J-Latch connection at the bottom of Halliburton strings.",
+      "images": [
+        { "file": "HFJ9_shadow.874.png", "alt": "HF9J hole finder guide with J-Latch connection" }
+      ]
+    },
+    {
+      "slug": "hf9-acrt",
+      "category": "fixed-angle-guides",
+      "group": "For Halliburton Tools",
+      "name": "Hole Finder Guide Induction HF9-ACRT",
+      "models": ["HF9-ACRT"],
+      "spreads": [41],
+      "summary": "Fixed-angle hole finder for Halliburton induction strings with aluminium nose.",
+      "images": [{ "file": "HF9-ACRT_shadow.875.png", "alt": "HF9-ACRT hole finder guide" }]
+    },
+    {
+      "slug": "hf-b-wts",
+      "category": "fixed-angle-guides",
+      "group": "For Baker Hughes Tools",
+      "name": "Hole Finder Guide WTS Connection",
+      "models": ["HF9-B", "HF6-B"],
+      "spreads": [42],
+      "summary": "Hole finder for Baker Hughes through-wired tools with WTS connection — 9° or 6° nose, adjustable azimuth.",
+      "images": [{ "file": "HF9-B.779.png", "alt": "HF9-B hole finder guide with WTS connection" }]
+    },
+    {
+      "slug": "cp12",
+      "category": "focus-centralisers",
+      "group": "Open Hole",
+      "name": "CP12 — Centering Parallelogram for 12in",
+      "models": ["CP12"],
+      "spreads": [43, 44],
+      "summary": "The first ever roller centraliser for open hole — centres wireline tools in 12-1/4” boreholes.",
+      "images": [
+        { "file": "CP12 Open_SHADOW.862.png", "alt": "CP12 open hole roller centraliser" },
+        {
+          "file": "CP12 Standoff comparison 12.25in_transparent_catalog.png",
+          "alt": "CP12 standoff comparison in a 12-1/4” hole",
+          "caption": "Standoff comparison in 12-1⁄4” hole",
+          "role": "figure"
+        },
+        {
+          "file": "CP12-Force Chart_P1-P4_Jun24.svg",
+          "alt": "CP12 force chart for spring pack settings P1 to P4",
+          "caption": "Force chart — spring pack settings P1–P4",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "cp8",
+      "category": "focus-centralisers",
+      "group": "Open Hole",
+      "name": "CP8 — Co-Pivot Centraliser for 8.5in",
+      "models": ["CP8"],
+      "spreads": [45, 46],
+      "summary": "Patented Co-Pivot mechanism with ultra-low-drag bearings — precise centralization of heavy strings in 8.5” wellbores.",
+      "images": [
+        { "file": "CP8_no Shadow.171.png", "alt": "CP8 co-pivot centraliser" },
+        { "file": "CP8_no Shadow.169.png", "alt": "CP8 co-pivot centraliser, alternate view" },
+        {
+          "file": "CP8 load capacity_aug24.ai",
+          "alt": "CP8 load capacity chart",
+          "caption": "Load capacity vs deviation and temperature",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "ca7",
+      "category": "focus-centralisers",
+      "group": "Cased Hole",
+      "name": "CA7 — Centering Adjustable Taxi for 7in",
+      "models": ["CA7"],
+      "spreads": [47, 48, 49],
+      "summary": "Slip-over roller centraliser for 7” casings — user-set OD to casing drift, 260 lbf capacity at only 13 lbs.",
+      "images": [
+        {
+          "file": "CA7_side View_32ppf.863.png",
+          "alt": "CA7 centering adjustable taxi, side view"
+        },
+        {
+          "file": "CA7 Force Chart.ai",
+          "alt": "CA7 roller force chart across 7-inch casing weights",
+          "caption": "Roller force across 7” casing weights",
+          "role": "figure"
+        },
+        {
+          "file": "CA7_Drift Config.png",
+          "alt": "CA7 set to casing drift configuration",
+          "caption": "Device diameter set to the casing drift ID by rotating the adjustment bolt to the corresponding casing-weight mark",
+          "role": "figure"
+        },
+        {
+          "file": "CA7_Drift Config_closeup.png",
+          "alt": "Close-up of the CA7 casing-weight adjustment marks",
+          "caption": "Casing weights are annotated on the device for ease of adjustment",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "cril",
+      "category": "focus-centralisers",
+      "group": "Cased Hole",
+      "name": "CRIL — Centraliser Rocker In-Line",
+      "models": ["CRIL"],
+      "spreads": [50, 51, 52],
+      "summary": "Patented Rocker centraliser for in-line connection — perfect centralization in 4-1/2” to 7” casing.",
+      "images": [
+        { "file": "86-CRIL_shadows.bip.864.png", "alt": "CRIL centraliser rocker in-line" },
+        {
+          "file": "CRIL Std Kit.png",
+          "alt": "CRIL standard kit configuration",
+          "caption": "Standard kit — 3-5⁄8” collapse diameter (1” wheel)",
+          "role": "figure"
+        },
+        {
+          "file": "CRIL Small Kit.png",
+          "alt": "CRIL small kit configuration",
+          "caption": "Small kit — 3-3⁄8” collapse diameter (7⁄8” wheel)",
+          "role": "figure"
+        },
+        {
+          "file": "CRIL Side view.png",
+          "alt": "CRIL side view",
+          "caption": "Side view",
+          "role": "figure"
+        },
+        {
+          "file": "CRU-CRIL_force chart.ai",
+          "alt": "CRIL and CRU force chart across casing sizes",
+          "caption": "Rocker force across casing sizes",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "cru",
+      "category": "focus-centralisers",
+      "group": "Cased Hole",
+      "name": "CRU — Centraliser Rocker for USIT",
+      "models": ["CRU"],
+      "spreads": [53, 54],
+      "summary": "Rocker centraliser that assembles directly on the USIS sonde — perfect centralization in 4-1/2” to 7” casing.",
+      "images": [
+        { "file": "CRU_shadows.bip.865.png", "alt": "CRU centraliser rocker for USIT" },
+        {
+          "file": "CRU-CRIL_force chart.ai",
+          "alt": "CRU and CRIL force chart across casing sizes",
+          "caption": "Rocker force across casing sizes",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "cx9",
+      "category": "focus-centralisers",
+      "group": "Cased Hole",
+      "name": "CX9 — Helix Centraliser",
+      "models": ["CX9"],
+      "spreads": [55, 56],
+      "summary": "Patented Helix mechanism covering 7” to 9-5/8” casing in a single run — single-trip data acquisition.",
+      "images": [
+        { "file": "Helix_RevC_color2.bip.142.png", "alt": "CX9 Helix centraliser" },
+        { "file": "Helix_RevC_color2.bip.143.png", "alt": "CX9 Helix centraliser, alternate view" },
+        {
+          "file": "CX9 Load Table_V2_7 leaf spring.svg",
+          "alt": "CX9 load capacity table for the 7-leaf spring",
+          "caption": "Load capacity — 7-leaf spring",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "rs7",
+      "category": "well-intervention",
+      "group": "",
+      "name": "RS7 — Roller Standoff for 7in",
+      "models": ["RS7"],
+      "spreads": [57],
+      "summary": "Compact slip-over roller (3.5 lbs, 3” long) for the decoupled sections of the toolstring in 7” casing.",
+      "images": [{ "file": "RS7 iso.866.png", "alt": "RS7 roller standoff" }]
+    },
+    {
+      "slug": "ro17",
+      "category": "well-intervention",
+      "group": "",
+      "name": "RO17 — Roller Slip-over 1-11/16in",
+      "models": ["RO17"],
+      "spreads": [58, 59],
+      "summary": "Conveys 1-11/16” tools in completions with restrictions above 3-1/2” — gravity descent to 85° deviation.",
+      "images": [
+        { "file": "RO17_SHADOW.859.png", "alt": "RO17 roller slip-over taxi" },
+        {
+          "file": "RO17_Clearance_9.625_transparent.png",
+          "alt": "RO17 clearance in 9-5/8” casing",
+          "caption": "Clearance in 9-5⁄8” casing",
+          "role": "figure"
+        },
+        {
+          "file": "RO17_Clearance_4_transparent.png",
+          "alt": "RO17 clearance in a 4” restriction",
+          "caption": "Clearance in a 4” restriction",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "twt-28",
+      "category": "well-intervention",
+      "group": "",
+      "name": "Taxi Weight Bar TWT-28 (Titan)",
+      "models": ["TWT-28"],
+      "spreads": [60, 61],
+      "summary": "In-line taxi for Hunting Titan weight bars — carries production logging strings on wheels, perforating-rated.",
+      "images": [
+        {
+          "file": "TWT-28.bip.127@0.33x.png",
+          "alt": "TWT-28 taxi weight bar for Hunting Titan bars"
+        },
+        {
+          "file": "207 TWT-28 Standoff@0.33x.png",
+          "alt": "TWT-28 standoff diagram",
+          "caption": "TWT-28 standoff",
+          "role": "figure"
+        }
+      ]
+    },
+    {
+      "slug": "tws-30",
+      "category": "well-intervention",
+      "group": "",
+      "name": "Taxi Weight Bar TWS-30",
+      "models": ["TWS-30"],
+      "spreads": [62, 63],
+      "summary": "In-line taxi for SLB weight bars — carries production logging strings on wheels, perforating-rated.",
+      "images": [
+        { "file": "TWS-30.53.png", "alt": "TWS-30 taxi weight bar for SLB bars" },
+        {
+          "file": "TWS-30 Weightbar Taxi_Standoff@0.3x.png",
+          "alt": "TWS-30 standoff diagram",
+          "caption": "TWS-30 standoff",
+          "role": "figure"
+        }
+      ]
+    }
+  ]
+}

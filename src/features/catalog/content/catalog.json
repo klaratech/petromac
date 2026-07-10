@@ -1,0 +1,4310 @@
+{
+  "edition": "2026",
+  "source": "V6 Petromac Catalog - 20260707.idml",
+  "about": {
+    "intro": [
+      "At Petromac we design and manufacture a broad range of bespoke devices for the wireline logging industry. Petromac devices provide a quantum improvement in risk control for both the wireline logging companies and the operators we serve to deliver significant cost and time saving benefits."
+    ],
+    "quote": {
+      "text": "Petromac started with the sole aim of improving wireline logging efficiency and enhancing log data quality for Operators, particularly in challenging wellbore conditions. Our dedicated regional managers have a wealth of wireline logging experience, and continually strive to push the boundaries through innovation and expertise.",
+      "attribution": "Stephen McCormick"
+    },
+    "pillars": [
+      {
+        "title": "Operational Efficiency",
+        "text": "Ultra-low friction wheels reduce whole-tool drag to enable gravity descents to 80° deviation — conventional wireline operations in wellbores usually logged by pipe-conveyed logging, tractors or LWD."
+      },
+      {
+        "title": "Sticking Prevention",
+        "text": "Carrying logging tools on wheeled carriages cuts contact area with the borehole wall by ~99% and lets tools roll out of differential-sticking scenarios."
+      },
+      {
+        "title": "Well Access",
+        "text": "Orientation-positioned holefinders navigate ledges and washouts without losing momentum, with a far higher success rate than traditional holefinders."
+      },
+      {
+        "title": "Sensor Orientation",
+        "text": "Orienting the logging tool sensors enables low-side pad contact, high-side fluid sampling, X-Y density, oriented side-wall coring and valid density down-logs."
+      },
+      {
+        "title": "Centralization",
+        "text": "Focus™ centralisers achieve near-perfect centralization while minimizing drag — better log quality and deeper reach in deviated wells."
+      }
+    ],
+    "productLines": [
+      {
+        "id": "wireline-express",
+        "name": "Wireline Express™",
+        "text": "A diverse range of Taxis and Guides for wireline logging tools which provide conveyance, orientation and well access solutions to deliver improved operational efficiency and data quality."
+      },
+      {
+        "id": "focus",
+        "name": "Focus™ Precision Centralisers",
+        "text": "Evolved from Wireline Express™: a ground-up analysis of centraliser mechanics and logging applications led to devices that achieve near perfect centralisation and enable gravity descent, regardless of deviation."
+      }
+    ],
+    "patents": "Petromac devices are protected by one or more patents in the US and elsewhere.",
+    "patentsUrl": "https://www.petromac.co.nz/patents/"
+  },
+  "categories": [
+    {
+      "slug": "tool-taxis",
+      "name": "Tool Taxis",
+      "productLine": "wireline-express",
+      "tagline": "The Wireline Express™ Tool Taxi system — wheeled carriages that carry logging tools for orientation, conveyance, centering and formation testing.",
+      "intro": [
+        "Tool Taxis carry the logging string on ultra-low-friction wheels. Two bearing families cover every application: Type A taxis use tungsten carbide bush bearings (gravity logging to 70° deviation), while Type B taxis run on sealed, pressure-compensated ball bearings in a lubricant bath — the lowest friction in class, for gravity logging to 80° deviation."
+      ],
+      "groups": [
+        "Orienting Taxis",
+        "Conveyance Taxis",
+        "Centering",
+        "Formation Testing",
+        "In-Line Tool Taxis"
+      ]
+    },
+    {
+      "slug": "guides-holefinders",
+      "name": "Guides & Holefinders",
+      "productLine": "wireline-express",
+      "tagline": "Universal hole finders that navigate ledges, washouts and restrictions without losing momentum.",
+      "intro": [
+        "Petromac offers a range of holefinders to fit various logging tools. These guides enable passing through washouts and ledges seamlessly and without losing momentum."
+      ],
+      "groups": ["Universal Hole Finder"]
+    },
+    {
+      "slug": "fixed-angle-guides",
+      "name": "Fixed Angle Guides",
+      "productLine": "wireline-express",
+      "tagline": "Tool-specific guides with fixed or adjustable nose angles for SLB, Halliburton and Baker Hughes logging strings.",
+      "intro": [],
+      "groups": ["For SLB Tools", "For Halliburton Tools", "For Baker Hughes Tools"]
+    },
+    {
+      "slug": "focus-centralisers",
+      "name": "Focus™ Centralisers",
+      "productLine": "focus",
+      "tagline": "Precision roller centralisers for open and cased hole — perfect centralization with minimal drag.",
+      "intro": [
+        "The Focus™ range was developed with two objectives: achieve perfect centralization, and minimize the drag associated with achieving it — giving operators the perfect log."
+      ],
+      "groups": ["Open Hole", "Cased Hole"]
+    },
+    {
+      "slug": "well-intervention",
+      "name": "Well Intervention Accessories",
+      "productLine": "wireline-express",
+      "tagline": "Rollers and weight-bar taxis for cased hole conveyance and production logging.",
+      "intro": [],
+      "groups": []
+    }
+  ],
+  "products": [
+    {
+      "slug": "tta-505-ttb-505",
+      "category": "tool-taxis",
+      "group": "Orienting Taxis",
+      "name": "Orienting Taxis TTA-505 & TTB-505",
+      "models": ["TTA-505", "TTB-505"],
+      "summary": "Slip-over orienting taxis with 0.5” standoff in an 8.5” wellbore — tungsten carbide (TTA) or sealed ball bearing (TTB).",
+      "description": [
+        "The 505 series orienting taxis provide 0.5” standoff in an 8.5” wellbore. Two bearing options are available: the TTA-505 with tungsten carbide bush bearings and the TTB-505 with sealed ball bearings."
+      ],
+      "applications": [],
+      "variants": [
+        {
+          "title": "TTA-505 — Type A, Tungsten Carbide Bearing",
+          "description": [
+            "Slip-over tool taxis with tungsten carbide bush bearings, designed to orient & reduce the drag coefficient of a logging tool string.",
+            "Taxis lock securely onto the tool housings or into c-spanner recess holes and fit both 3 5/8” and 3 3/8” logging tool housings."
+          ],
+          "applications": [
+            "Gravity logging up to 70 degrees well deviation using a slip-over wheel design",
+            "Orient logging tool sensors, cores, pressure measurements and samples without the need for standoffs, bow springs, tool turners etc.",
+            "Stick-slip and cable tension reduction",
+            "Eliminate risk of tool differential sticking by offsetting tools from the wellbore wall",
+            "Robust design. Very low maintenance requirement."
+          ]
+        },
+        {
+          "title": "TTB-505 — Type B, Ball Bearing",
+          "description": [
+            "Slip-over tool taxis designed to orient & reduce the drag coefficient of a logging tool string.",
+            "Taxi wheels run on ball bearings in a sealed, pressure compensated, lubricant bath providing the lowest friction in class.",
+            "Taxis lock securely onto the housings or into c-spanner recess holes and fit a range of logging tool housing OD."
+          ],
+          "applications": [
+            "Gravity logging up to 80 degrees well deviation using a slip-over wheel design",
+            "Orient logging tool sensors, cores, and pressure measurements and samples without the need for standoffs, bow springs, tool turners etc.",
+            "Stick-slip and cable tension reduction",
+            "Eliminate risk of tool differential sticking by offsetting tools from the borehole",
+            "Robust design. Very low maintenance requirement."
+          ]
+        }
+      ],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["TTA-505", "TTB-505"]
+            },
+            {
+              "label": "Weight",
+              "values": ["26 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["11.4”", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.05ft3", ""]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["8”", ""]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["17.5”", ""]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["5%", "2%"]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["12%", "4%"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["7-¼”", ""]
+            },
+            {
+              "label": "Wheel diameter",
+              "values": ["6”", ""]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["3-⅝”", ""],
+              "note": "Fits a 3-5�8” logging tool and a 3-3�8” tool housing via a reducing sleeve. Other version , TTA-705 is available with a 3.7” bore."
+            },
+            {
+              "label": "Standoff in 8.5” Wellbore",
+              "values": ["0.5”", ""],
+              "note": "Set Standoff parameters to appropriate offset, see next page."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS", ""]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Tungsten Carbide composite", "Custom ball bearing"],
+              "note": "Tungsten carbide must not be subjected to shock loadings, Do not hit with a hammer or use gas torch."
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Passive", "Active Diaphragm: Nitrile < 230°F Viton < 480°F"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA", ""]
+            },
+            {
+              "label": "Fastening",
+              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread", ""]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type", ""]
+            },
+            {
+              "label": "SWL for fishing",
+              "values": ["50,000 lbs", ""]
+            },
+            {
+              "label": "SWL Shear Set Screws",
+              "values": ["8,500 lbs", ""]
+            }
+          ]
+        },
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:", ""]
+            },
+            {
+              "label": "",
+              "values": ["3-3�8”", "3-5�8”"]
+            },
+            {
+              "label": "8 1�2”",
+              "values": ["0.6”", "0.5”"]
+            },
+            {
+              "label": "9 7�8”",
+              "values": ["0.5”", "0.4”"]
+            },
+            {
+              "label": "12 1�4”",
+              "values": ["0.4”", "0.3”"]
+            },
+            {
+              "label": "17 1�2”",
+              "values": ["0.3”", "0.2”"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/tta-505-rev2-electropolish-shadow-855.webp",
+          "width": 1600,
+          "height": 1091,
+          "alt": "TTA-505 orienting tool taxi",
+          "role": "gallery",
+          "caption": "TTA-505"
+        },
+        {
+          "src": "/images/catalog/ttb-505-rev2-electropolish-catalog.webp",
+          "width": 795,
+          "height": 560,
+          "alt": "TTB-505 orienting tool taxi",
+          "role": "gallery",
+          "caption": "TTB-505"
+        },
+        {
+          "src": "/images/catalog/orientation-moment-updated-v2-transparent.webp",
+          "width": 1600,
+          "height": 1033,
+          "alt": "Orientation moment diagram for the 505 taxi",
+          "role": "figure",
+          "caption": "Orientation principle"
+        },
+        {
+          "src": "/images/catalog/standoff.webp",
+          "width": 1178,
+          "height": 922,
+          "alt": "Standoff of a 505 taxi on a 3-5/8” tool",
+          "role": "figure",
+          "caption": "Standoff on a 3-5⁄8” tool"
+        }
+      ]
+    },
+    {
+      "slug": "tta-515-ttb-515",
+      "category": "tool-taxis",
+      "group": "Conveyance Taxis",
+      "name": "Conveyance Taxis TTA-515 & TTB-515",
+      "models": ["TTA-515", "TTB-515"],
+      "summary": "Slip-over conveyance taxis with 1.5” standoff in an 8.5” wellbore for hole sizes up to 24”.",
+      "description": [
+        "The 515 series conveyance taxis provide 1.5” standoff in an 8.5” wellbore and run in hole sizes up to 24”. Two bearing options are available: the TTA-515 with tungsten carbide bush bearings (gravity logging to 70° deviation) and the TTB-515 with sealed ball bearings (to 80° deviation).",
+        "Taxis lock securely onto the tool housings or into c-spanner recess holes and fit both 3 5/8” and 3 3/8” logging tool housings."
+      ],
+      "applications": [
+        "Gravity logging in high deviation wells using a slip-over wheel design",
+        "Orient logging tool sensors, cores, pressure measurements and samples without the need for standoffs, bow springs, tool turners etc.",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the wellbore wall",
+        "Robust design. Very low maintenance requirement."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["TTA-515", "TTB-515"]
+            },
+            {
+              "label": "Weight",
+              "values": ["26 lbs", "27 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["10.4”", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.05ft3", ""]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["8”", ""]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["24”", ""]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["5%", "2%"]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["12%", "4%"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["7-¼”", ""]
+            },
+            {
+              "label": "Wheel diameter",
+              "values": ["6”", ""]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["3-⅝”", ""],
+              "note": "Fits a 3-5�8” logging tool and a 3-3�8” tool housing via a reducing sleeve. Other version , TTA-715 is available with a 3.7” bore."
+            },
+            {
+              "label": "Standoff in 8.5” Wellbore",
+              "values": ["1.5”", ""],
+              "note": "Set Standoff parameters to appropriate offset, see next page."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS", ""]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Tungsten Carbide composite", "Custom ball bearing"],
+              "note": "Tungsten carbide must not be subjected to shock loadings, Do not hit with a hammer or use gas torch"
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Passive", "Active Diaphragm: Nitrile < 230°F Viton < 480°F"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA", ""]
+            },
+            {
+              "label": "Fastening",
+              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread", ""]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type", ""]
+            },
+            {
+              "label": "SWL for fishing",
+              "values": ["50,000 lbs", ""]
+            },
+            {
+              "label": "SWL Shear Set Screws",
+              "values": ["8,500 lbs", ""]
+            }
+          ]
+        },
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:", ""]
+            },
+            {
+              "label": "",
+              "values": ["3-3�8”", "3-5�8”"]
+            },
+            {
+              "label": "8 1�2”",
+              "values": ["1.6”", "1.5”"]
+            },
+            {
+              "label": "9 7�8”",
+              "values": ["1.5”", "1.4”"]
+            },
+            {
+              "label": "12 1�4”",
+              "values": ["1.4”", "1.3”"]
+            },
+            {
+              "label": "17 1�2”",
+              "values": ["1.3”", "1.2”"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/tta-515-rev2-electropolish-catalog.webp",
+          "width": 973,
+          "height": 664,
+          "alt": "TTA-515 conveyance tool taxi",
+          "role": "gallery",
+          "caption": "TTA-515"
+        },
+        {
+          "src": "/images/catalog/tta-505-rev2-electropolish-catalog.webp",
+          "width": 973,
+          "height": 664,
+          "alt": "TTB-515 conveyance tool taxi",
+          "role": "gallery",
+          "caption": "TTB-515"
+        },
+        {
+          "src": "/images/catalog/standoff-0-25x-0-25x.webp",
+          "width": 878,
+          "height": 623,
+          "alt": "Standoff of a 515 taxi on a 3-5/8” tool",
+          "role": "figure",
+          "caption": "515 standoff on a 3-5⁄8” tool"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-715",
+      "category": "tool-taxis",
+      "group": "Conveyance Taxis",
+      "name": "Conveyance Taxi TTB-715",
+      "models": ["TTB-715"],
+      "summary": "Ball-bearing conveyance taxi with a 3-7/8” bore providing 1.4” standoff in an 8.5” wellbore.",
+      "description": [
+        "Slip-over ball-bearing conveyance taxi with a larger 3-7⁄8” bore, providing 1.4” standoff in an 8.5” wellbore for hole sizes from 8.5” to 24”."
+      ],
+      "applications": [
+        "Gravity logging up to 80 degrees well deviation using a slip-over wheel design",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the borehole",
+        "Robust design. Very low maintenance requirement."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:"]
+            },
+            {
+              "label": "8 1�2”",
+              "values": ["1.4”"]
+            },
+            {
+              "label": "9 7�8”",
+              "values": ["1.3”"]
+            },
+            {
+              "label": "12 1�4”",
+              "values": ["1.2”"]
+            },
+            {
+              "label": "17 1�2”",
+              "values": ["1.0”"]
+            }
+          ]
+        },
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["TTB-715"]
+            },
+            {
+              "label": "Weight",
+              "values": ["28 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["11.6”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.06ft3"]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["8.5”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["24”"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%"]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["4%"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["7.7”"]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["3-⅞”"]
+            },
+            {
+              "label": "Standoff in 8.5” Wellbore",
+              "values": ["1.4”"],
+              "note": "Set Standoff parameters to appropriate offset, see previous page."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom ball bearing"]
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Active Diaphragm, Nitrile < 230°F Active Diaphragm, Viton < 480°F"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Fastening",
+              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL for fishing",
+              "values": ["50,000 lbs"]
+            },
+            {
+              "label": "SWL Shear Set Screws",
+              "values": ["8,500 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ttb-x715-iso-775-0-3x.webp",
+          "width": 768,
+          "height": 576,
+          "alt": "TTB-715 conveyance tool taxi",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/ttb-715-standoff-0-5x.webp",
+          "width": 935,
+          "height": 668,
+          "alt": "TTB-715 standoff diagram",
+          "role": "figure",
+          "caption": "TTB-715 standoff"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-x-515",
+      "category": "tool-taxis",
+      "group": "Centering",
+      "name": "Centering Taxi TTB-X-515",
+      "models": ["TTB-X-515"],
+      "summary": "Centralises tool strings in an 8.5” wellbore and 9-5/8” casing with < 0.01” eccentralisation.",
+      "description": [
+        "TTB-X-515 Taxis are used to centralise tool strings in an 8.5” wellbore.",
+        "Taxis lock securely onto the housings or into c-spanner recess holes. Taxi wheels run on ball bearings in a sealed, pressure compensated, lubricant bath providing the lowest friction in class."
+      ],
+      "applications": [
+        "Tool centralization without the need for inefficient drag-inducing centralisers",
+        "Cement evaluation services centralization in 9 5/8” CSG.",
+        "Gravity logging up to 80 degrees well deviation",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the borehole without the need for additional tool body standoffs"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["TTB-X-515"]
+            },
+            {
+              "label": "Weight",
+              "values": ["28 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["11.6”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.06ft3"]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["8.5”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["24”"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%"]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["4%"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["7.7”"]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["3-⅝”"],
+              "note": "Fits a 3-5�8” logging tool and a 3-3�8” tool housing via a reducing sleeve."
+            },
+            {
+              "label": "Eccentralisation in 8.5” Wellbore",
+              "values": ["< 0.01”"],
+              "note": "See next page for examples on different casing sizes"
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom ball bearing"]
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Active Diaphragm, Nitrile < 230°F Active Diaphragm, Viton < 480°F"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Fastening",
+              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL for fishing",
+              "values": ["50,000 lbs"]
+            },
+            {
+              "label": "SWL Shear Set Screws",
+              "values": ["8,500 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ttb-x515-v2-electro-polished-shadow-857.webp",
+          "width": 1600,
+          "height": 1168,
+          "alt": "TTB-X-515 centering tool taxi",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/offcentre-in-casing.webp",
+          "width": 1113,
+          "height": 1480,
+          "alt": "TTB-X-515 centralization examples in 9-5/8” and 9-7/8” casings",
+          "role": "figure",
+          "caption": "TTB-X-515 centralization in 9-5⁄8” & 9-7⁄8” casings"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-s75-ttb-s85",
+      "category": "tool-taxis",
+      "group": "Formation Testing",
+      "name": "Formation Tester Taxis TTB-S75 & TTB-S85",
+      "models": ["TTB-S75", "TTB-S85"],
+      "summary": "Slip-over taxis for pressure and sampling tools — carry heavy formation-testing strings fully on wheels.",
+      "description": [
+        "Tool Taxi specifically designed for Pressure and Sampling tools.",
+        "TTB-S 75 / 85 are slip-over tool taxis that lock securely onto 4.75”-5.25” tool housings and allow the heavy formation testing tool string to be fully carried on wheels.",
+        "Taxi wheels run on ball bearings in a sealed, pressure compensated, lubricant bath providing the lowest friction in class."
+      ],
+      "applications": [
+        "Proven gravity logging up to 80° well deviation using a slip-over wheel design",
+        "Orient probe in the desired direction for optimal pressure measurements and samples",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the borehole without the need for additional tool body standoffs",
+        "Robust design with a very low maintenance requirement"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["TTB-S 75", "TTB-S 85"]
+            },
+            {
+              "label": "Weight",
+              "values": ["22 lbs", "32 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["9.5”", "10.5"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3", "0.06ft3"]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["8-¼”", "9½”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["14.75”", "22”"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%", ""]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["4%", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["7-½”", "8-½”"]
+            },
+            {
+              "label": "Wheel diameter",
+              "values": ["6”", "6-1�4”"]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["4-¾”", "5”"],
+              "note": "Custom TTB-S85 with 5.25” bore (TTB-MDT-S85) is also available for Ultra-High pressure 30KPsi tools. TTB-S75 can be sleeved down to run 4.5” and 4.44”, TTB-S85 can be sleeved down to 4.75” and 4.5”"
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom ball bearing"]
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Active Diaphragm, Nitrile < 230°F Active Diaphragm, Viton < 480°F"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Fastening",
+              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL for fishing",
+              "values": ["50,000 lbs"]
+            },
+            {
+              "label": "SWL Shear Set Screws",
+              "values": ["8,500 lbs"],
+              "note": "Up to 12,700lb depending on tool modules used."
+            }
+          ]
+        },
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:", "", ""]
+            },
+            {
+              "label": "",
+              "values": ["4-3�4”", "4-1�2”", "4.44”"]
+            },
+            {
+              "label": "8 1�2”",
+              "values": ["0.8”", "0.9”", "0.9”"]
+            },
+            {
+              "label": "12 1�4”",
+              "values": ["0.5”", "0.6”", "0.6”"]
+            },
+            {
+              "label": "14 3�4”",
+              "values": ["0.4”", "0.5”", "0.55”"]
+            },
+            {
+              "label": "17 1�2”",
+              "values": ["0.3”", "0.4”", "0.47”"]
+            }
+          ]
+        },
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:", "", "", ""]
+            },
+            {
+              "label": "",
+              "values": ["4-3�4”", "4-1�2”", "4.44”", "5”"]
+            },
+            {
+              "label": "10 5�8”",
+              "values": ["1.2”", "1.3”", "1.4”", "1.1”"]
+            },
+            {
+              "label": "12 1�4”",
+              "values": ["1”", "1.2”", "1.2”", "0.9”"]
+            },
+            {
+              "label": "14 4�4”",
+              "values": ["0.9”", "1”", "1.1”", "0.8”"]
+            },
+            {
+              "label": "17 1�2”",
+              "values": ["0.8”", "0.9”", "1”", "0.7”"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ttbs75-ttbs85-shadows-856.webp",
+          "width": 1600,
+          "height": 1198,
+          "alt": "TTB-S75 and TTB-S85 formation tester taxis",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/ttb-s-75-standoff-0-33x-trans.webp",
+          "width": 1043,
+          "height": 696,
+          "alt": "TTB-S75 standoff for a 4-3/4” tool",
+          "role": "figure",
+          "caption": "TTB-S75 standoff for a 4-3⁄4” tool"
+        },
+        {
+          "src": "/images/catalog/s85-standoff-2304-0-25x-trans.webp",
+          "width": 1161,
+          "height": 667,
+          "alt": "TTB-S85 standoff for a 4-3/4” tool",
+          "role": "figure",
+          "caption": "TTB-S85 standoff for a 4-3⁄4” tool"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-s75u-ttb-s85",
+      "category": "tool-taxis",
+      "group": "Formation Testing",
+      "name": "Formation Tester Taxis TTB-S75U & TTB-S85",
+      "models": ["TTB-S75U", "TTB-S85"],
+      "summary": "Updated formation tester taxi with 5-¼” bore for ultra-high-pressure 30 kpsi tools.",
+      "description": [
+        "Tool Taxi specifically designed for Pressure and Sampling tools.",
+        "TTB-S 75 / 85 are slip-over tool taxis that lock securely onto 4.75”-5.25” tool housings and allow the heavy formation testing tool string to be fully carried on wheels.",
+        "Taxi wheels run on ball bearings in a sealed, pressure compensated, lubricant bath providing the lowest friction in class."
+      ],
+      "applications": [
+        "Proven gravity logging up to 80° well deviation using a slip-over wheel design",
+        "Orient probe in the desired direction for optimal pressure measurements and samples",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the borehole without the need for additional tool body standoffs",
+        "Robust design with a very low maintenance requirement"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["TTB-S 75U", "TTB-S 85"]
+            },
+            {
+              "label": "Weight",
+              "values": ["19.8 lbs", "32 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["9.9”", "10.5\""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3", "0.06ft3"]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["8-¼”", "9½”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["14.75”", "22”"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%", ""]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["4%", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["7-½”", "8-½”"]
+            },
+            {
+              "label": "Wheel diameter",
+              "values": ["4-5/6 ”", "6-1�4”"]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["5-¼”", "5”"],
+              "note": "Custom TTB-S85 with 5-¼” bore (TTB-MDT-S85) is also available for Ultra-High pressure 30KPsi tools. Both can be sleeved down to run 4-½” and 4-¾.”."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom ball bearing"]
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Active Diaphragm, Nitrile < 230°F Active Diaphragm, Viton < 480°F"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Fastening",
+              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL for fishing",
+              "values": ["50,000 lbs"]
+            },
+            {
+              "label": "SWL Shear Set Screws",
+              "values": ["8,500 lbs"],
+              "note": "Up to 12,700lb depending on tool modules used."
+            }
+          ]
+        },
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:", "", ""]
+            },
+            {
+              "label": "",
+              "values": ["4-3�4”", "4-1�2”", "4.44”"]
+            },
+            {
+              "label": "8 1�2”",
+              "values": ["0.8”", "0.9”", "0.9”"]
+            },
+            {
+              "label": "12 1�4”",
+              "values": ["0.5”", "0.6”", "0.6”"]
+            },
+            {
+              "label": "14 3�4”",
+              "values": ["0.4”", "0.5”", "0.55”"]
+            },
+            {
+              "label": "17 1�2”",
+              "values": ["0.3”", "0.4”", "0.47”"]
+            }
+          ]
+        },
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:", "", "", ""]
+            },
+            {
+              "label": "",
+              "values": ["4-3�4”", "4-1�2”", "4.44”", "5”"]
+            },
+            {
+              "label": "10 5�8”",
+              "values": ["1.2”", "1.3”", "1.4”", "1.1”"]
+            },
+            {
+              "label": "12 1�4”",
+              "values": ["1”", "1.2”", "1.2”", "0.9”"]
+            },
+            {
+              "label": "14 4�4”",
+              "values": ["0.9”", "1”", "1.1”", "0.8”"]
+            },
+            {
+              "label": "17 1�2”",
+              "values": ["0.8”", "0.9”", "1”", "0.7”"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ttb-s85-s75u-56.webp",
+          "width": 1600,
+          "height": 1071,
+          "alt": "TTB-S75U and TTB-S85 formation tester taxis",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/ttb-s-75-standoff-0-33x-trans.webp",
+          "width": 1043,
+          "height": 696,
+          "alt": "TTB-S75U standoff for a 4-3/4” tool",
+          "role": "figure",
+          "caption": "TTB-S75U standoff for a 4-3⁄4” tool"
+        },
+        {
+          "src": "/images/catalog/s85-standoff-2304-0-25x-trans.webp",
+          "width": 1161,
+          "height": 667,
+          "alt": "TTB-S85 standoff for a 4-3/4” tool",
+          "role": "figure",
+          "caption": "TTB-S85 standoff for a 4-3⁄4” tool"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-ttc-il6o",
+      "category": "tool-taxis",
+      "group": "In-Line Tool Taxis",
+      "name": "In-line Orienting Tool Taxi TTB/TTC-IL6O",
+      "models": ["TTC-IL6O", "TTB-IL6O"],
+      "summary": "In-line orienting taxis for small wellbores (6.0”+) — make up directly to the tool string, no adapters.",
+      "description": [
+        "The IL6O are in-line tool taxis designed to orient & reduce the drag coefficient of a logging tool string. They come in two variants: bush bearing (TTC) and ball bearing(TTB).",
+        "Taxis make up in-line, directly to wireline logging tools, without the need for adapters.",
+        "The Taxis are designed for use in small wellbores (6.0” +)",
+        "These taxis are available with tungsten carbide bush bearings or Ball Bearing."
+      ],
+      "applications": [
+        "Gravity logging up to 80° well deviation",
+        "Orient logging tool sensors, cores, pressure measurements and samples without the need for standoffs, bow springs, tool turners etc.",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the borehole",
+        "Robust design. Very low maintenance requirement."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["TTC-IL6O", "TTB-IL6O"]
+            },
+            {
+              "label": "Weight",
+              "values": ["32.8 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["19.7”", ""],
+              "note": "TTC-IL6A is non NRTA version with a length of 17.8”"
+            },
+            {
+              "label": "Volume",
+              "values": ["0.11ft3", ""]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["5-⅞”", ""]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["8.5”", ""]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["4%", "2%"]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["8%", "4%"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi", ""]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["5-¼”", ""]
+            },
+            {
+              "label": "Wheel diameter",
+              "values": ["4”", ""]
+            },
+            {
+              "label": "Standoff in 6” wellbore",
+              "values": ["0.44”", ""],
+              "note": "For 3-5�8” OD tool housing. Set Standoff parameters to appropriate offset, see table below."
+            },
+            {
+              "label": "Connection",
+              "values": ["In-Line with all through wired tools", ""],
+              "note": "Fits threaded connections for 31 pins on 3-3�8” and 3-5�8” tools."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150", ""]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Tungsten Carbide Composite", "Custom ball bearing"],
+              "note": "Tungsten carbide must not be subjected to shock loadings, Do not hit with a hammer or use gas torch."
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Active Diaphragm, Nitrile < 230°F Active Diaphragm, Viton < 480°F", ""]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA", ""]
+            },
+            {
+              "label": "Fastening",
+              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread", ""]
+            },
+            {
+              "label": "SWL for fishing",
+              "values": ["30,000 lbs", ""]
+            }
+          ]
+        },
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:", ""]
+            },
+            {
+              "label": "",
+              "values": ["3-3�8”", "3-5�8”"]
+            },
+            {
+              "label": "5 7�8”",
+              "values": ["0.6”", "0.4”"]
+            },
+            {
+              "label": "6”",
+              "values": ["0.6”", "0.4”"]
+            },
+            {
+              "label": "8 1�2”",
+              "values": ["0.4”", "0.3”"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ttc-il6-iso-858.webp",
+          "width": 1600,
+          "height": 1200,
+          "alt": "TTC-IL6O in-line orienting tool taxi",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/ttc-il6-standoff-0-25x-trans.webp",
+          "width": 900,
+          "height": 660,
+          "alt": "TTC-IL6O standoff diagram",
+          "role": "figure",
+          "caption": "IL6O standoff"
+        }
+      ]
+    },
+    {
+      "slug": "ttb-il6c",
+      "category": "tool-taxis",
+      "group": "In-Line Tool Taxis",
+      "name": "In-line Conveyance Tool Taxi TTB-IL6C",
+      "models": ["TTB-IL6C"],
+      "summary": "In-line conveyance taxi for small wellbores — greater standoff to combine larger-OD tools in the string.",
+      "description": [
+        "TTB-IL6C are in-line conveyance tool taxis designed to reduce drag coefficient of a logging tool string.",
+        "Taxis make up in-line, directly to wireline logging tools, without the need for adapters.",
+        "The Taxis are designed for use in small wellbores (6.0” +) in conjunction with the In-line orienting taxis. Its design provides greater standoff, allowing the combination of greater-OD tools in the string.",
+        "These taxis use low friction custom ball bearings."
+      ],
+      "applications": [
+        "Gravity logging up to 80° well deviation.",
+        "Stick-slip and cable tension reduction",
+        "Eliminate risk of tool differential sticking by offsetting tools from the borehole",
+        "Robust design. Very low maintenance requirement."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["TTB-IL6C"]
+            },
+            {
+              "label": "Weight",
+              "values": ["32.8 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["19.7”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.11ft3"]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["5-⅞”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["8.5”"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%"]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["4%"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi"]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["5-¼”"]
+            },
+            {
+              "label": "Wheel diameter",
+              "values": ["4”"]
+            },
+            {
+              "label": "Standoff in 6” wellbore",
+              "values": ["0.8”"],
+              "note": "For 3-5�8” OD tool housing. Set Standoff parameters to appropriate offset, see table on next page."
+            },
+            {
+              "label": "Connection",
+              "values": ["In-Line with all through wired tools"],
+              "note": "Fits threaded connections for 31 pins on 3-3�8” and 3-5�8” tools."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom ball bearing"]
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Active Diaphragm, Nitrile < 230°F Active Diaphragm, Viton < 480°F"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Fastening",
+              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+            },
+            {
+              "label": "SWL for fishing",
+              "values": ["30,000 lbs"]
+            }
+          ]
+        },
+        {
+          "title": "Standoff Table",
+          "rows": [
+            {
+              "label": "Bit Size",
+              "values": ["Tool Housing OD:", "", ""]
+            },
+            {
+              "label": "",
+              "values": ["3-3�8”", "3-5�8”", "4-1�2”"]
+            },
+            {
+              "label": "6”",
+              "values": ["0.9”", "0.7”", "0.2”"]
+            },
+            {
+              "label": "8 1�2”",
+              "values": ["0.8”", "0.6”", "0.1”"]
+            }
+          ]
+        },
+        {
+          "title": "",
+          "rows": [
+            {
+              "label": "Bit size",
+              "values": ["Eccentralisation"]
+            },
+            {
+              "label": "5 7�8””",
+              "values": ["0.4"]
+            },
+            {
+              "label": "6”",
+              "values": ["0.45"]
+            },
+            {
+              "label": "6 1�8”",
+              "values": ["0.5"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ttb-il6c-153.webp",
+          "width": 1600,
+          "height": 1600,
+          "alt": "TTB-IL6C in-line conveyance tool taxi",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/standoff-ttb-il6c-0-25x.webp",
+          "width": 831,
+          "height": 696,
+          "alt": "TTB-IL6C standoff diagram",
+          "role": "figure",
+          "caption": "IL6C standoff"
+        }
+      ]
+    },
+    {
+      "slug": "pathfinder",
+      "category": "guides-holefinders",
+      "group": "Universal Hole Finder",
+      "name": "Pathfinder",
+      "models": ["PathFinder"],
+      "summary": "Carbon-fibre universal hole finder with integrated flex joint and swivel — navigates any step ledge height.",
+      "description": [
+        "General Purpose guide designed to work in all deviations Environments.",
+        "The Pathfinder body is manufactured from carbon fiber composite allowing for feather-light weight and steel type strength.",
+        "The hole-finder has an integrated flex joint and swivel at the top, allowing it to rotate and twist as required to follow well path.",
+        "Robust design with minimal maintenance requirements"
+      ],
+      "applications": [
+        "Ability to navigate any step ledge height.",
+        "Effective in vertical or deviated holes.",
+        "Suitable for small and large hole sizes",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Wide range tool Combinability"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["PathFinder"]
+            },
+            {
+              "label": "Weight",
+              "values": ["51 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["102”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.3ft3"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["5-¾”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["22”"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"],
+              "note": "For threaded style connections pressure rating is 20,000psi"
+            },
+            {
+              "label": "OD",
+              "values": ["4-½”"]
+            },
+            {
+              "label": "Flex Joint",
+              "values": ["6 deg"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Mandrel",
+              "values": ["Carbon Fibre"]
+            },
+            {
+              "label": "Other Components:",
+              "values": ["17-4 PH SS"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["14,000lbs @25°C - 6,000lbs @177°C"]
+            },
+            {
+              "label": "Compressive Strength",
+              "values": ["13,500lbs @25°C - 6,000lbs @177°C"]
+            },
+            {
+              "label": "Fastenings",
+              "values": ["304 stainless Steel Cap screws -1�4”x3�16”"]
+            },
+            {
+              "label": "SWL, Shear set screws",
+              "values": ["8,500 lbs"]
+            },
+            {
+              "label": "Connection",
+              "values": ["Halliburton J-Latch, Baker Hughes WTS, SLB Threaded ring"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/pathfinder-80.webp",
+          "width": 1600,
+          "height": 1282,
+          "alt": "Pathfinder universal hole finder",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "pathfinder-ht",
+      "category": "guides-holefinders",
+      "group": "Universal Hole Finder",
+      "name": "Pathfinder HT",
+      "models": ["PathFinder HT", "PathFinder HT (Titanium)"],
+      "summary": "High-temperature Pathfinder in stainless or titanium with dual leaf bowspring centralizer — rated to 400°F.",
+      "description": [
+        "General Purpose guide designed to work in all deviations Environments.",
+        "The Pathfinder HT features a body made from a lightweight stainless steel alloy for feather-light weight. It also includes a dual leaf bowspring centralizer.",
+        "The hole-finder has an integrated flex joint and swivel at the top, allowing it to rotate and twist as required to follow well path.",
+        "Robust design with minimal maintenance requirements"
+      ],
+      "applications": [
+        "Ability to navigate any step ledge height.",
+        "Effective in vertical or deviated holes.",
+        "Suitable for small and large hole sizes",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Wide range tool Combinability"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["PathFinder HT", "PathFinder HT (Titanium)"]
+            },
+            {
+              "label": "Weight",
+              "values": ["77 lbs", "51lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["90”", ""],
+              "note": "Make Length depends on crossover adaptor used, refer to user manual for details"
+            },
+            {
+              "label": "Volume",
+              "values": ["0.2ft3", ""]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["5-¾”", ""]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["22”", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""],
+              "note": "For threaded connections pressure rating is 20,000psi"
+            },
+            {
+              "label": "Min. OD",
+              "values": ["5”", ""]
+            },
+            {
+              "label": "Flex Joint",
+              "values": ["6 deg", ""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Mandrel",
+              "values": ["2205 SS", "Titanium 6Ai-4V"]
+            },
+            {
+              "label": "Bottom Noze",
+              "values": ["17-4 PH SS", "Titanium 6Ai-4V"]
+            },
+            {
+              "label": "Other Components:",
+              "values": ["17-4 PH SS", ""]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["14,000lbs", ""]
+            },
+            {
+              "label": "Compressive Strength",
+              "values": ["17,500lbs", "12,500lbs"]
+            },
+            {
+              "label": "Fastenings",
+              "values": ["304 stainless Steel Cap screws -1�4”x3�16”", ""]
+            },
+            {
+              "label": "Connection",
+              "values": ["Halliburton J-Latch, Baker Hughes WTS, SLB Threaded ring", ""]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/pathfinder-ht-128.webp",
+          "width": 1304,
+          "height": 777,
+          "alt": "Pathfinder HT hole finder",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "ahfc",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Adjustable Angle Guide AHFC",
+      "models": ["AHFC"],
+      "summary": "Adjustable nose angle (3, 4, 6 or 9°) to suit hole size and standoff — attaches to any through-wired tool.",
+      "description": [
+        "The Guide is suitable for attachment to the bottom of any through-wired tool.",
+        "8-1�2” and larger configuration",
+        "8-1�2” and smaller configuration larger"
+      ],
+      "applications": [
+        "Ability to navigate step ledges of up to 5”",
+        "Adjustable angle to suit multiple hole sizes or situations",
+        "Helps tool run over cuttings and other low side obstructions",
+        "Attached to the bottom without any electrical interference",
+        "Robust design with negligible maintenance requirements"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["AHFC"]
+            },
+            {
+              "label": "Weight",
+              "values": ["36 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["35”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.12ft3"]
+            },
+            {
+              "label": "OD",
+              "values": ["4” (no-go collar)"]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["Adjustable: 3,4,6 or 9 degrees"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["5”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi"],
+              "note": "AHFC-30K is also available for use in high pressure applications up to 30kpsi."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Pivot Pin/ Angle setting pin",
+              "values": ["17-4 PH SS, 16mm diameter"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Aluminum"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["33,400 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["33,400 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ahfc-shadow-867.webp",
+          "width": 1600,
+          "height": 1122,
+          "alt": "AHFC adjustable angle guide",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/ahfc-9deg-sticker-catalog.webp",
+          "width": 881,
+          "height": 788,
+          "alt": "AHFC guide set to 9 degrees",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/ahfc-2007-3-4-6-9deg-dim-catalog-x0-20.webp",
+          "width": 1238,
+          "height": 1238,
+          "alt": "AHFC dimensions at 3, 4, 6 and 9 degree settings",
+          "role": "figure",
+          "caption": "AHFC nose angle settings"
+        },
+        {
+          "src": "/images/catalog/swhf-656-catalog.webp",
+          "width": 960,
+          "height": 720,
+          "alt": "Toolstring configuration for 8-1/2” and larger holes",
+          "role": "figure",
+          "caption": "8-1⁄2” and larger configuration"
+        },
+        {
+          "src": "/images/catalog/swhf-bhi-6in-816.webp",
+          "width": 1600,
+          "height": 1218,
+          "alt": "Toolstring configuration for holes smaller than 8-1/2”",
+          "role": "figure",
+          "caption": "8-1⁄2” and smaller configuration"
+        }
+      ]
+    },
+    {
+      "slug": "hf-ait-zait",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide for AIT & ZAIT",
+      "models": ["HF6-AIT/ZAIT", "HF4-AIT/ZAIT"],
+      "summary": "Carbon-fibre induction guides for the bottom of AIT/ZAIT strings — no electrical interference.",
+      "description": [
+        "Induction Guides, such as HF6-AIT and HF6-ZAIT, are specifically designed to be run at the bottom of induction logging tools.",
+        "The Guides have a fixed nose angle of 6deg or 4deg, depending on hole size application.",
+        "The Induction Guide nose is manufactured from carbon fiber composite.",
+        "Robust design with minimal maintenance requirements."
+      ],
+      "applications": [
+        "Ability to navigate step ledges of up to 4.5”",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Suitable for Array Induction tools, as it doesn't present any electrical interference.",
+        "Guides for smaller holes can be custom manufactured"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF6-AIT /ZAIT", "HF4-AIT /ZAIT"]
+            },
+            {
+              "label": "Weight",
+              "values": ["9 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["26”", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3", ""]
+            },
+            {
+              "label": "OD",
+              "values": ["5\"", ""]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["6 degrees", "4 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 4-1�2\" in 8-1�2\" wellbore", "Up to 3-3�4\" in 6\" wellbore"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["7”", "5-5�8”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit", "No Limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi", ""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Carbon Fibre"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["5,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["6,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hf6-ait-shadow-868.webp",
+          "width": 1600,
+          "height": 1122,
+          "alt": "HF6-AIT fixed angle guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "shf-ait",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide SHF-AIT",
+      "models": ["SHF-AIT"],
+      "summary": "Short guide for AIT/ZAIT designed for the greatest clearance possible in small holes (6-1/8” and smaller).",
+      "description": [
+        "A new Guide for both AIT and ZAIT, specifically designed to provide the greatest clearance possible in small holes.",
+        "Robust design with minimal maintenance requirements"
+      ],
+      "applications": [
+        "Ability to navigate step ledges of up to 3.1.”",
+        "Suitable for hole sizes 6-1/8” and smaller",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Suitable for Array Induction tools, as it doesn't present any electrical interference."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["SHF-AIT"]
+            },
+            {
+              "label": "Weight",
+              "values": ["10 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["7.8”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.01ft3"]
+            },
+            {
+              "label": "OD",
+              "values": ["4.4”"]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["4 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 3.6\" (6\" wellbore, tool with 1�2\" standoff)"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["5-½”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["8-½”"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["10,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["8,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/shf-ait-782.webp",
+          "width": 1600,
+          "height": 1245,
+          "alt": "SHF-AIT fixed angle guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "hf-qait",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide QAIT",
+      "models": ["HF12-QAIT", "HF9-QAIT"],
+      "summary": "Hole finders for QAIT tools in high-temperature and slim-hole applications — rated to 400°F.",
+      "description": [
+        "The Guide has a fixed nose angle of 12deg.",
+        "Guides for smaller holes can be custom manufactured.",
+        "Robust design with no electrical interference and negligible maintenance requirements."
+      ],
+      "applications": [
+        "Ability to navigate step ledges of up to 4”",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "QAIT hole finders are specifically designed to be run at the bottom of QAIT tools for high temperature and slim hole applications."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF12-QAIT", "HF9-QAIT"]
+            },
+            {
+              "label": "Weight",
+              "values": ["6 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["13”", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.02ft3", ""]
+            },
+            {
+              "label": "OD",
+              "values": ["2.8”", ""]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["12 degrees", "9 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 4-½\" in 8-½\" wellbore", "Up to 3-⅜\" in 6\" wellbore"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["8-½\"", "5-⅝”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit", "No Limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Aluminum"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["20,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["2,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hf9-qait-780.webp",
+          "width": 1600,
+          "height": 1245,
+          "alt": "HF9-QAIT fixed angle guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "hf-fmi",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide FMI",
+      "models": ["HF5-FMI", "HF4-FMI"],
+      "summary": "Ultra-lightweight, virtually buoyant guide for the Formation Micro-Imager — no interference with pad contact.",
+      "description": [
+        "FMI hole finders are specifically designed to attach to the bottom of the Formation Micro-Imager.",
+        "The FMI hole finder is ultra-lightweight and virtually buoyant in drilling mud. It does not interfere with Pad contact and data quality is ensured.",
+        "The Guides have a fixed nose angle of 5deg or 3deg."
+      ],
+      "applications": [
+        "The hole finder will navigate the FMI overstep-ledges 4” high.",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Robust design with no electrical interference and negligible maintenance requirements.",
+        "The Petromac system prevents image rotation.",
+        "Guides for smaller holes can be custom manufactured.",
+        "No electrical interference and negligible maintenance requirements"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF5-FMI", "HF4-FMI"]
+            },
+            {
+              "label": "Weight",
+              "values": ["5.5 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["24”", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3", ""]
+            },
+            {
+              "label": "OD",
+              "values": ["4-½”", ""]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["5 degrees", "3 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 4-½\" in 8-½\" wellbore", "Up to 4\" in 6\" wellbore"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["7”", "5-⅝”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit", "No Limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["Inconel 718"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Carbon Fibre"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["10,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["8,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hf5-fmi-869.webp",
+          "width": 1600,
+          "height": 1122,
+          "alt": "HF5-FMI fixed angle guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "shf-fmi",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide SHF-FMI",
+      "models": ["SHF-FMI"],
+      "summary": "Titanium short guide for the FMI with the greatest clearance possible in small holes — 2.2 lbs.",
+      "description": [
+        "A new Guide for the Formation Micro-Imager, specifically designed to provide the greatest clearance possible in small holes.",
+        "The SHF-FMI hole finder maintains key elements from our previous range: ultra-lightweight and does not interfere with Pad contact."
+      ],
+      "applications": [
+        "The hole finder will navigate past ledges 3” high.",
+        "Helps tool run over low side obstructions and cuttings.",
+        "Robust design with no electrical interference and negligible maintenance requirements.",
+        "The Petromac system prevents image rotation."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["SHF-FMI"]
+            },
+            {
+              "label": "Weight",
+              "values": ["2.2 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["6.5”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.01ft3"]
+            },
+            {
+              "label": "OD",
+              "values": ["4-½”"]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["4 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 3\" (6\" wellbore)"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["5-⅝”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["8-½”"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["Titanium"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["10,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["8,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/shf-fmi-shadow-870.webp",
+          "width": 1600,
+          "height": 972,
+          "alt": "SHF-FMI fixed angle guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "hf8-msct",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide HF8-MSCT",
+      "models": ["HF8-MSCT"],
+      "summary": "Guide for sidewall coring tools (XL-Rock, MSCT) — orients the coring tool for optimal core recovery.",
+      "description": [
+        "MSCT hole finders are specifically designed to be run at the bottom of sidewall coring tools, such as XL-Rock and MSCT."
+      ],
+      "applications": [
+        "Ability to navigate step ledges of up to 4.5”",
+        "Orient the coring tool to obtain cores in the direction of stress plane and for optimal core recovery.",
+        "Helps tool run over cuttings and other low side obstructions."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF8-MSCT"]
+            },
+            {
+              "label": "Weight",
+              "values": ["15 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["24”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3"]
+            },
+            {
+              "label": "OD",
+              "values": ["4-1�2”"]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["8 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 4-½” ( in 8-½” wellbore)"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["8-½”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Aluminium"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["10,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["8,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hf8-msct-shadow-871.webp",
+          "width": 1600,
+          "height": 1122,
+          "alt": "HF8-MSCT fixed angle guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "hf6-mdt",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide HF6-MDT",
+      "models": ["HF6-MDT"],
+      "summary": "Guide for formation testing strings with a fixed angle that does not interfere with probe setting.",
+      "description": [
+        "Hole finders are specifically designed to be run at the bottom of formation testing strings with a fixed angle that does not interfere with probe setting.",
+        "New model allows probe orientation to high to low side of the wellbore."
+      ],
+      "applications": [
+        "Ability to navigate step ledges up to 4.5”.",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Robust design with no electrical interference and negligible maintenance requirements.",
+        "Fixed angle that does not obstruct probe contact with borehole."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF6-MDT"]
+            },
+            {
+              "label": "Weight",
+              "values": ["25 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["24”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3"]
+            },
+            {
+              "label": "OD",
+              "values": ["4-½”"]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["6 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 4-½” ( in 8-½” wellbore)"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["7”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Aluminum"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["10,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["8,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hf6-mdt-872.webp",
+          "width": 1600,
+          "height": 1122,
+          "alt": "HF6-MDT fixed angle guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "hf9-bn6",
+      "category": "fixed-angle-guides",
+      "group": "For SLB Tools",
+      "name": "Fixed Angle Guide HF9-BN6",
+      "models": ["HF9-BN6"],
+      "summary": "Short 9° guide for small holes, used in combination with the in-line taxis (TTC-IL6).",
+      "description": [
+        "Short Length fixed 9-degree guide designed for small size holes, suitable for attachment to the bottom of any through-wired tool."
+      ],
+      "applications": [
+        "Use in combination with Inline Taxis: TTC-IL6",
+        "Ability to navigate step ledges up to 3.6”.",
+        "Attached to the bottom without any electrical interference.",
+        "Robust design with negligible maintenance requirements",
+        "Helps tool run over cuttings and other low side obstructions."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF9-BN6"]
+            },
+            {
+              "label": "Weight",
+              "values": ["22 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["14.5”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.03ft3"]
+            },
+            {
+              "label": "OD",
+              "values": ["4.8”"]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["9 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 3.6”"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["5-⅝”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Aluminum"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["10,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["8,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hf9-bn6-shadow-873.webp",
+          "width": 1600,
+          "height": 1122,
+          "alt": "HF9-BN6 fixed angle guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "hf9j",
+      "category": "fixed-angle-guides",
+      "group": "For Halliburton Tools",
+      "name": "Hole Finder Guide J-Latch HF9J",
+      "models": ["HF9J"],
+      "summary": "Fixed-angle hole finder for the J-Latch connection at the bottom of Halliburton strings.",
+      "description": [
+        "Fixed angle hole-finder specifically designed to be installed on J-Latch connection at the bottom of the string.",
+        "Robust design with minimal maintenance requirements"
+      ],
+      "applications": [
+        "Ability to navigate step ledges of up to 4.5”",
+        "Configurable for hole sizes 6-1/8” and larger",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Guides for smaller holes can be custom manufactured,"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF9J"]
+            },
+            {
+              "label": "Weight",
+              "values": ["16 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["17.6”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3"]
+            },
+            {
+              "label": "OD",
+              "values": ["3.62”"]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["9 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 4\" in 8-½\" wellbore"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["6- ¹�8”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Carbon Fibre"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["11,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["11,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hfj9-shadow-874.webp",
+          "width": 1600,
+          "height": 1000,
+          "alt": "HF9J hole finder guide with J-Latch connection",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "hf9-acrt",
+      "category": "fixed-angle-guides",
+      "group": "For Halliburton Tools",
+      "name": "Hole Finder Guide Induction HF9-ACRT",
+      "models": ["HF9-ACRT"],
+      "summary": "Fixed-angle hole finder for Halliburton induction strings with aluminium nose.",
+      "description": [
+        "Fixed angle hole-finder specifically designed to be installed on J-Latch connection at the bottom of the string.",
+        "Robust design with minimal maintenance requirements."
+      ],
+      "applications": [
+        "Ability to navigate step ledges of up to 4.5”",
+        "Configurable for hole sizes 6-1/8” and larger",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Guides for smaller holes can be custom manufactured."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF9-ACRT"]
+            },
+            {
+              "label": "Weight",
+              "values": ["16 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["17.6”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3"]
+            },
+            {
+              "label": "OD",
+              "values": ["3.62”"]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["9 degrees"]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 4\" in 8-½\" wellbore"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["6- ¹�8”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Aluminum"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["11,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["11,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hf9-acrt-shadow-875.webp",
+          "width": 1600,
+          "height": 972,
+          "alt": "HF9-ACRT hole finder guide",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "hf-b-wts",
+      "category": "fixed-angle-guides",
+      "group": "For Baker Hughes Tools",
+      "name": "Hole Finder Guide WTS Connection",
+      "models": ["HF9-B", "HF6-B"],
+      "summary": "Hole finder for Baker Hughes through-wired tools with WTS connection — 9° or 6° nose, adjustable azimuth.",
+      "description": [
+        "Hole finder specifically designed to be run at the bottom of through-wired tools.",
+        "Depending on hole size application the Guide can be configured with 9deg nose section or 6deg nose section.",
+        "Robust design with minimal maintenance requirements."
+      ],
+      "applications": [
+        "Ability to navigate step ledges of up to 4.5”",
+        "Adjustable Azimuth",
+        "Configurable for hole sizes 6-1/8” and larger",
+        "Helps tool run over cuttings and other low side obstructions.",
+        "Guides for smaller holes can be custom manufactured."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["HF9-B", "HF6-B"]
+            },
+            {
+              "label": "Weight",
+              "values": ["27.3 lbs", "25 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["27.5”", "26\""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.04ft3", ""]
+            },
+            {
+              "label": "OD",
+              "values": ["4.8\"", ""]
+            },
+            {
+              "label": "Nose Angle",
+              "values": ["9 degrees", ""]
+            },
+            {
+              "label": "Maximum step ledge",
+              "values": ["Up to 4-½\" in 8-½\" wellbore", "Up to 3\" in 6\" wellbore"]
+            },
+            {
+              "label": "Min. Hole size",
+              "values": ["7\"", "6”"]
+            },
+            {
+              "label": "Max. Hole size",
+              "values": ["No limit", "No Limit"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi", ""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Nose",
+              "values": ["Aluminum"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["10,000 lbs"]
+            },
+            {
+              "label": "Compressive strength",
+              "values": ["20,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/hf9-b-779.webp",
+          "width": 1600,
+          "height": 1245,
+          "alt": "HF9-B hole finder guide with WTS connection",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "cp12",
+      "category": "focus-centralisers",
+      "group": "Open Hole",
+      "name": "CP12 — Centering Parallelogram for 12in",
+      "models": ["CP12"],
+      "summary": "The first ever roller centraliser for open hole — centres wireline tools in 12-1/4” boreholes.",
+      "description": [
+        "The CP12 is the first ever Roller Centraliser for use in open hole. It is designed to centre wireline tools in 12-1/4” boreholes.",
+        "A ground-up analysis of centralization mechanics and consideration of logging challenges led to the revolutionary architecture of the CP12.",
+        "The patented suspension mechanism and low friction bearings eliminate wellbore drag, ensuring optimum data quality from hi-tech imaging and sonic tool.",
+        "The CP12 is compact (16in, 45lbf) which makes it easier to handle, minimizes tool-string weight and allows it to be attached in numerous positions."
+      ],
+      "applications": [
+        "Centralization of wireline logging tools",
+        "Tool Conveyance on highly deviated wells",
+        "Reduction of Stick & Slip"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Centralization",
+          "rows": [
+            {
+              "label": "",
+              "values": ["Bit Size:", "", "", ""]
+            },
+            {
+              "label": "",
+              "values": ["12-1�4”", "14-3�4”", "16”", "17-1�2”"]
+            },
+            {
+              "label": "Distance from Centre of Borehole",
+              "values": ["0.3”", "1.6”", "2.3”", "3.1”"]
+            }
+          ]
+        },
+        {
+          "title": "Standoff (Clearance) In 12-1�4” Hole",
+          "rows": [
+            {
+              "label": "",
+              "values": ["Tool housing OD:", "", "", ""]
+            },
+            {
+              "label": "",
+              "values": ["3-5�8”", "4.44”", "5”", "5-1�4”"]
+            },
+            {
+              "label": "Standoff",
+              "values": ["4”", "3.6”", "3.3”", "3.2”"]
+            }
+          ]
+        },
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["CP12", ""]
+            },
+            {
+              "label": "Weight",
+              "values": ["45 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["16”", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.05ft3", ""]
+            },
+            {
+              "label": "Maximum OD",
+              "values": ["11-¾”", ""]
+            },
+            {
+              "label": "Minimum Hole Size",
+              "values": ["Open Hole", "Cased hole"]
+            },
+            {
+              "label": "",
+              "values": ["10-⅝\"", "10-�/₈\""]
+            },
+            {
+              "label": "Collapsed OD",
+              "values": ["9.8\"", ""]
+            },
+            {
+              "label": "Max Load Carry Capability",
+              "values": ["500 lbs", ""],
+              "note": "Load capacity can be set by adjusting spring pack, this allows to optimize toolstring design."
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["5%", ""]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["12%", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["4-½”", ""],
+              "note": "Reducing Adapter sleeves are available to fit 4\" and 3-5�8” tools."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Carbide Bush Bearing"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL, Shear set screws",
+              "values": ["8,500 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/cp12-open-shadow-862.webp",
+          "width": 1600,
+          "height": 1146,
+          "alt": "CP12 open hole roller centraliser",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/cp12-standoff-comparison-12-25in-transparent-catalog.webp",
+          "width": 875,
+          "height": 488,
+          "alt": "CP12 standoff comparison in a 12-1/4” hole",
+          "role": "figure",
+          "caption": "Standoff comparison in 12-1⁄4” hole"
+        },
+        {
+          "src": "/images/catalog/cp12-force-chart-p1-p4-jun24.svg",
+          "width": 643,
+          "height": 463,
+          "alt": "CP12 force chart for spring pack settings P1 to P4",
+          "role": "figure",
+          "caption": "Force chart — spring pack settings P1–P4"
+        }
+      ]
+    },
+    {
+      "slug": "cp8",
+      "category": "focus-centralisers",
+      "group": "Open Hole",
+      "name": "CP8 — Co-Pivot Centraliser for 8.5in",
+      "models": ["CP8"],
+      "summary": "Patented Co-Pivot mechanism with ultra-low-drag bearings — precise centralization of heavy strings in 8.5” wellbores.",
+      "description": [
+        "The Co-Pivot Centraliser (CP8) is the latest addition to the Focus™ range of precision centralisers for open hole. By synergizing Petromac’s patented “Co-Pivot” mechanism with our ultra-low-drag custom bearings, the CP8 delivers unparalleled performance.",
+        "The CP8 centraliser boasts robust strength and ensures precise centralization of heavy tool-strings in challenging conditions. Unlike conventional centralizers, our device reduces stick-slip and facilitates smooth gravity descent in high deviation wells."
+      ],
+      "applications": [
+        "Centering Sonics and imaging tools in 8.5” wellbores",
+        "Stick-slip elimination",
+        "Conveyance of heavy toolstrings."
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["CP8", ""]
+            },
+            {
+              "label": "Weight",
+              "values": ["39 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["19”", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.03ft3", ""]
+            },
+            {
+              "label": "Maximum OD",
+              "values": ["8.25”", ""],
+              "note": "Max OD can be increased to 8.8\", this must be done at surface by changing position of the \"OD selector stop\"."
+            },
+            {
+              "label": "Minimum Hole Size",
+              "values": ["Open Hole", "Cased Hole"]
+            },
+            {
+              "label": "",
+              "values": ["8\"", "7-½\""]
+            },
+            {
+              "label": "Collapsed OD",
+              "values": ["7-½\"", ""],
+              "note": "Collapse OD is dependent of tool diameter, collapse OD is 7.25\" for a 3-3⁄8\" Tool OD."
+            },
+            {
+              "label": "Max Load Carry Capability",
+              "values": ["350 lbs", ""],
+              "note": "Load carrying capacity is deviation and temperature dependent, see chart below.."
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["5%", ""]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["12%", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["3-⅝”", ""],
+              "note": "Reducing adapter sleeves are available to fit 3-3�8” tools."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1150"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Bush Bearing"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL, Shear set screws",
+              "values": ["17,000 lbs (4 screws)"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/cp8-no-shadow-171.webp",
+          "width": 1600,
+          "height": 1242,
+          "alt": "CP8 co-pivot centraliser",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/cp8-no-shadow-169.webp",
+          "width": 1134,
+          "height": 2599,
+          "alt": "CP8 co-pivot centraliser, alternate view",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/cp8-load-capacity-aug24.webp",
+          "width": 1600,
+          "height": 979,
+          "alt": "CP8 load capacity chart",
+          "role": "figure",
+          "caption": "Load capacity vs deviation and temperature"
+        }
+      ]
+    },
+    {
+      "slug": "ca7",
+      "category": "focus-centralisers",
+      "group": "Cased Hole",
+      "name": "CA7 — Centering Adjustable Taxi for 7in",
+      "models": ["CA7"],
+      "summary": "Slip-over roller centraliser for 7” casings — user-set OD to casing drift, 260 lbf capacity at only 13 lbs.",
+      "description": [
+        "The CA7 is a slip over Roller with a 3-5/8” bore designed to centre wireline tools across the range of 7” casings.",
+        "A ground-up analysis of centralization mechanics and current logging applications led to the revolutionary architecture of the CA7.",
+        "Despite the compact design (9.7” /13lbs) the device has the capability to centralise 260lbf in a horizontal well. In deviated wells this high load capacity is very important. Note that at only 50deg deviation a centraliser must support 77% of toolstring weight. The CA7 can be placed between the Transmitter and Receiver on Sonic Logging tools, exactly where centralization is required.",
+        "The maximum diameter of the device can be easily pre-set by the user to suit casing weight. Once set, the rollers will keep this maximum OD. This feature prevents toolstring hold-up at casing joints or the BOP stack. It also ensures that the load carried by the wheels, and thus bearing friction, is only that required to support the toolstring with no additional loads due to centraliser spring force",
+        "In addition, the CA7 can collapse to its minimum designed diameter to enable the toolstring to pass through restrictions such as a cement sheath.",
+        "The CA7 incorporates Petromac’s unique bearing technology which has enabled our family of devices to descend by gravity to world-record deviations.",
+        "Petromac’s recommends setting the device OD to “Casing Drift”, within 0.07in of casing centreline. Casing weights are annotated on the device for ease of adjustment (Paper# 21206, International Petroleum Technology Conference 2021)",
+        "Device diameter is set to the nominal Drift ID of the 7” casing by rotating the adjustment bolt until the slider is set the middle of the corresponding casing weight mark.",
+        "By setting the device diameter to “Casing drift”, drag is reduced as centraliser spring force is not converted into friction. This setup is possible as the CA7 can carry its full load capacity in two of the six roller arms."
+      ],
+      "applications": [
+        "Centralization of wireline logging tools",
+        "Tool Conveyance on highly deviated wells (Inside the designed range of operation)"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["CA7", ""]
+            },
+            {
+              "label": "Weight",
+              "values": ["15 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["9.7”", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.03ft3", ""]
+            },
+            {
+              "label": "",
+              "values": ["Min. Casing Size", "Max. Casing size"]
+            },
+            {
+              "label": "Adjustable Casing Range",
+              "values": ["7”-32# (ID6.09”)", "7”-23# (ID 6.36”)"]
+            },
+            {
+              "label": "Max Load Carry Capability",
+              "values": ["260 lbs", ""]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["3%", ""]
+            },
+            {
+              "label": "Drag Force",
+              "values": ["6 lbs", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            },
+            {
+              "label": "Collapsed OD",
+              "values": ["5.66”", ""]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["3-⅝”", ""],
+              "note": "Reducing Adapter sleeves are available to fit 3-3�8” tools."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1075"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Bush Bearing"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL, Shear set screws",
+              "values": ["8,500 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ca7-side-view-32ppf-863.webp",
+          "width": 1600,
+          "height": 1110,
+          "alt": "CA7 centering adjustable taxi, side view",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/ca7-force-chart.webp",
+          "width": 1600,
+          "height": 1063,
+          "alt": "CA7 roller force chart across 7-inch casing weights",
+          "role": "figure",
+          "caption": "Roller force across 7” casing weights"
+        },
+        {
+          "src": "/images/catalog/ca7-drift-config.webp",
+          "width": 1600,
+          "height": 1595,
+          "alt": "CA7 set to casing drift configuration",
+          "role": "figure",
+          "caption": "Device diameter set to the casing drift ID by rotating the adjustment bolt to the corresponding casing-weight mark"
+        },
+        {
+          "src": "/images/catalog/ca7-drift-config-closeup.webp",
+          "width": 1600,
+          "height": 1600,
+          "alt": "Close-up of the CA7 casing-weight adjustment marks",
+          "role": "figure",
+          "caption": "Casing weights are annotated on the device for ease of adjustment"
+        }
+      ]
+    },
+    {
+      "slug": "cril",
+      "category": "focus-centralisers",
+      "group": "Cased Hole",
+      "name": "CRIL — Centraliser Rocker In-Line",
+      "models": ["CRIL"],
+      "summary": "Patented Rocker centraliser for in-line connection — perfect centralization in 4-1/2” to 7” casing.",
+      "description": [
+        "A ground-up analysis of centraliser mechanics and current logging applications led to Petromac’s revolutionary “Rocker” centraliser for cased hole service.",
+        "The patented Rocker centraliser incorporates a rocker in each of the arm assemblies which pivots about the centreline. The rocker wheels contact opposing sides of the casing ensuring perfect centralization.",
+        "The CRIL (Centraliser Rocker In-Line) is designed for in-line connection within the tool string.",
+        "This tool incorporates Petromac’s unique bearing technology which has enabled our family of devices to descend by gravity to world-record deviations",
+        "The CRIL Rocker centraliser is configured for centralization in 4.5” to 7” casing sizes and is available in two size configurations, standard and small:",
+        "4-1/2”to 7” with a collapse diameter of 3-5/8” (1” wheel)",
+        "4-1/2”to 7” with a collapse diameter of 3-3/8” (7/8” wheel).",
+        "Standard Kit",
+        "Small Kit"
+      ],
+      "applications": [
+        "Centralization of wireline logging tools",
+        "Tool Conveyance on highly deviated wells"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["CRIL", ""]
+            },
+            {
+              "label": "Weight",
+              "values": ["65 lbs [29.5 kg]", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["3.74ft [1.14m]", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.11ft3", ""]
+            },
+            {
+              "label": "Configurations",
+              "values": ["Small Kit", "Standard"]
+            },
+            {
+              "label": "Min. Casing size",
+              "values": ["4-½”", "4-½”"]
+            },
+            {
+              "label": "Max. Casing size",
+              "values": ["7”", "7”"]
+            },
+            {
+              "label": "Minimum OD",
+              "values": ["3-⅜”", "3-⅝”"]
+            },
+            {
+              "label": "Connection",
+              "values": ["In-Line with all through wired tools", ""],
+              "note": "Fits threaded connections for 31 pins on 3-3�8” and 3-5�8” tools."
+            },
+            {
+              "label": "Max Load Carry Capability",
+              "values": ["200 lbs", ""]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%", ""]
+            },
+            {
+              "label": "Drag Force",
+              "values": ["6 lbs", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi", ""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Bush Bearing"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Tensile SWL, For fishing",
+              "values": ["30,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/86-cril-shadows-bip-864.webp",
+          "width": 1600,
+          "height": 1464,
+          "alt": "CRIL centraliser rocker in-line",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/cril-std-kit.webp",
+          "width": 1600,
+          "height": 890,
+          "alt": "CRIL standard kit configuration",
+          "role": "figure",
+          "caption": "Standard kit — 3-5⁄8” collapse diameter (1” wheel)"
+        },
+        {
+          "src": "/images/catalog/cril-small-kit.webp",
+          "width": 1600,
+          "height": 890,
+          "alt": "CRIL small kit configuration",
+          "role": "figure",
+          "caption": "Small kit — 3-3⁄8” collapse diameter (7⁄8” wheel)"
+        },
+        {
+          "src": "/images/catalog/cril-side-view.webp",
+          "width": 1600,
+          "height": 356,
+          "alt": "CRIL side view",
+          "role": "figure",
+          "caption": "Side view"
+        },
+        {
+          "src": "/images/catalog/cru-cril-force-chart.webp",
+          "width": 1600,
+          "height": 1108,
+          "alt": "CRIL and CRU force chart across casing sizes",
+          "role": "figure",
+          "caption": "Rocker force across casing sizes"
+        }
+      ]
+    },
+    {
+      "slug": "cru",
+      "category": "focus-centralisers",
+      "group": "Cased Hole",
+      "name": "CRU — Centraliser Rocker for USIT",
+      "models": ["CRU"],
+      "summary": "Rocker centraliser that assembles directly on the USIS sonde — perfect centralization in 4-1/2” to 7” casing.",
+      "description": [
+        "A ground-up analysis of centraliser mechanics and current logging applications led to Petromac’s revolutionary “Rocker” centraliser for cased hole service.",
+        "The patented Rocker centraliser incorporates a rocker in each of the arm assemblies which pivots about the centreline. The rocker wheels contact opposing sides of the casing ensuring perfect centralisation.",
+        "The CRU (Centraliser Rocker Ultrasonic imaging tool) is designed for assembly directly on the USIS sonde.",
+        "The CRU incorporates Petromac’s unique bearing technology which has enabled our family of devices to descend by gravity to world-record deviations",
+        "The CRU Rocker centraliser is configured for centralization in 4.5” to 7” casing sizes and is available in two size configurations, standard and small:",
+        "4-1/2”to 7” with a collapse diameter of 3-5/8” (1” wheel)",
+        "4-1/2”to 7” with a collapse diameter of 3-3/8” (7/8” wheel)."
+      ],
+      "applications": [
+        "Centralization of wireline logging tools",
+        "Tool Conveyance on highly deviated wells",
+        "Standard Kit",
+        "Small Kit"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["CRU", ""]
+            },
+            {
+              "label": "Weight",
+              "values": ["23 lbs [10.5 kg]", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["NA – assembled to USIS Sonde", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.05ft3", ""]
+            },
+            {
+              "label": "Configuration",
+              "values": ["Small kit", "Standard"]
+            },
+            {
+              "label": "Min. Casing size",
+              "values": ["4-1�2”", "4-1�2”"]
+            },
+            {
+              "label": "Max. Casing size",
+              "values": ["7”", "7”"]
+            },
+            {
+              "label": "Minimum OD",
+              "values": ["3-⅜”", "3-⅝”"]
+            },
+            {
+              "label": "Max Load Carry Capability",
+              "values": ["200 lbs", ""]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%", ""]
+            },
+            {
+              "label": "Drag Force",
+              "values": ["6 lbs", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1075"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Bush Bearing"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/cru-shadows-bip-865.webp",
+          "width": 1600,
+          "height": 1464,
+          "alt": "CRU centraliser rocker for USIT",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/cru-cril-force-chart.webp",
+          "width": 1600,
+          "height": 1108,
+          "alt": "CRU and CRIL force chart across casing sizes",
+          "role": "figure",
+          "caption": "Rocker force across casing sizes"
+        }
+      ]
+    },
+    {
+      "slug": "cx9",
+      "category": "focus-centralisers",
+      "group": "Cased Hole",
+      "name": "CX9 — Helix Centraliser",
+      "models": ["CX9"],
+      "summary": "Patented Helix mechanism covering 7” to 9-5/8” casing in a single run — single-trip data acquisition.",
+      "description": [
+        "The HELIX Centralizer (CX9) is the latest addition to the Focus™ range of precision centralisers. By synergizing Petromac’s patented “Helix” mechanism with our ultra-low-drag custom bearings, the CX9 delivers unparalleled performance.",
+        "The Helix centraliser boasts robust strength and ensures precise centralization of heavy tool-strings in challenging conditions. Unlike conventional centralizers, the CX9 reduces stick-slip and facilitates smooth gravity descent in high deviation wells.",
+        "Designed for casing sizes ranging from 7” up to 9-5/8”, the Helix centraliser enables data acquisition in a single run, saving valuable rig time."
+      ],
+      "applications": [
+        "Precise centralisation of wireline logging tools in casings from 7” to 9-5/8”",
+        "Gravity descent in highly deviated wells",
+        "Stick-slip elimination"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["CX9", ""]
+            },
+            {
+              "label": "Weight",
+              "values": ["40 lbs", ""]
+            },
+            {
+              "label": "Length",
+              "values": ["25” (0.64m)", ""]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.08ft3", ""]
+            },
+            {
+              "label": "",
+              "values": ["Min. Casing Size", "Max. Casing size"]
+            },
+            {
+              "label": "Adjustable Casing Range",
+              "values": ["7”- #38 (ID 5.92”)", "9-⁵/8”- #32.3 (ID 9.00”)"]
+            },
+            {
+              "label": "Load carry capability range",
+              "values": ["190 - 225 lbs", ""],
+              "note": ". Capability is dependent on temperature and Casing ID, values above are based on the most demanding scenarios: 90 deg deviation @ 180 °C . For 7\" #32 force is 225lbs and 190lbs for 9-⁵/8\" #53.5."
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["3%", ""]
+            },
+            {
+              "label": "Drag Force",
+              "values": ["6 lbs", ""]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F", ""]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi", ""]
+            },
+            {
+              "label": "Collapsed OD",
+              "values": ["5-⅝”", ""]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["3-⅝”", ""],
+              "note": "Reducing Adapter sleeves are available to fit 3-3�8” tools."
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1075"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Bush Bearing"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL, Shear set screws",
+              "values": ["17,000 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/helix-revc-color2-bip-142.webp",
+          "width": 1600,
+          "height": 1106,
+          "alt": "CX9 Helix centraliser",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/helix-revc-color2-bip-143.webp",
+          "width": 1600,
+          "height": 1106,
+          "alt": "CX9 Helix centraliser, alternate view",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/cx9-load-table-v2-7-leaf-spring.svg",
+          "width": 3893,
+          "height": 2443,
+          "alt": "CX9 load capacity table for the 7-leaf spring",
+          "role": "figure",
+          "caption": "Load capacity — 7-leaf spring"
+        }
+      ]
+    },
+    {
+      "slug": "rs7",
+      "category": "well-intervention",
+      "group": "",
+      "name": "RS7 — Roller Standoff for 7in",
+      "models": ["RS7"],
+      "summary": "Compact slip-over roller (3.5 lbs, 3” long) for the decoupled sections of the toolstring in 7” casing.",
+      "description": [
+        "The RS7 is a slip over Roller with a 3-5/8” bore designed to convey tools across the range of 7” casings.",
+        "Ideal to complement the conveyance solution provided by the Petromac cased hole centralisers, it is positioned in the decoupled sections of the toolstring where centralization is not critical allowing for an optimal use of fit to purpose devices.",
+        "Compact design at 3.5lbs and 3” long with 5.8” Max OD."
+      ],
+      "applications": [
+        "Centralization of wireline logging tools",
+        "Tool Conveyance on highly deviated wells"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model",
+              "values": ["RS7"]
+            },
+            {
+              "label": "Weight",
+              "values": ["3.5 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["3”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.01ft3"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["3%"]
+            },
+            {
+              "label": "Drag Coefficient, Static",
+              "values": ["5%"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            },
+            {
+              "label": "Device OD",
+              "values": ["5.8”"]
+            },
+            {
+              "label": "Minimum casing size",
+              "values": ["7\" #32 ( ID6.094\")"]
+            },
+            {
+              "label": "Bore",
+              "values": ["3-⅝”"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS"]
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Bush Bearing"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+            },
+            {
+              "label": "SWL, Shear set screws",
+              "values": ["8,500 lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/rs7-iso-866.webp",
+          "width": 1600,
+          "height": 1180,
+          "alt": "RS7 roller standoff",
+          "role": "gallery"
+        }
+      ]
+    },
+    {
+      "slug": "ro17",
+      "category": "well-intervention",
+      "group": "",
+      "name": "RO17 — Roller Slip-over 1-11/16in",
+      "models": ["RO17"],
+      "summary": "Conveys 1-11/16” tools in completions with restrictions above 3-1/2” — gravity descent to 85° deviation.",
+      "description": [
+        "The Slip over Roller for CH is used to convey 1 11/16” tools down cased hole wells with completion systems that have a minimum restriction greater than 3 ½”.",
+        "Carriage Collar locks securely onto the tool housing with grub cup screws while allowing the taxi body to rotate freely around the tool axis, this enables the string to setup on an orientation where all tool weight is being carried by the wheels, reducing friction and allowing descent up to 80° deviation."
+      ],
+      "applications": [
+        "Gravity logging up to 85° well deviation",
+        "Tool Conveyance on highly deviated wells"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model,",
+              "values": ["RO17"],
+              "note": "Standard version is suitable for Pipe recovery applications. RO17-S is a H2S (sour service) version, available upon request."
+            },
+            {
+              "label": "Weight",
+              "values": ["4.2 lbs"]
+            },
+            {
+              "label": "Length",
+              "values": ["6.25”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.01ft3"]
+            },
+            {
+              "label": "Min. Hole Size",
+              "values": ["3-½”"]
+            },
+            {
+              "label": "Max. Hole Size",
+              "values": ["8-½”"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%"]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["3-¼”"]
+            },
+            {
+              "label": "Taxi Bore",
+              "values": ["1-¹¹⁄₁₆”"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["30,000 psi"]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1075"],
+              "note": "TI6AL4V Titanium body for the H2S version"
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Ball Bearing"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["Alloy Steel Grub Cup Screw"]
+            },
+            {
+              "label": "Grease",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "SWL for Fishing",
+              "values": ["50,000lbs"]
+            },
+            {
+              "label": "SWL Shear Set Screws",
+              "values": ["4,000lbs"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/ro17-shadow-859.webp",
+          "width": 1600,
+          "height": 1200,
+          "alt": "RO17 roller slip-over taxi",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/ro17-clearance-9-625-transparent.webp",
+          "width": 1600,
+          "height": 1422,
+          "alt": "RO17 clearance in 9-5/8” casing",
+          "role": "figure",
+          "caption": "Clearance in 9-5⁄8” casing"
+        },
+        {
+          "src": "/images/catalog/ro17-clearance-4-transparent.webp",
+          "width": 1600,
+          "height": 1199,
+          "alt": "RO17 clearance in a 4” restriction",
+          "role": "figure",
+          "caption": "Clearance in a 4” restriction"
+        }
+      ]
+    },
+    {
+      "slug": "twt-28",
+      "category": "well-intervention",
+      "group": "",
+      "name": "Taxi Weight Bar TWT-28 (Titan)",
+      "models": ["TWT-28"],
+      "summary": "In-line taxi for Hunting Titan weight bars — carries production logging strings on wheels, perforating-rated.",
+      "description": [
+        "In-line Tool Taxis specifically designed for cased hole operations with Hunting Titan weight bars. Carries the majority of the weight of production logging tool-strings on wheels.",
+        "Taxi wheels run on ball bearings with replaceable viton seals. The bearings are packed with grease with new seals between operations.",
+        "The weight bar taxi connects in-line between Titan weight bars."
+      ],
+      "applications": [
+        "Gravity logging up to 80 degrees well deviation.",
+        "Self-aligning. The wheel body is free to rotate around the central mandrel.",
+        "Cable tension reduction.",
+        "Rated for perforating operations.",
+        "NACE compliant version available.",
+        "Very Robust design. Low maintenance requirement.",
+        "Power wash bearings",
+        "Pack bearing with grease",
+        "Replace seal"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model,",
+              "values": ["TWT-28"],
+              "note": "Standard version is suitable for Pipe recovery applications. H2S (sour service) version available upon request."
+            },
+            {
+              "label": "Weight",
+              "values": ["7.7 lbs"]
+            },
+            {
+              "label": "Make up Length",
+              "values": ["8.25”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.01ft3"]
+            },
+            {
+              "label": "Min. Restriction Size",
+              "values": ["2.925”"]
+            },
+            {
+              "label": "Max. Hole Size",
+              "values": ["12-½”"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%"]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["2.8”"]
+            },
+            {
+              "label": "Taxi connection",
+              "values": ["Titan, 1-³⁄₁₆\"-12 GO"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["400°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["63,000 lbs"]
+            },
+            {
+              "label": "",
+              "values": ["Standoff (2\" weight bar)"]
+            },
+            {
+              "label": "4-1/2\" #10.5 Tubing, ID 4.0\"",
+              "values": ["0.30\""]
+            },
+            {
+              "label": "7\" #32 Casing, ID 6.1\"",
+              "values": ["0.24\""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1075"],
+              "note": "TI6AL4V Titanium body for the H2S version"
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Ball Bearing"]
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["In-line"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/twt-28-bip-127-0-33x.webp",
+          "width": 688,
+          "height": 688,
+          "alt": "TWT-28 taxi weight bar for Hunting Titan bars",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/207-twt-28-standoff-0-33x.webp",
+          "width": 765,
+          "height": 578,
+          "alt": "TWT-28 standoff diagram",
+          "role": "figure",
+          "caption": "TWT-28 standoff"
+        }
+      ]
+    },
+    {
+      "slug": "tws-30",
+      "category": "well-intervention",
+      "group": "",
+      "name": "Taxi Weight Bar TWS-30",
+      "models": ["TWS-30"],
+      "summary": "In-line taxi for SLB weight bars — carries production logging strings on wheels, perforating-rated.",
+      "description": [
+        "In-line Tool Taxis specifically designed for cased hole operations with SLB weight bars. Carries the majority of the weight of production logging tool-strings on wheels.",
+        "Taxi wheels run on ball bearings with replaceable viton seals. The bearings are packed with grease with new seals between operations.",
+        "The weight bar taxi connects in-line between weight bars."
+      ],
+      "applications": [
+        "Gravity logging up to 80 degrees well deviation.",
+        "Self-aligning. The wheel body is free to rotate around the central mandrel.",
+        "Cable tension reduction.",
+        "Rated for perforating operations.",
+        "NACE (H2S) compliant version available.",
+        "Very Robust design. Low maintenance requirement.",
+        "Power wash bearings",
+        "Pack bearing with grease",
+        "Replace seal"
+      ],
+      "variants": [],
+      "specs": [
+        {
+          "title": "Technical Specifications",
+          "rows": [
+            {
+              "label": "Model,",
+              "values": ["TWS-30"],
+              "note": "Standard version is suitable for Pipe recovery applications. H2S (sour service) version available upon request."
+            },
+            {
+              "label": "Weight",
+              "values": ["7.7 lbs"]
+            },
+            {
+              "label": "Make up Length",
+              "values": ["8.25”"]
+            },
+            {
+              "label": "Volume",
+              "values": ["0.01ft3"]
+            },
+            {
+              "label": "Min. Restriction Size",
+              "values": ["3- ¹⁄₈\""]
+            },
+            {
+              "label": "Max. Hole Size",
+              "values": ["12-½”"]
+            },
+            {
+              "label": "Drag Coefficient, dynamic",
+              "values": ["2%"]
+            },
+            {
+              "label": "Taxi OD",
+              "values": ["3.0”"]
+            },
+            {
+              "label": "Taxi connection",
+              "values": ["1 ³⁄₈\"-12 UNF"]
+            },
+            {
+              "label": "Temperature rating",
+              "values": ["350°F"]
+            },
+            {
+              "label": "Pressure rating",
+              "values": ["20,000 psi"]
+            },
+            {
+              "label": "SWL for fishing, Tensile",
+              "values": ["63,000 lbs"]
+            },
+            {
+              "label": "",
+              "values": ["Standoff (2- ¹⁄₈\" weight bar)"]
+            },
+            {
+              "label": "4-1/2\" #10.5 Tubing, ID 4.0\"",
+              "values": ["0.3\""]
+            },
+            {
+              "label": "7\" #32 Casing, ID 6.1\"",
+              "values": ["0.2\""]
+            }
+          ]
+        },
+        {
+          "title": "Materials",
+          "rows": [
+            {
+              "label": "Body",
+              "values": ["17-4 PH SS, Heat treated H1075"],
+              "note": "TI6AL4V Titanium body for the H2S version"
+            },
+            {
+              "label": "Bearings",
+              "values": ["Custom Ball Bearing"]
+            },
+            {
+              "label": "Lubrication",
+              "values": ["Lubriplate 930AA"]
+            },
+            {
+              "label": "Attachment",
+              "values": ["In-line"]
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/catalog/tws-30-53.webp",
+          "width": 1600,
+          "height": 940,
+          "alt": "TWS-30 taxi weight bar for SLB bars",
+          "role": "gallery"
+        },
+        {
+          "src": "/images/catalog/tws-30-weightbar-taxi-standoff-0-3x.webp",
+          "width": 1181,
+          "height": 633,
+          "alt": "TWS-30 standoff diagram",
+          "role": "figure",
+          "caption": "TWS-30 standoff"
+        }
+      ]
+    }
+  ]
+}

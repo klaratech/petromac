@@ -49,6 +49,24 @@ sampling/sticking.jpg` are dev placeholders; three cards show them permanently
 - [ ] Thor product video (card commented out until ready); Rocker GLB model
 - [ ] Rocker mechanism force-section schematic (interim crop in place)
 
+## HTML catalog swap (refining at /catalogtest — Jul 2026)
+
+New HTML catalog built from the IDML source lives at `/catalogtest`
+(noindexed); pipeline is `pnpm run data:catalog` (docs/ADMIN.md §2b).
+Once refined, to swap it in:
+
+- [ ] Content polish pass with design/product (summaries, image picks,
+      SWHF configuration figures currently filed under AHFC)
+- [ ] Generate the download/email PDF from `catalog.json` via an HTML print
+      template (≤4 MB, tagged text, TOC) instead of shipping the print PDF
+- [ ] Move `/catalogtest` → `/catalog` (keep slugs; redirect old URL params),
+      drop the `robots: noindex`, update sitemap
+- [ ] Remove orphans: pdf.js viewer (`CatalogViewer.tsx`), `react-pdf` dep,
+      `public/pdfjs/`, catalog compress/linearize steps in the flipbooks
+      pipeline, `search-index.json`, the `/pdfjs/` cache rule in
+      next.config.ts, and the catalog-viewer a11y backlog item below
+- [ ] Full docs pass (CLAUDE.md, ARCHITECTURE, FLIPBOOKS, REPO_STRUCTURE)
+
 ## Backlog
 
 - [ ] MapRenderer: split base path generation from style updates so filter

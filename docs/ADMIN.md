@@ -79,6 +79,54 @@ operations together.
 
 ---
 
+## 2b. HTML catalog (new — in refinement at `/catalogtest`)
+
+The catalog is being rebuilt as a native HTML catalog (product pages, real
+spec tables, instant search) generated from the **InDesign source**, not the
+print PDF. It lives at `/catalogtest` until it replaces `/catalog`; the
+pdf.js viewer above stays live until then.
+
+**Source of truth:** the InDesign package — the `.idml` export **plus its
+`Links` folder** (original image assets). The `.indd` itself isn't used.
+
+**When a new catalog edition lands:**
+
+1. Drop the whole InDesign package folder (containing the `.idml` and
+   `Links/`) anywhere under `sources/catalog/` — no renaming needed. Export
+   the IDML from InDesign via _File → Export → InDesign Markup (IDML)_ if the
+   designer only sent the `.indd`.
+2. Run `pnpm run data:catalog` (needs `poppler` for the `.ai` force charts:
+   `brew install poppler`; Pillow: `pip3 install Pillow`). This re-extracts
+   the IDML and regenerates:
+   - `src/features/catalog/content/catalog.json` — the content model the
+     site builds from (committed; the deploy build never needs InDesign files)
+   - `public/images/catalog/*.webp|svg` — web derivatives of the product
+     renders and charts
+3. **Review the git diff of `catalog.json`.** Spec values and text flow
+   through automatically. Things that need a human eye:
+   - **New/renamed/moved products** → update the product→spread mapping in
+     `scripts/python/catalog_config.json` (spread indices are 0-based IDML
+     spread order = catalog page − 1). The config also carries each product's
+     slug, category/group, one-line summary, image selection with alt
+     text/captions, and typo fixes. The builder prints a warning for images
+     it can't find and products with no spec tables.
+   - **New images** → add them to the product's `images` list in the config
+     (only listed images are processed; backgrounds/logos are ignored).
+4. Commit `catalog.json` + `public/images/catalog/**` (+ config if edited)
+   and push.
+
+Editorial fixes (typos, better wording, reordering images) go in
+`scripts/python/catalog_config.json` — either the `replacements` list or the
+per-product overrides (`description`, `applications`, `summary`) — then re-run
+step 2, so a future edition re-import doesn't lose them. Don't hand-edit
+`catalog.json` directly.
+
+Pipeline internals: `scripts/python/extract_catalog_idml.py` (IDML → raw
+spread dump) → `scripts/python/build_catalog_content.py` (raw + config →
+content model + images), orchestrated by `scripts/python/update_catalog.py`.
+
+---
+
 ## 3. Patents
 
 The Patents page (`/about/patents`) is **hand-maintained** from the list IP
