@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ProductCardModel, SearchEntry } from '@/features/catalog/content';
 import CatalogSearch from './CatalogSearch';
 import ProductCard from './ProductCard';
+import EmailPdfAction from './EmailPdfAction';
 
 export interface BrowserCategory {
   slug: string;
@@ -193,6 +194,10 @@ export default function CatalogBrowser({
               </svg>
               Download PDF
             </a>
+            {/* Sends as the signed-in staff member, or from info@ otherwise */}
+            <div className="mt-3">
+              <EmailPdfAction />
+            </div>
           </div>
         </aside>
 
@@ -200,6 +205,31 @@ export default function CatalogBrowser({
         <main className="lg:col-span-3 min-w-0">
           <div className="mb-6">
             <CatalogSearch entries={searchEntries} onSelect={jumpToProduct} />
+            {/* Mobile has no sidebar — surface the PDF actions here */}
+            <div className="lg:hidden mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <a
+                href="/flipbooks/catalog/petromac-product-catalog.pdf"
+                download
+                className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-brand transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12m0 0l-4-4m4 4l4-4"
+                  />
+                </svg>
+                Download PDF
+              </a>
+              <EmailPdfAction />
+            </div>
           </div>
 
           <h2 className="font-heading text-2xl md:text-3xl font-bold text-slate-900 mb-2">
