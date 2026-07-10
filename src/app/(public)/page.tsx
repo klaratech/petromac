@@ -3,7 +3,7 @@ import ChallengeSelector from '@/components/public/home/ChallengeSelector';
 import FeaturedProducts from '@/components/public/home/FeaturedProducts';
 import SoftwareHighlight from '@/components/public/home/SoftwareHighlight';
 import ProofSection from '@/components/public/home/ProofSection';
-import ContactForm from '@/components/public/ContactForm';
+import ContactSection from '@/components/public/home/ContactSection';
 
 export const metadata = {
   title: 'Petromac — Wireline Logging Solutions',
@@ -19,9 +19,7 @@ export default function HomePage() {
       <SoftwareHighlight />
       <FeaturedProducts />
       <ProofSection />
-      <div id="contact">
-        <ContactForm />
-      </div>
+      <ContactSection />
     </>
   );
 }

@@ -128,6 +128,17 @@ export default function Header() {
                     className={desktopLinkClass(isAboutActive())}
                   >
                     {item.name}
+                    {/* Dropdown affordance — flips while the menu is open */}
+                    <svg
+                      className="ml-1 inline-block h-3 w-3 -translate-y-px transition-transform duration-150 group-hover:rotate-180 group-focus-within:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                    </svg>
                   </Link>
                   <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity duration-150 absolute left-1/2 -translate-x-1/2 top-full pt-3 z-50">
                     <div className="min-w-44 rounded-xl bg-slate-950/95 backdrop-blur-md border border-white/10 shadow-xl py-2">
