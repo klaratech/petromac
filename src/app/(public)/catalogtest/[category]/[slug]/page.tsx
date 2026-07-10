@@ -82,7 +82,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
             <li aria-hidden="true">/</li>
             <li>
               <Link
-                href={`/catalogtest#${category.slug}`}
+                href={`/catalogtest?category=${category.slug}`}
                 className="hover:text-brand transition-colors"
               >
                 {category.name}

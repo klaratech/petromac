@@ -5,11 +5,22 @@ import type { SearchEntry } from '@/features/catalog/content';
 
 /**
  * Instant client-side product search. The index is tiny (~30 products), so
- * plain substring matching is enough — no library needed. Results are plain
- * anchors (not <Link>) so the `#:~:text=` fragment triggers the browser's
- * native scroll-to-text highlight on the product page.
+ * plain substring matching is enough — no library needed.
+ *
+ * Two selection modes:
+ * - default: navigate to the product page with a `#:~:text=` fragment so the
+ *   browser natively scrolls to and highlights the matched term;
+ * - with `onSelect`: hand the chosen entry to the parent (the catalog
+ *   browser switches tab, scrolls to the card and flashes it) instead of
+ *   navigating.
  */
-export default function CatalogSearch({ entries }: { entries: SearchEntry[] }) {
+export default function CatalogSearch({
+  entries,
+  onSelect,
+}: {
+  entries: SearchEntry[];
+  onSelect?: (_entry: SearchEntry) => void;
+}) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -41,6 +52,15 @@ export default function CatalogSearch({ entries }: { entries: SearchEntry[] }) {
     return q ? `${entry.href}#:~:text=${encodeURIComponent(q)}` : entry.href;
   }
 
+  function choose(entry: SearchEntry) {
+    if (onSelect) {
+      setOpen(false);
+      onSelect(entry);
+    } else {
+      window.location.href = hrefFor(entry);
+    }
+  }
+
   function onKeyDown(ev: React.KeyboardEvent) {
     if (!open || results.length === 0) return;
     if (ev.key === 'ArrowDown') {
@@ -51,7 +71,7 @@ export default function CatalogSearch({ entries }: { entries: SearchEntry[] }) {
       setActive((a) => Math.max(a - 1, 0));
     } else if (ev.key === 'Enter') {
       ev.preventDefault();
-      window.location.href = hrefFor(results[active]);
+      choose(results[active]);
     } else if (ev.key === 'Escape') {
       setOpen(false);
     }
@@ -101,7 +121,13 @@ export default function CatalogSearch({ entries }: { entries: SearchEntry[] }) {
           {results.map((r, i) => (
             <li key={r.href} role="option" aria-selected={i === active}>
               <a
-                href={hrefFor(r)}
+                href={onSelect ? `?category=${r.category}` : hrefFor(r)}
+                onClick={(ev) => {
+                  if (onSelect) {
+                    ev.preventDefault();
+                    choose(r);
+                  }
+                }}
                 onMouseEnter={() => setActive(i)}
                 className={`block px-4 py-3 border-b border-slate-100 last:border-b-0 ${
                   i === active ? 'bg-brand/5' : 'bg-white'
