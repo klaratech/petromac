@@ -89,10 +89,7 @@ async function getServiceWorkerStatus(): Promise<ServiceWorkerStatus> {
     const registration = await Promise.race([
       navigator.serviceWorker.ready,
       new Promise<never>((_, reject) =>
-        setTimeout(
-          () => reject(new Error('serviceWorker.ready timeout')),
-          SW_READY_TIMEOUT_MS,
-        ),
+        setTimeout(() => reject(new Error('serviceWorker.ready timeout')), SW_READY_TIMEOUT_MS)
       ),
     ]);
     return {
@@ -125,10 +122,7 @@ async function warmRoute(url: string): Promise<number> {
       if (error) reject(error);
       else resolve();
     };
-    const timeout = window.setTimeout(
-      () => done(new Error(`Timed out warming ${url}`)),
-      15_000,
-    );
+    const timeout = window.setTimeout(() => done(new Error(`Timed out warming ${url}`)), 15_000);
 
     frame.src = url;
     frame.title = `Prime ${url}`;
@@ -189,8 +183,7 @@ export default function PrimeClient() {
   const [includeOptional, setIncludeOptional] = useState(false);
   const [isPriming, setIsPriming] = useState(false);
   const [manifestError, setManifestError] = useState<string | null>(null);
-  const [serviceWorkerStatus, setServiceWorkerStatus] =
-    useState<ServiceWorkerStatus | null>(null);
+  const [serviceWorkerStatus, setServiceWorkerStatus] = useState<ServiceWorkerStatus | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -247,7 +240,7 @@ export default function PrimeClient() {
 
   const updateItem = (url: string, update: Partial<PrimeItem>) => {
     setItems((current) =>
-      current.map((item) => (item.url === url ? { ...item, ...update } : item)),
+      current.map((item) => (item.url === url ? { ...item, ...update } : item))
     );
   };
 
@@ -287,20 +280,20 @@ export default function PrimeClient() {
     }
   };
 
-  const loginHref = `/auth/microsoft/login?returnTo=${encodeURIComponent('/intranet/kiosk/prime')}`;
+  // prompt=select_account: kiosk tablets are shared — always show the
+  // account picker instead of silently reusing the previous member's SSO.
+  const loginHref = `/auth/microsoft/login?returnTo=${encodeURIComponent('/intranet/kiosk/prime')}&prompt=select_account`;
 
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 px-6 py-8">
         <header className="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-white/45">
-              Staff Utility
-            </p>
+            <p className="text-xs uppercase tracking-[0.35em] text-white/45">Staff Utility</p>
             <h1 className="mt-2 text-4xl font-extrabold">Prime Offline Kiosk</h1>
             <p className="mt-2 max-w-2xl text-sm text-white/65">
-              Cache the Android tablet + Chromecast kiosk routes, data, images,
-              flipbooks, and balanced 1080p videos before going offline.
+              Cache the Android tablet + Chromecast kiosk routes, data, images, flipbooks, and
+              balanced 1080p videos before going offline.
             </p>
           </div>
           {manifest && (
@@ -426,9 +419,7 @@ export default function PrimeClient() {
                           <td className="px-4 py-3">
                             <StatusPill status={item.status} />
                           </td>
-                          <td className="px-4 py-3 text-white/55">
-                            {formatBytes(item.bytes)}
-                          </td>
+                          <td className="px-4 py-3 text-white/55">{formatBytes(item.bytes)}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -15,9 +15,13 @@ export async function GET(request: NextRequest) {
   }
 
   const returnTo = normalizeReturnTo(request.nextUrl.searchParams.get('returnTo'));
+  // Allowlisted passthrough: kiosk links force the account picker (shared
+  // devices); everything else defaults to silent SSO when possible.
+  const requestedPrompt = request.nextUrl.searchParams.get('prompt');
+  const prompt = requestedPrompt === 'select_account' ? requestedPrompt : undefined;
   const redirectUri = new URL('/auth/microsoft/callback', getRequestOrigin(request)).toString();
   const { cookieValue, state } = createOAuthStateValue(returnTo, redirectUri);
-  const response = NextResponse.redirect(buildMicrosoftAuthorizeUrl(redirectUri, state));
+  const response = NextResponse.redirect(buildMicrosoftAuthorizeUrl(redirectUri, state, prompt));
 
   response.cookies.set(getOAuthStateCookieName(), cookieValue, buildOAuthStateCookieOptions());
   return response;

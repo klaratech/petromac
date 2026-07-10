@@ -38,7 +38,9 @@ function getClientSecret() {
 }
 
 function getScopes() {
-  const configured = process.env.ENTRA_SCOPES?.split(/[,\s]+/).map((value) => value.trim()).filter(Boolean);
+  const configured = process.env.ENTRA_SCOPES?.split(/[,\s]+/)
+    .map((value) => value.trim())
+    .filter(Boolean);
   return configured && configured.length > 0 ? configured : DEFAULT_SCOPES;
 }
 
@@ -50,7 +52,7 @@ function authorizeEndpoint() {
   return `https://login.microsoftonline.com/${getTenantId()}/oauth2/v2.0/authorize`;
 }
 
-export function buildMicrosoftAuthorizeUrl(redirectUri: string, state: string) {
+export function buildMicrosoftAuthorizeUrl(redirectUri: string, state: string, prompt?: string) {
   const params = new URLSearchParams({
     client_id: getClientId(),
     response_type: 'code',
@@ -58,8 +60,12 @@ export function buildMicrosoftAuthorizeUrl(redirectUri: string, state: string) {
     response_mode: 'query',
     scope: getScopes().join(' '),
     state,
-    prompt: 'select_account',
   });
+  // No prompt (default) lets Microsoft silently SSO an already-signed-in
+  // account — the user never sees the (slow, ~10 s) login page. Kiosk entry
+  // points pass 'select_account' instead: on a shared tablet, silent SSO
+  // would reuse the PREVIOUS staff member's session and send emails as them.
+  if (prompt) params.set('prompt', prompt);
 
   return `${authorizeEndpoint()}?${params.toString()}`;
 }
@@ -89,10 +95,13 @@ export async function exchangeMicrosoftCode(code: string, redirectUri: string) {
 }
 
 export async function fetchMicrosoftUser(accessToken: string): Promise<StaffUser> {
-  const response = await fetch('https://graph.microsoft.com/v1.0/me?$select=id,displayName,mail,userPrincipalName,givenName,surname', {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    cache: 'no-store',
-  });
+  const response = await fetch(
+    'https://graph.microsoft.com/v1.0/me?$select=id,displayName,mail,userPrincipalName,givenName,surname',
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      cache: 'no-store',
+    }
+  );
 
   if (!response.ok) {
     const message = await response.text();
@@ -119,7 +128,9 @@ export async function fetchMicrosoftUser(accessToken: string): Promise<StaffUser
 }
 
 function enforceAllowedDomains(email: string) {
-  const domains = process.env.STAFF_ALLOWED_EMAIL_DOMAINS?.split(',').map((value) => value.trim().toLowerCase()).filter(Boolean);
+  const domains = process.env.STAFF_ALLOWED_EMAIL_DOMAINS?.split(',')
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
   if (!domains || domains.length === 0) return;
 
   const domain = email.split('@')[1]?.toLowerCase();

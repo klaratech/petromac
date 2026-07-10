@@ -17,13 +17,15 @@ export default function StaffIdentityBadge() {
     return qs ? `${path}?${qs}` : path;
   }, [pathname, searchParams]);
 
+  // prompt=select_account: kiosk tablets are shared — always show the
+  // account picker instead of silently reusing the previous member's SSO.
   const loginHref = useMemo(
-    () => `/auth/microsoft/login?returnTo=${encodeURIComponent(returnTo)}`,
-    [returnTo],
+    () => `/auth/microsoft/login?returnTo=${encodeURIComponent(returnTo)}&prompt=select_account`,
+    [returnTo]
   );
   const logoutHref = useMemo(
     () => `/auth/microsoft/logout?returnTo=${encodeURIComponent(returnTo)}`,
-    [returnTo],
+    [returnTo]
   );
 
   if (isLoading || !enabled) {
@@ -40,15 +42,24 @@ export default function StaffIdentityBadge() {
           <p className="text-[11px] uppercase tracking-[0.24em] text-white/60">Staff Mode</p>
           <p className="text-sm font-semibold">{user.name}</p>
           <p className="truncate text-xs text-white/70">{user.email}</p>
-          <a href={logoutHref} className="inline-block pt-1 text-xs font-semibold text-white/80 underline underline-offset-4 hover:text-white">
+          <a
+            href={logoutHref}
+            className="inline-block pt-1 text-xs font-semibold text-white/80 underline underline-offset-4 hover:text-white"
+          >
             Sign out
           </a>
         </div>
       ) : (
         <div className="space-y-2">
           <p className="text-[11px] uppercase tracking-[0.24em] text-white/60">Kiosk Identity</p>
-          <p className="text-sm text-white/85">Not signed in. Staff-assisted send-as-me actions will stay unavailable until Microsoft sign-in is active.</p>
-          <a href={loginHref} className="inline-block text-xs font-semibold text-white underline underline-offset-4 hover:text-white/80">
+          <p className="text-sm text-white/85">
+            Not signed in. Staff-assisted send-as-me actions will stay unavailable until Microsoft
+            sign-in is active.
+          </p>
+          <a
+            href={loginHref}
+            className="inline-block text-xs font-semibold text-white underline underline-offset-4 hover:text-white/80"
+          >
             Sign in with Microsoft
           </a>
         </div>
