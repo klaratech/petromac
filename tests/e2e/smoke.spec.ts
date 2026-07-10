@@ -6,11 +6,19 @@ test('public home loads', async ({ page }) => {
   await expect(page.getByRole('banner')).toBeVisible();
 });
 
-test('catalog viewer loads with a searchable PDF', async ({ page }) => {
+test('catalog browser loads with categories, search, and deep links', async ({ page }) => {
   await page.goto('/catalog');
-  await expect(page.getByRole('heading', { name: /product catalog/i })).toBeVisible();
-  // The pdf.js viewer's search box appears once the document + index load.
-  await expect(page.getByLabel('Search the catalog')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByRole('heading', { name: /product catalogue/i })).toBeVisible();
+  await expect(page.getByLabel('Search the catalog')).toBeVisible();
+
+  // Category deep link renders the right tab and its product cards.
+  await page.goto('/catalog?category=focus-centralisers');
+  await expect(page.getByRole('heading', { name: 'Focus™ Centralisers' })).toBeVisible();
+  await page.getByRole('link', { name: /CX9 — Helix Centraliser/i }).click();
+  await expect(page).toHaveURL(/\/catalog\/focus-centralisers\/cx9/);
+  await expect(page.getByRole('heading', { name: /CX9 — Helix Centraliser/i })).toBeVisible();
+  // Spec tables are real HTML tables on the product page.
+  await expect(page.getByRole('table').first()).toBeVisible();
 });
 
 test('success stories opens as a Track Record overlay', async ({ page }) => {

@@ -49,33 +49,24 @@ sampling/sticking.jpg` are dev placeholders; three cards show them permanently
 - [ ] Thor product video (card commented out until ready); Rocker GLB model
 - [ ] Rocker mechanism force-section schematic (interim crop in place)
 
-## HTML catalog swap (refining at /catalogtest — Jul 2026)
+## HTML catalog (live at /catalog since Jul 2026)
 
-New HTML catalog built from the IDML source lives at `/catalogtest`
-(noindexed); pipeline is `pnpm run data:catalog` (docs/ADMIN.md §2b).
-Once refined, to swap it in:
+The HTML catalog built from the IDML source replaced the pdf.js viewer;
+pipeline is `pnpm run data:catalog` (docs/ADMIN.md §2b). `/catalogtest`
+redirects to `/catalog`. Removed with the swap: `CatalogViewer.tsx`,
+`react-pdf`, `public/pdfjs/`, `search-index.json` + its pipeline step and
+cache rule. Remaining:
 
 - [ ] Content polish pass with design/product (summaries, image picks,
       SWHF configuration figures currently filed under AHFC)
 - [ ] Generate the download/email PDF from `catalog.json` via an HTML print
       template (≤4 MB, tagged text, TOC) instead of shipping the print PDF
-- [ ] Move `/catalogtest` → `/catalog` (keep slugs; redirect old URL params),
-      drop the `robots: noindex`, update sitemap
-- [ ] Remove orphans: pdf.js viewer (`CatalogViewer.tsx`), `react-pdf` dep,
-      `public/pdfjs/`, catalog compress/linearize steps in the flipbooks
-      pipeline, `search-index.json`, the `/pdfjs/` cache rule in
-      next.config.ts, and the catalog-viewer a11y backlog item below
-- [ ] Full docs pass (CLAUDE.md, ARCHITECTURE, FLIPBOOKS, REPO_STRUCTURE)
 
 ## Backlog
 
 - [ ] MapRenderer: split base path generation from style updates so filter
       clicks restyle instead of rebuilding all ~244 paths (from the Jul 2026
       audit; deferred — delicate component, clicks already debounced)
-- [ ] Catalog viewer a11y: move keyboard focus to the target page when
-      jumping between search matches (screen-reader users currently only get
-      the visual scroll) — from the Jul 2026 catalog audit
-
 - [ ] Full SEO audit remainder (structured data / JSON-LD, performance scores)
 - [ ] Kiosk CH lane "Other" experience (Coming-soon placeholder; build last)
 - [ ] Longer term: job history off Excel into a database-backed source

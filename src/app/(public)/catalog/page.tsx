@@ -1,70 +1,73 @@
-'use client';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import CatalogBrowser from '@/components/public/catalog/CatalogBrowser';
+import { buildCardModels, buildSearchIndex, catalog, categories } from '@/features/catalog/content';
 
-import dynamic from 'next/dynamic';
-import { preload } from 'react-dom';
-import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
-import { FLIPBOOK_KEYS, getFlipbookBasePath } from '@/features/flipbooks';
+export const metadata: Metadata = {
+  title: 'Product Catalogue | Petromac',
+  description:
+    'Petromac equipment catalogue — Wireline Express™ tool taxis, guides and holefinders, Focus™ precision centralisers and well intervention accessories.',
+};
 
-// react-pdf (pdf.js) is ~350 KB gzipped — keep it out of every other page's
-// bundle and off the server (pdf.js is browser-only).
-const CatalogViewer = dynamic(() => import('@/components/public/catalog/CatalogViewer'), {
-  ssr: false,
-  loading: () => (
-    <div className="min-h-[700px] flex items-center justify-center text-gray-500" role="status">
-      Loading catalog…
-    </div>
-  ),
-});
-
-export default function CatalogPage() {
-  // The viewer chunk, pdf.js worker, PDF, and search index used to load as
-  // a serial chain (each discovered by the previous). Preload the three big
-  // fetches so they download in parallel with the viewer chunk.
-  preload('/flipbooks/catalog/petromac-product-catalog.pdf', { as: 'fetch' });
-  preload('/pdfjs/pdf.worker.min.mjs', { as: 'script' });
-  preload('/flipbooks/catalog/search-index.json', { as: 'fetch' });
+export default function CatalogTestPage() {
+  // Slim props built at compile time — the client browser never sees the
+  // full catalog.json.
+  const browserCategories = categories.map((c) => ({
+    slug: c.slug,
+    name: c.name,
+    tagline: c.tagline,
+    intro: c.intro,
+    groups: c.groups,
+  }));
+  const cards = buildCardModels();
+  const searchEntries = buildSearchIndex();
 
   return (
-    <main className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Product Catalog</h1>
-            <p className="text-gray-600 mt-1">
-              Browse, search, and follow links through our complete catalog of wireline logging
-              devices and solutions
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <EmailPdfButton
-              pdfUrl={`${getFlipbookBasePath(FLIPBOOK_KEYS.catalog)}/petromac-product-catalog.pdf`}
-              pdfType="catalog"
-            />
-            <a
-              href={`${getFlipbookBasePath(FLIPBOOK_KEYS.catalog)}/petromac-product-catalog.pdf`}
-              download
-              className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20 ring-1 ring-blue-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
-            >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"
-                />
-              </svg>
-              Download PDF
-            </a>
-          </div>
+    <div className="bg-white">
+      {/* Compact header */}
+      <section className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
+          <p className="text-sm font-semibold uppercase tracking-wider text-brand mb-2">
+            {catalog.edition} Edition
+          </p>
+          <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 mb-3">
+            Product Catalogue
+          </h1>
+          <p className="text-slate-600 max-w-3xl">{catalog.about.intro[0]}</p>
         </div>
-        <CatalogViewer />
+      </section>
+
+      {/* Sidebar + content workspace */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <CatalogBrowser
+          categories={browserCategories}
+          cards={cards}
+          searchEntries={searchEntries}
+        />
       </div>
-    </main>
+
+      {/* Footer strip */}
+      <section className="bg-slate-50 border-t border-slate-100 mt-8">
+        <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <p className="text-sm text-slate-500">
+            {catalog.about.patents}{' '}
+            <a
+              href={catalog.about.patentsUrl}
+              className="underline hover:text-brand"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View patents
+            </a>
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand/90 transition-colors whitespace-nowrap"
+          >
+            Contact our regional managers
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }

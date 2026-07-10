@@ -20,7 +20,7 @@ export function productsInCategory(category: string): CatalogProduct[] {
   return allProducts.filter((p) => p.category === category);
 }
 
-export function productHref(p: CatalogProduct, base = '/catalogtest'): string {
+export function productHref(p: CatalogProduct, base = '/catalog'): string {
   return `${base}/${p.category}/${p.slug}`;
 }
 
@@ -50,7 +50,7 @@ export interface SearchEntry {
 
 /** Compact client-side search index — built once at compile time on the
  *  server and passed to the search component as a prop. */
-export function buildSearchIndex(base = '/catalogtest'): SearchEntry[] {
+export function buildSearchIndex(base = '/catalog'): SearchEntry[] {
   return allProducts.map((p) => {
     const categoryName = getCategory(p.category)?.name ?? p.category;
     const haystack = [
@@ -169,7 +169,7 @@ function keySpecTags(p: CatalogProduct): string[] {
   return tags.slice(0, 3);
 }
 
-export function buildCardModels(base = '/catalogtest'): ProductCardModel[] {
+export function buildCardModels(base = '/catalog'): ProductCardModel[] {
   return allProducts.map((p) => {
     const hero = p.images.find((i) => i.role === 'gallery') ?? p.images[0] ?? null;
     const temp = spec(p, 'temperature rating');

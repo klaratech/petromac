@@ -85,11 +85,11 @@ async function validateFlipbook(docKey: string, requireTags: boolean) {
 }
 
 async function validateCatalogPdf() {
-  // The catalog is a PDF document served through the pdf.js viewer, not an
-  // image flipbook — validate its artifacts, not a page manifest.
+  // The catalog page is HTML (built from catalog.json); the PDF remains the
+  // download/email artifact — validate it exists.
   const baseDir = path.join(process.cwd(), 'public', 'flipbooks', 'catalog');
   const errors: string[] = [];
-  for (const file of ['petromac-product-catalog.pdf', 'search-index.json']) {
+  for (const file of ['petromac-product-catalog.pdf']) {
     if (!(await fileExists(path.join(baseDir, file)))) {
       errors.push(`[catalog] ${file} not found`);
     }

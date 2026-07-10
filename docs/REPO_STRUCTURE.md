@@ -9,7 +9,7 @@ The repository contains:
 1. **Public Website** - Public-facing marketing site at `/`
 2. **Intranet Portal** - Internal portal at `/intranet`
 3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
-4. **Document Viewers** - Searchable pdf.js viewer for the catalog; interactive image flipbook for success stories
+4. **Documents** - HTML catalog at `/catalog` (generated from the InDesign source); interactive image flipbook for success stories
 5. **Backend Service** - FastAPI service for contact email, PDFs, and data passthrough endpoints
 
 ## Directory Structure
@@ -25,7 +25,8 @@ website/
 │   │   ├── (public)/                     # 🌐 Public shell routes
 │   │   │   ├── page.tsx                  # Homepage
 │   │   │   ├── about/                    # About pages
-│   │   │   ├── catalog/                  # Catalog (pdf.js viewer)
+│   │   │   ├── catalog/                  # HTML catalog (sidebar workspace)
+│   │   │   │   └── [category]/[slug]/    # SSG product pages
 │   │   │   ├── track-record/             # Global deployment map
 │   │   │   ├── simulation/               # Athena planning/simulation page
 │   │   │   ├── contact/                  # Contact page (submits to backend API)
@@ -49,10 +50,13 @@ website/
 │   │   │   ├── components/               # Filters + flipbook UI
 │   │   │   └── services/                 # CSV parsing/filtering
 │   │   ├── flipbooks/                    # Flipbook manifest/services
-│   │   └── catalog/                      # Product catalog config + device specs
+│   │   └── catalog/                      # Product catalog
+│   │       ├── content/                  # HTML catalog content model (catalog.json + types + accessors)
+│   │       └── deviceSpecs.ts            # Kiosk CH device specs
 │   ├── components/
 │   │   ├── public/                       # Public website components
-│   │   │   └── home/                     # Homepage sections
+│   │   │   ├── home/                     # Homepage sections
+│   │   │   └── catalog/                  # HTML catalog UI (browser, cards, search, spec tables)
 │   │   ├── shared/                       # Shared layout components
 │   │   │   └── pdf/                      # Shared PDF components
 │   │   ├── ui/                           # Shared UI primitives
@@ -74,15 +78,20 @@ website/
 │   │   ├── catalog/
 │   │   └── success-stories/
 │   ├── images/                           # Images and icons
+│   │   └── catalog/                      # Generated HTML-catalog product images (WebP/SVG)
 │   ├── videos/                           # Video files
 │   └── models/                           # 3D models (.glb files)
 ├── sources/                              # 🚫 GITIGNORED content drop zone
 │   ├── operations/                       # Incoming job-history spreadsheets
-│   ├── catalog/                          # Incoming catalog PDF
+│   ├── catalog/                          # Incoming catalog: PDF and/or InDesign package (.idml + Links/)
 │   ├── success-stories/                  # Incoming PDF + tags workbook
 │   └── _archive/                         # Consumed inputs, date-stamped
 ├── scripts/
 │   ├── python/                           # Python data processing
+│   │   ├── extract_catalog_idml.py       # HTML catalog: IDML → raw spread dump
+│   │   ├── build_catalog_content.py      # HTML catalog: raw + config → catalog.json + images
+│   │   ├── update_catalog.py             # HTML catalog: one-command wrapper (pnpm run data:catalog)
+│   │   └── catalog_config.json           # Curated product↔spread mapping + text fixes
 │   └── node/                             # Node.js utilities
 ├── .github/
 │   └── workflows/
@@ -113,6 +122,7 @@ website/
 ## Where things are documented
 
 - Catalog & success-stories build → [FLIPBOOKS.md](FLIPBOOKS.md)
+- HTML catalog pipeline (IDML → catalog.json) → [ADMIN.md](ADMIN.md) §2b
 - Data conventions (three tiers, fetching rules) → [DEVELOPMENT.md](DEVELOPMENT.md)
 - Kiosk service worker & offline priming → [KIOSK.md](KIOSK.md)
 - Content update recipes → [ADMIN.md](ADMIN.md)

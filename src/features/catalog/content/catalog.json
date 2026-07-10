@@ -67,19 +67,11 @@
       "slug": "guides-holefinders",
       "name": "Guides & Holefinders",
       "productLine": "wireline-express",
-      "tagline": "Universal hole finders that navigate ledges, washouts and restrictions without losing momentum.",
+      "tagline": "Hole finders and guides that navigate ledges, washouts and restrictions — the universal Pathfinder plus fixed angle guides for SLB, Halliburton and Baker Hughes tools.",
       "intro": [
         "Petromac offers a range of holefinders to fit various logging tools. These guides enable passing through washouts and ledges seamlessly and without losing momentum."
       ],
-      "groups": ["Universal Hole Finder"]
-    },
-    {
-      "slug": "fixed-angle-guides",
-      "name": "Fixed Angle Guides",
-      "productLine": "wireline-express",
-      "tagline": "Tool-specific guides with fixed or adjustable nose angles for SLB, Halliburton and Baker Hughes logging strings.",
-      "intro": [],
-      "groups": ["For SLB Tools", "For Halliburton Tools", "For Baker Hughes Tools"]
+      "groups": ["Pathfinder", "Fixed Angle Guides"]
     },
     {
       "slug": "focus-centralisers",
@@ -1521,7 +1513,7 @@
     {
       "slug": "pathfinder",
       "category": "guides-holefinders",
-      "group": "Universal Hole Finder",
+      "group": "Pathfinder",
       "name": "Pathfinder",
       "models": ["PathFinder"],
       "summary": "Carbon-fibre universal hole finder with integrated flex joint and swivel — navigates any step ledge height.",
@@ -1633,7 +1625,7 @@
     {
       "slug": "pathfinder-ht",
       "category": "guides-holefinders",
-      "group": "Universal Hole Finder",
+      "group": "Pathfinder",
       "name": "Pathfinder HT",
       "models": ["PathFinder HT", "PathFinder HT (Titanium)"],
       "summary": "High-temperature Pathfinder in stainless or titanium with dual leaf bowspring centralizer — rated to 400°F.",
@@ -1745,8 +1737,8 @@
     },
     {
       "slug": "ahfc",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Adjustable Angle Guide AHFC",
       "models": ["AHFC"],
       "summary": "Adjustable nose angle (3, 4, 6 or 9°) to suit hole size and standoff — attaches to any through-wired tool.",
@@ -1879,8 +1871,8 @@
     },
     {
       "slug": "hf-ait-zait",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide for AIT & ZAIT",
       "models": ["HF6-AIT/ZAIT", "HF4-AIT/ZAIT"],
       "summary": "Carbon-fibre induction guides for the bottom of AIT/ZAIT strings — no electrical interference.",
@@ -1981,8 +1973,8 @@
     },
     {
       "slug": "shf-ait",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide SHF-AIT",
       "models": ["SHF-AIT"],
       "summary": "Short guide for AIT/ZAIT designed for the greatest clearance possible in small holes (6-1/8” and smaller).",
@@ -2077,8 +2069,8 @@
     },
     {
       "slug": "hf-qait",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide QAIT",
       "models": ["HF12-QAIT", "HF9-QAIT"],
       "summary": "Hole finders for QAIT tools in high-temperature and slim-hole applications — rated to 400°F.",
@@ -2177,8 +2169,8 @@
     },
     {
       "slug": "hf-fmi",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide FMI",
       "models": ["HF5-FMI", "HF4-FMI"],
       "summary": "Ultra-lightweight, virtually buoyant guide for the Formation Micro-Imager — no interference with pad contact.",
@@ -2280,8 +2272,8 @@
     },
     {
       "slug": "shf-fmi",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide SHF-FMI",
       "models": ["SHF-FMI"],
       "summary": "Titanium short guide for the FMI with the greatest clearance possible in small holes — 2.2 lbs.",
@@ -2376,8 +2368,8 @@
     },
     {
       "slug": "hf8-msct",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide HF8-MSCT",
       "models": ["HF8-MSCT"],
       "summary": "Guide for sidewall coring tools (XL-Rock, MSCT) — orients the coring tool for optimal core recovery.",
@@ -2474,8 +2466,8 @@
     },
     {
       "slug": "hf6-mdt",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide HF6-MDT",
       "models": ["HF6-MDT"],
       "summary": "Guide for formation testing strings with a fixed angle that does not interfere with probe setting.",
@@ -2574,8 +2566,8 @@
     },
     {
       "slug": "hf9-bn6",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide HF9-BN6",
       "models": ["HF9-BN6"],
       "summary": "Short 9° guide for small holes, used in combination with the in-line taxis (TTC-IL6).",
@@ -2674,8 +2666,8 @@
     },
     {
       "slug": "hf9j",
-      "category": "fixed-angle-guides",
-      "group": "For Halliburton Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Hole Finder Guide J-Latch HF9J",
       "models": ["HF9J"],
       "summary": "Fixed-angle hole finder for the J-Latch connection at the bottom of Halliburton strings.",
@@ -2774,8 +2766,8 @@
     },
     {
       "slug": "hf9-acrt",
-      "category": "fixed-angle-guides",
-      "group": "For Halliburton Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Hole Finder Guide Induction HF9-ACRT",
       "models": ["HF9-ACRT"],
       "summary": "Fixed-angle hole finder for Halliburton induction strings with aluminium nose.",
@@ -2874,8 +2866,8 @@
     },
     {
       "slug": "hf-b-wts",
-      "category": "fixed-angle-guides",
-      "group": "For Baker Hughes Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Hole Finder Guide WTS Connection",
       "models": ["HF9-B", "HF6-B"],
       "summary": "Hole finder for Baker Hughes through-wired tools with WTS connection — 9° or 6° nose, adjustable azimuth.",

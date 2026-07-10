@@ -106,34 +106,13 @@ def linearize_pdf(source_pdf: Path, out_path: Path) -> None:
               "(e.g. `brew install qpdf`) so the viewer can stream pages.")
 
 
-def build_search_index(source_pdf: Path, out_path: Path) -> int:
-    """Extract per-page text into a small JSON the viewer fetches for search.
-
-    The viewer searches this ~50 KB index instead of scanning the PDF in the
-    browser — reading all pages' text client-side would force the whole file
-    to download, defeating range-request streaming.
-    """
-    reader = PdfReader(str(source_pdf))
-    pages = []
-    for pg in reader.pages:
-        text = re.sub(r"\s+", " ", (pg.extract_text() or "")).strip()
-        pages.append(text)
-    payload = {"pageCount": len(pages), "pages": pages}
-    out_path.write_text(
-        json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
-        encoding="utf-8",
-    )
-    size_kb = out_path.stat().st_size // 1024
-    print(f"   search-index.json: {len(pages)} pages, {size_kb} KB")
-    return len(pages)
-
-
 def build_pdf_document(args) -> None:
-    """PDF-only build (catalog): ONE compressed, linearized PDF + search index.
+    """PDF-only build (catalog): ONE compressed, linearized PDF.
 
-    A single <4 MB artifact serves the pdf.js viewer, the Download button,
-    and the emailed attachment — no separate email.pdf. The full-resolution
-    master stays archived in sources/_archive/.
+    A single <4 MB artifact serves the Download button and the emailed
+    attachment (the browsing surface is the HTML catalog, built separately
+    via `pnpm run data:catalog`). The full-resolution master stays archived
+    in sources/_archive/.
     """
     source_pdf = Path(args.input)
     if not source_pdf.exists():
@@ -149,6 +128,10 @@ def build_pdf_document(args) -> None:
     stale_pages = out_dir / "pages"
     stale_manifest = out_dir / "manifest.json"
     stale_email = out_dir / "email.pdf"
+    stale_search = out_dir / "search-index.json"
+    if stale_search.exists():
+        stale_search.unlink()
+        print("   removed stale search-index.json (pdf.js viewer retired)")
     for old_pdf in out_dir.glob("*.pdf"):
         if old_pdf.name not in (pdf_name, "email.pdf"):
             old_pdf.unlink()
@@ -176,7 +159,6 @@ def build_pdf_document(args) -> None:
     finally:
         compressed.unlink(missing_ok=True)
 
-    build_search_index(out_dir / pdf_name, out_dir / "search-index.json")
     print(f"✅ Built PDF document for {args.title} at {out_dir}")
 
 

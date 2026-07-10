@@ -18,10 +18,11 @@ kiosk offline-asset list, and archives inputs to `sources/_archive/`.
 **Catalog** → `public/flipbooks/catalog/`
 
 - `petromac-product-catalog.pdf` — compressed to <4 MB (Ghostscript) +
-  linearized (qpdf). This ONE file serves the pdf.js viewer, the Download
-  button, and email. Descriptive filename on purpose: it's what users see
-  when they download.
-- `search-index.json` — per-page text for the viewer's search box.
+  linearized (qpdf). This ONE file serves the Download button and email
+  attachments. Descriptive filename on purpose: it's what users see when
+  they download. (The browsing surface at `/catalog` is the HTML catalog,
+  built separately — `pnpm run data:catalog`, see [ADMIN.md](ADMIN.md) §2b.
+  The pdf.js viewer and its `search-index.json` were retired Jul 2026.)
 
 **Success stories** → `public/flipbooks/success-stories/`
 

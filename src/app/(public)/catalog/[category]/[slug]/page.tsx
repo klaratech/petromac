@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import SpecTableView from '@/components/public/catalogtest/SpecTableView';
+import SpecTableView from '@/components/public/catalog/SpecTableView';
 import {
   adjacentProducts,
   allProducts,
@@ -75,14 +75,14 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
         <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-400">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
-              <Link href="/catalogtest" className="hover:text-brand transition-colors">
+              <Link href="/catalog" className="hover:text-brand transition-colors">
                 Catalogue
               </Link>
             </li>
             <li aria-hidden="true">/</li>
             <li>
               <Link
-                href={`/catalogtest?category=${category.slug}`}
+                href={`/catalog?category=${category.slug}`}
                 className="hover:text-brand transition-colors"
               >
                 {category.name}

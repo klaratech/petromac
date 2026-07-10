@@ -53,6 +53,13 @@ const nextConfig: NextConfig = {
         destination: '/success-stories/flipbook',
         permanent: true,
       },
+      {
+        // The HTML catalog was refined at /catalogtest before replacing
+        // /catalog (Jul 2026) — keep review-era bookmarks working.
+        source: '/catalogtest/:path*',
+        destination: '/catalog/:path*',
+        permanent: true,
+      },
     ];
   },
   images: {
@@ -94,7 +101,6 @@ const nextConfig: NextConfig = {
       cacheRule('/videos/:path*', quarterlyAssets),
       cacheRule('/models/:path*', quarterlyAssets), // kiosk GLBs
       cacheRule('/draco/:path*', quarterlyAssets), // Draco decoder (changes with three.js upgrades)
-      cacheRule('/pdfjs/:path*', quarterlyAssets), // pdf.js worker (changes with react-pdf upgrades)
       cacheRule('/icons/:path*', quarterlyAssets),
       // world-50m.json is static reference geometry (last changed May 2026,
       // with a filename change) — safe to treat like the quarterly bucket.

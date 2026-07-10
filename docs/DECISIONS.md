@@ -5,6 +5,22 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Jul 2026 — HTML catalog replaced the pdf.js viewer at /catalog
+
+**Decision:** after a day of refinement at `/catalogtest`, the HTML catalog
+took over `/catalog` outright (10 Jul 2026). The pdf.js viewer, `react-pdf`
+(~350 KB gz), `public/pdfjs/` and `search-index.json` were removed; the
+compressed print PDF remains only as the download/email artifact.
+`/catalogtest/*` 308-redirects to `/catalog/*`; all 32 product pages are SSG
+and in the sitemap. Category tree diverges from print deliberately: Fixed
+Angle Guides is a group inside Guides & Holefinders (four categories total)
+— per Rajesh, they're one section in practice.
+**Why not keep both:** two catalog surfaces = two content update paths; the
+viewer's UX problems (slow first paint, broken search jumps, no clickable
+links) were the reason for the rebuild, and the HTML catalog covers every
+viewer capability except literal print layout, which the downloadable PDF
+still provides.
+
 ## Jul 2026 — HTML catalog from a curated content model (not a live IDML scraper)
 
 **Decision:** `/catalog` is being rebuilt as a native HTML catalog (refining

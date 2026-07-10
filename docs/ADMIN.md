@@ -38,24 +38,22 @@ numbers shown publicly need to be current.
 
 ---
 
-## 2. Catalog & Success Stories documents
+## 2. Catalog PDF & Success Stories documents
 
-The **catalog** at `/catalog` (in-browser pdf.js viewer) and the **success
-stories** flipbook at `/success-stories/flipbook`. Generated bundles live in
-`public/flipbooks/{catalog,success-stories}/`.
+The **catalog PDF** (the download/email artifact behind the `/catalog` page's
+Download and Email buttons — the page itself is the HTML catalog, see §2b)
+and the **success stories** flipbook at `/success-stories/flipbook`.
+Generated bundles live in `public/flipbooks/{catalog,success-stories}/`.
 
-- **Catalog** — served as the PDF itself through a searchable pdf.js viewer, so
-  updating it is just a PDF swap. The pipeline ships the linearized
-  `petromac-product-catalog.pdf`,
-  compressed to <4 MB on ingest — the same file serves the viewer, downloads,
-  and email — and `search-index.json` (per-page text for search).
-  No page images. Keep the source PDF's real text + links intact (don't flatten
-  to images) — that's what makes it searchable and clickable.
+- **Catalog PDF** — the pipeline ships one linearized
+  `petromac-product-catalog.pdf`, compressed to <4 MB on ingest, for
+  downloads and emailed attachments. Keep the source PDF's real text + links
+  intact (don't flatten to images).
 - **Success stories** — an image flipbook (WebP pages) with the tags-driven
   filter system; needs its summary `.xlsx` alongside the PDF.
 
-**When:** the catalog PDF is revised, or the Success Stories PDF / summary
-changes.
+**When:** the catalog print PDF is revised, or the Success Stories PDF /
+summary changes.
 
 **Steps:**
 
@@ -65,7 +63,7 @@ changes.
 2. Run `pnpm run data:flipbooks` (needs Ghostscript for PDF compression:
    `brew install ghostscript`; and qpdf to linearize the catalog:
    `brew install qpdf`). The pipeline builds whichever documents have a new PDF
-   (catalog → one compressed+linearized PDF + search index; success stories →
+   (catalog → one compressed+linearized PDF; success stories →
    WebP pages + a compressed `email.pdf`), re-syncs the kiosk offline-assets list,
    validates the bundles, and archives the inputs into `sources/_archive/`.
 3. Commit `public/flipbooks/**` and push.
@@ -79,12 +77,30 @@ operations together.
 
 ---
 
-## 2b. HTML catalog (new — in refinement at `/catalogtest`)
+## 2b. HTML catalog (`/catalog` page content)
 
-The catalog is being rebuilt as a native HTML catalog (product pages, real
-spec tables, instant search) generated from the **InDesign source**, not the
-print PDF. It lives at `/catalogtest` until it replaces `/catalog`; the
-pdf.js viewer above stays live until then.
+The `/catalog` page is a native HTML catalog (product pages, real spec
+tables, instant search) generated from the **InDesign source**, not the
+print PDF. It replaced the pdf.js viewer in Jul 2026 (`/catalogtest`, its
+refinement URL, redirects here).
+
+The UI is a sidebar workspace: categories on the left (with product counts,
+`?category=` deep links), the active category's product cards on the right,
+SSG product pages at `/catalog/<category>/<slug>`. Category tree note: the
+print catalog's "Fixed Angle Guides" section lives INSIDE Guides &
+Holefinders as a group (four sidebar categories total) — that mapping is in
+`catalog_config.json`, not the IDML. Two things content editors get for
+free:
+
+- **Card badges & spec tags** (e.g. "400°F rated", `Hole 8”–17.5”`) are
+  derived automatically from each product's Technical Specifications table —
+  fix a spec in the config and the card follows. Where models within one
+  product genuinely differ on a value, the tag is omitted rather than
+  showing one model's number.
+- **Email PDF** in the sidebar sends the catalog PDF as the signed-in staff
+  member (Graph, lands in their Sent Items) or from `info@` for everyone
+  else — no content work involved; it attaches the same
+  `petromac-product-catalog.pdf` as the Download link.
 
 **Source of truth:** the InDesign package — the `.idml` export **plus its
 `Links` folder** (original image assets). The `.indd` itself isn't used.

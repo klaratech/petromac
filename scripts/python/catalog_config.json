@@ -90,19 +90,11 @@
       "slug": "guides-holefinders",
       "name": "Guides & Holefinders",
       "productLine": "wireline-express",
-      "tagline": "Universal hole finders that navigate ledges, washouts and restrictions without losing momentum.",
+      "tagline": "Hole finders and guides that navigate ledges, washouts and restrictions — the universal Pathfinder plus fixed angle guides for SLB, Halliburton and Baker Hughes tools.",
       "intro": [
         "Petromac offers a range of holefinders to fit various logging tools. These guides enable passing through washouts and ledges seamlessly and without losing momentum."
       ],
-      "groups": ["Universal Hole Finder"]
-    },
-    {
-      "slug": "fixed-angle-guides",
-      "name": "Fixed Angle Guides",
-      "productLine": "wireline-express",
-      "tagline": "Tool-specific guides with fixed or adjustable nose angles for SLB, Halliburton and Baker Hughes logging strings.",
-      "intro": [],
-      "groups": ["For SLB Tools", "For Halliburton Tools", "For Baker Hughes Tools"]
+      "groups": ["Pathfinder", "Fixed Angle Guides"]
     },
     {
       "slug": "focus-centralisers",
@@ -248,7 +240,10 @@
         "Robust design. Very low maintenance requirement."
       ],
       "images": [
-        { "file": "TTB-X715_ISO.775@0.3x.png", "alt": "TTB-715 conveyance tool taxi" },
+        {
+          "file": "TTB-X715_ISO.775@0.3x.png",
+          "alt": "TTB-715 conveyance tool taxi"
+        },
         {
           "file": "TTB-715_standoff@0.5x.png",
           "alt": "TTB-715 standoff diagram",
@@ -314,7 +309,10 @@
       "spreads": [20, 21, 22],
       "summary": "Updated formation tester taxi with 5-¼” bore for ultra-high-pressure 30 kpsi tools.",
       "images": [
-        { "file": "TTB-S85_S75U.56.png", "alt": "TTB-S75U and TTB-S85 formation tester taxis" },
+        {
+          "file": "TTB-S85_S75U.56.png",
+          "alt": "TTB-S75U and TTB-S85 formation tester taxis"
+        },
         {
           "file": "TTB S 75_standoff@0.33x_Trans.png",
           "alt": "TTB-S75U standoff for a 4-3/4” tool",
@@ -338,7 +336,10 @@
       "spreads": [23, 24],
       "summary": "In-line orienting taxis for small wellbores (6.0”+) — make up directly to the tool string, no adapters.",
       "images": [
-        { "file": "TTC-IL6_ISO.858.png", "alt": "TTC-IL6O in-line orienting tool taxi" },
+        {
+          "file": "TTC-IL6_ISO.858.png",
+          "alt": "TTC-IL6O in-line orienting tool taxi"
+        },
         {
           "file": "TTC-IL6 Standoff@0.25x_trans.png",
           "alt": "TTC-IL6O standoff diagram",
@@ -356,7 +357,10 @@
       "spreads": [25, 26],
       "summary": "In-line conveyance taxi for small wellbores — greater standoff to combine larger-OD tools in the string.",
       "images": [
-        { "file": "TTB-IL6C.153.png", "alt": "TTB-IL6C in-line conveyance tool taxi" },
+        {
+          "file": "TTB-IL6C.153.png",
+          "alt": "TTB-IL6C in-line conveyance tool taxi"
+        },
         {
           "file": "Standoff TTB IL6C@0.25x.png",
           "alt": "TTB-IL6C standoff diagram",
@@ -368,34 +372,50 @@
     {
       "slug": "pathfinder",
       "category": "guides-holefinders",
-      "group": "Universal Hole Finder",
+      "group": "Pathfinder",
       "name": "Pathfinder",
       "models": ["PathFinder"],
       "spreads": [27],
       "summary": "Carbon-fibre universal hole finder with integrated flex joint and swivel — navigates any step ledge height.",
-      "images": [{ "file": "pathfinder.80.png", "alt": "Pathfinder universal hole finder" }]
+      "images": [
+        {
+          "file": "pathfinder.80.png",
+          "alt": "Pathfinder universal hole finder"
+        }
+      ]
     },
     {
       "slug": "pathfinder-ht",
       "category": "guides-holefinders",
-      "group": "Universal Hole Finder",
+      "group": "Pathfinder",
       "name": "Pathfinder HT",
       "models": ["PathFinder HT", "PathFinder HT (Titanium)"],
       "spreads": [28],
       "summary": "High-temperature Pathfinder in stainless or titanium with dual leaf bowspring centralizer — rated to 400°F.",
-      "images": [{ "file": "Pathfinder HT.128.png", "alt": "Pathfinder HT hole finder" }]
+      "images": [
+        {
+          "file": "Pathfinder HT.128.png",
+          "alt": "Pathfinder HT hole finder"
+        }
+      ]
     },
     {
       "slug": "ahfc",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Adjustable Angle Guide AHFC",
       "models": ["AHFC"],
       "spreads": [29, 30, 31],
       "summary": "Adjustable nose angle (3, 4, 6 or 9°) to suit hole size and standoff — attaches to any through-wired tool.",
       "images": [
-        { "file": "AHFC_shadow.867.png", "alt": "AHFC adjustable angle guide" },
-        { "file": "AHFC_9deg_sticker_catalog.png", "alt": "AHFC guide set to 9 degrees" },
+        {
+          "file": "AHFC_shadow.867.png",
+          "alt": "AHFC adjustable angle guide"
+        },
+        {
+          "file": "AHFC_9deg_sticker_catalog.png",
+          "alt": "AHFC guide set to 9 degrees"
+        },
         {
           "file": "AHFC_2007_3-4-6-9deg_dim_catalog_x0.20.png",
           "alt": "AHFC dimensions at 3, 4, 6 and 9 degree settings",
@@ -418,115 +438,168 @@
     },
     {
       "slug": "hf-ait-zait",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide for AIT & ZAIT",
       "models": ["HF6-AIT/ZAIT", "HF4-AIT/ZAIT"],
       "spreads": [32],
       "summary": "Carbon-fibre induction guides for the bottom of AIT/ZAIT strings — no electrical interference.",
-      "images": [{ "file": "HF6-AIT_shadow.868.png", "alt": "HF6-AIT fixed angle guide" }]
+      "images": [
+        {
+          "file": "HF6-AIT_shadow.868.png",
+          "alt": "HF6-AIT fixed angle guide"
+        }
+      ]
     },
     {
       "slug": "shf-ait",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide SHF-AIT",
       "models": ["SHF-AIT"],
       "spreads": [33],
       "summary": "Short guide for AIT/ZAIT designed for the greatest clearance possible in small holes (6-1/8” and smaller).",
-      "images": [{ "file": "SHF-AIT.782.png", "alt": "SHF-AIT fixed angle guide" }]
+      "images": [
+        {
+          "file": "SHF-AIT.782.png",
+          "alt": "SHF-AIT fixed angle guide"
+        }
+      ]
     },
     {
       "slug": "hf-qait",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide QAIT",
       "models": ["HF12-QAIT", "HF9-QAIT"],
       "spreads": [34],
       "summary": "Hole finders for QAIT tools in high-temperature and slim-hole applications — rated to 400°F.",
-      "images": [{ "file": "HF9-QAIT.780.png", "alt": "HF9-QAIT fixed angle guide" }]
+      "images": [
+        {
+          "file": "HF9-QAIT.780.png",
+          "alt": "HF9-QAIT fixed angle guide"
+        }
+      ]
     },
     {
       "slug": "hf-fmi",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide FMI",
       "models": ["HF5-FMI", "HF4-FMI"],
       "spreads": [35],
       "summary": "Ultra-lightweight, virtually buoyant guide for the Formation Micro-Imager — no interference with pad contact.",
-      "images": [{ "file": "HF5-FMI.869.png", "alt": "HF5-FMI fixed angle guide" }]
+      "images": [
+        {
+          "file": "HF5-FMI.869.png",
+          "alt": "HF5-FMI fixed angle guide"
+        }
+      ]
     },
     {
       "slug": "shf-fmi",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide SHF-FMI",
       "models": ["SHF-FMI"],
       "spreads": [36],
       "summary": "Titanium short guide for the FMI with the greatest clearance possible in small holes — 2.2 lbs.",
-      "images": [{ "file": "SHF-FMI_shadow.870.png", "alt": "SHF-FMI fixed angle guide" }]
+      "images": [
+        {
+          "file": "SHF-FMI_shadow.870.png",
+          "alt": "SHF-FMI fixed angle guide"
+        }
+      ]
     },
     {
       "slug": "hf8-msct",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide HF8-MSCT",
       "models": ["HF8-MSCT"],
       "spreads": [37],
       "summary": "Guide for sidewall coring tools (XL-Rock, MSCT) — orients the coring tool for optimal core recovery.",
-      "images": [{ "file": "HF8-MSCT_shadow.871.png", "alt": "HF8-MSCT fixed angle guide" }]
+      "images": [
+        {
+          "file": "HF8-MSCT_shadow.871.png",
+          "alt": "HF8-MSCT fixed angle guide"
+        }
+      ]
     },
     {
       "slug": "hf6-mdt",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide HF6-MDT",
       "models": ["HF6-MDT"],
       "spreads": [38],
       "summary": "Guide for formation testing strings with a fixed angle that does not interfere with probe setting.",
-      "images": [{ "file": "HF6-MDT.872.png", "alt": "HF6-MDT fixed angle guide" }]
+      "images": [
+        {
+          "file": "HF6-MDT.872.png",
+          "alt": "HF6-MDT fixed angle guide"
+        }
+      ]
     },
     {
       "slug": "hf9-bn6",
-      "category": "fixed-angle-guides",
-      "group": "For SLB Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Fixed Angle Guide HF9-BN6",
       "models": ["HF9-BN6"],
       "spreads": [39],
       "summary": "Short 9° guide for small holes, used in combination with the in-line taxis (TTC-IL6).",
-      "images": [{ "file": "HF9-BN6_shadow.873.png", "alt": "HF9-BN6 fixed angle guide" }]
+      "images": [
+        {
+          "file": "HF9-BN6_shadow.873.png",
+          "alt": "HF9-BN6 fixed angle guide"
+        }
+      ]
     },
     {
       "slug": "hf9j",
-      "category": "fixed-angle-guides",
-      "group": "For Halliburton Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Hole Finder Guide J-Latch HF9J",
       "models": ["HF9J"],
       "spreads": [40],
       "summary": "Fixed-angle hole finder for the J-Latch connection at the bottom of Halliburton strings.",
       "images": [
-        { "file": "HFJ9_shadow.874.png", "alt": "HF9J hole finder guide with J-Latch connection" }
+        {
+          "file": "HFJ9_shadow.874.png",
+          "alt": "HF9J hole finder guide with J-Latch connection"
+        }
       ]
     },
     {
       "slug": "hf9-acrt",
-      "category": "fixed-angle-guides",
-      "group": "For Halliburton Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Hole Finder Guide Induction HF9-ACRT",
       "models": ["HF9-ACRT"],
       "spreads": [41],
       "summary": "Fixed-angle hole finder for Halliburton induction strings with aluminium nose.",
-      "images": [{ "file": "HF9-ACRT_shadow.875.png", "alt": "HF9-ACRT hole finder guide" }]
+      "images": [
+        {
+          "file": "HF9-ACRT_shadow.875.png",
+          "alt": "HF9-ACRT hole finder guide"
+        }
+      ]
     },
     {
       "slug": "hf-b-wts",
-      "category": "fixed-angle-guides",
-      "group": "For Baker Hughes Tools",
+      "category": "guides-holefinders",
+      "group": "Fixed Angle Guides",
       "name": "Hole Finder Guide WTS Connection",
       "models": ["HF9-B", "HF6-B"],
       "spreads": [42],
       "summary": "Hole finder for Baker Hughes through-wired tools with WTS connection — 9° or 6° nose, adjustable azimuth.",
-      "images": [{ "file": "HF9-B.779.png", "alt": "HF9-B hole finder guide with WTS connection" }]
+      "images": [
+        {
+          "file": "HF9-B.779.png",
+          "alt": "HF9-B hole finder guide with WTS connection"
+        }
+      ]
     },
     {
       "slug": "cp12",
@@ -537,7 +610,10 @@
       "spreads": [43, 44],
       "summary": "The first ever roller centraliser for open hole — centres wireline tools in 12-1/4” boreholes.",
       "images": [
-        { "file": "CP12 Open_SHADOW.862.png", "alt": "CP12 open hole roller centraliser" },
+        {
+          "file": "CP12 Open_SHADOW.862.png",
+          "alt": "CP12 open hole roller centraliser"
+        },
         {
           "file": "CP12 Standoff comparison 12.25in_transparent_catalog.png",
           "alt": "CP12 standoff comparison in a 12-1/4” hole",
@@ -561,8 +637,14 @@
       "spreads": [45, 46],
       "summary": "Patented Co-Pivot mechanism with ultra-low-drag bearings — precise centralization of heavy strings in 8.5” wellbores.",
       "images": [
-        { "file": "CP8_no Shadow.171.png", "alt": "CP8 co-pivot centraliser" },
-        { "file": "CP8_no Shadow.169.png", "alt": "CP8 co-pivot centraliser, alternate view" },
+        {
+          "file": "CP8_no Shadow.171.png",
+          "alt": "CP8 co-pivot centraliser"
+        },
+        {
+          "file": "CP8_no Shadow.169.png",
+          "alt": "CP8 co-pivot centraliser, alternate view"
+        },
         {
           "file": "CP8 load capacity_aug24.ai",
           "alt": "CP8 load capacity chart",
@@ -613,7 +695,10 @@
       "spreads": [50, 51, 52],
       "summary": "Patented Rocker centraliser for in-line connection — perfect centralization in 4-1/2” to 7” casing.",
       "images": [
-        { "file": "86-CRIL_shadows.bip.864.png", "alt": "CRIL centraliser rocker in-line" },
+        {
+          "file": "86-CRIL_shadows.bip.864.png",
+          "alt": "CRIL centraliser rocker in-line"
+        },
         {
           "file": "CRIL Std Kit.png",
           "alt": "CRIL standard kit configuration",
@@ -649,7 +734,10 @@
       "spreads": [53, 54],
       "summary": "Rocker centraliser that assembles directly on the USIS sonde — perfect centralization in 4-1/2” to 7” casing.",
       "images": [
-        { "file": "CRU_shadows.bip.865.png", "alt": "CRU centraliser rocker for USIT" },
+        {
+          "file": "CRU_shadows.bip.865.png",
+          "alt": "CRU centraliser rocker for USIT"
+        },
         {
           "file": "CRU-CRIL_force chart.ai",
           "alt": "CRU and CRIL force chart across casing sizes",
@@ -667,8 +755,14 @@
       "spreads": [55, 56],
       "summary": "Patented Helix mechanism covering 7” to 9-5/8” casing in a single run — single-trip data acquisition.",
       "images": [
-        { "file": "Helix_RevC_color2.bip.142.png", "alt": "CX9 Helix centraliser" },
-        { "file": "Helix_RevC_color2.bip.143.png", "alt": "CX9 Helix centraliser, alternate view" },
+        {
+          "file": "Helix_RevC_color2.bip.142.png",
+          "alt": "CX9 Helix centraliser"
+        },
+        {
+          "file": "Helix_RevC_color2.bip.143.png",
+          "alt": "CX9 Helix centraliser, alternate view"
+        },
         {
           "file": "CX9 Load Table_V2_7 leaf spring.svg",
           "alt": "CX9 load capacity table for the 7-leaf spring",
@@ -685,7 +779,12 @@
       "models": ["RS7"],
       "spreads": [57],
       "summary": "Compact slip-over roller (3.5 lbs, 3” long) for the decoupled sections of the toolstring in 7” casing.",
-      "images": [{ "file": "RS7 iso.866.png", "alt": "RS7 roller standoff" }]
+      "images": [
+        {
+          "file": "RS7 iso.866.png",
+          "alt": "RS7 roller standoff"
+        }
+      ]
     },
     {
       "slug": "ro17",
@@ -696,7 +795,10 @@
       "spreads": [58, 59],
       "summary": "Conveys 1-11/16” tools in completions with restrictions above 3-1/2” — gravity descent to 85° deviation.",
       "images": [
-        { "file": "RO17_SHADOW.859.png", "alt": "RO17 roller slip-over taxi" },
+        {
+          "file": "RO17_SHADOW.859.png",
+          "alt": "RO17 roller slip-over taxi"
+        },
         {
           "file": "RO17_Clearance_9.625_transparent.png",
           "alt": "RO17 clearance in 9-5/8” casing",
@@ -741,7 +843,10 @@
       "spreads": [62, 63],
       "summary": "In-line taxi for SLB weight bars — carries production logging strings on wheels, perforating-rated.",
       "images": [
-        { "file": "TWS-30.53.png", "alt": "TWS-30 taxi weight bar for SLB bars" },
+        {
+          "file": "TWS-30.53.png",
+          "alt": "TWS-30 taxi weight bar for SLB bars"
+        },
         {
           "file": "TWS-30 Weightbar Taxi_Standoff@0.3x.png",
           "alt": "TWS-30 standoff diagram",
