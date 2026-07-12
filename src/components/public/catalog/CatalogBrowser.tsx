@@ -54,14 +54,24 @@ export default function CatalogBrowser({
     return () => window.removeEventListener('popstate', readUrl);
   }, [isValid]);
 
+  // Counter, not boolean: retriggers the effect when the same request repeats.
+  const [scrollPending, setScrollPending] = useState(0);
+
   const selectCategory = (slug: string, { scroll = true } = {}) => {
     setActiveCategory(slug);
     window.history.pushState(null, '', `${window.location.pathname}?category=${slug}`);
-    if (scroll) {
-      // Back to the top of the pane so the new category starts in view.
-      paneRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (scroll) setScrollPending((n) => n + 1);
   };
+
+  // Back to the top of the pane so the new category starts in view. Must run
+  // AFTER the new category renders: starting the smooth scroll inside the
+  // click handler raced the content swap — the document-height change
+  // clamped/anchored the scroll position, which cancelled the animation for
+  // every category except the tallest one (whose content only grew the page).
+  useEffect(() => {
+    if (!scrollPending) return;
+    paneRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [scrollPending]);
 
   // After a search jump renders the right tab, scroll to the card and flash it.
   useEffect(() => {
