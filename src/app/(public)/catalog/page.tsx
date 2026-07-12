@@ -51,14 +51,9 @@ export default function CatalogTestPage() {
         <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <p className="text-sm text-slate-500">
             {catalog.about.patents}{' '}
-            <a
-              href={catalog.about.patentsUrl}
-              className="underline hover:text-brand"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Link href={catalog.about.patentsUrl} className="underline hover:text-brand">
               View patents
-            </a>
+            </Link>
           </p>
           <Link
             href="/contact"
