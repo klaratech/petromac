@@ -72,16 +72,16 @@ export default function Hero() {
             </svg>
           </Link>
           {/* Solutions-company positioning: the catalog is reachable via the
-              challenge cards and the bridge line, not as a primary hero CTA. */}
+              challenge cards and the hardware ribbon, not as a hero CTA. */}
           <a
-            href="#challenges"
+            href="#contact"
             onClick={(e) => {
               e.preventDefault();
-              document.getElementById('challenges')?.scrollIntoView({ behavior: 'smooth' });
+              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
             }}
             className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white border-2 border-white/60 hover:bg-white hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
           >
-            What challenge are you facing?
+            Talk to us
           </a>
         </div>
       </div>
