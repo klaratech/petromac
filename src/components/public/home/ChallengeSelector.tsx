@@ -9,9 +9,7 @@ import LazyVideo from './LazyVideo';
 // animations. framer-motion is ~5 MB of dep and sat in the public common
 // chunk just because this one file imported it. Now the detail-panel
 // height animation uses the grid-template-rows: 0fr ↔ 1fr trick (modern
-// browsers transition that smoothly), and the card snaps to col-span-2
-// without a layout-FLIP. The kiosk still uses framer-motion for genuine
-// motion work, but it's no longer in the public bundle.
+// browsers transition that smoothly).
 
 interface Challenge {
   id: string;
@@ -22,22 +20,30 @@ interface Challenge {
    *  poster so something renders while the video loads. */
   video?: string;
   bullets: string[];
+  /** The product that solves this challenge — rendered as a
+   *  "Solved by: <name> →" chip linking into the catalog. */
+  solvedBy: { name: string; href: string };
+  /** Closing card spans the full grid width on desktop. */
+  fullWidth?: boolean;
 }
 
 const challenges: Challenge[] = [
   {
-    id: 'stuck-tools',
-    title: 'Stuck Tools',
+    id: 'differential-sticking',
+    title: 'Differential Sticking',
     image: '/images/sticking.jpg',
     // Transcoded from public/videos/originals/DifferentialSticking.mp4 →
     // 1280x720 H.264 CRF 30, no audio, faststart. Masters live in
     // public/videos/originals/ (gitignored); re-transcode when they update.
     video: '/videos/transcoded/differential-sticking.mp4',
     bullets: [
-      'Conveyance past ledges and tight spots in high-deviation wells',
-      'Pathfinder hole finder helps logging tools navigate restrictions',
-      'Field-proven across operators worldwide',
+      'Thor controlled-impulse jar frees stuck tools without resorting to fishing',
+      'Engineered for differential-sticking conditions',
+      'Reduces non-productive time on at-risk operations',
     ],
+    // TODO: point at Thor's catalog product page once Thor lands in
+    // catalog.json (not in the current edition).
+    solvedBy: { name: 'Thor', href: '/catalog' },
   },
   {
     id: 'incomplete-operations',
@@ -46,50 +52,46 @@ const challenges: Challenge[] = [
     video: '/videos/transcoded/pf.mp4',
     bullets: [
       'Reach total depth on the first attempt — no costly contingency runs',
-      'Confidence to log full intervals even with risky access',
+      'Pathfinder hole finder and guide devices navigate ledges, restrictions, and washouts',
       'Plan ahead with Athena to anticipate every tight zone',
     ],
-  },
-  {
-    id: 'sticking-risk',
-    title: 'Sticking Risk',
-    image: '/images/sticking.jpg',
-    bullets: [
-      'Thor controlled-impulse jar frees tools without resorting to fishing',
-      'Engineered for differential-sticking conditions in cased holes',
-      'Reduces non-productive time on at-risk operations',
-    ],
-  },
-  {
-    id: 'data-quality',
-    title: 'Data Quality',
-    image: '/images/orientation.jpg',
-    bullets: [
-      'Centralised tool strings produce sharper CBL, sonic, and density logs',
-      'Focus and HELIX keep sondes on-axis across the casing range',
-      'Less repeat logging, more first-time-right data',
-    ],
-  },
-  {
-    id: 'cased-hole-centralization',
-    title: 'Cased Hole Centralization',
-    image: '/images/ledges.jpg',
-    video: '/videos/transcoded/helix.mp4',
-    bullets: [
-      'HELIX maintains centralisation across the full casing range',
-      'Improved leverage and lower drag than conventional centralisers',
-      'Cleaner CBL, sonic, and density logs through optimal standoff',
-    ],
+    solvedBy: { name: 'Pathfinder', href: '/catalog/guides-holefinders/pathfinder' },
   },
   {
     id: 'high-deviations',
     title: 'High Deviations',
     image: '/images/conveyance.jpg',
     bullets: [
-      'Pathfinder proven in 80°+ deviated wells worldwide',
-      'Reliable conveyance through ledges, breakouts, and washouts',
+      'Wireline Express — gravity descent conveyance in high-deviation open hole',
+      'World record descent at 79° deviation',
       'Designed for tortuous wellbore profiles',
     ],
+    // Wireline Express is the Tool Taxis product line in the catalog.
+    solvedBy: { name: 'Wireline Express', href: '/catalog?category=tool-taxis' },
+  },
+  {
+    id: 'data-quality',
+    title: 'Data Quality',
+    image: '/images/orientation.jpg',
+    bullets: [
+      'Controlled conveyance with Wireline Express delivers first-time-right logs',
+      'Less repeat logging, fewer failed intervals',
+      'Combined with proper standoff, produces sharper measurements',
+    ],
+    solvedBy: { name: 'Wireline Express', href: '/catalog?category=tool-taxis' },
+  },
+  {
+    id: 'centralization',
+    title: 'Centralization',
+    image: '/images/ledges.jpg',
+    video: '/videos/transcoded/helix.mp4',
+    bullets: [
+      'Open hole and cased hole centralizers — HELIX, Rocker, CP-series across the full casing range',
+      'Improved leverage and lower drag than conventional centralisers',
+      'Cleaner CBL, sonic, and density logs through optimal standoff',
+    ],
+    solvedBy: { name: 'Focus Centralizers', href: '/catalog?category=focus-centralisers' },
+    fullWidth: true,
   },
 ];
 
@@ -101,13 +103,13 @@ export default function ChallengeSelector() {
   };
 
   return (
-    <section id="challenge-selector" className="py-20 px-6 bg-white">
+    <section id="challenges" className="py-20 px-6 bg-white scroll-mt-16">
       <div className="max-w-7xl mx-auto">
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand text-center mb-12">
           What challenge are you facing?
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {challenges.map((c) => {
             const isExpanded = expanded === c.id;
             return (
@@ -117,8 +119,10 @@ export default function ChallengeSelector() {
                 tabIndex={0}
                 aria-expanded={isExpanded}
                 className={`rounded-xl overflow-hidden cursor-pointer border-2 transition-colors focus:outline-2 focus:outline-brand ${
+                  c.fullWidth ? 'md:col-span-2' : ''
+                } ${
                   isExpanded
-                    ? 'border-brand shadow-card lg:col-span-2'
+                    ? 'border-brand shadow-card'
                     : 'border-slate-200 hover:border-brand/40 shadow-subtle hover:shadow-card'
                 }`}
                 onClick={() => toggle(c.id)}
@@ -142,13 +146,27 @@ export default function ChallengeSelector() {
                       alt={c.title}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      sizes={c.fullWidth ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <h3 className="absolute bottom-4 left-4 text-xl font-bold text-white font-heading">
                     {c.title}
                   </h3>
+                </div>
+
+                {/* Always-visible product attribution — the only product
+                    click-path on the homepage besides the bridge line. */}
+                <div className="px-5 py-3 bg-white border-b border-slate-100">
+                  <Link
+                    href={c.solvedBy.href}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-brand/5 border border-brand/20 px-3 py-1 text-sm font-semibold text-brand hover:bg-brand/10 hover:border-brand/40 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <span className="font-normal text-slate-500">Solved by:</span>
+                    {c.solvedBy.name}
+                    <span aria-hidden="true">→</span>
+                  </Link>
                 </div>
 
                 {/* Expandable detail panel — CSS grid-template-rows: 0fr ↔ 1fr
