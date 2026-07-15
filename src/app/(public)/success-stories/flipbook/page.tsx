@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Success Stories',
   description:
-    'Browse Petromac wireline logging success stories from operations across 50+ countries worldwide.',
+    'Browse Petromac wireline logging success stories from operations across 53+ countries worldwide.',
 };
 
 export default function SuccessStoriesFlipbookPage() {

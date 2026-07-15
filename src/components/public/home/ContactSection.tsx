@@ -20,7 +20,7 @@ export default function ContactSection() {
               Planning a challenging well?
             </h2>
             <p className="text-slate-400 leading-relaxed mb-8">
-              Questions about wireline conveyance, centralization, data quality, or risk management?
+              Questions about wireline conveyance, centralisation, data quality, or risk management?
               Send us a message and the right regional manager — across Asia Pacific, the Americas,
               the Middle East, Europe and Africa — will get back to you.
             </p>

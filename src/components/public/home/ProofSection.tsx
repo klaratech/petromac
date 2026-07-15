@@ -4,8 +4,7 @@ import Link from 'next/link';
 // means the homepage no longer downloads the ~600 KB operations dataset
 // just to show two numbers — and there's no hardcoded fallback to drift.
 import operationsStats from '../../../../public/data/operations_stats.json';
-
-const FOUNDED_YEAR = 2013;
+import { FOUNDED_YEAR } from '@/constants/app';
 
 export default function ProofSection() {
   const stats = {

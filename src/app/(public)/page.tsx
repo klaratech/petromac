@@ -8,7 +8,7 @@ import ContactSection from '@/components/public/home/ContactSection';
 export const metadata = {
   title: 'Petromac — Wireline Logging Solutions',
   description:
-    'Purpose-built hardware and planning software for complex wireline logging operations. Prevent stuck tools, failed logs, and costly contingency runs.',
+    'Wireline logging solutions for differential sticking, incomplete operations, high deviations, data quality, and centralisation — engineered hardware and Athena planning software.',
 };
 
 export default function HomePage() {

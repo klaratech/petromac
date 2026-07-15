@@ -20,9 +20,11 @@ interface Challenge {
    *  poster so something renders while the video loads. */
   video?: string;
   bullets: string[];
-  /** The product that solves this challenge — rendered as a
-   *  "Solved by: <name> →" chip linking into the catalog. */
-  solvedBy: { name: string; href: string };
+  /** The product behind this challenge — rendered as a
+   *  "<label> <name> →" chip linking into the catalog. The label stays
+   *  deliberately non-absolute ("Petromac approach", "Mitigated with"):
+   *  no product universally "solves" e.g. differential sticking. */
+  approach: { label: string; name: string; href: string };
   /** Closing card spans the full grid width on desktop. */
   fullWidth?: boolean;
 }
@@ -43,7 +45,7 @@ const challenges: Challenge[] = [
     ],
     // TODO: point at Thor's catalog product page once Thor lands in
     // catalog.json (not in the current edition).
-    solvedBy: { name: 'Thor', href: '/catalog' },
+    approach: { label: 'Mitigated with', name: 'Thor', href: '/catalog' },
   },
   {
     id: 'incomplete-operations',
@@ -55,7 +57,11 @@ const challenges: Challenge[] = [
       'Pathfinder hole finder and guide devices navigate ledges, restrictions, and washouts',
       'Plan ahead with Athena to anticipate every tight zone',
     ],
-    solvedBy: { name: 'Pathfinder', href: '/catalog/guides-holefinders/pathfinder' },
+    approach: {
+      label: 'Petromac approach:',
+      name: 'Pathfinder',
+      href: '/catalog/guides-holefinders/pathfinder',
+    },
   },
   {
     id: 'high-deviations',
@@ -67,7 +73,11 @@ const challenges: Challenge[] = [
       'Designed for tortuous wellbore profiles',
     ],
     // Wireline Express is the Tool Taxis product line in the catalog.
-    solvedBy: { name: 'Wireline Express', href: '/catalog?category=tool-taxis' },
+    approach: {
+      label: 'Petromac approach:',
+      name: 'Wireline Express',
+      href: '/catalog?category=tool-taxis',
+    },
   },
   {
     id: 'data-quality',
@@ -78,19 +88,27 @@ const challenges: Challenge[] = [
       'Less repeat logging, fewer failed intervals',
       'Combined with proper standoff, produces sharper measurements',
     ],
-    solvedBy: { name: 'Wireline Express', href: '/catalog?category=tool-taxis' },
+    approach: {
+      label: 'Petromac approach:',
+      name: 'Wireline Express',
+      href: '/catalog?category=tool-taxis',
+    },
   },
   {
-    id: 'centralization',
-    title: 'Centralization',
+    id: 'centralisation',
+    title: 'Centralisation',
     image: '/images/ledges.jpg',
     video: '/videos/transcoded/helix.mp4',
     bullets: [
-      'Open hole and cased hole centralizers — HELIX, Rocker, CP-series across the full casing range',
+      'Open hole and cased hole centralisers — HELIX, Rocker, CP-series across the full casing range',
       'Improved leverage and lower drag than conventional centralisers',
       'Cleaner CBL, sonic, and density logs through optimal standoff',
     ],
-    solvedBy: { name: 'Focus Centralizers', href: '/catalog?category=focus-centralisers' },
+    approach: {
+      label: 'Petromac approach:',
+      name: 'Focus Centralisers',
+      href: '/catalog?category=focus-centralisers',
+    },
     fullWidth: true,
   },
 ];
@@ -156,15 +174,15 @@ export default function ChallengeSelector() {
                 </div>
 
                 {/* Always-visible product attribution — the only product
-                    click-path on the homepage besides the bridge line. */}
+                    click-path on the homepage besides the hardware ribbon. */}
                 <div className="px-5 py-3 bg-white border-b border-slate-100">
                   <Link
-                    href={c.solvedBy.href}
+                    href={c.approach.href}
                     className="inline-flex items-center gap-1.5 rounded-full bg-brand/5 border border-brand/20 px-3 py-1 text-sm font-semibold text-brand hover:bg-brand/10 hover:border-brand/40 transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <span className="font-normal text-slate-500">Solved by:</span>
-                    {c.solvedBy.name}
+                    <span className="font-normal text-slate-500">{c.approach.label}</span>
+                    {c.approach.name}
                     <span aria-hidden="true">→</span>
                   </Link>
                 </div>

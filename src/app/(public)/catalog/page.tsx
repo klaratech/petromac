@@ -4,7 +4,7 @@ import CatalogBrowser from '@/components/public/catalog/CatalogBrowser';
 import { buildCardModels, buildSearchIndex, catalog, categories } from '@/features/catalog/content';
 
 export const metadata: Metadata = {
-  title: 'Product Catalogue | Petromac',
+  title: 'Product Catalogue',
   description:
     'Petromac equipment catalogue — Wireline Express™ tool taxis, guides and holefinders, Focus™ precision centralisers and well intervention accessories.',
 };

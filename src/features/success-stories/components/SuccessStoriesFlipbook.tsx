@@ -72,11 +72,15 @@ export default function SuccessStoriesFlipbook({
   const { manifest } = useFlipbookManifest(FLIPBOOK_KEYS.successStories);
 
   // Kick off the first spread's image downloads in parallel with the
-  // page-flip chunk — the manifest is imported at build time, so the
-  // URLs are known on first render.
-  for (const url of buildFlipbookPageUrls(FLIPBOOK_KEYS.successStories, manifest).slice(0, 2)) {
-    preload(url, { as: 'image', fetchPriority: 'high' });
-  }
+  // page-flip chunk. Runs in an effect, NOT during render: react-dom
+  // preload() calls in the render path write into the SSR stream and
+  // truncated it mid-flush (Next 16 turbopack dev), leaving the route
+  // stuck on its Suspense fallback.
+  useEffect(() => {
+    for (const url of buildFlipbookPageUrls(FLIPBOOK_KEYS.successStories, manifest).slice(0, 2)) {
+      preload(url, { as: 'image', fetchPriority: 'high' });
+    }
+  }, [manifest]);
 
   useEffect(() => {
     loadSuccessStoriesData()
@@ -304,6 +308,13 @@ export default function SuccessStoriesFlipbook({
               Couldn&apos;t load success stories
             </h3>
             <p className="text-slate-600 max-w-md">{loadError}</p>
+            <p className="text-slate-600 max-w-md mt-3">
+              Please try refreshing the page — or{' '}
+              <Link href="/#contact" className="text-brand font-semibold hover:underline">
+                contact us
+              </Link>{' '}
+              and we&apos;ll send you the success stories directly.
+            </p>
           </div>
         ) : isLoadingData || !manifest ? (
           <div

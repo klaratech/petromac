@@ -32,6 +32,11 @@ export const APP_CONSTANTS = {
   YEARLY_STATS_HEIGHT: '45vh',
 } as const;
 
+// Year Petromac was founded (2011) — used to compute "years of experience"
+// stats dynamically so they never go stale. Shared by the homepage
+// ProofSection and the Track Record hero tiles.
+export const FOUNDED_YEAR = 2011;
+
 // External URLs
 export const EXTERNAL_URLS = {
   // Natural-earth 50m via world-atlas@2 — smoother country outlines than the

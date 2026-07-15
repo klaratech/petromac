@@ -26,7 +26,7 @@
   ],
   "about": {
     "intro": [
-      "At Petromac we design and manufacture a broad range of bespoke devices for the wireline logging industry. Petromac devices provide a quantum improvement in risk control for both the wireline logging companies and the operators we serve to deliver significant cost and time saving benefits."
+      "Petromac designs and manufactures patented equipment for wireline conveyance, orientation, centralisation and well intervention. Each device is engineered to reduce drag, improve tool-string control and increase the probability of completing the planned logging programme on the first run."
     ],
     "quote": {
       "text": "Petromac started with the sole aim of improving wireline logging efficiency and enhancing log data quality for Operators, particularly in challenging wellbore conditions. Our dedicated regional managers have a wealth of wireline logging experience, and continually strive to push the boundaries through innovation and expertise.",
@@ -259,7 +259,7 @@
       "name": "Centering Taxi TTB-X-515",
       "models": ["TTB-X-515"],
       "spreads": [14, 15, 16],
-      "summary": "Centralises tool strings in an 8.5” wellbore and 9-5/8” casing with < 0.01” eccentralisation.",
+      "summary": "Centralises tool strings in an 8.5” wellbore and 9-5/8” casing with < 0.01” eccentricity.",
       "images": [
         {
           "file": "TTB-X515_V2_electro polished_Shadow.857.png",
