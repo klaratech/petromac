@@ -17,11 +17,12 @@ export default function ContactSection() {
               Contact
             </p>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
-              Talk to us about your next run
+              Planning a challenging well?
             </h2>
             <p className="text-slate-400 leading-relaxed mb-8">
-              Questions about conveyance, centralisation, or planning a challenging well? Send us a
-              message and the right regional manager will get back to you.
+              Questions about wireline conveyance, centralization, data quality, or risk management?
+              Send us a message and the right regional manager — across Asia Pacific, the Americas,
+              the Middle East, Europe and Africa — will get back to you.
             </p>
 
             <dl className="space-y-4 text-sm">
@@ -48,27 +49,6 @@ export default function ContactSection() {
                   >
                     info@petromac.co.nz
                   </a>
-                </dd>
-              </div>
-              <div className="flex items-center gap-3">
-                <dt className="sr-only">Coverage</dt>
-                <svg
-                  className="h-5 w-5 shrink-0 text-brand"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.8}
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 21a9 9 0 100-18 9 9 0 000 18zm0 0c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3 7.5 7.03 7.5 12s2.015 9 4.5 9zM3.34 8.25h17.32M3.34 15.75h17.32"
-                  />
-                </svg>
-                <dd className="text-slate-400">
-                  Regional managers in Asia Pacific, the Americas, the Middle East, Europe and
-                  Africa
                 </dd>
               </div>
             </dl>
