@@ -36,13 +36,16 @@ export default function SoftwareHighlight() {
               <p className="text-[10px] uppercase tracking-[0.3em] text-blue-300 font-semibold">
                 Software
               </p>
-              <h3 className="font-heading text-2xl font-bold text-white leading-tight">Athena</h3>
+              <h3 className="font-heading text-2xl font-bold text-white leading-tight">
+                Planning intelligence
+              </h3>
             </div>
           </div>
 
-          {/* Copy */}
+          {/* Copy — mirrors the /simulation hero pitch; Athena is named here
+              since the band title is now the capability, not the product. */}
           <p className="text-slate-300 md:flex-1 md:max-w-xl text-base leading-relaxed">
-            No more spreadsheets and guesswork. Engineer every wireline run —{' '}
+            Athena&trade; turns a well plan into a go / no-go call before the run starts —{' '}
             <span className="text-white font-semibold">simulate with confidence</span>.
           </p>
 

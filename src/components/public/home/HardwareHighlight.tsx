@@ -43,7 +43,7 @@ export default function HardwareHighlight() {
 
           {/* Copy */}
           <p className="text-slate-300 md:flex-1 md:max-w-xl text-base leading-relaxed">
-            Engineered devices behind every solution above.
+            Engineered devices for wireline conveyance, centralisation, and well intervention.
           </p>
 
           {/* CTA */}

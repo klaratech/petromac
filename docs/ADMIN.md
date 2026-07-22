@@ -212,9 +212,10 @@ Team page (`/team`). Data is in `src/data/team.ts`.
 - **GitHub rejects any file over 100 MB.** Raw exports from graphics/
   PowerPoint routinely exceed this — they must be transcoded/compressed
   _before_ committing.
-- Videos: transcode to H.264, 854×480 or 1080p, no audio if it plays muted.
-  Reference pattern: `differential-sticking.mp4` (257 MB → 3.6 MB) and
-  `WirelineExpress.mp4` (50 MB → 3.7 MB).
+- Videos: transcode to H.264, 854×480 or 1080p. Strip audio (`-an`) only for
+  clips that play muted (hero/background loops); narrated `*-subtitled` cuts
+  keep their audio track — the homepage lightbox and kiosk lane play them
+  with sound. Reference pattern: `WirelineExpress.mp4` (50 MB → 3.7 MB).
 - Patent PDFs: compress scanned docs (Acrobat "Reduce File Size", or
   `gs -dPDFSETTINGS=/ebook`). Re-rendering can garble fonts — spot-check
   any compressed legal document before committing.

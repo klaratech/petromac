@@ -16,7 +16,10 @@ pipeline:
 | `sources/operations/`      | the job-history `.xlsx`                                               | `pnpm run data:operations` |
 | `sources/catalog/`         | the catalog `.pdf` (download/email artifact)                          | `pnpm run data:flipbooks`  |
 | `sources/catalog/`         | the InDesign package folder (`.idml` + `Links/`) for the HTML catalog | `pnpm run data:catalog`    |
-| `sources/success-stories/` | the success-stories `.pdf` **and** its tags `.xlsx`                   | `pnpm run data:flipbooks`  |
+| `sources/success-stories/` | the success-stories `.pdf` **and/or** its tags `.xlsx`                | `pnpm run data:flipbooks`  |
+
+A tags `.xlsx` on its own re-tags the published stories in place (page
+images untouched) — you don't need to re-drop the PDF for a tags-only fix.
 
 Or just run `pnpm run data` to process everything that's been dropped.
 

@@ -130,7 +130,7 @@ function processFlipbooks(): void {
   const successPdf = newestFile(successDir, ['.pdf']);
   const successTags = newestFile(successDir, ['.xlsx', '.xls']);
 
-  if (!catalogPdf && !successPdf) {
+  if (!catalogPdf && !successPdf && !successTags) {
     // eslint-disable-next-line no-console
     console.log(
       '📘 flipbooks   — nothing in sources/catalog/ or sources/success-stories/, skipped'
@@ -153,16 +153,16 @@ function processFlipbooks(): void {
     args.push('--success-pdf', successPdf.path);
     if (successTags) args.push('--tags-xlsx', successTags.path);
   } else if (successTags) {
+    // Tags-only drop: re-tag the published success stories in place.
     // eslint-disable-next-line no-console
-    console.log(
-      `⚠️  success     — found ${successTags.name} but no PDF alongside it; skipping success stories`
-    );
+    console.log(`📗 success     — ${successTags.name} (tags only; pages untouched)`);
+    args.push('--tags-xlsx', successTags.path);
   }
 
   run('python3', args);
 
   if (catalogPdf) archive(allFiles(catalogDir));
-  if (successPdf) archive(allFiles(successDir));
+  if (successPdf || successTags) archive(allFiles(successDir));
 }
 
 /**

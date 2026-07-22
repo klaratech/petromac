@@ -18,7 +18,7 @@ import type { SuccessStoriesFilters as FiltersState, SuccessStoryRow } from '../
 import { FLIPBOOK_KEYS, buildFlipbookPageUrls, getFlipbookBasePath } from '@/features/flipbooks';
 import { useFlipbookManifest } from '@/features/flipbooks/hooks/useFlipbookManifest';
 
-const Flipbook = dynamic(() => import('@/components/shared/pdf/Flipbook'), {
+const Flipbook = dynamic(() => import('@/components/shared/flipbook/Flipbook'), {
   ssr: false,
   loading: () => (
     <div className="min-h-[700px] flex items-center justify-center" aria-hidden="true">
@@ -86,7 +86,7 @@ export default function SuccessStoriesFlipbook({
     // Warm the page-flip chunk while the tags CSV downloads — the Flipbook
     // only renders after the data lands, and without this the chunk request
     // would start serially at that point.
-    void import('@/components/shared/pdf/Flipbook');
+    void import('@/components/shared/flipbook/Flipbook');
     loadSuccessStoriesData()
       .then((data) => {
         setCsvData(data);

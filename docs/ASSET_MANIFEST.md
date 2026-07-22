@@ -30,27 +30,28 @@
 
 ### 1.2 Hero / Background
 
-| File                   | Current | Deliver As                          | Display Size                    | Used In                                 |
-| ---------------------- | ------- | ----------------------------------- | ------------------------------- | --------------------------------------- |
-| `/images/sampling.jpg` | 6.9 KB  | **JPG, 1920 x 1080 px, quality 80** | Full viewport (90vh, min 600px) | Homepage hero background + video poster |
+| File                      | Current | Deliver As                          | Display Size                    | Used In                                 |
+| ------------------------- | ------- | ----------------------------------- | ------------------------------- | --------------------------------------- |
+| `/images/hero-poster.jpg` | 106 KB  | **JPG, 1920 x 1080 px, quality 80** | Full viewport (90vh, min 600px) | Homepage hero background + video poster |
 
-> This is the fallback image behind the hero video. Needs to be high quality at 1920x1080 since it covers the full viewport on desktop. Current 6.9 KB file is likely too small/low-res.
+> This is the fallback image behind the hero video — a real frame from
+> WirelineExpress.mp4. Regenerate with `ffmpeg -ss 20 -i <clip> -frames:v 1`.
 
 ---
 
-### 1.3 Challenge Selector Cards (Homepage)
+### 1.3 Challenge Section Video Posters (Homepage)
 
-These display as responsive cards with a gradient overlay. Deliver as landscape photos.
+16:9 preview posters for the solution-panel videos — real frames pulled from
+the clips with `ffmpeg -ss <t> -i <clip> -frames:v 1 -q:v 3`. Regenerate when
+a clip is replaced. (The old placeholder card JPGs — sampling/sticking/
+conveyance/orientation/ledges — were deleted Jul 2026.)
 
-| File                      | Current | Deliver As                        | Display Size                                  | Context                                |
-| ------------------------- | ------- | --------------------------------- | --------------------------------------------- | -------------------------------------- |
-| `/images/conveyance.jpg`  | 7.0 KB  | **JPG, 800 x 600 px, quality 80** | ~320px wide (mobile) to ~256px (desktop grid) | "Open Hole" card                       |
-| `/images/sticking.jpg`    | 6.9 KB  | **JPG, 800 x 600 px, quality 80** | Same                                          | "Cased Hole" card                      |
-| `/images/orientation.jpg` | 7.0 KB  | **JPG, 800 x 600 px, quality 80** | Same                                          | "Formation Testing" card               |
-| `/images/sampling.jpg`    | 6.9 KB  | **JPG, 800 x 600 px, quality 80** | Same                                          | "Data Quality" card (shared with hero) |
-| `/images/ledges.jpg`      | 6.8 KB  | **JPG, 800 x 600 px, quality 80** | Same                                          | Used in kiosk carousel modal           |
-
-> These are currently very small files (~7 KB). If they look blurry on screen, re-export at 800x600. They're shown behind a dark gradient overlay, so moderate compression is fine.
+| File                                               | Source clip / frame                    |
+| -------------------------------------------------- | -------------------------------------- |
+| `/images/posters/differential-sticking-poster.jpg` | differential-sticking-subtitled @ 0:40 |
+| `/images/posters/wireline-express-poster.jpg`      | WirelineExpress-subtitled @ 3:10       |
+| `/images/posters/pf-poster.jpg`                    | pf-subtitled @ 1:30                    |
+| `/images/posters/helix-poster.jpg`                 | helix-subtitled @ 0:40                 |
 
 ---
 
@@ -142,17 +143,18 @@ All videos play at **fullscreen** resolution. Deliver as H.264 MP4 with these en
 
 **Folder layout (May 2026):** full-res masters live in `public/videos/originals/`
 (gitignored, never deployed); the web-ready clips the site references live in
-`public/videos/transcoded/` (committed). Every `<video>` on the site is
-`autoplay muted loop` — so transcoded clips carry **no audio track**.
+`public/videos/transcoded/` (committed). Muted background/loop clips carry
+**no audio track** (`-an`); the `*-subtitled.mp4` cuts keep narration audio +
+burned-in subtitles and are what the homepage lightbox and kiosk lane play.
 
-| File                                                                           | Size         | Status                                            | Context                                                        |
-| ------------------------------------------------------------------------------ | ------------ | ------------------------------------------------- | -------------------------------------------------------------- |
-| `transcoded/WirelineExpress.mp4`                                               | ~15 MB       | Re-encoded from HD master (May 2026), 720p, muted | Homepage hero + kiosk carousel + system demo                   |
-| `transcoded/helix.mp4`                                                         | ~8 MB        | Re-encoded from HD master (May 2026), 720p, muted | System demo + kiosk carousel + Challenge selector              |
-| `transcoded/pf.mp4`                                                            | ~6 MB        | Re-encoded from HD master (May 2026), 720p, muted | System demo (PathFinder) + kiosk carousel + Challenge selector |
-| `transcoded/differential-sticking.mp4`                                         | ~8 MB        | Re-encoded from HD master (May 2026), 720p, muted | Homepage Challenge selector ("Stuck Tools")                    |
-| `transcoded/dice.mp4`                                                          | 4.1 MB       | OK — light compression only                       | Kiosk carousel rotation                                        |
-| `transcoded/helix-mechanism.mp4`, `rocker-mechanism.mp4`, `conventional-*.mp4` | <0.5 MB each | OK                                                | Kiosk CH-lane mechanism screen                                 |
+| File                                                                             | Size         | Status                            | Context                                                |
+| -------------------------------------------------------------------------------- | ------------ | --------------------------------- | ------------------------------------------------------ |
+| `transcoded/WirelineExpress.mp4`                                                 | ~15 MB       | 720p, muted                       | Homepage hero background + kiosk system demo           |
+| `transcoded/*-subtitled.mp4` (WirelineExpress, differential-sticking, pf, helix) | 4–15 MB      | 720p, narration audio + subtitles | Homepage solution-panel lightbox + kiosk lane playlist |
+| `transcoded/helix.mp4`                                                           | ~8 MB        | 720p, muted                       | Kiosk system demo                                      |
+| `transcoded/pf.mp4`                                                              | ~6 MB        | 720p, muted                       | Kiosk system demo (PathFinder)                         |
+| `transcoded/dice.mp4`                                                            | 4.1 MB       | OK — light compression only       | Kiosk attractor sting                                  |
+| `transcoded/helix-mechanism.mp4`, `rocker-mechanism.mp4`, `conventional-*.mp4`   | <0.5 MB each | OK                                | Kiosk CH-lane mechanism screen                         |
 
 ---
 

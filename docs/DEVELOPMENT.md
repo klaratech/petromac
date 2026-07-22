@@ -38,7 +38,7 @@ See [FLIPBOOKS.md](FLIPBOOKS.md) for the build pipeline and
 - `backend/app` → FastAPI backend service
 - `src/app/auth/microsoft/*` → Entra login/callback/logout routes
 - `src/components/public/` → Public site components
-- `src/components/shared/pdf/Flipbook.tsx` → Shared flipbook component
+- `src/components/shared/flipbook/Flipbook.tsx` → Shared flipbook component
 - `src/components/geo/` → Shared map components
   - `DrilldownMapCore.tsx` → Core map logic (reusable). The public
     `/track-record` page imports it directly via `next/dynamic`; the

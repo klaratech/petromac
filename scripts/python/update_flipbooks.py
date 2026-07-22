@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -113,17 +114,20 @@ def main() -> None:
     args = parser.parse_args()
 
     # Either flipbook can be built on its own — pass whichever PDFs you have.
+    # A tags xlsx WITHOUT a PDF is also valid: re-tag the published success
+    # stories in place (pages/manifest untouched).
     success_pdf = Path(args.success_pdf) if args.success_pdf else None
     catalog_pdf = Path(args.catalog_pdf) if args.catalog_pdf else None
+    tags_only = args.tags_xlsx and not success_pdf
 
-    if not success_pdf and not catalog_pdf:
-        parser.error("nothing to build — pass --success-pdf and/or --catalog-pdf")
+    if not success_pdf and not catalog_pdf and not tags_only:
+        parser.error("nothing to build — pass --success-pdf, --catalog-pdf, and/or --tags-xlsx")
 
     # Resolve tags: prefer xlsx, fall back to csv (only relevant for success stories)
     tags_csv_path = None
     tmp_csv = None
 
-    if success_pdf and args.tags_xlsx:
+    if args.tags_xlsx:
         tags_xlsx = Path(args.tags_xlsx)
         if not tags_xlsx.exists():
             raise FileNotFoundError(f"Tags xlsx not found: {tags_xlsx}")
@@ -139,6 +143,9 @@ def main() -> None:
         if success_pdf:
             print("Building Success Stories flipbook...")
             build_flipbook(success_pdf, DEFAULT_SUCCESS_OUT, "Success Stories", tags_csv_path)
+        elif tags_only:
+            print("Updating Success Stories tags (pages untouched)...")
+            shutil.copyfile(tags_csv_path, DEFAULT_SUCCESS_OUT / "tags.csv")
 
         if catalog_pdf:
             print("Building Catalog PDF document...")

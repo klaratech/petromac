@@ -15,8 +15,6 @@ interface Solution {
   summary: string;
   /** Two or three short proof points. */
   proofPoints: string[];
-  /** Single product-specific CTA into the catalog. */
-  cta: { label: string; href: string };
   video: { src: string; poster: string; duration: string };
 }
 
@@ -34,11 +32,11 @@ const SOLUTIONS: Solution[] = [
       'Engineered for differential-sticking conditions',
       'Reduces non-productive time on at-risk operations',
     ],
-    cta: { label: 'Explore Wireline Express', href: '/catalog?category=tool-taxis' },
     video: {
-      // Transcoded from public/videos/originals/ masters (gitignored);
-      // posters are real frames pulled with ffmpeg -ss <t> -frames:v 1.
-      src: '/videos/transcoded/differential-sticking.mp4',
+      // Subtitled cuts carry the narration audio track — the plain
+      // transcodes were stripped with -an and play silent. Posters are
+      // real frames pulled with ffmpeg -ss <t> -frames:v 1.
+      src: '/videos/transcoded/differential-sticking-subtitled.mp4',
       poster: '/images/posters/differential-sticking-poster.jpg',
       duration: '3:32',
     },
@@ -53,11 +51,10 @@ const SOLUTIONS: Solution[] = [
       'World record descent at 79° deviation',
       'Field-proven across operators worldwide',
     ],
-    cta: { label: 'Explore Wireline Express', href: '/catalog?category=tool-taxis' },
     video: {
-      src: '/videos/transcoded/WirelineExpress.mp4',
-      poster: '/images/hero-poster.jpg',
-      duration: '4:10',
+      src: '/videos/transcoded/WirelineExpress-subtitled.mp4',
+      poster: '/images/posters/wireline-express-poster.jpg',
+      duration: '3:33',
     },
   },
   {
@@ -70,9 +67,8 @@ const SOLUTIONS: Solution[] = [
       'No costly contingency runs',
       'Plan ahead with Athena to anticipate every tight zone',
     ],
-    cta: { label: 'Explore Pathfinder', href: '/catalog/guides-holefinders/pathfinder' },
     video: {
-      src: '/videos/transcoded/pf.mp4',
+      src: '/videos/transcoded/pf-subtitled.mp4',
       poster: '/images/posters/pf-poster.jpg',
       duration: '1:41',
     },
@@ -87,9 +83,8 @@ const SOLUTIONS: Solution[] = [
       'Improved leverage and lower drag than conventional centralisers',
       'Cleaner CBL, sonic, and density logs through optimal standoff',
     ],
-    cta: { label: 'Explore Focus Centralisers', href: '/catalog?category=focus-centralisers' },
     video: {
-      src: '/videos/transcoded/helix.mp4',
+      src: '/videos/transcoded/helix-subtitled.mp4',
       poster: '/images/posters/helix-poster.jpg',
       duration: '2:00',
     },
@@ -241,12 +236,15 @@ export default function ChallengeSelector() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-6 flex flex-wrap items-center gap-4">
+              {/* Single CTA per panel — the catalog stays reachable via the
+                  Hardware band below. TODO: pass a per-solution filter once
+                  the success stories page supports filter deep links. */}
+              <div className="mt-6">
                 <Link
-                  href={active.cta.href}
+                  href="/success-stories/flipbook"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
                 >
-                  {active.cta.label}
+                  See success stories
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -261,14 +259,6 @@ export default function ChallengeSelector() {
                       d="M9 5l7 7-7 7"
                     />
                   </svg>
-                </Link>
-                {/* Different destination from the CTA (case studies, not
-                    catalog), so it stays as a quiet secondary link. */}
-                <Link
-                  href="/success-stories/flipbook"
-                  className="text-sm font-semibold text-brand hover:text-brand/80 transition-colors"
-                >
-                  See success stories →
                 </Link>
               </div>
             </div>
