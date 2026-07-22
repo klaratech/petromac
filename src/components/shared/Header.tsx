@@ -173,8 +173,14 @@ export default function Header() {
 
             <div className="h-6 w-px bg-white/15" aria-hidden="true" />
 
-            {/* Intranet moved to the footer for launch — staff know where
-                to find it; visitors don't need it in the main nav. */}
+            <Link
+              href="/intranet"
+              prefetch={false}
+              aria-current={isActive('/intranet') ? 'page' : undefined}
+              className={desktopLinkClass(isActive('/intranet'))}
+            >
+              Intranet
+            </Link>
 
             {/* LinkedIn — circular hover background */}
             <a
@@ -289,6 +295,20 @@ export default function Header() {
             })}
 
             <div className="h-px bg-white/10 my-2" aria-hidden="true" />
+
+            <Link
+              href="/intranet"
+              prefetch={false}
+              aria-current={isActive('/intranet') ? 'page' : undefined}
+              className={[
+                'px-3 py-3 rounded-lg text-base font-medium transition-colors',
+                isActive('/intranet')
+                  ? 'text-white bg-white/10'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5',
+              ].join(' ')}
+            >
+              Intranet
+            </Link>
 
             <a
               href="https://www.linkedin.com/company/petromac-ltd/"

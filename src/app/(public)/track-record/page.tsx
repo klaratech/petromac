@@ -74,12 +74,12 @@ export default function TrackRecordPage() {
 
   return (
     <main className="bg-slate-50">
-      {/* Header band — constrained width */}
-      <section className="container mx-auto px-4 pt-12 pb-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-[1.05] max-w-3xl md:whitespace-nowrap">
-            Every Petromac job — <span className="text-brand">Mapped</span>.
-          </h1>
+      {/* Header band — compact: the visible headline was dropped so the map
+          sits higher on first open; an sr-only h1 keeps the page's heading
+          semantics for SEO and screen readers. */}
+      <section className="container mx-auto px-4 pt-6 pb-4">
+        <h1 className="sr-only">Track Record</h1>
+        <div className="flex justify-end">
           <Link
             href="/track-record?stories=1"
             scroll={false}
@@ -111,9 +111,10 @@ export default function TrackRecordPage() {
         </div>
       </section>
 
-      {/* Hero stats — 3 tiles, big bold numbers */}
-      <section className="container mx-auto px-4 pb-10">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+      {/* Hero stats — 3 compact tiles; kept small so the map is visible
+          on first open without scrolling. */}
+      <section className="container mx-auto px-4 pb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
           <StatTile label="Deployments" value={stats.deployments} suffix="+" />
           <StatTile label="Countries" value={stats.countries} suffix="+" />
           <StatTile label="Years of operations" value={stats.years} suffix="+" />
@@ -177,14 +178,12 @@ function StatTile({
   suffix?: string;
 }) {
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 shadow-sm px-6 py-6 md:py-8">
-      <p className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-brand tabular-nums leading-none">
+    <div className="rounded-xl bg-white border border-slate-200 shadow-sm px-5 py-4 md:py-5">
+      <p className="font-heading text-3xl md:text-4xl font-bold text-brand tabular-nums leading-none">
         {value.toLocaleString()}
         {suffix}
       </p>
-      <p className="mt-3 text-xs md:text-sm uppercase tracking-[0.18em] text-slate-500 font-medium">
-        {label}
-      </p>
+      <p className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-500 font-medium">{label}</p>
     </div>
   );
 }

@@ -47,7 +47,7 @@ export default function Footer() {
               Terms of Use
             </Link>
             <div className="h-4 w-px bg-slate-600" />
-            {/* Staff entry point — moved out of the main nav for launch. */}
+            {/* Staff entry point — also in the header nav; kept here too. */}
             <Link
               href="/intranet"
               prefetch={false}
