@@ -33,7 +33,7 @@ const DEVICES: Device[] = [
     productLine: 'Wireline Express',
     device: 'Tool Taxi (TTB, TTA)',
     summary:
-      'The core Wireline Express conveyance technology — sensor transportation, guide devices, and the Lubrication Delivery system. The foundation of the open-hole gravity-descent record.',
+      'The core Wireline Express conveyance technology — sensor transportation, guide devices, the Lubrication Delivery system',
     patents: [
       {
         title: 'Sensor Transportation Apparatus and Guide Device',
@@ -138,6 +138,24 @@ const DEVICES: Device[] = [
         jurisdiction: 'Brazil',
         link: '/patent_pdfs/BR%20taxi.pdf',
       },
+      {
+        title: 'Sensor Transportation Device',
+        number: 'US11,933,160',
+        jurisdiction: 'USA',
+        link: '/patent_pdfs/US11933160B1.pdf',
+      },
+      {
+        title: 'Tool string transportation apparatus',
+        number: 'US11,970,914',
+        jurisdiction: 'USA',
+        link: '/patent_pdfs/US11970914.pdf',
+      },
+      {
+        title: 'Sensor Transportation Device',
+        number: 'US12,352,155',
+        jurisdiction: 'USA',
+        link: '/patent_pdfs/US12352155B2.pdf',
+      },
     ],
   },
   {
@@ -188,31 +206,6 @@ const DEVICES: Device[] = [
         number: 'AU2019205752',
         jurisdiction: 'Australia',
         link: '/patent_pdfs/AU2019205752B2.pdf',
-      },
-    ],
-  },
-  {
-    productLine: 'Wireline Express',
-    device: 'Cased Hole',
-    summary: 'Cased-hole adaptation of the conveyance system for in-casing logging operations.',
-    patents: [
-      {
-        title: 'Sensor Transportation Device',
-        number: 'US11,933,160',
-        jurisdiction: 'USA',
-        link: '/patent_pdfs/US11933160B1.pdf',
-      },
-      {
-        title: 'Tool string transportation apparatus',
-        number: 'US11,970,914',
-        jurisdiction: 'USA',
-        link: '/patent_pdfs/US11970914.pdf',
-      },
-      {
-        title: 'Sensor Transportation Device',
-        number: 'US12,352,155',
-        jurisdiction: 'USA',
-        link: '/patent_pdfs/US12352155B2.pdf',
       },
     ],
   },
