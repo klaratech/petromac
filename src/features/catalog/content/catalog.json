@@ -710,7 +710,7 @@
               "note": "Fits a 3-5�8” logging tool and a 3-3�8” tool housing via a reducing sleeve."
             },
             {
-              "label": "Eccentralisation in 8.5” Wellbore",
+              "label": "Eccentricity in 8.5” Wellbore",
               "values": ["< 0.01”"],
               "note": "See next page for examples on different casing sizes"
             }
@@ -1475,7 +1475,7 @@
           "rows": [
             {
               "label": "Bit size",
-              "values": ["Eccentralisation"]
+              "values": ["Eccentricity"]
             },
             {
               "label": "5 7�8””",
