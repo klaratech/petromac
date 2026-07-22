@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, KeyboardEvent, MouseEvent } from "react";
-import Image from "next/image";
-import { TeamContact } from "@/data/team";
+import { useState, KeyboardEvent, MouseEvent } from 'react';
+import Image from 'next/image';
+import { TeamContact } from '@/data/team';
 
 interface TeamFlipCardProps {
   member: TeamContact;
@@ -20,10 +20,10 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       toggleFlip();
-    } else if (e.key === "Escape") {
+    } else if (e.key === 'Escape') {
       e.preventDefault();
       unflip();
     }
@@ -41,15 +41,17 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
       ? `${member.emailUser}@${member.emailDomain}`
       : null;
 
-  const displayLocation = member.region || member.location || "";
+  const displayLocation = member.region || member.location || '';
   const initials = member.name
-    .split(" ")
+    .split(' ')
     .map((n) => n[0])
-    .join("");
+    .join('');
 
   return (
     <div
-      className="group perspective-1000 h-96 cursor-pointer focus:outline-none"
+      // Slightly taller on mobile: the narrow single column wraps the longest
+      // bios one line past the desktop card height.
+      className="group perspective-1000 h-[26rem] sm:h-96 cursor-pointer focus:outline-none"
       onClick={toggleFlip}
       onKeyDown={onKeyDown}
       tabIndex={0}
@@ -60,8 +62,8 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
       <div
         className={`relative h-full w-full transition-transform duration-700 motion-reduce:transition-none [transform-style:preserve-3d] ${
           flipped
-            ? "[transform:rotateY(180deg)]"
-            : "group-hover:[transform:rotateY(180deg)] group-focus:[transform:rotateY(180deg)]"
+            ? '[transform:rotateY(180deg)]'
+            : 'group-hover:[transform:rotateY(180deg)] group-focus:[transform:rotateY(180deg)]'
         }`}
       >
         {/* ── Front ────────────────────────────────────────────────── */}
@@ -71,12 +73,7 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
             <div className="h-48 bg-gradient-to-b from-slate-100 to-slate-50 flex items-center justify-center overflow-hidden">
               {member.imageSrc ? (
                 <div className="relative w-32 h-32 rounded-full overflow-hidden ring-4 ring-white shadow-lg">
-                  <Image
-                    src={member.imageSrc}
-                    alt={member.name}
-                    fill
-                    className="object-cover"
-                  />
+                  <Image src={member.imageSrc} alt={member.name} fill className="object-cover" />
                 </div>
               ) : (
                 <div
@@ -90,15 +87,9 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
 
             {/* Identity */}
             <div className="flex-1 px-5 py-5 flex flex-col justify-center text-center">
-              <h3 className="text-lg font-bold text-slate-900 mb-1">
-                {member.name}
-              </h3>
-              <p className="text-sm font-semibold text-brand mb-1.5">
-                {member.role}
-              </p>
-              {displayLocation && (
-                <p className="text-xs text-slate-500">{displayLocation}</p>
-              )}
+              <h3 className="text-lg font-bold text-slate-900 mb-1">{member.name}</h3>
+              <p className="text-sm font-semibold text-brand mb-1.5">{member.role}</p>
+              {displayLocation && <p className="text-xs text-slate-500">{displayLocation}</p>}
             </div>
           </div>
         </div>
@@ -110,20 +101,16 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
         >
           <div className="h-full flex flex-col p-6">
             <h3 className="text-lg font-bold text-white mb-1">{member.name}</h3>
-            <p className="text-white/85 text-sm font-medium mb-4">
-              {member.role}
-            </p>
+            <p className="text-white/85 text-sm font-medium mb-4">{member.role}</p>
 
-            {/* Bio */}
-            <div className="flex-1 overflow-y-auto mb-4">
+            {/* Bio — never clamped: line-clamp hides overflow outright, so
+                longer bios were unreadable. Full text renders; if it still
+                exceeds the card, the container scrolls. */}
+            <div className="flex-1 overflow-y-auto mb-4 pr-1">
               {member.bio ? (
-                <p className="text-white/90 text-sm leading-relaxed line-clamp-5">
-                  {member.bio}
-                </p>
+                <p className="text-white/90 text-sm leading-snug">{member.bio}</p>
               ) : (
-                <p className="text-white/70 text-sm italic">
-                  No bio available
-                </p>
+                <p className="text-white/70 text-sm italic">No bio available</p>
               )}
             </div>
 
