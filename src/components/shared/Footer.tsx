@@ -46,15 +46,6 @@ export default function Footer() {
             >
               Terms of Use
             </Link>
-            <div className="h-4 w-px bg-slate-600" />
-            {/* Staff entry point — also in the header nav; kept here too. */}
-            <Link
-              href="/intranet"
-              prefetch={false}
-              className="text-slate-300 hover:text-white transition-colors text-sm"
-            >
-              Intranet
-            </Link>
           </div>
         </div>
       </div>

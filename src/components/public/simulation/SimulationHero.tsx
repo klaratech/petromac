@@ -1,5 +1,16 @@
+'use client';
+
 import Image from 'next/image';
-import Link from 'next/link';
+
+// In-page anchors use scrollIntoView instead of plain hash hrefs: setting
+// the same location.hash twice is a no-op, so a second click on the CTA
+// (after scrolling back up) silently did nothing.
+function scrollToId(id: string) {
+  return (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+}
 
 /**
  * The three inputs Athena combines into a single recommendation.
@@ -81,18 +92,20 @@ export default function SimulationHero() {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-          <Link
+          <a
             href="#contact"
+            onClick={scrollToId('contact')}
             className="inline-flex items-center justify-center rounded-full bg-brand px-7 py-3 font-semibold text-white shadow-lg shadow-blue-900/30 transition-all hover:-translate-y-0.5 hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black"
           >
             Request a simulation
-          </Link>
-          <Link
+          </a>
+          <a
             href="#athena-demo"
+            onClick={scrollToId('athena-demo')}
             className="inline-flex items-center justify-center rounded-full border-2 border-white/60 px-7 py-3 font-semibold text-white transition-colors hover:bg-white hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
           >
             See Athena in action
-          </Link>
+          </a>
         </div>
       </div>
     </section>
