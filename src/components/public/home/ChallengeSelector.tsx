@@ -49,6 +49,7 @@ const challenges: Challenge[] = [
     id: 'high-deviations',
     title: 'High Deviations',
     image: '/images/conveyance.jpg',
+    video: '/videos/transcoded/WirelineExpress.mp4',
     bullets: [
       'Wireline Express — gravity descent conveyance in high-deviation open hole',
       'World record descent at 79° deviation',
