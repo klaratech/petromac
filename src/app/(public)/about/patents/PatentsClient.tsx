@@ -18,14 +18,16 @@ interface Device {
    *  sense — per IP counsel, a category can contain multiple legally
    *  unrelated patent families. */
   productLine: 'Wireline Express' | 'Focus';
-  /** The device category (one of the 9 shown on the page). */
+  /** The device category shown on the page. */
   device: string;
   summary: string;
   patents: Patent[];
 }
 
 // Source of truth: "2026-05-14 List of patents for Website.docx" (IP counsel).
-// 44 granted patents across 9 device categories.
+// Focus centralisers are grouped by hole type (Jul 2026, per Rajesh):
+// Open Hole = CP12 + CP8, Cased Hole = Helix + Rocker + CA7. The intro
+// line's patent/category counts are computed from this array.
 const DEVICES: Device[] = [
   {
     productLine: 'Wireline Express',
@@ -216,9 +218,35 @@ const DEVICES: Device[] = [
   },
   {
     productLine: 'Focus',
-    device: 'Helix Centraliser (CX7, CX9, CX13)',
+    device: 'Open Hole Centralisers (CP12, CP8)',
     summary:
-      'World-first open-hole roller centraliser. Improved leverage geometry for entering restrictions and maintaining centralisation across a wide casing range.',
+      "The world's first open-hole roller centralisers — parallelogram-linkage, compact-spring, and co-pivot mechanisms for centralisation across open-hole sizes.",
+    patents: [
+      {
+        title: 'Device for centering a sensor assembly in a bore',
+        number: 'US11,136,880',
+        jurisdiction: 'USA',
+        link: '/patent_pdfs/US11136880B1.pdf',
+      },
+      {
+        title: 'Device for centering sensor assembly in a bore – "Co-pivot Centraliser"',
+        number: 'US11,713,627',
+        jurisdiction: 'USA',
+        link: '/patent_pdfs/US11713627B1.pdf',
+      },
+      {
+        title: 'Device for centering sensor assembly in a bore',
+        number: 'US12,410,664',
+        jurisdiction: 'USA',
+        link: '/patent_pdfs/US12410664.pdf',
+      },
+    ],
+  },
+  {
+    productLine: 'Focus',
+    device: 'Cased Hole Centralisers (Helix, Rocker, CA7)',
+    summary:
+      'Helix (CX7, CX9, CX13), Rocker (CRU, CRIL), and Adjustable (CA7) centralisers — improved leverage geometry, synchronised rocker-arm mechanisms, and field-adjustable configurations across the full tubing and casing range.',
     patents: [
       {
         title: 'Device for centering a sensor assembly in a bore',
@@ -274,14 +302,6 @@ const DEVICES: Device[] = [
         jurisdiction: 'Australia',
         link: '/patent_pdfs/AU2021320591B2.pdf',
       },
-    ],
-  },
-  {
-    productLine: 'Focus',
-    device: 'Rocker Centraliser (CRU, CRIL)',
-    summary:
-      'Synchronised rocker-arm mechanism for centralisation in small tubing and casing sizes where conventional centralisers lose leverage.',
-    patents: [
       {
         title: 'A device for centering a sensor assembly in a bore',
         number: 'US10,947,792',
@@ -294,53 +314,11 @@ const DEVICES: Device[] = [
         jurisdiction: 'USA',
         link: '/patent_pdfs/US12104443B2.pdf',
       },
-    ],
-  },
-  {
-    productLine: 'Focus',
-    device: 'Adjustable Centraliser (CA7)',
-    summary:
-      'Field-adjustable centraliser geometry for varied wellbore conditions in a single run.',
-    patents: [
       {
         title: 'Sensor transportation device',
         number: 'US10,988,991',
         jurisdiction: 'USA',
         link: '/patent_pdfs/US10988991B1.pdf',
-      },
-    ],
-  },
-  {
-    productLine: 'Focus',
-    device: 'Parallelogram & Compact Spring Centraliser (CP12)',
-    summary:
-      'Parallelogram-linkage and compact-spring mechanisms for open-hole centralisation in larger boreholes.',
-    patents: [
-      {
-        title: 'Device for centering a sensor assembly in a bore',
-        number: 'US11,136,880',
-        jurisdiction: 'USA',
-        link: '/patent_pdfs/US11136880B1.pdf',
-      },
-    ],
-  },
-  {
-    productLine: 'Focus',
-    device: 'Co-pivot Centraliser (CP8)',
-    summary:
-      'Co-pivot mechanism for centralisation in tight bores where pivot-on-same-side geometry constrains travel.',
-    patents: [
-      {
-        title: 'Device for centering sensor assembly in a bore – "Co-pivot Centraliser"',
-        number: 'US11,713,627',
-        jurisdiction: 'USA',
-        link: '/patent_pdfs/US11713627B1.pdf',
-      },
-      {
-        title: 'Device for centering sensor assembly in a bore',
-        number: 'US12,410,664',
-        jurisdiction: 'USA',
-        link: '/patent_pdfs/US12410664.pdf',
       },
     ],
   },
@@ -437,7 +415,9 @@ export default function PatentsClient() {
         {/* Legal note — surfaced above the table so visitors see it first. */}
         <div className="mb-6 bg-white rounded-2xl p-5 ring-1 ring-slate-200 shadow-sm">
           <p className="text-slate-700 text-sm leading-relaxed">
-            <strong className="text-slate-900">Note:</strong> Any party (e.g., wireline service
+            {/* The space lives inside the string literal: bare JSX spaces
+                after the </strong> were dropped at render, showing "Note:Any". */}
+            <strong className="text-slate-900">{'Note: '}</strong>Any party (e.g., wireline service
             company, E&amp;P operator, or conveyance-accessory provider) that manufactures, imports,
             offers for sale, sells, or uses any Petromac patented technology without permission or
             licence from Petromac is considered to infringe the patented technology. If you wish to
