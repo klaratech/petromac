@@ -1,9 +1,9 @@
-import TeamFlipCard from "@/components/public/TeamFlipCard";
-import { regionalManagers, hqTeam } from "@/data/team";
-import type { Metadata } from "next";
+import TeamFlipCard from '@/components/public/TeamFlipCard';
+import { regionalManagers, hqTeam } from '@/data/team';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Our Team",
+  title: 'Our Team',
   description:
     "Meet Petromac's team of regional managers and headquarters staff supporting wireline logging operations worldwide.",
 };
@@ -18,9 +18,8 @@ export default function TeamPage() {
             Meet the team
           </h1>
           <p className="text-base md:text-lg text-slate-600 leading-relaxed">
-            Regional managers across the major oil and gas basins, working
-            directly with the operators and service companies they support —
-            anchored by an engineering and operations team at headquarters.
+            Regional managers across the major oil and gas basins — anchored by an engineering and
+            operations team at headquarters.
           </p>
         </header>
 
