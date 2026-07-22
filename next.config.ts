@@ -60,6 +60,17 @@ const nextConfig: NextConfig = {
         destination: '/catalog/:path*',
         permanent: true,
       },
+      {
+        // Success Stories used to open as a ?stories=1 overlay on Track
+        // Record (retired Jul 2026) — send shared/bookmarked overlay URLs
+        // to the standalone page.
+        // Next passes the matched query param through to the destination
+        // (?stories=1 stays in the URL); harmless — the flipbook ignores it.
+        source: '/track-record',
+        has: [{ type: 'query', key: 'stories', value: '1' }],
+        destination: '/success-stories/flipbook',
+        permanent: false,
+      },
     ];
   },
   images: {

@@ -71,8 +71,8 @@ export default function PublicationsPage() {
           </Link>
         </div>
         <p className="text-base md:text-lg text-slate-600 leading-relaxed mb-8 max-w-3xl">
-          Peer-reviewed papers and conference presentations covering Petromac&apos;s wireline
-          conveyance, centralisation, and formation-testing technologies.
+          Papers and conference presentations covering Petromac&apos;s wireline conveyance,
+          centralisation, and formation-testing technologies.
         </p>
 
         <div className="bg-white rounded-2xl ring-1 ring-slate-200 shadow-card overflow-hidden">

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { preload } from 'react-dom';
 import type { JobRecord } from '@/types/JobRecord';
 import { fetchOperationsData } from '@/lib/map/data';
@@ -11,12 +11,6 @@ import { EXTERNAL_URLS, FOUNDED_YEAR } from '@/constants/app';
 // pipeline). Server-rendered as the tiles' initial values so a slow or
 // failed operations fetch never shows bare em-dashes.
 import operationsStats from '../../../../public/data/operations_stats.json';
-
-// Success Stories opens as an overlay here (via ?stories=1) instead of its
-// own page. Kept out of the bundle until the URL asks for it.
-const StoriesOverlay = dynamic(() => import('@/components/public/track-record/StoriesOverlay'), {
-  ssr: false,
-});
 
 // DrilldownMapCore brings d3 + r3f-adjacent deps; keep it lazy and CSR-only.
 const DrilldownMapCore = dynamic(() => import('@/components/geo/DrilldownMapCore'), {
@@ -81,8 +75,7 @@ export default function TrackRecordPage() {
         <h1 className="sr-only">Track Record</h1>
         <div className="flex justify-end">
           <Link
-            href="/track-record?stories=1"
-            scroll={false}
+            href="/success-stories/flipbook"
             className="
               self-start md:self-end inline-flex items-center gap-2 whitespace-nowrap
               px-6 py-3 rounded-full font-semibold text-white
@@ -158,12 +151,6 @@ export default function TrackRecordPage() {
           </div>
         </div>
       </section>
-
-      {/* Success Stories overlay — reads ?stories=1. Suspense is required
-          because it calls useSearchParams. */}
-      <Suspense fallback={null}>
-        <StoriesOverlay />
-      </Suspense>
     </main>
   );
 }

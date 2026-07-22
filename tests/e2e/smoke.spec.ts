@@ -21,14 +21,22 @@ test('catalog browser loads with categories, search, and deep links', async ({ p
   await expect(page.getByRole('table').first()).toBeVisible();
 });
 
-test('success stories opens as a Track Record overlay', async ({ page }) => {
+test('track record links to the Success Stories page', async ({ page }) => {
   await page.goto('/track-record');
   await page.getByRole('link', { name: /read the success stories/i }).click();
-  await expect(page).toHaveURL(/\?stories=1/);
-  await expect(page.getByRole('dialog', { name: 'Success Stories' })).toBeVisible();
-  // Escape closes it and returns to the clean Track Record URL.
-  await page.keyboard.press('Escape');
+  await expect(page).toHaveURL(/\/success-stories\/flipbook$/);
+  await expect(page.getByRole('heading', { name: /success stories/i })).toBeVisible();
+  // The page carries the full site chrome (the retired ?stories=1 overlay didn't).
+  await expect(page.getByRole('banner')).toBeVisible();
+  // Back link returns to Track Record.
+  await page.getByRole('link', { name: /back to track record/i }).click();
   await expect(page).toHaveURL(/\/track-record$/);
+});
+
+test('legacy ?stories=1 overlay URL redirects to the Success Stories page', async ({ page }) => {
+  await page.goto('/track-record?stories=1');
+  // Next passes the matched query param through to the destination.
+  await expect(page).toHaveURL(/\/success-stories\/flipbook/);
 });
 
 test('success stories loads', async ({ page }) => {

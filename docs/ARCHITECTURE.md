@@ -5,8 +5,9 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
 ## Components
 
 - **Public site** — Next.js 16 App Router route group `(public)`, Tailwind 4.
-  Notable pages: `/track-record` (d3 drill-down map, lazy-loaded; Success
-  Stories opens as an overlay via `?stories=1`) and the HTML catalog below.
+  Notable pages: `/track-record` (d3 drill-down map, lazy-loaded; links to
+  the `/success-stories/flipbook` page — the old `?stories=1` overlay was
+  retired Jul 2026 and now redirects there) and the HTML catalog below.
 - **HTML catalog** — `/catalog`, built from a committed content model
   (`src/features/catalog/content/catalog.json`, generated from the InDesign
   IDML — see [ADMIN.md](ADMIN.md) §2b). Landing is a client-side workspace

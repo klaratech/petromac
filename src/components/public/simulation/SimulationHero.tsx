@@ -33,19 +33,11 @@ const inputs = [
 ];
 
 export default function SimulationHero() {
+  // Pure-CSS background (was a priority-loaded wallpaper image dimmed to
+  // near-invisibility — wasted LCP bandwidth). Same navy gradient family
+  // as the homepage Hardware/Athena bands.
   return (
-    <section className="relative overflow-hidden bg-slate-950 px-6 py-14 md:py-16">
-      <Image
-        src="/images/tv-bg.webp"
-        alt=""
-        fill
-        priority
-        className="object-cover opacity-45"
-        sizes="100vw"
-        aria-hidden="true"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-slate-950/75 to-slate-950" />
-
+    <section className="relative overflow-hidden bg-gradient-to-b from-[#081a3a] via-slate-900 to-slate-950 px-6 py-14 md:py-16">
       <div className="relative z-10 mx-auto max-w-4xl">
         <div className="mb-6 flex items-center gap-4">
           <span className="relative flex h-12 w-12 shrink-0">

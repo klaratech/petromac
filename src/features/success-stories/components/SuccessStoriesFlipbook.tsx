@@ -83,6 +83,10 @@ export default function SuccessStoriesFlipbook({
   }, [manifest]);
 
   useEffect(() => {
+    // Warm the page-flip chunk while the tags CSV downloads — the Flipbook
+    // only renders after the data lands, and without this the chunk request
+    // would start serially at that point.
+    void import('@/components/shared/pdf/Flipbook');
     loadSuccessStoriesData()
       .then((data) => {
         setCsvData(data);

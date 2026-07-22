@@ -122,15 +122,21 @@ full-downloads the file through Cloudflare. Verdict: don't fight it; make the
 file small instead. Search uses a pipeline-built `search-index.json` (per-page
 text) so the search box covers all pages without extra PDF fetches.
 
-## Jul 2026 — Success stories opens as a Track Record overlay
+## Jul 2026 — Success stories opens as a Track Record overlay (REVERSED)
 
-**Decision:** The Track Record button opens Success Stories as a full-screen
+**Decision:** The Track Record button opened Success Stories as a full-screen
 overlay (`/track-record?stories=1`); the standalone `/success-stories/flipbook`
-route is kept.
-**Why:** Keeps map ↔ stories in one context. The standalone route stays
+route was kept.
+**Why:** Kept map ↔ stories in one context. The standalone route stayed
 because it's in the sitemap, is the target of the `/success-stories` redirect,
 and emailed links may point at it. The flipbook component already supported
 embedding (the kiosk uses the same API).
+**Reversed (Jul 2026, pre-launch):** The overlay covered the site header and
+footer, so visitors landed in a bare window with no navigation — it read as a
+bug, and was inconsistent with the homepage cards linking to the standalone
+page. The button now navigates to `/success-stories/flipbook`;
+`?stories=1` 307-redirects there (next.config.ts) for old shared links.
+StoriesOverlay.tsx was deleted. The kiosk's embedded usage is unaffected.
 
 ## Jul 2026 — Cache policy: moderate max-age + long stale-while-revalidate
 
