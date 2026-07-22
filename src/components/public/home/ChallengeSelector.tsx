@@ -21,14 +21,13 @@ interface Challenge {
   video?: string;
   bullets: string[];
   /** The product behind this challenge — rendered as a
-   *  "<label> <name> →" chip linking into the catalog. The label stays
-   *  deliberately non-absolute ("Petromac approach", "Mitigated with"):
-   *  no product universally "solves" e.g. differential sticking. */
-  approach: { label: string; name: string; href: string };
-  /** Closing card spans the full grid width on desktop. */
-  fullWidth?: boolean;
+   *  "Solution: <name> →" chip linking into the catalog. */
+  solution: { name: string; href: string };
 }
 
+// 2×2 grid: Differential Sticking + High Deviations (Wireline Express) on
+// top, Incomplete Operations (Pathfinder) + Centralisation (Focus) below.
+// Data Quality was dropped to keep it to four (Jul 2026).
 const challenges: Challenge[] = [
   {
     id: 'differential-sticking',
@@ -39,13 +38,23 @@ const challenges: Challenge[] = [
     // public/videos/originals/ (gitignored); re-transcode when they update.
     video: '/videos/transcoded/differential-sticking.mp4',
     bullets: [
-      'Thor controlled-impulse jar frees stuck tools without resorting to fishing',
+      'Wireline Express keeps tool strings moving through sticking-prone intervals',
       'Engineered for differential-sticking conditions',
       'Reduces non-productive time on at-risk operations',
     ],
-    // TODO: point at Thor's catalog product page once Thor lands in
-    // catalog.json (not in the current edition).
-    approach: { label: 'Mitigated with', name: 'Thor', href: '/catalog' },
+    // Wireline Express is the Tool Taxis product line in the catalog.
+    solution: { name: 'Wireline Express', href: '/catalog?category=tool-taxis' },
+  },
+  {
+    id: 'high-deviations',
+    title: 'High Deviations',
+    image: '/images/conveyance.jpg',
+    bullets: [
+      'Wireline Express — gravity descent conveyance in high-deviation open hole',
+      'World record descent at 79° deviation',
+      'Designed for tortuous wellbore profiles',
+    ],
+    solution: { name: 'Wireline Express', href: '/catalog?category=tool-taxis' },
   },
   {
     id: 'incomplete-operations',
@@ -57,42 +66,7 @@ const challenges: Challenge[] = [
       'Pathfinder hole finder and guide devices navigate ledges, restrictions, and washouts',
       'Plan ahead with Athena to anticipate every tight zone',
     ],
-    approach: {
-      label: 'Petromac approach:',
-      name: 'Pathfinder',
-      href: '/catalog/guides-holefinders/pathfinder',
-    },
-  },
-  {
-    id: 'high-deviations',
-    title: 'High Deviations',
-    image: '/images/conveyance.jpg',
-    bullets: [
-      'Wireline Express — gravity descent conveyance in high-deviation open hole',
-      'World record descent at 79° deviation',
-      'Designed for tortuous wellbore profiles',
-    ],
-    // Wireline Express is the Tool Taxis product line in the catalog.
-    approach: {
-      label: 'Petromac approach:',
-      name: 'Wireline Express',
-      href: '/catalog?category=tool-taxis',
-    },
-  },
-  {
-    id: 'data-quality',
-    title: 'Data Quality',
-    image: '/images/orientation.jpg',
-    bullets: [
-      'Controlled conveyance with Wireline Express delivers first-time-right logs',
-      'Less repeat logging, fewer failed intervals',
-      'Combined with proper standoff, produces sharper measurements',
-    ],
-    approach: {
-      label: 'Petromac approach:',
-      name: 'Wireline Express',
-      href: '/catalog?category=tool-taxis',
-    },
+    solution: { name: 'Pathfinder', href: '/catalog/guides-holefinders/pathfinder' },
   },
   {
     id: 'centralisation',
@@ -104,12 +78,7 @@ const challenges: Challenge[] = [
       'Improved leverage and lower drag than conventional centralisers',
       'Cleaner CBL, sonic, and density logs through optimal standoff',
     ],
-    approach: {
-      label: 'Petromac approach:',
-      name: 'Focus Centralisers',
-      href: '/catalog?category=focus-centralisers',
-    },
-    fullWidth: true,
+    solution: { name: 'Focus Centralisers', href: '/catalog?category=focus-centralisers' },
   },
 ];
 
@@ -137,8 +106,6 @@ export default function ChallengeSelector() {
                 tabIndex={0}
                 aria-expanded={isExpanded}
                 className={`rounded-xl overflow-hidden cursor-pointer border-2 transition-colors focus:outline-2 focus:outline-brand ${
-                  c.fullWidth ? 'md:col-span-2' : ''
-                } ${
                   isExpanded
                     ? 'border-brand shadow-card'
                     : 'border-slate-200 hover:border-brand/40 shadow-subtle hover:shadow-card'
@@ -164,7 +131,7 @@ export default function ChallengeSelector() {
                       alt={c.title}
                       fill
                       className="object-cover"
-                      sizes={c.fullWidth ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -177,12 +144,12 @@ export default function ChallengeSelector() {
                     click-path on the homepage besides the hardware ribbon. */}
                 <div className="px-5 py-3 bg-white border-b border-slate-100">
                   <Link
-                    href={c.approach.href}
+                    href={c.solution.href}
                     className="inline-flex items-center gap-1.5 rounded-full bg-brand/5 border border-brand/20 px-3 py-1 text-sm font-semibold text-brand hover:bg-brand/10 hover:border-brand/40 transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <span className="font-normal text-slate-500">{c.approach.label}</span>
-                    {c.approach.name}
+                    <span className="font-normal text-slate-500">Solution:</span>
+                    {c.solution.name}
                     <span aria-hidden="true">→</span>
                   </Link>
                 </div>
