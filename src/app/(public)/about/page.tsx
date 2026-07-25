@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12 md:py-16">
         {/* Header band */}
         <header className="mb-10 md:mb-12 max-w-3xl">
@@ -101,7 +101,7 @@ export default function AboutPage() {
           </aside>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 

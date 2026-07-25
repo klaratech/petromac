@@ -67,7 +67,7 @@ export default function TrackRecordPage() {
   }, [data]);
 
   return (
-    <main className="bg-slate-50">
+    <div className="bg-slate-50">
       {/* Header band — compact: the visible headline was dropped so the map
           sits higher on first open; an sr-only h1 keeps the page's heading
           semantics for SEO and screen readers. */}
@@ -151,7 +151,7 @@ export default function TrackRecordPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

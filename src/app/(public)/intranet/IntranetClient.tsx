@@ -18,7 +18,7 @@ export default function IntranetClient({ user }: { user: StaffUser | null }) {
     process.env.NEXT_PUBLIC_ATHENA_TEST_URL || 'https://test.athena.digitaltwins.com.bo/#/login';
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Identity strip — email + sign out, right-aligned */}
       {user ? (
         <div className="w-full border-b border-slate-200 bg-white">
@@ -162,6 +162,6 @@ export default function IntranetClient({ user }: { user: StaffUser | null }) {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

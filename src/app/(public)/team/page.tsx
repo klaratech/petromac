@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function TeamPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12 md:py-16">
         {/* Header */}
         <header className="text-center mb-14 md:mb-16 max-w-3xl mx-auto">
@@ -47,6 +47,6 @@ export default function TeamPage() {
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

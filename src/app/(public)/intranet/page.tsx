@@ -30,7 +30,7 @@ export default async function IntranetHome({
     // instead of bouncing straight back to Microsoft in a loop.
     if (authError) {
       return (
-        <main className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50 px-4 text-center text-gray-900">
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50 px-4 text-center text-gray-900">
           <h1 className="text-2xl font-semibold">Microsoft sign-in failed</h1>
           <p className="text-sm text-slate-600">Reason: {authError}</p>
           <a
@@ -39,7 +39,7 @@ export default async function IntranetHome({
           >
             Sign in with Microsoft
           </a>
-        </main>
+        </div>
       );
     }
     redirect(LOGIN_HREF);

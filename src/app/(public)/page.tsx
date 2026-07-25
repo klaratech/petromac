@@ -4,6 +4,7 @@ import HardwareHighlight from '@/components/public/home/HardwareHighlight';
 import SoftwareHighlight from '@/components/public/home/SoftwareHighlight';
 import ProofSection from '@/components/public/home/ProofSection';
 import ContactSection from '@/components/public/home/ContactSection';
+import JsonLd, { ORGANIZATION_SCHEMA } from '@/components/shared/JsonLd';
 
 export const metadata = {
   title: 'Petromac — Wireline Logging Solutions',
@@ -16,6 +17,7 @@ export default function HomePage() {
     <>
       {/* Problem → solution → proof: hero promise, challenge cards, the
           matched Hardware + Software bands, then field-proven stats. */}
+      <JsonLd data={ORGANIZATION_SCHEMA} />
       <Hero />
       <ChallengeSelector />
       <HardwareHighlight />

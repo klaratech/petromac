@@ -1,20 +1,18 @@
-import { Metadata } from "next";
-import PrivacyContent, {
-  PRIVACY_TITLE,
-} from "@/components/shared/legal/PrivacyContent";
+import { Metadata } from 'next';
+import PrivacyContent, { PRIVACY_TITLE } from '@/components/shared/legal/PrivacyContent';
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Privacy Policy for Petromac website",
+  title: 'Privacy Policy',
+  description: 'Privacy Policy for Petromac website',
 };
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-6 py-16">
         <h1 className="text-4xl font-bold text-brand mb-8">{PRIVACY_TITLE}</h1>
         <PrivacyContent />
       </div>
-    </main>
+    </div>
   );
 }

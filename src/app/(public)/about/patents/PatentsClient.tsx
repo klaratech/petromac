@@ -384,7 +384,7 @@ export default function PatentsClient() {
   const totalPatents = DEVICES.reduce((n, d) => n + d.patents.length, 0);
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         {/* Header: title left, cross-link right */}
         <div className="flex items-end justify-between flex-wrap gap-4 mb-4">
@@ -487,7 +487,7 @@ export default function PatentsClient() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 

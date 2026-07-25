@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <main className="bg-slate-50 min-h-screen">
+    <div className="bg-slate-50 min-h-screen">
       <section className="container mx-auto px-4 pt-12 pb-8">
         <div className="h-12 md:h-14 w-2/3 max-w-xl rounded-lg bg-slate-200 animate-pulse" />
       </section>
@@ -27,6 +27,6 @@ export default function Loading() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

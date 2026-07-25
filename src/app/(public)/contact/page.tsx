@@ -1,44 +1,43 @@
-import ContactForm from "@/components/public/ContactForm";
-import Link from "next/link";
-import type { Metadata } from "next";
+import ContactForm from '@/components/public/ContactForm';
+import Link from 'next/link';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Contact Us",
+  title: 'Contact Us',
   description:
-    "Get in touch with Petromac for wireline logging solutions, product enquiries, or to request an Athena demo.",
+    'Get in touch with Petromac for wireline logging solutions, product enquiries, or to request an Athena demo.',
 };
 
 /** Right-column sitemap — grouped so the contact page doubles as a way in. */
-const SITEMAP: { heading: string; links: { href: string; label: string }[] }[] =
-  [
-    {
-      heading: "Company",
-      links: [
-        { href: "/about", label: "About Petromac" },
-        { href: "/team", label: "Team" },
-        { href: "/track-record", label: "Track record" },
-      ],
-    },
-    {
-      heading: "Products & technology",
-      links: [
-        { href: "/catalog", label: "Product catalog" },
-        { href: "/simulation", label: "Athena simulation" },
-        { href: "/about/patents", label: "Patents" },
-      ],
-    },
-    {
-      heading: "Resources",
-      links: [
-        { href: "/success-stories/flipbook", label: "Success stories" },
-        { href: "/about/publications", label: "Publications" },
-      ],
-    },
-  ];
+const SITEMAP: { heading: string; links: { href: string; label: string }[] }[] = [
+  {
+    heading: 'Company',
+    links: [
+      { href: '/about', label: 'About Petromac' },
+      { href: '/team', label: 'Team' },
+      { href: '/track-record', label: 'Track record' },
+    ],
+  },
+  {
+    heading: 'Products & technology',
+    links: [
+      { href: '/catalog', label: 'Product catalog' },
+      { href: '/simulation', label: 'Athena simulation' },
+      { href: '/about/patents', label: 'Patents' },
+    ],
+  },
+  {
+    heading: 'Resources',
+    links: [
+      { href: '/success-stories/flipbook', label: 'Success stories' },
+      { href: '/about/publications', label: 'Publications' },
+    ],
+  },
+];
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100">
       <div className="container mx-auto px-6 py-16 md:py-20">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left half — the form */}
@@ -50,15 +49,14 @@ export default function ContactPage() {
               Get in touch
             </h1>
             <p className="text-base md:text-lg text-slate-400 leading-relaxed mb-8 max-w-md">
-              Questions about our conveyance and centralisation systems, a
-              product enquiry, or want to see Athena in action? Send us a
-              message and the right person will get back to you.
+              Questions about our conveyance and centralisation systems, a product enquiry, or want
+              to see Athena in action? Send us a message and the right person will get back to you.
             </p>
 
             <ContactForm />
 
             <p className="mt-8 pt-6 border-t border-slate-800 text-sm text-slate-400">
-              Prefer email?{" "}
+              Prefer email?{' '}
               <a
                 href="mailto:info@petromac.co.nz"
                 className="font-medium text-brand hover:underline"
@@ -103,6 +101,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

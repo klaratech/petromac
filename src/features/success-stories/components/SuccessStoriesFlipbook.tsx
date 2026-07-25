@@ -211,7 +211,7 @@ export default function SuccessStoriesFlipbook({
         : null;
 
   return (
-    <main className="bg-slate-50 min-h-screen">
+    <div className="bg-slate-50 min-h-screen">
       <section className="container mx-auto px-4 pt-10 md:pt-12 pb-6 md:pb-8">
         {/* Back nav — small, sits above the headline */}
         {onBack ? (
@@ -355,7 +355,7 @@ export default function SuccessStoriesFlipbook({
           </div>
         )}
       </section>
-    </main>
+    </div>
   );
 }
 

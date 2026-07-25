@@ -212,7 +212,7 @@ export default function CatalogBrowser({
         </aside>
 
         {/* Content pane: the active category only */}
-        <main className="lg:col-span-3 min-w-0">
+        <div className="lg:col-span-3 min-w-0">
           <div className="mb-6">
             <CatalogSearch entries={searchEntries} onSelect={jumpToProduct} />
             {/* Mobile has no sidebar — surface the PDF actions here */}
@@ -276,7 +276,7 @@ export default function CatalogBrowser({
               );
             })}
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );

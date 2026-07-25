@@ -11,6 +11,7 @@ import {
   productHref,
 } from '@/features/catalog/content';
 import type { CatalogImage } from '@/features/catalog/content/types';
+import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 
 interface Params {
   category: string;
@@ -27,9 +28,18 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { category, slug } = await params;
   const product = getProduct(category, slug);
   if (!product) return {};
+  // Product-specific share card. SVG figures don't render as OG images, so
+  // fall back to the site-wide card (inherited from the root layout) when a
+  // product has no raster image.
+  const ogImage = product.images.find((img) => !img.src.endsWith('.svg'));
   return {
     title: `${product.name} | Petromac Catalogue`,
     description: product.summary,
+    ...(ogImage && {
+      openGraph: {
+        images: [{ url: ogImage.src, width: ogImage.width, height: ogImage.height }],
+      },
+    }),
   };
 }
 
@@ -68,8 +78,37 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   const figures = product.images.filter((i) => i.role === 'figure');
   const { prev, next } = adjacentProducts(product);
 
+  // schema.org rich data — name/summary/images straight from catalog.json,
+  // no offers/ratings (industrial equipment, no listed pricing).
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.summary,
+    category: category.name,
+    brand: { '@type': 'Brand', name: 'Petromac' },
+    url: absoluteUrl(productHref(product)),
+    image: product.images.filter((i) => !i.src.endsWith('.svg')).map((i) => absoluteUrl(i.src)),
+  };
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Catalogue', item: absoluteUrl('/catalog') },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: category.name,
+        item: absoluteUrl(`/catalog?category=${category.slug}`),
+      },
+      { '@type': 'ListItem', position: 3, name: product.name },
+    ],
+  };
+
   return (
     <div className="bg-white">
+      <JsonLd data={productSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Breadcrumbs */}
         <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-400">
