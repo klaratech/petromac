@@ -143,6 +143,24 @@ svg path[tabindex='0']:focus-visible {
   }
 }
 
+/* Pre-hydration state for typewriter content: the inline <head> script
+   sets data-motion-ok only when JS is live and the user allows motion, so
+   animated elements are hidden on FIRST PAINT instead of flashing their
+   finished state before the replay resets them. React drops the class as
+   soon as the animation takes over (inline styles govern from there). The
+   0s/3s forwards animation is a dead-man switch: if hydration never runs,
+   the content reveals itself — nothing can stay hidden for good. */
+html[data-motion-ok] .anim-prehide {
+  opacity: 0;
+  animation: anim-prehide-release 0s 3s forwards;
+}
+
+@keyframes anim-prehide-release {
+  to {
+    opacity: 1;
+  }
+}
+
 /* Typewriter carets (hero headline + Athena terminal). The blink is
    gated so reduced-motion users see a steady bar, never a flasher. */
 @media (prefers-reduced-motion: no-preference) {

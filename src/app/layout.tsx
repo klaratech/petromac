@@ -75,7 +75,19 @@ export default function RootLayout({
     // scroll-behavior:smooth animates the scroll-to-top on navigation and
     // the new page can land slightly off the top. Anchor links stay smooth.
     <html lang="en" data-scroll-behavior="smooth">
-      <head />
+      <head>
+        {/* Runs before first paint: flags that JS is live and the user
+            allows motion, so CSS can pre-hide typewriter content instead
+            of flashing the finished state before the animation replays
+            (see .anim-prehide in globals.css). No-JS and reduced-motion
+            visitors never get the flag — they see content instantly. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.setAttribute('data-motion-ok','')}catch(e){}",
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${ibmPlexSans.variable} font-sans antialiased min-h-dvh flex flex-col`}
       >

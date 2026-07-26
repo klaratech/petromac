@@ -149,7 +149,12 @@ export default function Hero() {
         >
           <span
             ref={wrapRef}
-            className="inline-block will-change-transform"
+            // anim-prehide only in the pristine SSR state: pre-hidden at
+            // first paint when the head script flagged data-motion-ok, so
+            // the finished headline never flashes before the replay.
+            className={`inline-block will-change-transform${
+              phase === 'static' ? ' anim-prehide' : ''
+            }`}
             style={glideStyle}
             aria-hidden={animating ? true : undefined}
           >
@@ -218,8 +223,16 @@ export default function Hero() {
         </h1>
 
         <div
-          className={showBelow ? '' : 'pointer-events-none'}
-          style={{ opacity: showBelow ? 1 : 0, transition: 'opacity 500ms ease' }}
+          className={`${showBelow ? '' : 'pointer-events-none'}${
+            phase === 'static' ? ' anim-prehide' : ''
+          }`}
+          // No inline opacity in the pristine state — it would override the
+          // pre-hide class; once the animation starts, inline styles govern.
+          style={
+            phase === 'static'
+              ? undefined
+              : { opacity: showBelow ? 1 : 0, transition: 'opacity 500ms ease' }
+          }
         >
           <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-10">
             Better data. Lower risk. Faster operations.
