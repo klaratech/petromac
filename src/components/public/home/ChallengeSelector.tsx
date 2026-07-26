@@ -48,7 +48,7 @@ const SOLUTIONS: Solution[] = [
     summary:
       'Wireline Express provides gravity-descent conveyance in high-deviation open hole, designed for tortuous wellbore profiles.',
     proofPoints: [
-      'World record descent at 79° deviation',
+      'World record: 80° deviation descent — in open hole',
       'Field-proven across operators worldwide',
     ],
     video: {
@@ -78,10 +78,10 @@ const SOLUTIONS: Solution[] = [
     challenge: 'Centralisation',
     product: 'Focus Centralisers',
     summary:
-      'Open hole and cased hole centralisers — HELIX, Rocker, and CP-series across the full casing range.',
+      'CP-series centralisers for open hole; HELIX, Rocker, and CA7 for cased hole — optimal standoff across the full range.',
     proofPoints: [
       'Improved leverage and lower drag than conventional centralisers',
-      'Cleaner CBL, sonic, and density logs through optimal standoff',
+      'Cleaner CBL and sonic logs through optimal standoff',
     ],
     video: {
       src: '/videos/transcoded/helix-subtitled.mp4',
@@ -197,10 +197,6 @@ export default function ChallengeSelector() {
                     <path d="M8 5.5v13l11-6.5-11-6.5z" />
                   </svg>
                 </span>
-              </span>
-              {/* Duration badge */}
-              <span className="absolute bottom-3 left-3 rounded-md bg-black/70 px-2 py-1 text-xs font-semibold text-white tabular-nums">
-                {active.video.duration}
               </span>
               {/* Expand affordance */}
               <span className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-md bg-black/70 text-white group-hover:bg-black/85 transition-colors">
