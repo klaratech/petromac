@@ -37,8 +37,8 @@ _current state_ and _how to operate it_; the reasoning lives here.
   aware, layout-shift-free via probe-measured width/height reservation).
   Crawlers, LCP, and no-JS users always get the finished state.
 - **Hero background is a purpose-cut loop, not the product film.** The
-  4-minute 13 MB WirelineExpress clip was replaced by a seamless 14.9s
-  2.6 MB loop whose first frame doubles as the poster — instant paint, ~80%
+  4-minute 13 MB WirelineExpress clip was replaced by a seamless ~13s
+  ~1.9 MB loop whose first frame doubles as the poster — instant paint, ~85%
   less transfer, and mobile/reduced-motion users download no video at all
   (IO-gated source attach in `LazyVideo`).
 

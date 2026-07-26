@@ -11,7 +11,6 @@ const LEAD = 'Wireline logging';
 const TYPED_RUNS = [
   { text: ' — ', cls: '' },
   { text: 'Optimised', cls: 'text-brand' },
-  { text: '.', cls: '' },
 ] as const;
 const TYPED_TEXT = TYPED_RUNS.map((r) => r.text).join('');
 const FULL_TEXT = LEAD + TYPED_TEXT;
@@ -112,7 +111,7 @@ export default function Hero() {
 
   return (
     <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
-      {/* Background: seamless 14.9s hero loop (desktop) / its first frame as
+      {/* Background: seamless 13.2s hero loop (desktop) / its first frame as
           a static image (mobile, no-JS, reduced motion). The priority Image
           paints immediately, so there's never a flash of empty background
           before the video is ready. */}
@@ -127,7 +126,7 @@ export default function Hero() {
         />
         {/* Desktop only (`hidden md:block`). Routed through LazyVideo so the
             source only attaches when its box is on screen — a display:none
-            element never intersects, so mobile never downloads the 2.6 MB
+            element never intersects, so mobile never downloads the 1.9 MB
             loop; LazyVideo also skips attaching for reduced-motion users. */}
         <LazyVideo
           src="/videos/hero/hero-loop.mp4"

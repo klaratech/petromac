@@ -32,7 +32,7 @@
 
 | File                                | Current | Deliver As                          | Display Size                    | Used In                               |
 | ----------------------------------- | ------- | ----------------------------------- | ------------------------------- | ------------------------------------- |
-| `/videos/hero/hero-loop.mp4`        | 2.6 MB  | **MP4 (H.264), 1080p, no audio**    | Full viewport (90vh, min 600px) | Homepage hero background (14.9s loop) |
+| `/videos/hero/hero-loop.mp4`        | 1.9 MB  | **MP4 (H.264), 1080p, no audio**    | Full viewport (90vh, min 600px) | Homepage hero background (13.2s loop) |
 | `/videos/hero/hero-loop-poster.jpg` | 117 KB  | **JPG, 1920 x 1080 px, quality 80** | Full viewport (90vh, min 600px) | Hero background image + video poster  |
 
 > The poster is the loop's first frame, so playback starts invisibly from
