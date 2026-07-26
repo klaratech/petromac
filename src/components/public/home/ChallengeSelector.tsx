@@ -27,10 +27,10 @@ const SOLUTIONS: Solution[] = [
     challenge: 'Differential Sticking',
     product: 'Wireline Express',
     summary:
-      'Wireline Express keeps tool strings moving through sticking-prone intervals instead of letting them sit stationary against the wellbore.',
+      'Wireline Express carries the tool string on wheeled carriages, offsetting it from the wellbore wall where differential sticking takes hold.',
     proofPoints: [
-      'Engineered for differential-sticking conditions',
-      'Reduces non-productive time on at-risk operations',
+      '~99% less contact area with the borehole wall',
+      'Tools roll free instead of getting stuck',
     ],
     video: {
       // Subtitled cuts carry the narration audio track — the plain

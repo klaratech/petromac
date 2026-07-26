@@ -45,8 +45,11 @@ export default function SoftwareHighlight() {
           {/* Copy — mirrors the /simulation hero pitch; Athena is named here
               since the band title is now the capability, not the product. */}
           <p className="text-slate-300 md:flex-1 md:max-w-xl text-base leading-relaxed">
-            Athena&trade; turns a well plan into a go / no-go call before the run starts —{' '}
-            <span className="text-white font-semibold">simulate with confidence</span>.
+            Athena&trade; turns wireline run planning into a risk / return decision —{' '}
+            <span className="text-white font-semibold whitespace-nowrap">
+              simulate with confidence
+            </span>
+            .
           </p>
 
           {/* CTA */}
