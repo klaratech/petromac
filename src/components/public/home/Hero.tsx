@@ -33,6 +33,7 @@ export default function Hero() {
   const [showBelow, setShowBelow] = useState(true);
   const [shift, setShift] = useState(0);
   const [typedWidth, setTypedWidth] = useState(0);
+  const [singleLine, setSingleLine] = useState(true);
 
   const wrapRef = useRef<HTMLSpanElement>(null);
   const probeRef = useRef<HTMLSpanElement>(null);
@@ -52,18 +53,19 @@ export default function Hero() {
       // The glide choreography assumes a single-line headline; on narrow
       // screens where it wraps, type in place instead (shift = 0).
       const fontSize = parseFloat(getComputedStyle(wrapRef.current).fontSize);
-      const singleLine = wrapRef.current.getBoundingClientRect().height < fontSize * 1.6;
+      const oneLine = wrapRef.current.getBoundingClientRect().height < fontSize * 1.6;
 
       setTypedWidth(typedW);
-      setShift(singleLine ? typedW / 2 : 0);
+      setSingleLine(oneLine);
+      setShift(oneLine ? typedW / 2 : 0);
       setChars(0);
       setShowBelow(false);
       setPhase('pre');
       await sleep(30); // commit the pre state, then start the fade
       if (!alive) return;
 
-      setPhase('lead'); // fade in ~600ms …
-      await sleep(600 + 900); // … then hold
+      setPhase('lead'); // fade in ~500ms …
+      await sleep(500 + 300); // … then a short hold
       if (!alive) return;
 
       setPhase('glide'); // ease-out left by half the typed width
@@ -71,7 +73,7 @@ export default function Hero() {
       if (!alive) return;
 
       setCaret('blink');
-      await sleep(350);
+      await sleep(150);
       setPhase('typing');
       for (let i = 1; i <= TYPED_TEXT.length; i++) {
         if (!alive) return;
@@ -154,7 +156,7 @@ export default function Hero() {
               className="inline-block"
               style={
                 animating
-                  ? { opacity: phase === 'pre' ? 0 : 1, transition: 'opacity 600ms ease' }
+                  ? { opacity: phase === 'pre' ? 0 : 1, transition: 'opacity 500ms ease' }
                   : undefined
               }
             >
@@ -163,9 +165,19 @@ export default function Hero() {
             {/* Typed segment: during the animation it becomes a fixed-width
                 box (measured from the probe) so nothing reflows as
                 characters appear; 'Optimised' keeps the brand accent. */}
+            {/* On a single line the reserved width equals the natural width,
+                so releasing it after the animation is shift-free. On wrapped
+                (narrow) layouts releasing would recompose the lines, so the
+                box stays for the life of the page instead. */}
             <span
-              className={animating ? 'inline-block text-left whitespace-pre' : undefined}
-              style={animating ? { width: typedWidth } : undefined}
+              className={
+                animating || (phase === 'done' && !singleLine)
+                  ? 'inline-block text-left whitespace-pre'
+                  : undefined
+              }
+              style={
+                animating || (phase === 'done' && !singleLine) ? { width: typedWidth } : undefined
+              }
             >
               {TYPED_RUNS.map((run, i) => {
                 const take = Math.max(0, Math.min(run.text.length, chars - RUN_STARTS[i]));
@@ -178,7 +190,10 @@ export default function Hero() {
               {caret !== 'hidden' && caret !== 'removed' && (
                 <span
                   aria-hidden="true"
-                  className={`ml-1 inline-block w-[3px] h-[0.85em] align-[-0.06em] bg-brand ${
+                  // mr cancels ml + width exactly: the caret contributes zero
+                  // layout width, so neither the release to auto width nor
+                  // the caret's removal can nudge the centered headline.
+                  className={`ml-1 mr-[-7px] inline-block w-[3px] h-[0.85em] align-[-0.06em] bg-brand ${
                     caret === 'blink' ? 'caret-blink' : ''
                   }`}
                   style={
