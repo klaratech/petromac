@@ -27,6 +27,9 @@ export default function LazyVideo({ src, poster, className }: LazyVideoProps) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Decorative autoplay backgrounds: reduced-motion users keep the static
+    // poster — the source is never attached, so nothing downloads either.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
@@ -54,6 +57,16 @@ export default function LazyVideo({ src, poster, className }: LazyVideoProps) {
   }, [visible, src]);
 
   return (
-    <video ref={ref} poster={poster} muted loop playsInline preload="none" className={className} />
+    <video
+      ref={ref}
+      poster={poster}
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-hidden="true"
+      tabIndex={-1}
+      className={className}
+    />
   );
 }
