@@ -30,12 +30,15 @@
 
 ### 1.2 Hero / Background
 
-| File                      | Current | Deliver As                          | Display Size                    | Used In                                 |
-| ------------------------- | ------- | ----------------------------------- | ------------------------------- | --------------------------------------- |
-| `/images/hero-poster.jpg` | 106 KB  | **JPG, 1920 x 1080 px, quality 80** | Full viewport (90vh, min 600px) | Homepage hero background + video poster |
+| File                                | Current | Deliver As                          | Display Size                    | Used In                               |
+| ----------------------------------- | ------- | ----------------------------------- | ------------------------------- | ------------------------------------- |
+| `/videos/hero/hero-loop.mp4`        | 2.6 MB  | **MP4 (H.264), 1080p, no audio**    | Full viewport (90vh, min 600px) | Homepage hero background (14.9s loop) |
+| `/videos/hero/hero-loop-poster.jpg` | 117 KB  | **JPG, 1920 x 1080 px, quality 80** | Full viewport (90vh, min 600px) | Hero background image + video poster  |
 
-> This is the fallback image behind the hero video — a real frame from
-> WirelineExpress.mp4. Regenerate with `ffmpeg -ss 20 -i <clip> -frames:v 1`.
+> The poster is the loop's first frame, so playback starts invisibly from
+> the still. Regenerate with `ffmpeg -i hero-loop.mp4 -frames:v 1`. Keep
+> both filenames stable — Hero.tsx references them directly (and swap-in-place
+> means caches refresh within ~a day; rename to bust instantly).
 
 ---
 
