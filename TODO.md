@@ -64,6 +64,12 @@ cache rule. Remaining:
 
 ## Backlog
 
+- [ ] Rebuild the 21 WordPress case studies as individual server-rendered
+      pages under `/case-studies/<slug>` (currently only 301-redirected).
+      They target long-tail queries (tool + country + deviation) that the
+      success-stories flipbook cannot rank for. Source content: WordPress
+      backup / petromac.co.nz case-studies pages. Add Article JSON-LD and
+      include them in the sitemap when built.
 - [ ] MapRenderer: split base path generation from style updates so filter
       clicks restyle instead of rebuilding all ~244 paths (from the Jul 2026
       audit; deferred — delicate component, clicks already debounced)

@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
-import PatentsClient from "./PatentsClient";
+import { pageMetadata } from '@/lib/seo';
+import PatentsClient from './PatentsClient';
 
-export const metadata: Metadata = {
-  title: "Patents",
+export const metadata = pageMetadata({
+  title: 'Patents',
   description:
     "Petromac's granted patents for Wireline Express, Pathfinder, and Focus precision centraliser technologies.",
-};
+  path: '/about/patents',
+});
 
 export default function PatentsPage() {
   return <PatentsClient />;

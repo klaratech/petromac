@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'About',
   description:
     "Learn about Petromac's origins, our founder Stephen McCormick, and the engineering drive behind our wireline logging solutions.",
-};
+  path: '/about',
+});
 
 export default function AboutPage() {
   return (

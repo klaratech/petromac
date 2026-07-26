@@ -32,4 +32,10 @@ export const ORGANIZATION_SCHEMA = {
   description:
     'Petromac designs and manufactures wireline logging devices, centralisers, and conveyance systems for the global oil & gas industry.',
   sameAs: ['https://www.linkedin.com/company/petromac-ltd/'],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'info@petromac.co.nz',
+    contactType: 'sales',
+    availableLanguage: 'English',
+  },
 } as const;

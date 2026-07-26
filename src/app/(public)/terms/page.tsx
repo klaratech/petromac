@@ -1,10 +1,11 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import TermsContent, { TERMS_TITLE } from '@/components/shared/legal/TermsContent';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Terms of Use',
   description: 'Terms of Use for Petromac website',
-};
+  path: '/terms',
+});
 
 export default function TermsPage() {
   return (

@@ -143,6 +143,20 @@ svg path[tabindex='0']:focus-visible {
   }
 }
 
+/* Typewriter carets (hero headline + Athena terminal). The blink is
+   gated so reduced-motion users see a steady bar, never a flasher. */
+@media (prefers-reduced-motion: no-preference) {
+  .caret-blink {
+    animation: caret-blink 0.85s step-end infinite;
+  }
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 /* Sticky header gains depth once content slides beneath it. A shadow
    fade, not motion, so it stays on for reduced-motion users too. */
 @supports (animation-timeline: scroll()) {

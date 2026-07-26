@@ -1,10 +1,11 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import PrivacyContent, { PRIVACY_TITLE } from '@/components/shared/legal/PrivacyContent';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Privacy Policy',
   description: 'Privacy Policy for Petromac website',
-};
+  path: '/privacy',
+});
 
 export default function PrivacyPage() {
   return (

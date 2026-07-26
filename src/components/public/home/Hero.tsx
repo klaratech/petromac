@@ -1,10 +1,113 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import LazyVideo from './LazyVideo';
 
+// Headline segments. The full text lives in the server-rendered HTML; the
+// typewriter is a client-side enhancement that replays it after hydration.
+const LEAD = 'Wireline logging';
+const TYPED_RUNS = [
+  { text: ' — ', cls: '' },
+  { text: 'Optimised', cls: 'text-brand' },
+  { text: '.', cls: '' },
+] as const;
+const TYPED_TEXT = TYPED_RUNS.map((r) => r.text).join('');
+const FULL_TEXT = LEAD + TYPED_TEXT;
+// Each run's starting character offset within the typed segment.
+const RUN_STARTS = TYPED_RUNS.map((_, i) =>
+  TYPED_RUNS.slice(0, i).reduce((n, r) => n + r.text.length, 0)
+);
+
+type Phase = 'static' | 'pre' | 'lead' | 'glide' | 'typing' | 'done';
+type Caret = 'hidden' | 'blink' | 'fading' | 'removed';
+
 export default function Hero() {
+  // Initial state === finished state: the first client render matches the
+  // server HTML exactly (no hydration mismatch), and crawlers / no-JS /
+  // reduced-motion users simply keep it.
+  const [phase, setPhase] = useState<Phase>('static');
+  const [chars, setChars] = useState(TYPED_TEXT.length);
+  const [caret, setCaret] = useState<Caret>('hidden');
+  const [showBelow, setShowBelow] = useState(true);
+  const [shift, setShift] = useState(0);
+  const [typedWidth, setTypedWidth] = useState(0);
+
+  const wrapRef = useRef<HTMLSpanElement>(null);
+  const probeRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let alive = true;
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    (async () => {
+      // Let the heading webfont settle so the probe measures the real width
+      // (bounded — don't stall the animation on a slow font).
+      await Promise.race([document.fonts?.ready, sleep(400)]);
+      if (!alive || !probeRef.current || !wrapRef.current) return;
+
+      const typedW = probeRef.current.getBoundingClientRect().width;
+      // The glide choreography assumes a single-line headline; on narrow
+      // screens where it wraps, type in place instead (shift = 0).
+      const fontSize = parseFloat(getComputedStyle(wrapRef.current).fontSize);
+      const singleLine = wrapRef.current.getBoundingClientRect().height < fontSize * 1.6;
+
+      setTypedWidth(typedW);
+      setShift(singleLine ? typedW / 2 : 0);
+      setChars(0);
+      setShowBelow(false);
+      setPhase('pre');
+      await sleep(30); // commit the pre state, then start the fade
+      if (!alive) return;
+
+      setPhase('lead'); // fade in ~600ms …
+      await sleep(600 + 900); // … then hold
+      if (!alive) return;
+
+      setPhase('glide'); // ease-out left by half the typed width
+      await sleep(550);
+      if (!alive) return;
+
+      setCaret('blink');
+      await sleep(350);
+      setPhase('typing');
+      for (let i = 1; i <= TYPED_TEXT.length; i++) {
+        if (!alive) return;
+        setChars(i);
+        await sleep(TYPED_TEXT[i - 1] === ' ' ? 30 : 55);
+      }
+      setPhase('done');
+      await sleep(500);
+      if (!alive) return;
+      setShowBelow(true); // subheadline + CTAs fade in (500ms)
+      await sleep(700); // caret keeps blinking ~1.2s after typing …
+      if (!alive) return;
+      setCaret('fading'); // … then fades out over 0.8s …
+      await sleep(800);
+      if (!alive) return;
+      setCaret('removed'); // … and is removed. Never blinks indefinitely.
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const animating = phase !== 'static' && phase !== 'done';
+
+  // Wrapper transform: parked right of centre before the glide, 0 after.
+  const glideStyle: React.CSSProperties =
+    phase === 'pre' || phase === 'lead'
+      ? { transform: `translateX(${shift}px)` }
+      : {
+          transform: 'translateX(0)',
+          ...(phase === 'glide' && {
+            transition: 'transform 550ms cubic-bezier(.22,.8,.3,1)',
+          }),
+        };
+
   return (
     <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
       {/* Background video (desktop) / static image (mobile).
@@ -35,54 +138,115 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 max-w-5xl mx-auto">
-        <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] mb-6">
-          {/* Em-dash + brand-tinted second clause makes the headline read
-              as a deliberate two-beat tagline. 'Optimised' uses the
-              Petromac brand navy (#1E4A9A) to tie the headline to the
-              rest of the page's brand color usage. */}
-          Wireline logging — <span className="text-brand">Optimised</span>.
-        </h1>
-        <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-10">
-          Better data. Lower risk. Faster operations.
-        </p>
-
-        {/* CTA pair — primary (solid brand) + secondary (outline) */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-          <Link
-            href="/track-record"
-            className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/30 transition-all hover:translate-y-[-1px] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black"
+        {/* Full headline is always in the markup (SEO/LCP); the typewriter
+            only animates opacity/transform/substring after hydration. */}
+        <h1
+          className="relative font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] mb-6"
+          aria-label={animating ? FULL_TEXT : undefined}
+        >
+          <span
+            ref={wrapRef}
+            className="inline-block will-change-transform"
+            style={glideStyle}
+            aria-hidden={animating ? true : undefined}
           >
-            See the track record
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
+            <span
+              className="inline-block"
+              style={
+                animating
+                  ? { opacity: phase === 'pre' ? 0 : 1, transition: 'opacity 600ms ease' }
+                  : undefined
+              }
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Link>
-          {/* Solutions-company positioning: the catalog is reachable via the
-              challenge cards and the hardware ribbon, not as a hero CTA. */}
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              // No behavior option: the scroll inherits the CSS
-              // scroll-behavior, which is smooth only when the user
-              // hasn't asked for reduced motion.
-              document.getElementById('contact')?.scrollIntoView();
-            }}
-            className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white border-2 border-white/60 hover:bg-white hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+              {LEAD}
+            </span>
+            {/* Typed segment: during the animation it becomes a fixed-width
+                box (measured from the probe) so nothing reflows as
+                characters appear; 'Optimised' keeps the brand accent. */}
+            <span
+              className={animating ? 'inline-block text-left whitespace-pre' : undefined}
+              style={animating ? { width: typedWidth } : undefined}
+            >
+              {TYPED_RUNS.map((run, i) => {
+                const take = Math.max(0, Math.min(run.text.length, chars - RUN_STARTS[i]));
+                return (
+                  <span key={run.text} className={run.cls || undefined}>
+                    {animating ? run.text.slice(0, take) : run.text}
+                  </span>
+                );
+              })}
+              {caret !== 'hidden' && caret !== 'removed' && (
+                <span
+                  aria-hidden="true"
+                  className={`ml-1 inline-block w-[3px] h-[0.85em] align-[-0.06em] bg-brand ${
+                    caret === 'blink' ? 'caret-blink' : ''
+                  }`}
+                  style={
+                    caret === 'fading'
+                      ? { opacity: 0, transition: 'opacity 800ms ease' }
+                      : undefined
+                  }
+                />
+              )}
+            </span>
+          </span>
+          {/* Hidden probe: real font, real size — measures the typed
+              segment's final pixel width for the glide + reservation. */}
+          <span
+            ref={probeRef}
+            aria-hidden="true"
+            className="absolute left-0 top-0 invisible whitespace-pre pointer-events-none"
           >
-            Talk to us
-          </a>
+            {TYPED_TEXT}
+          </span>
+        </h1>
+
+        <div
+          className={showBelow ? '' : 'pointer-events-none'}
+          style={{ opacity: showBelow ? 1 : 0, transition: 'opacity 500ms ease' }}
+        >
+          <p className="text-xl md:text-2xl text-slate-100 max-w-2xl mb-10">
+            Better data. Lower risk. Faster operations.
+          </p>
+
+          {/* CTA pair — primary (solid brand) + secondary (outline) */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <Link
+              href="/track-record"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/30 transition-all hover:translate-y-[-1px] hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-black"
+            >
+              See the track record
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+            {/* Solutions-company positioning: the catalog is reachable via the
+                challenge cards and the hardware ribbon, not as a hero CTA. */}
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                // No behavior option: the scroll inherits the CSS
+                // scroll-behavior, which is smooth only when the user
+                // hasn't asked for reduced motion.
+                document.getElementById('contact')?.scrollIntoView();
+              }}
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white border-2 border-white/60 hover:bg-white hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+            >
+              Talk to us
+            </a>
+          </div>
         </div>
       </div>
     </section>

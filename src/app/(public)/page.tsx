@@ -5,12 +5,15 @@ import SoftwareHighlight from '@/components/public/home/SoftwareHighlight';
 import ProofSection from '@/components/public/home/ProofSection';
 import ContactSection from '@/components/public/home/ContactSection';
 import JsonLd, { ORGANIZATION_SCHEMA } from '@/components/shared/JsonLd';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata = {
-  title: 'Petromac — Wireline Logging Solutions',
+// Un-branded title — the root template appends "| Petromac" exactly once.
+export const metadata = pageMetadata({
+  title: 'Wireline Conveyance, Centralisers & Hole Finders',
   description:
     'Wireline logging solutions for differential sticking, incomplete operations, high deviations, data quality, and centralisation — engineered hardware and Athena planning software.',
-};
+  path: '/',
+});
 
 export default function HomePage() {
   return (

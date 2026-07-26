@@ -12,6 +12,7 @@ import {
 } from '@/features/catalog/content';
 import type { CatalogImage } from '@/features/catalog/content/types';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
+import { pageMetadata } from '@/lib/seo';
 
 interface Params {
   category: string;
@@ -29,18 +30,21 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const product = getProduct(category, slug);
   if (!product) return {};
   // Product-specific share card. SVG figures don't render as OG images, so
-  // fall back to the site-wide card (inherited from the root layout) when a
-  // product has no raster image.
+  // pageMetadata falls back to the site-wide card when a product has no
+  // raster image. Title is the bare product name — the root template
+  // appends "| Petromac" exactly once.
   const ogImage = product.images.find((img) => !img.src.endsWith('.svg'));
-  return {
-    title: `${product.name} | Petromac Catalogue`,
+  return pageMetadata({
+    title: product.name,
     description: product.summary,
-    ...(ogImage && {
-      openGraph: {
-        images: [{ url: ogImage.src, width: ogImage.width, height: ogImage.height }],
-      },
-    }),
-  };
+    path: `/catalog/${category}/${slug}`,
+    ogImage: ogImage && {
+      url: ogImage.src,
+      width: ogImage.width,
+      height: ogImage.height,
+      alt: ogImage.alt,
+    },
+  });
 }
 
 /** SVG figures skip next/image (the optimizer doesn't process SVGs). */

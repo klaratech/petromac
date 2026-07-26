@@ -1,5 +1,19 @@
 import type { NextConfig } from 'next';
 import withBundleAnalyzer from '@next/bundle-analyzer';
+import { getSiteUrl, isProductionSite, PRODUCTION_SITE_URLS } from './src/lib/siteUrl';
+
+// Launch-day guard: a deploy that declares itself production must point at
+// the production domain — otherwise it would ship indexable pages whose
+// canonicals/sitemap reference a staging URL. Conversely, without this env
+// combination noindex is derived automatically, so an explicit production
+// build can never ship noindex. Fails the build, not the request.
+if (process.env.NEXT_PUBLIC_ENV === 'production' && !PRODUCTION_SITE_URLS.includes(getSiteUrl())) {
+  throw new Error(
+    `NEXT_PUBLIC_ENV=production but NEXT_PUBLIC_SITE_URL is "${getSiteUrl()}" — a production ` +
+      `build must set NEXT_PUBLIC_SITE_URL to one of: ${PRODUCTION_SITE_URLS.join(', ')}. ` +
+      'Refusing to build: this combination would index the wrong domain.'
+  );
+}
 
 // Everything is self-hosted (fonts via next/font, Draco decoder in
 // public/draco/, no analytics), so the CSP can be tight. The exceptions:
@@ -30,6 +44,9 @@ const contentSecurityPolicy = [
 ].join('; ');
 
 const securityHeaders = [
+  // Staging/preview: belt-and-braces noindex at the header level too (pages
+  // also carry meta noindex and robots.txt disallows everything).
+  ...(isProductionSite() ? [] : [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }]),
   { key: 'Content-Security-Policy', value: contentSecurityPolicy },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'X-Frame-Options', value: 'DENY' },

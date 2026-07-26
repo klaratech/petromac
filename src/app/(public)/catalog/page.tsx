@@ -1,13 +1,14 @@
-import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import CatalogBrowser from '@/components/public/catalog/CatalogBrowser';
 import { buildCardModels, buildSearchIndex, catalog, categories } from '@/features/catalog/content';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Product Catalogue',
   description:
     'Petromac equipment catalogue — Wireline Express™ tool taxis, guides and holefinders, Focus™ precision centralisers and well intervention accessories.',
-};
+  path: '/catalog',
+});
 
 export default function CatalogTestPage() {
   // Slim props built at compile time — the client browser never sees the

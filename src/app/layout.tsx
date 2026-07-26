@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, IBM_Plex_Sans } from 'next/font/google';
 import './globals.css';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
-import { getSiteUrl } from '@/lib/siteUrl';
+import { getSiteUrl, isProductionSite } from '@/lib/siteUrl';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -19,6 +19,10 @@ const BASE_URL = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  // Staging/preview builds carry meta noindex on every page (plus an
+  // X-Robots-Tag header from next.config.ts and a Disallow-all robots.txt).
+  // Production indexability is guarded at build time in next.config.ts.
+  robots: isProductionSite() ? { index: true, follow: true } : { index: false, follow: false },
   title: {
     default: 'Petromac | Wireline Logging & Downhole Technology',
     template: '%s | Petromac',

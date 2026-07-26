@@ -1,13 +1,15 @@
 import SimulationHero from '@/components/public/simulation/SimulationHero';
+import { pageMetadata } from '@/lib/seo';
 import AthenaInAction from '@/components/public/simulation/AthenaInAction';
 import WhyPetromac from '@/components/public/simulation/WhyPetromac';
 import ContactForm from '@/components/public/ContactForm';
 
-export const metadata = {
-  title: 'Athena - Wireline Planning Partner',
+export const metadata = pageMetadata({
+  title: 'Athena — Wireline Planning Partner',
   description:
     'Athena turns a well plan into a go/no-go call before the run starts — combining Hermes drag-and-tension modelling, AI configuration checks, and regional-manager experience.',
-};
+  path: '/simulation',
+});
 
 export default function SimulationPage() {
   return (

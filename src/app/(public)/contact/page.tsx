@@ -1,12 +1,13 @@
 import ContactForm from '@/components/public/ContactForm';
 import Link from 'next/link';
-import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Contact Us',
   description:
     'Get in touch with Petromac for wireline logging solutions, product enquiries, or to request an Athena demo.',
-};
+  path: '/contact',
+});
 
 /** Right-column sitemap — grouped so the contact page doubles as a way in. */
 const SITEMAP: { heading: string; links: { href: string; label: string }[] }[] = [

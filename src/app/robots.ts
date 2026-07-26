@@ -1,9 +1,16 @@
 import type { MetadataRoute } from 'next';
-import { getSiteUrl } from '@/lib/siteUrl';
+import { getSiteUrl, isProductionSite } from '@/lib/siteUrl';
 
 const BASE_URL = getSiteUrl();
 
 export default function robots(): MetadataRoute.Robots {
+  // Staging/preview: nothing is crawlable (pages also carry meta noindex
+  // and an X-Robots-Tag header — see src/lib/siteUrl.ts).
+  if (!isProductionSite()) {
+    return {
+      rules: [{ userAgent: '*', disallow: '/' }],
+    };
+  }
   return {
     rules: [
       {

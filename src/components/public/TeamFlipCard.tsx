@@ -73,7 +73,12 @@ export default function TeamFlipCard({ member }: TeamFlipCardProps) {
             <div className="h-48 bg-gradient-to-b from-slate-100 to-slate-50 flex items-center justify-center overflow-hidden">
               {member.imageSrc ? (
                 <div className="relative w-32 h-32 rounded-full overflow-hidden ring-4 ring-white shadow-lg">
-                  <Image src={member.imageSrc} alt={member.name} fill className="object-cover" />
+                  <Image
+                    src={member.imageSrc}
+                    alt={`${member.name}, ${member.role}${member.region ? ` — ${member.region}` : ''}`}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               ) : (
                 <div
