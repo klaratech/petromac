@@ -33,7 +33,7 @@ const steps = [
 
 export default function AthenaInAction() {
   return (
-    <section id="athena-demo" className="bg-slate-950 px-6 py-12 md:py-16">
+    <section id="athena-demo" className="bg-slate-950 px-6 py-12 md:py-16 scroll-reveal">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-8 max-w-2xl">

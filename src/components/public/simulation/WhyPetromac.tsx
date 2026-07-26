@@ -1,23 +1,23 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 const points = [
   {
-    title: "Vendor-neutral",
-    text: "Planning intelligence that supports major wireline workflows without tying the recommendation to one logging provider.",
+    title: 'Vendor-neutral',
+    text: 'Planning intelligence that supports major wireline workflows without tying the recommendation to one logging provider.',
   },
   {
-    title: "Engineering-led",
-    text: "Built and pressure-tested by the engineers and regional managers who run wireline jobs — not a generic modelling tool.",
+    title: 'Engineering-led',
+    text: 'Built and pressure-tested by the engineers and regional managers who run wireline jobs — not a generic modelling tool.',
   },
   {
-    title: "Operationally useful",
-    text: "Outputs are built around what changes the job: reach margin, risk intervals, configuration, and contingencies.",
+    title: 'Operationally useful',
+    text: 'Outputs are built around what changes the job: reach margin, risk intervals, configuration, and contingencies.',
   },
 ];
 
 export default function WhyPetromac() {
   return (
-    <section className="bg-white px-6 py-12 md:py-16">
+    <section className="bg-white px-6 py-12 md:py-16 scroll-reveal">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
@@ -28,9 +28,8 @@ export default function WhyPetromac() {
               Independent planning before hardware selection.
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-slate-600">
-              Athena sits above the equipment choice. It helps teams understand
-              risk first, then select the conveyance and centralisation package
-              that best reduces that risk.
+              Athena sits above the equipment choice. It helps teams understand risk first, then
+              select the conveyance and centralisation package that best reduces that risk.
             </p>
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -52,12 +51,8 @@ export default function WhyPetromac() {
           <div className="grid gap-px overflow-hidden rounded-lg bg-slate-200 md:grid-cols-3">
             {points.map((point) => (
               <div key={point.title} className="bg-slate-50 p-5">
-                <h3 className="font-heading text-lg font-bold text-slate-900">
-                  {point.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  {point.text}
-                </p>
+                <h3 className="font-heading text-lg font-bold text-slate-900">{point.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{point.text}</p>
               </div>
             ))}
           </div>

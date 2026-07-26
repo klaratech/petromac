@@ -74,7 +74,10 @@ export default function Hero() {
             href="#contact"
             onClick={(e) => {
               e.preventDefault();
-              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              // No behavior option: the scroll inherits the CSS
+              // scroll-behavior, which is smooth only when the user
+              // hasn't asked for reduced motion.
+              document.getElementById('contact')?.scrollIntoView();
             }}
             className="inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white border-2 border-white/60 hover:bg-white hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
           >

@@ -8,7 +8,7 @@ import ContactForm from '@/components/public/ContactForm';
  */
 export default function ContactSection() {
   return (
-    <section id="contact" className="bg-slate-950 text-slate-100 scroll-mt-24">
+    <section id="contact" className="bg-slate-950 text-slate-100 scroll-mt-24 scroll-reveal">
       <div className="max-w-7xl mx-auto px-6 py-20">
         <div className="grid gap-12 lg:grid-cols-5 lg:gap-16 items-start">
           {/* Pitch + direct channels */}

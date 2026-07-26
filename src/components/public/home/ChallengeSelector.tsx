@@ -119,7 +119,7 @@ export default function ChallengeSelector() {
   };
 
   return (
-    <section id="challenges" className="py-20 px-6 bg-white scroll-mt-16">
+    <section id="challenges" className="py-20 px-6 bg-white scroll-mt-16 scroll-reveal">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand text-center mb-10">
           What challenge are you facing?

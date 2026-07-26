@@ -89,7 +89,7 @@ export default function Header() {
     ].join(' ');
 
   return (
-    <header className="sticky top-0 z-40">
+    <header className="sticky top-0 z-40 header-elevate">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-brand focus:text-white focus:px-4 focus:py-2 focus:rounded"

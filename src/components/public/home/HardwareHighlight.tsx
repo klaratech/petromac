@@ -10,7 +10,7 @@ import Link from 'next/link';
  */
 export default function HardwareHighlight() {
   return (
-    <section className="relative py-10 md:py-12 px-6 bg-gradient-to-b from-[#081a3a] via-slate-900 to-slate-950">
+    <section className="relative py-10 md:py-12 px-6 bg-gradient-to-b from-[#081a3a] via-slate-900 to-slate-950 scroll-reveal">
       {/* Top hairline — same brand stamp the Athena band carries */}
       <div
         className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand to-transparent"

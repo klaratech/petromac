@@ -4,11 +4,12 @@ import Image from 'next/image';
 
 // In-page anchors use scrollIntoView instead of plain hash hrefs: setting
 // the same location.hash twice is a no-op, so a second click on the CTA
-// (after scrolling back up) silently did nothing.
+// (after scrolling back up) silently did nothing. No behavior option —
+// the scroll inherits the reduced-motion-aware CSS scroll-behavior.
 function scrollToId(id: string) {
   return (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(id)?.scrollIntoView();
   };
 }
 

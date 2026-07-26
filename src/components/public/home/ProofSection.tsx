@@ -14,7 +14,7 @@ export default function ProofSection() {
   };
 
   return (
-    <section className="py-20 px-6 bg-white">
+    <section className="py-20 px-6 bg-white scroll-reveal">
       <div className="max-w-5xl mx-auto text-center">
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand mb-4">
           Proven in the field
