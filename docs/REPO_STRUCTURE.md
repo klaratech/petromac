@@ -64,7 +64,9 @@ website/
 │   │   └── kiosk/                        # Kiosk-specific components (incl. KioskShell)
 │   ├── hooks/                            # Custom React hooks
 │   ├── lib/                              # Utility functions
-│   │   └── map/                          # Map data fetching + processing
+│   │   ├── map/                          # Map data fetching + processing
+│   │   ├── seo.ts                        # pageMetadata() — canonical + per-page OG builder
+│   │   └── siteUrl.ts                    # Site URL + isProductionSite() (staging noindex)
 │   ├── types/                            # TypeScript type definitions
 │   ├── data/                             # Static data modules (small)
 │   │   └── team.ts                       # Team member data
@@ -80,6 +82,10 @@ website/
 │   ├── images/                           # Images and icons
 │   │   └── catalog/                      # Generated HTML-catalog product images (WebP/SVG)
 │   ├── videos/                           # Video files
+│   │   ├── hero/                         # Homepage hero loop + poster (committed)
+│   │   ├── transcoded/                   # Web-ready clips (committed)
+│   │   ├── kiosk-hd/                     # Optional 1080p kiosk clips (committed)
+│   │   └── originals/                    # Full-res masters (gitignored)
 │   └── models/                           # 3D models (.glb files)
 ├── sources/                              # 🚫 GITIGNORED content drop zone
 │   ├── operations/                       # Incoming job-history spreadsheets

@@ -5,16 +5,30 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
 ## Components
 
 - **Public site** — Next.js 16 App Router route group `(public)`, Tailwind 4.
-  Notable pages: `/track-record` (d3 drill-down map, lazy-loaded; links to
-  the `/success-stories/flipbook` page — the old `?stories=1` overlay was
-  retired Jul 2026 and now redirects there) and the HTML catalog below.
+  Notable pages: `/track-record` (server component — stat tiles + metadata
+  from the build-time stats snapshot; the d3 drill-down map is the only
+  client island, `TrackRecordMap`, whose pre-fetch state is a crawlable
+  summary paragraph; links to `/success-stories/flipbook` — the old
+  `?stories=1` overlay was retired Jul 2026 and now redirects there) and the
+  HTML catalog below.
+- **SEO layer (Jul 2026)** — `src/lib/seo.ts` `pageMetadata()` gives every
+  page a canonical + page-specific OG/Twitter tags; titles are un-branded
+  (root template appends "| Petromac" once). Indexability derives from
+  `src/lib/siteUrl.ts` `isProductionSite()`: staging/preview builds ship
+  meta noindex + `X-Robots-Tag` + Disallow-all robots.txt, and
+  `next.config.ts` fails any build where `NEXT_PUBLIC_ENV=production` points
+  at a non-production domain. `app/robots.ts` / `app/sitemap.ts` are
+  env-derived. JSON-LD: Organization (home), Product + BreadcrumbList
+  (product pages), ScholarlyArticle ItemList (publications).
 - **HTML catalog** — `/catalog`, built from a committed content model
   (`src/features/catalog/content/catalog.json`, generated from the InDesign
   IDML — see [ADMIN.md](ADMIN.md) §2b). Landing is a client-side workspace
   (`CatalogBrowser`): sticky category sidebar with counts (mobile:
   horizontal chip bar), active category synced to `?category=` via
   pushState/popstate, instant search that switches tab + scrolls to and
-  flashes the card. Four categories — Fixed Angle Guides lives inside
+  flashes the card. All four category panes are server-rendered with
+  inactive ones `hidden`, so the full product range is in the initial HTML
+  (hidden panes' images stay lazy). Four categories — Fixed Angle Guides lives inside
   Guides & Holefinders as a group. Product pages are SSG at
   `/catalog/<category>/<slug>` (all in the sitemap) with real HTML spec
   tables (merged cells + footnotes preserved). Card badges/spec tags derive

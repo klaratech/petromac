@@ -2,6 +2,15 @@
 
 This project uses Tailwind CSS 4 with a small Petromac brand layer in the root `tailwind.config.ts` and global overrides in `src/app/globals.css`.
 
+> **CRITICAL:** Tailwind v4 does **not** auto-load a JS/TS config. `globals.css`
+> must keep the `@config '../../tailwind.config.ts';` directive right after
+> `@import 'tailwindcss'` — without it, every config-derived utility (brand
+> palette variants, `font-heading`, `shadow-card`, the type scale) silently
+> compiles to nothing. This was broken (and invisible) until Jul 2026; if a
+> themed utility "does nothing", check the directive before debugging
+> components. Dev gotcha: Turbopack can serve stale CSS from `.next` after
+> `globals.css` edits — stop the dev server, `rm -rf .next`, restart.
+
 ## Fonts
 
 - **Body:** Inter, loaded through `next/font/google` in `src/app/layout.tsx`
@@ -43,8 +52,14 @@ Do not add a second Tailwind config file.
 
 ## Global CSS
 
-`src/app/globals.css` imports Tailwind and defines a few project utilities:
+`src/app/globals.css` imports Tailwind (+ the `@config` directive above) and defines a few project utilities:
 
 - Forced `.bg-brand` and `.text-brand` color overrides
 - Horizontal scrollbar hiding via `.no-scrollbar`
 - Flip-card 3D helpers used by team cards
+- Scroll experience (Jul 2026, all CSS-only and reduced-motion-aware): smooth
+  anchor scrolling, `:where(section[id])` scroll margins under the sticky
+  header, `.scroll-reveal` settle-in for home/simulation sections
+  (scroll-driven animation — deliberately **no scroll snapping** anywhere),
+  `.header-elevate` scroll shadow, `.caret-blink` for the hero/Athena
+  typewriter carets

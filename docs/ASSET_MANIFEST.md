@@ -52,7 +52,7 @@ conveyance/orientation/ledges — were deleted Jul 2026.)
 | File                                               | Source clip / frame                    |
 | -------------------------------------------------- | -------------------------------------- |
 | `/images/posters/differential-sticking-poster.jpg` | differential-sticking-subtitled @ 0:40 |
-| `/images/posters/wireline-express-poster.jpg`      | WirelineExpress-subtitled @ 3:10       |
+| `/images/posters/wireline-express-poster.jpg`      | WirelineExpress (plain) @ 1:30         |
 | `/images/posters/pf-poster.jpg`                    | pf-subtitled @ 1:30                    |
 | `/images/posters/helix-poster.jpg`                 | helix-subtitled @ 0:40                 |
 

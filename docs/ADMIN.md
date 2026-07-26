@@ -216,6 +216,12 @@ Team page (`/team`). Data is in `src/data/team.ts`.
   clips that play muted (hero/background loops); narrated `*-subtitled` cuts
   keep their audio track — the homepage lightbox and kiosk lane play them
   with sound. Reference pattern: `WirelineExpress.mp4` (50 MB → 3.7 MB).
+- Homepage hero background: `public/videos/hero/hero-loop.mp4` (short
+  seamless loop, ~15 s / ~2.6 MB) + `hero-loop-poster.jpg` (its first frame).
+  Keep BOTH filenames when replacing — `Hero.tsx` references them directly.
+  Regenerate the poster with `ffmpeg -i hero-loop.mp4 -frames:v 1`. Note the
+  image cache: same-name swaps take ~a day to reach returning browsers;
+  rename (and update Hero.tsx) to bust instantly.
 - Patent PDFs: compress scanned docs (Acrobat "Reduce File Size", or
   `gs -dPDFSETTINGS=/ebook`). Re-rendering can garble fonts — spot-check
   any compressed legal document before committing.

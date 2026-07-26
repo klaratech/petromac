@@ -5,6 +5,42 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Jul 2026 (late) — Launch-prep polish pass
+
+- **No scroll snapping, by design.** Section heights are heterogeneous
+  (90vh hero next to 150px bands), so snap points would fight the wheel.
+  Premium scroll feel comes from CSS-only pieces instead: reduced-motion-
+  aware smooth anchors, scroll-driven `.scroll-reveal` settle-ins on the two
+  narrative pages, and a header shadow over the first 120px of scroll.
+  Wheel/touch inertia stays fully native everywhere.
+- **Tailwind v4 `@config` directive is load-bearing.** The v3-style
+  `tailwind.config.ts` was silently ignored for weeks (v4 doesn't auto-load
+  JS configs): every brand/heading/shadow utility compiled to nothing, and
+  the site survived on two hand-written `.bg-brand`/`.text-brand` overrides.
+  One directive in `globals.css` fixed fonts, hovers, focus rings, and the
+  type scale site-wide.
+- **Primary content is server-rendered; interactivity is islands.**
+  `/track-record` became a server page (stat tiles from the build-time stats
+  snapshot) with the map as its only client island — the pre-fetch state is
+  a crawlable summary sentence, not a spinner. `/catalog` renders all four
+  category panes with inactive ones `hidden`, so every product is in the
+  initial HTML while the pushState workspace behaves exactly as before.
+- **Indexability is derived, not configured.** Any build whose site URL
+  isn't petromac.co.nz ships noindex + Disallow-all automatically, and
+  `next.config.ts` refuses to build `NEXT_PUBLIC_ENV=production` against a
+  non-production URL — the classic launch-day "shipped noindex to prod"
+  mistake is structurally impossible rather than checklist-guarded.
+- **Typewriter animations are progressive enhancements.** Hero headline and
+  the homepage Athena terminal render their complete final text in the SSR
+  HTML; the animation replays it after hydration (once, reduced-motion-
+  aware, layout-shift-free via probe-measured width/height reservation).
+  Crawlers, LCP, and no-JS users always get the finished state.
+- **Hero background is a purpose-cut loop, not the product film.** The
+  4-minute 13 MB WirelineExpress clip was replaced by a seamless 14.9s
+  2.6 MB loop whose first frame doubles as the poster — instant paint, ~80%
+  less transfer, and mobile/reduced-motion users download no video at all
+  (IO-gated source attach in `LazyVideo`).
+
 ## Jul 2026 — HTML catalog replaced the pdf.js viewer at /catalog
 
 **Decision:** after a day of refinement at `/catalogtest`, the HTML catalog

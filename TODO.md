@@ -21,7 +21,15 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       done — app-only Graph sender.)
 - [ ] Production domain cutover: Cloudflare zone/tunnel hostname, then update
       `NEXT_PUBLIC_SITE_URL`/`NEXT_PUBLIC_BASE_URL`, `ALLOWED_ORIGINS` (both env
-      files), and add the new Entra callback URL
+      files), and add the new Entra callback URL.
+      **Indexability (Jul 2026):** staging ships noindex + Disallow-all
+      robots.txt automatically; the production deploy must set
+      `NEXT_PUBLIC_SITE_URL=https://www.petromac.co.nz` AND
+      `NEXT_PUBLIC_ENV=production` (the build fails if the pair is
+      inconsistent — see `src/lib/siteUrl.ts`). After cutover: verify
+      robots.txt/sitemap on the live domain, then submit the sitemap in
+      Google Search Console and run the Rich Results test on /, a product
+      page, and /about/publications
 - [ ] Re-prime kiosk tablets after the next deploy (SW cache changed)
 
 ## Security / hardening
@@ -38,9 +46,8 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Content & assets (designer-dependent)
 
-- [ ] ChallengeSelector card thumbnails — `conveyance/ledges/orientation/
-sampling/sticking.jpg` are dev placeholders; three cards show them permanently
-- [ ] Helix product image (homepage FeaturedProducts card uses the focus.png logo)
+- [ ] Helix product image (kiosk surfaces reuse the focus.png logo; see
+      ASSET_MANIFEST §1.4)
 - [ ] Case Studies images: `helix-cbl-setup.png`, `rocker-logs-1.png`
 - [ ] OH lane mechanism videos + case-study log images (Formation Testing /
       High Deviation / PathFinder)
@@ -73,7 +80,13 @@ cache rule. Remaining:
 - [ ] MapRenderer: split base path generation from style updates so filter
       clicks restyle instead of rebuilding all ~244 paths (from the Jul 2026
       audit; deferred — delicate component, clicks already debounced)
-- [ ] Full SEO audit remainder (structured data / JSON-LD, performance scores)
+- [ ] SEO audit remainder: performance scores (Lighthouse/CWV pass). The
+      structured-data half landed Jul 2026 (canonicals, per-page OG, JSON-LD
+      for Organization/Product/Breadcrumb/ScholarlyArticle, env-derived
+      robots+sitemap, staging noindex + launch guard)
+- [ ] Athena terminal (homepage) shows illustrative values — confirm
+      `MRIL-XL`, `--taxis 4`, and "est. rig time saved: 8.2 hrs" with the
+      product team or swap in real simulation numbers
 - [ ] Kiosk CH lane "Other" experience (Coming-soon placeholder; build last)
 - [ ] Longer term: job history off Excel into a database-backed source
 - [ ] `data-build.yaml` workflow still references the old xlsx-URL secret
