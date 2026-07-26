@@ -147,10 +147,10 @@ export default function ChallengeSelector() {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActiveId(s.id)}
                 onKeyDown={(e) => onTabKeyDown(e, i)}
-                className={`rounded-lg border-2 px-3 py-3 md:py-3.5 text-sm md:text-[15px] font-semibold text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${
+                className={`rounded-lg border-2 px-3 py-3 md:py-3.5 text-sm md:text-[15px] font-semibold text-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${
                   selected
                     ? 'bg-brand border-brand text-white shadow-card'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-brand/40 hover:text-brand'
+                    : 'bg-white border-slate-200 text-slate-700 hover:border-brand/40 hover:text-brand hover:bg-brand/[0.04] hover:shadow-sm'
                 }`}
               >
                 {s.challenge}

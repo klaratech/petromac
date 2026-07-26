@@ -182,11 +182,16 @@ export default function CatalogBrowser({
           </p>
           {categories.map((c) => categoryButton(c, 'sidebar'))}
 
-          <div className="pt-5 px-4">
+          {/* PDF actions — a real card so they read as first-class actions,
+              not footnotes under the category list. */}
+          <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Full catalog
+            </p>
             <a
               href="/flipbooks/catalog/petromac-product-catalog.pdf"
               download
-              className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-brand transition-colors"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
             >
               <svg
                 className="w-4 h-4"
@@ -205,7 +210,7 @@ export default function CatalogBrowser({
               Download PDF
             </a>
             {/* Sends as the signed-in staff member, or from info@ otherwise */}
-            <div className="mt-3">
+            <div className="mt-2">
               <EmailPdfAction />
             </div>
           </div>
@@ -215,12 +220,13 @@ export default function CatalogBrowser({
         <div className="lg:col-span-3 min-w-0">
           <div className="mb-6">
             <CatalogSearch entries={searchEntries} onSelect={jumpToProduct} />
-            {/* Mobile has no sidebar — surface the PDF actions here */}
-            <div className="lg:hidden mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
+            {/* Mobile has no sidebar — surface the PDF actions here as the
+                same first-class buttons the desktop card gets. */}
+            <div className="lg:hidden mt-4 grid grid-cols-2 gap-3">
               <a
                 href="/flipbooks/catalog/petromac-product-catalog.pdf"
                 download
-                className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-brand transition-colors"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
               >
                 <svg
                   className="w-4 h-4"

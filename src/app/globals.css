@@ -1,4 +1,8 @@
 @import 'tailwindcss';
+/* Tailwind v4 does NOT auto-load a JS/TS config — without this directive the
+   whole tailwind.config.ts theme (brand palette, font-heading, shadow-card,
+   type scale) silently generated no utilities. */
+@config '../../tailwind.config.ts';
 
 :root {
   --background: #ffffff;
