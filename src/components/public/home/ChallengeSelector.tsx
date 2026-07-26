@@ -78,10 +78,11 @@ const SOLUTIONS: Solution[] = [
     challenge: 'Centralisation',
     product: 'Focus Centralisers',
     summary:
-      'CP-series centralisers for open hole; HELIX, Rocker, and CA7 for cased hole — optimal standoff across the full range.',
+      'CP-series centralisers for open hole; HELIX, Rocker, and CA7 for cased hole — across the full range.',
     proofPoints: [
-      'Improved leverage and lower drag than conventional centralisers',
-      'Cleaner CBL and sonic logs through optimal standoff',
+      'Lower drag than conventional centralisers',
+      'Easily navigates multiple casing sizes and narrow restrictions',
+      'Improved data quality through perfect centralisation',
     ],
     video: {
       src: '/videos/transcoded/helix-subtitled.mp4',

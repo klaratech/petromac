@@ -28048,9 +28048,41 @@
     "PathFinder Run (Y/N)": "YES"
   },
   {
-    "Country": "Jordan",
+    "Country": "Saudi Arabia",
     "System": "Wireline Express",
     "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES"
+  },
+  {
+    "Country": "Saudi Arabia",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES"
+  },
+  {
+    "Country": "United Arab Emirates",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 0,
+    "PathFinder Run (Y/N)": "NO"
+  },
+  {
+    "Country": "Iraq",
+    "System": "Focus - CH",
+    "Subsystem": "Helix",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO"
+  },
+  {
+    "Country": "Iraq",
+    "System": "Focus - CH",
+    "Subsystem": "Helix",
     "Year": "2026",
     "Successful": 1,
     "PathFinder Run (Y/N)": "NO"

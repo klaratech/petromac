@@ -104,10 +104,6 @@ export default function CatalogBrowser({
   };
 
   const activeData = categories.find((c) => c.slug === activeCategory) ?? categories[0];
-  const products = cards.filter((p) => p.category === activeData.slug);
-  const groups = activeData.groups.length
-    ? activeData.groups
-    : [...new Set(products.map((p) => p.group))];
 
   const categoryButton = (cat: BrowserCategory, layout: 'sidebar' | 'chip') => {
     const isActive = cat.slug === activeData.slug;
@@ -216,7 +212,7 @@ export default function CatalogBrowser({
           </div>
         </aside>
 
-        {/* Content pane: the active category only */}
+        {/* Content pane: all categories rendered, one visible */}
         <div className="lg:col-span-3 min-w-0">
           <div className="mb-6">
             <CatalogSearch entries={searchEntries} onSelect={jumpToProduct} />
@@ -248,40 +244,55 @@ export default function CatalogBrowser({
             </div>
           </div>
 
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-            {activeData.name}
-          </h2>
-          <p className="text-slate-600 max-w-3xl">{activeData.tagline}</p>
-          {activeData.intro.map((para) => (
-            <p key={para.slice(0, 32)} className="mt-2 text-sm text-slate-500 max-w-3xl">
-              {para}
-            </p>
-          ))}
+          {/* Every category's pane is rendered (and server-rendered) —
+              inactive ones carry `hidden`, so the full product range is in
+              the initial HTML for crawlers while the visible UI still shows
+              one category at a time. Hidden panes' images stay lazy, so
+              nothing extra downloads until a pane is shown. */}
+          {categories.map((cat) => {
+            const catProducts = cards.filter((p) => p.category === cat.slug);
+            const catGroups = cat.groups.length
+              ? cat.groups
+              : [...new Set(catProducts.map((p) => p.group))];
+            return (
+              <div key={cat.slug} hidden={cat.slug !== activeData.slug}>
+                <h2 className="font-heading text-2xl md:text-3xl font-bold text-slate-900 mb-2">
+                  {cat.name}
+                </h2>
+                <p className="text-slate-600 max-w-3xl">{cat.tagline}</p>
+                {cat.intro.map((para) => (
+                  <p key={para.slice(0, 32)} className="mt-2 text-sm text-slate-500 max-w-3xl">
+                    {para}
+                  </p>
+                ))}
 
-          <div className="mt-8 space-y-10">
-            {groups.map((group) => {
-              const groupProducts = products.filter((p) => p.group === group);
-              if (groupProducts.length === 0) return null;
-              return (
-                <section key={group || 'default'} aria-label={group || activeData.name}>
-                  {group && (
-                    <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">
-                      {group}
-                    </h3>
-                  )}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                    {groupProducts.map((p) => (
-                      <ProductCard
-                        key={p.slug}
-                        product={p}
-                        highlighted={p.slug === highlightSlug}
-                      />
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
-          </div>
+                <div className="mt-8 space-y-10">
+                  {catGroups.map((group) => {
+                    const groupProducts = catProducts.filter((p) => p.group === group);
+                    if (groupProducts.length === 0) return null;
+                    return (
+                      <section key={group || 'default'} aria-label={group || cat.name}>
+                        {group && (
+                          <h3 className="font-heading text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">
+                            {group}
+                          </h3>
+                        )}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                          {groupProducts.map((p) => (
+                            <ProductCard
+                              key={p.slug}
+                              product={p}
+                              highlighted={p.slug === highlightSlug}
+                            />
+                          ))}
+                        </div>
+                      </section>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
