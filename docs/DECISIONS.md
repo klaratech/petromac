@@ -30,8 +30,9 @@ _current state_ and _how to operate it_; the reasoning lives here.
   `next.config.ts` refuses to build `NEXT_PUBLIC_ENV=production` against a
   non-production URL — the classic launch-day "shipped noindex to prod"
   mistake is structurally impossible rather than checklist-guarded.
-- **Typewriter animations are progressive enhancements.** Hero headline and
-  the homepage Athena terminal render their complete final text in the SSR
+- **Typewriter animations are progressive enhancements.** The hero headline
+  and the Athena terminal (briefly on the homepage, now /simulation's
+  "See it in action" demo) render their complete final text in the SSR
   HTML; the animation replays it after hydration (once, reduced-motion-
   aware, layout-shift-free via probe-measured width/height reservation).
   Crawlers, LCP, and no-JS users always get the finished state.

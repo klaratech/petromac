@@ -1,15 +1,16 @@
+import AthenaTerminal from './AthenaTerminal';
+
 /**
  * "See it in action" — the Athena demo section.
  *
  * Merges the former WhatAthenaDoes (the Simulate / Evaluate / Decide
- * rhythm, in text) with the demo video: the video shows the rhythm, the
- * three steps below label it. One show-and-tell section instead of two.
+ * rhythm, in text) with the demo: the simulated terminal (AthenaTerminal,
+ * relocated here from the homepage software band Jul 2026) shows the
+ * rhythm, the three steps below label it. One show-and-tell section.
  *
- * VIDEO PENDING: the placeholder video frame was removed for launch
- * (no visible placeholder text on the public site). When the screen
- * recording is ready, add a real
+ * VIDEO PENDING: when the real screen recording is ready, add a
  * <video src="/videos/transcoded/athena-demo.mp4" controls poster=...>
- * element between the header and the steps grid.
+ * alongside (or replacing) the terminal.
  * Brief: a ~60-90s click-through on one real well plan — load inputs →
  * run Hermes → read the tension/drag/risk output → change a configuration
  * choice → re-run → land on a go/no-go call. See docs/ADMIN.md for the
@@ -44,6 +45,12 @@ export default function AthenaInAction() {
           <p className="mt-4 text-lg leading-relaxed text-slate-300">
             Athena takes a well plan from inputs to a recommendation in three steps.
           </p>
+        </div>
+
+        {/* Simulated Athena run — fully rendered on the server, replayed as
+            a typewriter once when it first scrolls into view. */}
+        <div className="max-w-3xl">
+          <AthenaTerminal />
         </div>
 
         {/* Simulate / Evaluate / Decide */}

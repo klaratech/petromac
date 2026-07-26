@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import AthenaTerminal from './AthenaTerminal';
 
 /**
  * Compact "platform band" on the homepage. The full Athena pitch lives
@@ -74,12 +73,6 @@ export default function SoftwareHighlight() {
               />
             </svg>
           </Link>
-        </div>
-
-        {/* Simulated Athena run — fully rendered on the server, replayed as
-            a typewriter once when it first scrolls into view. */}
-        <div className="mt-8 max-w-3xl mx-auto">
-          <AthenaTerminal />
         </div>
       </div>
     </section>

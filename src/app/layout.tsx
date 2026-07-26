@@ -70,7 +70,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // data-scroll-behavior lets Next temporarily force instant scrolling
+    // during route-transition scroll resets — without it, the global CSS
+    // scroll-behavior:smooth animates the scroll-to-top on navigation and
+    // the new page can land slightly off the top. Anchor links stay smooth.
+    <html lang="en" data-scroll-behavior="smooth">
       <head />
       <body
         className={`${inter.variable} ${ibmPlexSans.variable} font-sans antialiased min-h-dvh flex flex-col`}

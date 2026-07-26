@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * Simulated Athena run for the homepage software band.
+ * Simulated Athena run — the show-and-tell inside /simulation's
+ * "See it in action" section (lived in the homepage software band until
+ * Jul 2026).
  *
  * All six lines are fully styled in the server-rendered HTML (SEO, no-JS,
  * reduced motion). After hydration, the first time the panel is ~40% in

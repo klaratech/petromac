@@ -84,7 +84,7 @@ cache rule. Remaining:
       structured-data half landed Jul 2026 (canonicals, per-page OG, JSON-LD
       for Organization/Product/Breadcrumb/ScholarlyArticle, env-derived
       robots+sitemap, staging noindex + launch guard)
-- [ ] Athena terminal (homepage) shows illustrative values — confirm
+- [ ] Athena terminal (/simulation) shows illustrative values — confirm
       `MRIL-XL`, `--taxis 4`, and "est. rig time saved: 8.2 hrs" with the
       product team or swap in real simulation numbers
 - [ ] Kiosk CH lane "Other" experience (Coming-soon placeholder; build last)
