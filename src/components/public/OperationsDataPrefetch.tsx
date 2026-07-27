@@ -1,6 +1,9 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+// Build-time stamp — must match the versioned URL TrackRecordMap fetches,
+// or the prefetch warms the wrong cache entry.
+import operationsStats from '../../../public/data/operations_stats.json';
 
 /**
  * Idle-prefetch the Track Record data file so the first hop from any public
@@ -23,6 +26,11 @@ export default function OperationsDataPrefetch() {
   const pathname = usePathname();
   if (pathname.startsWith('/catalog')) return null;
   return (
-    <link rel="prefetch" href="/data/operations_data.json" as="fetch" crossOrigin="anonymous" />
+    <link
+      rel="prefetch"
+      href={`/data/operations_data.json?v=${encodeURIComponent(operationsStats.generatedAt)}`}
+      as="fetch"
+      crossOrigin="anonymous"
+    />
   );
 }

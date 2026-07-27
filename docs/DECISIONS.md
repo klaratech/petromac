@@ -5,6 +5,33 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Jul 2026 (late) — Track Record: map as hero, same-generation data
+
+- **The map is the page; stats are furniture.** The three big stat cards
+  duplicated the homepage band and pushed the map below the fold — they
+  became compact tiles overlaid inside the map card (server-rendered,
+  pointer-transparent on desktop), with the numbers also carried by the H1
+  intro sentence for crawlers. A verified "Records & milestones" strip
+  (facts checked against the success-stories PDF / publications list) and a
+  build-time cumulative-deployments SVG give the page substance beyond the
+  homepage numbers.
+- **Versioned data fetch.** Page copy is baked at build from
+  `operations_stats.json`; the map fetched `operations_data.json` at
+  runtime, so a CDN-cached older file could disagree with the page for up
+  to a day after a data deploy (the observed "52 vs 53"). The public fetch
+  now carries `?v=<stats generatedAt>` — same pipeline generation by
+  construction. Kiosk callers keep the bare URL so offline service-worker
+  cache keys stay stable.
+- **`isolate` on the map card** fences its overlay z-indexes (legend,
+  panels, tooltip) into a local stacking context so they can never paint
+  over the sticky site header.
+- **Freeze audit (intermittent tab hang):** no ResizeObserver/rAF loops
+  exist in the map stack; the only unbounded-frequency path was
+  mousemove → hover state → full overlay re-render, now coalesced to one
+  update per animation frame. Root cause of the one-off hang not
+  definitively reproduced; this defensive guard removes the only
+  render-flood candidate.
+
 ## Jul 2026 (late) — Launch-prep polish pass
 
 - **No scroll snapping, by design.** Section heights are heterogeneous

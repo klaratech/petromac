@@ -20,14 +20,24 @@ import type { JobRecord } from '@/types/JobRecord';
  */
 let operationsPromise: Promise<JobRecord[]> | null = null;
 
-export function fetchOperationsData(): Promise<JobRecord[]> {
+export function fetchOperationsData(version?: string): Promise<JobRecord[]> {
   // Module-level memo: several surfaces (track record, kiosk dashboard,
   // in-experience maps) call this on mount; fetch + parse the ~600 KB
   // payload once per session instead of once per navigation. A failed
   // attempt clears the memo so the next mount retries.
+  //
+  // `version`: the public Track Record page passes the build-time
+  // operations_stats.json generatedAt stamp, so the fetched dataset is
+  // always the same pipeline generation as the server-rendered headline
+  // numbers — a CDN-cached older JSON can't make the map's counts
+  // disagree with the page copy. Kiosk callers pass nothing (bare URL)
+  // so the offline service-worker cache keys stay stable.
   if (!operationsPromise) {
     operationsPromise = (async () => {
-      const response = await fetch('/data/operations_data.json');
+      const url = version
+        ? `/data/operations_data.json?v=${encodeURIComponent(version)}`
+        : '/data/operations_data.json';
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`Failed to load operations data: ${response.status}`);

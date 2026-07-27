@@ -74,7 +74,10 @@ export default function RootLayout({
     // during route-transition scroll resets — without it, the global CSS
     // scroll-behavior:smooth animates the scroll-to-top on navigation and
     // the new page can land slightly off the top. Anchor links stay smooth.
-    <html lang="en" data-scroll-behavior="smooth">
+    // suppressHydrationWarning: scoped to THIS element's attributes only —
+    // the pre-paint inline script adds data-motion-ok to <html> before React
+    // hydrates, which React (dev builds) would otherwise flag as a mismatch.
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         {/* Runs before first paint: flags that JS is live and the user
             allows motion, so CSS can pre-hide typewriter content instead

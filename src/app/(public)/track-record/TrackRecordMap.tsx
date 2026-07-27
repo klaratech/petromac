@@ -31,7 +31,16 @@ export interface TrackRecordStats {
  * renders a track-record summary paragraph — that's what crawlers and social
  * preview bots see in the initial HTML instead of a bare spinner.
  */
-export default function TrackRecordMap({ stats }: { stats: TrackRecordStats }) {
+export default function TrackRecordMap({
+  stats,
+  dataVersion,
+}: {
+  stats: TrackRecordStats;
+  /** Build-time operations_stats generatedAt stamp — versions the data
+   *  fetch so the map always shows the same dataset generation as the
+   *  server-rendered numbers (see fetchOperationsData). */
+  dataVersion: string;
+}) {
   const [data, setData] = useState<JobRecord[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,10 +54,10 @@ export default function TrackRecordMap({ stats }: { stats: TrackRecordStats }) {
   useEffect(() => {
     preload(EXTERNAL_URLS.WORLD_MAP_DATA, { as: 'fetch' });
     void import('@/components/geo/DrilldownMapCore');
-    fetchOperationsData()
+    fetchOperationsData(dataVersion)
       .then(setData)
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load track record'));
-  }, []);
+  }, [dataVersion]);
 
   const summary = `Petromac has completed ${stats.deployments.toLocaleString()}+ successful wireline deployments across ${stats.countries}+ countries over ${stats.years}+ years of operations.`;
 

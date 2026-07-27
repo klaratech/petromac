@@ -5,11 +5,15 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
 ## Components
 
 - **Public site** — Next.js 16 App Router route group `(public)`, Tailwind 4.
-  Notable pages: `/track-record` (server component — stat tiles + metadata
-  from the build-time stats snapshot; the d3 drill-down map is the only
-  client island, `TrackRecordMap`, whose pre-fetch state is a crawlable
-  summary paragraph; links to `/success-stories/flipbook` — the old
-  `?stories=1` overlay was retired Jul 2026 and now redirects there) and the
+  Notable pages: `/track-record` (map-as-hero server component: H1 + intro
+  sentence with the headline numbers, stat tiles overlaid inside the
+  `isolate`d map card, a build-time cumulative-deployments SVG chart, and a
+  verified "Records & milestones" strip ending in the Success Stories CTA;
+  the d3 drill-down map is the only client island, `TrackRecordMap`, whose
+  pre-fetch state is a crawlable summary and whose data fetch is versioned
+  with the stats snapshot's `generatedAt` so page copy and map counts always
+  describe the same dataset generation; the old `?stories=1` overlay was
+  retired Jul 2026 and redirects to `/success-stories/flipbook`) and the
   HTML catalog below.
 - **SEO layer (Jul 2026)** — `src/lib/seo.ts` `pageMetadata()` gives every
   page a canonical + page-specific OG/Twitter tags; titles are un-branded
@@ -73,9 +77,11 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
 
 1. **`sources/`** — pipeline inputs; gitignored, archived after each run.
 2. **`public/data/`** — published JSON, fetched at runtime from `/data/*`
-   (never imported), so map surfaces work without the backend. Two deliberate
-   build-time-import exceptions: `operations_stats.json` (homepage numbers)
-   and the flipbook manifests.
+   (never imported), so map surfaces work without the backend. Three
+   deliberate build-time-import exceptions: `operations_stats.json`
+   (homepage + track-record numbers), the flipbook manifests, and the
+   track-record page's server-only import of `operations_data.json` for its
+   build-time growth chart.
 3. **`src/data/`** — small typed TS modules only (e.g. `team.ts`).
 
 Operations artifacts: `operations_data.json` (slim, all map surfaces),

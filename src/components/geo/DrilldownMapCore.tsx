@@ -160,6 +160,26 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
     setTappedCountry((current) => (current === countryName ? null : countryName));
   }, []);
 
+  // Defensive guard (freeze audit, Jul 2026): mousemove fires per pixel and
+  // each hover update re-renders this whole overlay tree. Coalesce to one
+  // state update per animation frame — a single rAF id, always cancelled or
+  // consumed, so there is no unbounded loop and no render flood on
+  // low-powered devices. (No ResizeObserver/rAF loops exist elsewhere in
+  // the map stack; this was the only unbounded-frequency render path.)
+  const hoverRafRef = useRef<number | null>(null);
+  const handleCountryHover = useCallback((payload: HoverPayload | null) => {
+    if (hoverRafRef.current !== null) cancelAnimationFrame(hoverRafRef.current);
+    hoverRafRef.current = requestAnimationFrame(() => {
+      hoverRafRef.current = null;
+      setHover(payload);
+    });
+  }, []);
+  useEffect(() => {
+    return () => {
+      if (hoverRafRef.current !== null) cancelAnimationFrame(hoverRafRef.current);
+    };
+  }, []);
+
   const handleRetry = useCallback(async () => {
     if (retryCount < MAP_CONSTANTS.MAX_RETRIES) {
       setRetryCount((prev) => prev + 1);
@@ -442,7 +462,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
         countryMap={countryMap}
         selectedCountry={tappedCountry}
         onCountryClick={handleCountryClick}
-        onCountryHover={setHover}
+        onCountryHover={handleCountryHover}
         getColor={intensity.color}
         isLoading={isLoading}
         svgRef={svgRef}
