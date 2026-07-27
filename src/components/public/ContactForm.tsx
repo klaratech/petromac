@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState, FormEvent } from "react";
-import { buildClientApiUrl } from "@/lib/api";
+import { useEffect, useRef, useState, FormEvent } from 'react';
+import { buildClientApiUrl } from '@/lib/api';
 
 /**
  * Contact form — form only, dark theme. The page chrome (heading, intro,
@@ -11,14 +11,12 @@ import { buildClientApiUrl } from "@/lib/api";
  */
 export default function ContactForm() {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
+    name: '',
+    email: '',
+    message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">(
-    "idle",
-  );
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const formStartTimeRef = useRef(0);
 
   useEffect(() => {
@@ -28,39 +26,39 @@ export default function ContactForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus("idle");
+    setSubmitStatus('idle');
 
     try {
       const formDataObj = new FormData(e.currentTarget);
 
       const formStartTime = formStartTimeRef.current || Date.now();
       const timeTaken = (Date.now() - formStartTime) / 1000;
-      formDataObj.append("_timing", timeTaken.toString());
+      formDataObj.append('_timing', timeTaken.toString());
 
-      const response = await fetch(buildClientApiUrl("/api/contact"), {
-        method: "POST",
+      const response = await fetch(buildClientApiUrl('/api/contact'), {
+        method: 'POST',
         body: formDataObj,
       });
 
       const result = (await response.json()) as { ok: boolean; error?: string };
 
       if (response.ok && result.ok) {
-        setSubmitStatus("success");
-        setFormData({ name: "", email: "", message: "" });
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', message: '' });
         formStartTimeRef.current = Date.now();
       } else {
-        setSubmitStatus("error");
+        setSubmitStatus('error');
       }
     } catch {
-      setSubmitStatus("error");
+      setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const fieldClass =
-    "w-full rounded-lg border border-slate-700 bg-slate-800/60 px-3.5 py-2.5 text-slate-100 placeholder-slate-500 transition-colors focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40";
-  const labelClass = "block text-sm font-medium text-slate-300 mb-1.5";
+    'w-full rounded-lg border border-slate-700 bg-slate-800/60 px-3.5 py-2.5 text-slate-100 placeholder-slate-500 transition-colors focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40';
+  const labelClass = 'block text-sm font-medium text-slate-300 mb-1.5';
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -78,7 +76,7 @@ export default function ContactForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label htmlFor="name" className={labelClass}>
-            Full name
+            Name
           </label>
           <input
             type="text"
@@ -94,7 +92,7 @@ export default function ContactForm() {
 
         <div>
           <label htmlFor="email" className={labelClass}>
-            Email address <span className="text-brand">*</span>
+            Email <span className="text-brand">*</span>
           </label>
           <input
             type="email"
@@ -142,13 +140,13 @@ export default function ContactForm() {
           disabled={isSubmitting}
           className="rounded-lg bg-brand px-6 py-2.5 font-semibold text-white shadow-sm transition-all hover:bg-brand/90 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-700"
         >
-          {isSubmitting ? "Sending…" : "Send message"}
+          {isSubmitting ? 'Sending…' : 'Send message'}
         </button>
       </div>
 
       {/* Status messages */}
       <div aria-live="polite">
-        {submitStatus === "success" && (
+        {submitStatus === 'success' && (
           <div
             role="alert"
             className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-300"
@@ -156,16 +154,13 @@ export default function ContactForm() {
             Thank you for your message — we&apos;ll get back to you soon.
           </div>
         )}
-        {submitStatus === "error" && (
+        {submitStatus === 'error' && (
           <div
             role="alert"
             className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300"
           >
-            Something went wrong. Please try again, or email us directly at{" "}
-            <a
-              href="mailto:info@petromac.co.nz"
-              className="font-medium underline"
-            >
+            Something went wrong. Please try again, or email us directly at{' '}
+            <a href="mailto:info@petromac.co.nz" className="font-medium underline">
               info@petromac.co.nz
             </a>
             .

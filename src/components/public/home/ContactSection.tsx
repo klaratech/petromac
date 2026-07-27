@@ -21,8 +21,7 @@ export default function ContactSection() {
             </h2>
             <p className="text-slate-400 leading-relaxed mb-8">
               Questions about wireline conveyance, centralisation, data quality, or risk management?
-              Send us a message and the right regional manager — across Asia Pacific, the Americas,
-              the Middle East, Europe and Africa — will get back to you.
+              Send us a message and the right person will get back to you.
             </p>
 
             <dl className="space-y-4 text-sm">
