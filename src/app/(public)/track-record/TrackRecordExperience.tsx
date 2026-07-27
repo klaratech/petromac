@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { preload } from 'react-dom';
 import type { JobRecord } from '@/types/JobRecord';
 import { fetchOperationsData } from '@/lib/map/data';
@@ -18,6 +18,18 @@ const DrilldownMapCore = dynamic(() => import('@/components/geo/DrilldownMapCore
     </div>
   ),
 });
+
+// Chip display order (product priority, not alphabetical). Values must
+// match the System column of operations_data.json exactly.
+const SYSTEM_ORDER = [
+  'Wireline Express',
+  'Wireline Express - FT',
+  'PathFinder',
+  'Focus - CH',
+  'Focus - OH',
+  'Thor',
+  'Other',
+];
 
 export interface TrackRecordStats {
   deployments: number;
@@ -54,13 +66,6 @@ export default function TrackRecordExperience({
   // null = "everything" (pre-hydration / pre-data default); becomes a real
   // array once the user interacts or data seeds it.
   const [selectedSystems, setSelectedSystems] = useState<string[] | null>(null);
-  // While a country's yearly-stats drawer is open, the chart overlay yields
-  // the corner (it would clutter/overlap the drawer).
-  const [countrySelected, setCountrySelected] = useState(false);
-  const handleSelectedCountryChange = useCallback(
-    (country: string | null) => setCountrySelected(country !== null),
-    []
-  );
 
   // Parallelize the three big loads (operations JSON, world topojson, d3
   // chunk) instead of a serial waterfall. Effect-only: preload() in the
@@ -73,10 +78,19 @@ export default function TrackRecordExperience({
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load track record'));
   }, [dataVersion]);
 
-  const systemOptions = useMemo(
-    () => (data ? Array.from(new Set(data.map((job) => job.System).filter(Boolean))).sort() : []),
-    [data]
-  );
+  const systemOptions = useMemo(() => {
+    if (!data) return [];
+    const found = Array.from(new Set(data.map((job) => job.System).filter(Boolean)));
+    // Display order per product priority; anything new lands at the end.
+    return found.sort((a, b) => {
+      const ia = SYSTEM_ORDER.indexOf(a);
+      const ib = SYSTEM_ORDER.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [data]);
 
   const effectiveSelection = selectedSystems ?? systemOptions;
   const allSelected = effectiveSelection.length === systemOptions.length;
@@ -135,31 +149,33 @@ export default function TrackRecordExperience({
                       onClick={() => toggleSystem(sys)}
                       aria-pressed={isOn}
                       aria-label={`${isOn ? 'Hide' : 'Show'} ${sys} deployments`}
-                      className={`text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      className={`text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                         isOn
-                          ? 'bg-blue-600 text-white border border-blue-600 hover:bg-blue-700'
-                          : 'bg-white text-slate-600 border border-slate-300 hover:bg-slate-50'
+                          ? 'bg-blue-50 text-brand border border-brand/40 hover:border-brand/70'
+                          : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300 hover:text-slate-700'
                       }`}
                     >
                       {sys}
                     </button>
                   );
                 })}
-                {allSelected ? (
-                  <button
-                    onClick={() => setSelectedSystems([])}
-                    className="text-xs text-slate-500 hover:text-slate-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-                  >
-                    Clear
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setSelectedSystems(systemOptions)}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
-                  >
-                    All
-                  </button>
-                )}
+                {/* Both controls always available — Clear supports the
+                    "clear then pick one" flow without unticking chips
+                    one by one. */}
+                <button
+                  onClick={() => setSelectedSystems(systemOptions)}
+                  disabled={allSelected}
+                  className="text-xs font-medium whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-blue-600 hover:text-blue-800 disabled:text-slate-300 disabled:cursor-default"
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => setSelectedSystems([])}
+                  disabled={effectiveSelection.length === 0}
+                  className="text-xs whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-slate-500 hover:text-slate-800 disabled:text-slate-300 disabled:cursor-default"
+                >
+                  Clear
+                </button>
               </>
             )}
           </div>
@@ -168,18 +184,18 @@ export default function TrackRecordExperience({
               chart overlay, top-right) */}
           <a
             href="#records"
-            className="self-start md:self-auto text-sm font-medium text-slate-500 hover:text-brand whitespace-nowrap transition-colors"
+            className="self-start md:self-auto inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-brand/30 px-4 py-2 text-sm font-semibold text-brand hover:border-brand hover:bg-brand/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
           >
-            Records &amp; success stories ↓
+            Records &amp; success stories <span aria-hidden="true">↓</span>
           </a>
         </div>
 
-        {/* Map area — the page's hero. The chart overlay (top-right, where
-            the legend used to live) merges the live deployment counter with
-            a filter-driven cumulative sparkline; pointer-transparent so it
-            never blocks map interaction. */}
+        {/* Map area — the page's hero. The chart overlay (top-left, clear
+            of the right-side yearly-stats drawer) merges the live
+            deployment counter with a filter-driven cumulative sparkline;
+            pointer-transparent so it never blocks map interaction. */}
         <div className="relative h-[62vh] min-h-[420px] md:h-[66vh] md:min-h-[520px]">
-          {!countrySelected && <ChartOverlay points={chartPoints} counterText={counterText} />}
+          <ChartOverlay points={chartPoints} counterText={counterText} />
           {error ? (
             <div className="h-full flex flex-col items-center justify-center gap-3 p-6 text-center">
               <h3 className="text-lg font-semibold text-red-600">
@@ -209,7 +225,6 @@ export default function TrackRecordExperience({
               hideInlineStats
               hideSystemFilter
               selectedSystems={effectiveSelection}
-              onSelectedCountryChange={handleSelectedCountryChange}
               showSuccessStoriesLink={false}
               className="relative w-full h-full overflow-hidden bg-slate-50"
             />
@@ -223,10 +238,21 @@ export default function TrackRecordExperience({
 /** Compact in-map overlay: live deployment count + filter-driven
  *  cumulative sparkline. Sits top-right (the old legend position),
  *  pointer-transparent, server-rendered with the build-time defaults. */
-function ChartOverlay({ points, counterText }: { points: YearPoint[]; counterText: string }) {
+function ChartOverlay({
+  points: rawPoints,
+  counterText,
+}: {
+  points: YearPoint[];
+  counterText: string;
+}) {
   const W = 200;
   const H = 48;
   const PAD = 3;
+  // Cumulative curves start from a zero baseline the year before the first
+  // deployment — also guarantees single-year series (e.g. Thor, all 2024)
+  // still draw a rising line instead of a suppressed chart.
+  const points: YearPoint[] =
+    rawPoints.length > 0 ? [{ year: rawPoints[0].year - 1, total: 0 }, ...rawPoints] : rawPoints;
   const hasCurve = points.length >= 2;
 
   let line = '';
@@ -243,7 +269,7 @@ function ChartOverlay({ points, counterText }: { points: YearPoint[]; counterTex
   }
 
   return (
-    <div className="absolute top-3 right-3 md:top-4 md:right-4 z-40 w-[170px] md:w-[210px] pointer-events-none">
+    <div className="absolute top-3 left-3 md:top-4 md:left-4 z-40 w-[170px] md:w-[210px] pointer-events-none">
       <div className="bg-white/95 backdrop-blur-md border border-slate-200 rounded-lg shadow px-3 py-2.5">
         <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Deployments</p>
         <p

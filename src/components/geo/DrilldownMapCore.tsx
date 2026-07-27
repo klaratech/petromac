@@ -35,10 +35,6 @@ export interface DrilldownMapCoreProps {
   /** Hides the built-in bottom filter bar (used when the filter is
    *  controlled and rendered elsewhere). */
   hideSystemFilter?: boolean;
-  /** Notifies the host when a country is tapped/deselected — the public
-   *  Track Record page hides its chart overlay while a country's yearly
-   *  stats drawer is open. */
-  onSelectedCountryChange?: (_country: string | null) => void;
   className?: string;
 }
 
@@ -52,7 +48,6 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   hideInlineStats = false,
   selectedSystems: controlledSystems,
   hideSystemFilter = false,
-  onSelectedCountryChange,
   className = 'relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white',
 }: DrilldownMapCoreProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -177,13 +172,6 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
     setTappedCountry((current) => (current === countryName ? null : countryName));
   }, []);
 
-  // Report selection changes to the host — an effect (rather than calling
-  // from the click handler) so every deselection path (Esc, drawer close,
-  // re-tap) is covered.
-  useEffect(() => {
-    onSelectedCountryChange?.(tappedCountry);
-  }, [tappedCountry, onSelectedCountryChange]);
-
   // Defensive guard (freeze audit, Jul 2026): mousemove fires per pixel and
   // each hover update re-renders this whole overlay tree. Coalesce to one
   // state update per animation frame — a single rAF id, always cancelled or
@@ -290,7 +278,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
       {showCloseButton && onClose && (
         <button
           onClick={onClose}
-          className="absolute top-3 right-4 text-xl font-semibold z-50 bg-white text-black hover:bg-gray-100 rounded-full px-2 py-1 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="absolute top-3 right-4 text-xl font-semibold z-50 bg-white text-black hover:bg-gray-100 rounded-full px-2 py-1 shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           aria-label="Close map"
         >
           ✕
@@ -331,7 +319,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
               <button
                 type="button"
                 onClick={onSuccessStoriesClick}
-                className="mt-3 w-full px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-full hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                className="mt-3 w-full px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-full hover:bg-brand/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
                 aria-label="Success Stories"
               >
                 Success Stories →
@@ -339,7 +327,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
             ) : (
               <a
                 href="/success-stories/flipbook"
-                className="mt-3 block text-center px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-full hover:bg-brand/90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                className="mt-3 block text-center px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-full hover:bg-brand/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
                 aria-label="Success Stories"
               >
                 Success Stories →
@@ -403,7 +391,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
                 aria-label={`${isOn ? 'Hide' : 'Show'} ${sys} deployments`}
                 className={`
                   text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap transition-colors
-                  focus:outline-none focus:ring-2 focus:ring-blue-500
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500
                   ${
                     isOn
                       ? 'bg-blue-600 text-white border border-blue-600 hover:bg-blue-700'
@@ -420,14 +408,14 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
           {selectedSystems.length === systemOptions.length ? (
             <button
               onClick={handleClearSystems}
-              className="text-xs text-slate-500 hover:text-slate-800 whitespace-nowrap pr-1 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+              className="text-xs text-slate-500 hover:text-slate-800 whitespace-nowrap pr-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               Clear
             </button>
           ) : (
             <button
               onClick={handleSelectAllSystems}
-              className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap pr-1 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap pr-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               All
             </button>
