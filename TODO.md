@@ -19,9 +19,13 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       ALLOWED_EMAIL_DOMAINS); end-to-end verified — live contact-form test
       returned ok and delivered via Graph as info@. Backup:
       `.env-backend.bak-*` on the server.
-- [ ] Production domain cutover: Cloudflare zone/tunnel hostname, then update
-      `NEXT_PUBLIC_SITE_URL`/`NEXT_PUBLIC_BASE_URL`, `ALLOWED_ORIGINS` (both env
-      files), and add the new Entra callback URL.
+- [ ] Production domain cutover: 1. Cloudflare: petromac.co.nz zone + tunnel public hostname → the
+      frontend/backend services (same as klaratech.it today) 2. GitHub → Settings → Variables: set
+      `NEXT_PUBLIC_SITE_URL=https://www.petromac.co.nz` and
+      `NEXT_PUBLIC_ENV=production` (baked into the image at CI build —
+      wired Jul 2026 via Dockerfile build-args; server env alone is NOT
+      enough), then re-run the deploy workflow 3. Server: add the new domain to `ALLOWED_ORIGINS` in BOTH
+      `.env-frontend` and `.env-backend`, `docker compose up -d` 4. Entra callback URL: already pre-registered ✓
       **Indexability (Jul 2026):** staging ships noindex + Disallow-all
       robots.txt automatically; the production deploy must set
       `NEXT_PUBLIC_SITE_URL=https://www.petromac.co.nz` AND
