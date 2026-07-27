@@ -57,7 +57,7 @@ new catalog PDF/IDML edition arrives (usually new devices or spec updates).
       (b) CP12 correct spec rows, (c) inventory of every corrupted fraction
       char across catalog.json. Write findings into "Phase 0 findings" below.
       No code changes. Commit doc.
-- [ ] **Phase 1 — Data layer.**
+- [x] **Phase 1 — Data layer.** (done 2026-07-27)
       catalog_config.json corruption fixes + regen; enrich.ts (curation map
       from Phase 0 findings, parser, overrides); accessors: families list w/
       computed counts, per-family model rows, finder index; types. Unit-ish
@@ -133,6 +133,27 @@ temp 400°F, pressure 30,000 psi, taxi bore 4-1/2", max load 500 lbs.
 focus-centralisers, well-intervention (from catalog.json categories[]).
 Guides groups today: "Pathfinder" / "Fixed Angle Guides" — vendor field
 will subdivide the latter.
+
+## Phase 1 notes (for later phases)
+
+- Corruption: fixed at the pipeline (fraction-glyph replacements in
+  catalog_config.json + spec-table titles now pass through replacements in
+  build_catalog_content.py). catalog.json regenerated — zero `�` remain.
+  `14 4�4”` → `14-3/4` (PDF prints 14.75"), `¹�8`/`�/₈` → `1/8` (verified
+  on PDF pages 38/39 and CP12 p42).
+- `src/features/catalog/content/enrich.ts` is the website layer. Exports:
+  `enrichedProducts`, `getEnriched(slug)`, `enrichedInCategory(cat)`,
+  `familySummaries()` (overview cards: counts/groups/flagship image),
+  `familyTableRows(cat)` (Level-2 table rows: models/role/bearing/vendor/
+  holeRange/bore/temp/weight display strings), `buildFinderIndex()`
+  (numeric fields + purpose for the finder), `PURPOSE_LABELS`,
+  `formatInches`, `formatHoleRange`.
+- Parser reads Min/Max Hole|Casing|Restriction Size, Bore, Temperature,
+  Weight; normalizes vulgar + superscript/subscript fractions.
+  PARSE_OVERRIDES (PDF-verified): cp12 10-1/8"–17-1/2", cp8 7-1/2"–8-1/2",
+  ca7 7", cx9 7"–9-5/8". Bearing derived from model prefixes (TTA/TTB).
+- New products in future editions: defaults + build-time console warning
+  listing slugs missing curation.
 
 ## Session log
 

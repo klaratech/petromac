@@ -190,7 +190,7 @@
             {
               "label": "Taxi Bore",
               "values": ["3-⅝”", ""],
-              "note": "Fits a 3-5�8” logging tool and a 3-3�8” tool housing via a reducing sleeve. Other version , TTA-705 is available with a 3.7” bore."
+              "note": "Fits a 3-5/8” logging tool and a 3-3/8” tool housing via a reducing sleeve. Other version , TTA-705 is available with a 3.7” bore."
             },
             {
               "label": "Standoff in 8.5” Wellbore",
@@ -221,11 +221,11 @@
             },
             {
               "label": "Fastening",
-              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread", ""]
+              "values": ["304 Stainless Steel Cap Screws 1/4”, 3/16” hex UNC thread", ""]
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type", ""]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type", ""]
             },
             {
               "label": "SWL for fishing",
@@ -246,22 +246,22 @@
             },
             {
               "label": "",
-              "values": ["3-3�8”", "3-5�8”"]
+              "values": ["3-3/8”", "3-5/8”"]
             },
             {
-              "label": "8 1�2”",
+              "label": "8 1/2”",
               "values": ["0.6”", "0.5”"]
             },
             {
-              "label": "9 7�8”",
+              "label": "9 7/8”",
               "values": ["0.5”", "0.4”"]
             },
             {
-              "label": "12 1�4”",
+              "label": "12 1/4”",
               "values": ["0.4”", "0.3”"]
             },
             {
-              "label": "17 1�2”",
+              "label": "17 1/2”",
               "values": ["0.3”", "0.2”"]
             }
           ]
@@ -376,7 +376,7 @@
             {
               "label": "Taxi Bore",
               "values": ["3-⅝”", ""],
-              "note": "Fits a 3-5�8” logging tool and a 3-3�8” tool housing via a reducing sleeve. Other version , TTA-715 is available with a 3.7” bore."
+              "note": "Fits a 3-5/8” logging tool and a 3-3/8” tool housing via a reducing sleeve. Other version , TTA-715 is available with a 3.7” bore."
             },
             {
               "label": "Standoff in 8.5” Wellbore",
@@ -407,11 +407,11 @@
             },
             {
               "label": "Fastening",
-              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread", ""]
+              "values": ["304 Stainless Steel Cap Screws 1/4”, 3/16” hex UNC thread", ""]
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type", ""]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type", ""]
             },
             {
               "label": "SWL for fishing",
@@ -432,22 +432,22 @@
             },
             {
               "label": "",
-              "values": ["3-3�8”", "3-5�8”"]
+              "values": ["3-3/8”", "3-5/8”"]
             },
             {
-              "label": "8 1�2”",
+              "label": "8 1/2”",
               "values": ["1.6”", "1.5”"]
             },
             {
-              "label": "9 7�8”",
+              "label": "9 7/8”",
               "values": ["1.5”", "1.4”"]
             },
             {
-              "label": "12 1�4”",
+              "label": "12 1/4”",
               "values": ["1.4”", "1.3”"]
             },
             {
-              "label": "17 1�2”",
+              "label": "17 1/2”",
               "values": ["1.3”", "1.2”"]
             }
           ]
@@ -506,19 +506,19 @@
               "values": ["Tool Housing OD:"]
             },
             {
-              "label": "8 1�2”",
+              "label": "8 1/2”",
               "values": ["1.4”"]
             },
             {
-              "label": "9 7�8”",
+              "label": "9 7/8”",
               "values": ["1.3”"]
             },
             {
-              "label": "12 1�4”",
+              "label": "12 1/4”",
               "values": ["1.2”"]
             },
             {
-              "label": "17 1�2”",
+              "label": "17 1/2”",
               "values": ["1.0”"]
             }
           ]
@@ -602,11 +602,11 @@
             },
             {
               "label": "Fastening",
-              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+              "values": ["304 Stainless Steel Cap Screws 1/4”, 3/16” hex UNC thread"]
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL for fishing",
@@ -707,7 +707,7 @@
             {
               "label": "Taxi Bore",
               "values": ["3-⅝”"],
-              "note": "Fits a 3-5�8” logging tool and a 3-3�8” tool housing via a reducing sleeve."
+              "note": "Fits a 3-5/8” logging tool and a 3-3/8” tool housing via a reducing sleeve."
             },
             {
               "label": "Eccentricity in 8.5” Wellbore",
@@ -737,11 +737,11 @@
             },
             {
               "label": "Fastening",
-              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+              "values": ["304 Stainless Steel Cap Screws 1/4”, 3/16” hex UNC thread"]
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL for fishing",
@@ -842,7 +842,7 @@
             },
             {
               "label": "Wheel diameter",
-              "values": ["6”", "6-1�4”"]
+              "values": ["6”", "6-1/4”"]
             },
             {
               "label": "Taxi Bore",
@@ -872,11 +872,11 @@
             },
             {
               "label": "Fastening",
-              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+              "values": ["304 Stainless Steel Cap Screws 1/4”, 3/16” hex UNC thread"]
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL for fishing",
@@ -898,22 +898,22 @@
             },
             {
               "label": "",
-              "values": ["4-3�4”", "4-1�2”", "4.44”"]
+              "values": ["4-3/4”", "4-1/2”", "4.44”"]
             },
             {
-              "label": "8 1�2”",
+              "label": "8 1/2”",
               "values": ["0.8”", "0.9”", "0.9”"]
             },
             {
-              "label": "12 1�4”",
+              "label": "12 1/4”",
               "values": ["0.5”", "0.6”", "0.6”"]
             },
             {
-              "label": "14 3�4”",
+              "label": "14 3/4”",
               "values": ["0.4”", "0.5”", "0.55”"]
             },
             {
-              "label": "17 1�2”",
+              "label": "17 1/2”",
               "values": ["0.3”", "0.4”", "0.47”"]
             }
           ]
@@ -927,22 +927,22 @@
             },
             {
               "label": "",
-              "values": ["4-3�4”", "4-1�2”", "4.44”", "5”"]
+              "values": ["4-3/4”", "4-1/2”", "4.44”", "5”"]
             },
             {
-              "label": "10 5�8”",
+              "label": "10 5/8”",
               "values": ["1.2”", "1.3”", "1.4”", "1.1”"]
             },
             {
-              "label": "12 1�4”",
+              "label": "12 1/4”",
               "values": ["1”", "1.2”", "1.2”", "0.9”"]
             },
             {
-              "label": "14 4�4”",
+              "label": "14-3/4”",
               "values": ["0.9”", "1”", "1.1”", "0.8”"]
             },
             {
-              "label": "17 1�2”",
+              "label": "17 1/2”",
               "values": ["0.8”", "0.9”", "1”", "0.7”"]
             }
           ]
@@ -1044,7 +1044,7 @@
             },
             {
               "label": "Wheel diameter",
-              "values": ["4-5/6 ”", "6-1�4”"]
+              "values": ["4-5/6 ”", "6-1/4”"]
             },
             {
               "label": "Taxi Bore",
@@ -1074,11 +1074,11 @@
             },
             {
               "label": "Fastening",
-              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+              "values": ["304 Stainless Steel Cap Screws 1/4”, 3/16” hex UNC thread"]
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL for fishing",
@@ -1100,22 +1100,22 @@
             },
             {
               "label": "",
-              "values": ["4-3�4”", "4-1�2”", "4.44”"]
+              "values": ["4-3/4”", "4-1/2”", "4.44”"]
             },
             {
-              "label": "8 1�2”",
+              "label": "8 1/2”",
               "values": ["0.8”", "0.9”", "0.9”"]
             },
             {
-              "label": "12 1�4”",
+              "label": "12 1/4”",
               "values": ["0.5”", "0.6”", "0.6”"]
             },
             {
-              "label": "14 3�4”",
+              "label": "14 3/4”",
               "values": ["0.4”", "0.5”", "0.55”"]
             },
             {
-              "label": "17 1�2”",
+              "label": "17 1/2”",
               "values": ["0.3”", "0.4”", "0.47”"]
             }
           ]
@@ -1129,22 +1129,22 @@
             },
             {
               "label": "",
-              "values": ["4-3�4”", "4-1�2”", "4.44”", "5”"]
+              "values": ["4-3/4”", "4-1/2”", "4.44”", "5”"]
             },
             {
-              "label": "10 5�8”",
+              "label": "10 5/8”",
               "values": ["1.2”", "1.3”", "1.4”", "1.1”"]
             },
             {
-              "label": "12 1�4”",
+              "label": "12 1/4”",
               "values": ["1”", "1.2”", "1.2”", "0.9”"]
             },
             {
-              "label": "14 4�4”",
+              "label": "14-3/4”",
               "values": ["0.9”", "1”", "1.1”", "0.8”"]
             },
             {
-              "label": "17 1�2”",
+              "label": "17 1/2”",
               "values": ["0.8”", "0.9”", "1”", "0.7”"]
             }
           ]
@@ -1253,12 +1253,12 @@
             {
               "label": "Standoff in 6” wellbore",
               "values": ["0.44”", ""],
-              "note": "For 3-5�8” OD tool housing. Set Standoff parameters to appropriate offset, see table below."
+              "note": "For 3-5/8” OD tool housing. Set Standoff parameters to appropriate offset, see table below."
             },
             {
               "label": "Connection",
               "values": ["In-Line with all through wired tools", ""],
-              "note": "Fits threaded connections for 31 pins on 3-3�8” and 3-5�8” tools."
+              "note": "Fits threaded connections for 31 pins on 3-3/8” and 3-5/8” tools."
             }
           ]
         },
@@ -1284,7 +1284,7 @@
             },
             {
               "label": "Fastening",
-              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread", ""]
+              "values": ["304 Stainless Steel Cap Screws 1/4”, 3/16” hex UNC thread", ""]
             },
             {
               "label": "SWL for fishing",
@@ -1301,10 +1301,10 @@
             },
             {
               "label": "",
-              "values": ["3-3�8”", "3-5�8”"]
+              "values": ["3-3/8”", "3-5/8”"]
             },
             {
-              "label": "5 7�8”",
+              "label": "5 7/8”",
               "values": ["0.6”", "0.4”"]
             },
             {
@@ -1312,7 +1312,7 @@
               "values": ["0.6”", "0.4”"]
             },
             {
-              "label": "8 1�2”",
+              "label": "8 1/2”",
               "values": ["0.4”", "0.3”"]
             }
           ]
@@ -1411,12 +1411,12 @@
             {
               "label": "Standoff in 6” wellbore",
               "values": ["0.8”"],
-              "note": "For 3-5�8” OD tool housing. Set Standoff parameters to appropriate offset, see table on next page."
+              "note": "For 3-5/8” OD tool housing. Set Standoff parameters to appropriate offset, see table on next page."
             },
             {
               "label": "Connection",
               "values": ["In-Line with all through wired tools"],
-              "note": "Fits threaded connections for 31 pins on 3-3�8” and 3-5�8” tools."
+              "note": "Fits threaded connections for 31 pins on 3-3/8” and 3-5/8” tools."
             }
           ]
         },
@@ -1441,7 +1441,7 @@
             },
             {
               "label": "Fastening",
-              "values": ["304 Stainless Steel Cap Screws 1�4”, 3�16” hex UNC thread"]
+              "values": ["304 Stainless Steel Cap Screws 1/4”, 3/16” hex UNC thread"]
             },
             {
               "label": "SWL for fishing",
@@ -1458,14 +1458,14 @@
             },
             {
               "label": "",
-              "values": ["3-3�8”", "3-5�8”", "4-1�2”"]
+              "values": ["3-3/8”", "3-5/8”", "4-1/2”"]
             },
             {
               "label": "6”",
               "values": ["0.9”", "0.7”", "0.2”"]
             },
             {
-              "label": "8 1�2”",
+              "label": "8 1/2”",
               "values": ["0.8”", "0.6”", "0.1”"]
             }
           ]
@@ -1478,7 +1478,7 @@
               "values": ["Eccentricity"]
             },
             {
-              "label": "5 7�8””",
+              "label": "5 7/8”",
               "values": ["0.4"]
             },
             {
@@ -1486,7 +1486,7 @@
               "values": ["0.45"]
             },
             {
-              "label": "6 1�8”",
+              "label": "6 1/8”",
               "values": ["0.5"]
             }
           ]
@@ -1599,7 +1599,7 @@
             },
             {
               "label": "Fastenings",
-              "values": ["304 stainless Steel Cap screws -1�4”x3�16”"]
+              "values": ["304 stainless Steel Cap screws -1/4”x3/16”"]
             },
             {
               "label": "SWL, Shear set screws",
@@ -1716,7 +1716,7 @@
             },
             {
               "label": "Fastenings",
-              "values": ["304 stainless Steel Cap screws -1�4”x3�16”", ""]
+              "values": ["304 stainless Steel Cap screws -1/4”x3/16”", ""]
             },
             {
               "label": "Connection",
@@ -1744,8 +1744,8 @@
       "summary": "Adjustable nose angle (3, 4, 6 or 9°) to suit hole size and standoff — attaches to any through-wired tool.",
       "description": [
         "The Guide is suitable for attachment to the bottom of any through-wired tool.",
-        "8-1�2” and larger configuration",
-        "8-1�2” and smaller configuration larger"
+        "8-1/2” and larger configuration",
+        "8-1/2” and smaller configuration larger"
       ],
       "applications": [
         "Ability to navigate step ledges of up to 5”",
@@ -1919,11 +1919,11 @@
             },
             {
               "label": "Maximum step ledge",
-              "values": ["Up to 4-1�2\" in 8-1�2\" wellbore", "Up to 3-3�4\" in 6\" wellbore"]
+              "values": ["Up to 4-1/2\" in 8-1/2\" wellbore", "Up to 3-3/4\" in 6\" wellbore"]
             },
             {
               "label": "Min. Hole size",
-              "values": ["7”", "5-5�8”"]
+              "values": ["7”", "5-5/8”"]
             },
             {
               "label": "Max. Hole size",
@@ -2019,7 +2019,7 @@
             },
             {
               "label": "Maximum step ledge",
-              "values": ["Up to 3.6\" (6\" wellbore, tool with 1�2\" standoff)"]
+              "values": ["Up to 3.6\" (6\" wellbore, tool with 1/2\" standoff)"]
             },
             {
               "label": "Min. Hole size",
@@ -2404,7 +2404,7 @@
             },
             {
               "label": "OD",
-              "values": ["4-1�2”"]
+              "values": ["4-1/2”"]
             },
             {
               "label": "Nose Angle",
@@ -2716,7 +2716,7 @@
             },
             {
               "label": "Min. Hole size",
-              "values": ["6- ¹�8”"]
+              "values": ["6- 1/8”"]
             },
             {
               "label": "Max. Hole size",
@@ -2816,7 +2816,7 @@
             },
             {
               "label": "Min. Hole size",
-              "values": ["6- ¹�8”"]
+              "values": ["6- 1/8”"]
             },
             {
               "label": "Max. Hole size",
@@ -2995,7 +2995,7 @@
             },
             {
               "label": "",
-              "values": ["12-1�4”", "14-3�4”", "16”", "17-1�2”"]
+              "values": ["12-1/4”", "14-3/4”", "16”", "17-1/2”"]
             },
             {
               "label": "Distance from Centre of Borehole",
@@ -3004,7 +3004,7 @@
           ]
         },
         {
-          "title": "Standoff (Clearance) In 12-1�4” Hole",
+          "title": "Standoff (Clearance) In 12-1/4” Hole",
           "rows": [
             {
               "label": "",
@@ -3012,7 +3012,7 @@
             },
             {
               "label": "",
-              "values": ["3-5�8”", "4.44”", "5”", "5-1�4”"]
+              "values": ["3-5/8”", "4.44”", "5”", "5-1/4”"]
             },
             {
               "label": "Standoff",
@@ -3049,7 +3049,7 @@
             },
             {
               "label": "",
-              "values": ["10-⅝\"", "10-�/₈\""]
+              "values": ["10-⅝\"", "10-1/8\""]
             },
             {
               "label": "Collapsed OD",
@@ -3079,7 +3079,7 @@
             {
               "label": "Taxi Bore",
               "values": ["4-½”", ""],
-              "note": "Reducing Adapter sleeves are available to fit 4\" and 3-5�8” tools."
+              "note": "Reducing Adapter sleeves are available to fit 4\" and 3-5/8” tools."
             }
           ]
         },
@@ -3100,7 +3100,7 @@
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL, Shear set screws",
@@ -3214,7 +3214,7 @@
             {
               "label": "Taxi Bore",
               "values": ["3-⅝”", ""],
-              "note": "Reducing adapter sleeves are available to fit 3-3�8” tools."
+              "note": "Reducing adapter sleeves are available to fit 3-3/8” tools."
             }
           ]
         },
@@ -3235,7 +3235,7 @@
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL, Shear set screws",
@@ -3347,7 +3347,7 @@
             {
               "label": "Taxi Bore",
               "values": ["3-⅝”", ""],
-              "note": "Reducing Adapter sleeves are available to fit 3-3�8” tools."
+              "note": "Reducing Adapter sleeves are available to fit 3-3/8” tools."
             }
           ]
         },
@@ -3368,7 +3368,7 @@
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL, Shear set screws",
@@ -3473,7 +3473,7 @@
             {
               "label": "Connection",
               "values": ["In-Line with all through wired tools", ""],
-              "note": "Fits threaded connections for 31 pins on 3-3�8” and 3-5�8” tools."
+              "note": "Fits threaded connections for 31 pins on 3-3/8” and 3-5/8” tools."
             },
             {
               "label": "Max Load Carry Capability",
@@ -3610,7 +3610,7 @@
             },
             {
               "label": "Min. Casing size",
-              "values": ["4-1�2”", "4-1�2”"]
+              "values": ["4-1/2”", "4-1/2”"]
             },
             {
               "label": "Max. Casing size",
@@ -3752,7 +3752,7 @@
             {
               "label": "Taxi Bore",
               "values": ["3-⅝”", ""],
-              "note": "Reducing Adapter sleeves are available to fit 3-3�8” tools."
+              "note": "Reducing Adapter sleeves are available to fit 3-3/8” tools."
             }
           ]
         },
@@ -3773,7 +3773,7 @@
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL, Shear set screws",
@@ -3891,7 +3891,7 @@
             },
             {
               "label": "Attachment",
-              "values": ["Alloy Steel grub Screw , 1�4” hex, UNC Thread, Dog end type"]
+              "values": ["Alloy Steel grub Screw , 1/4” hex, UNC Thread, Dog end type"]
             },
             {
               "label": "SWL, Shear set screws",

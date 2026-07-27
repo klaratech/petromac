@@ -126,6 +126,7 @@ def shape_table(raw_table, replacements) -> dict:
     if rows and rows[0][0] and not any(c.strip() for c in rows[0][1:]):
         title = rows[0][0].strip().title()
         title = title.replace("Swl", "SWL").replace("Od", "OD").replace("Id", "ID")
+        title = apply_replacements(title, replacements)
         start = 1
     shaped = []
     for r in range(start, len(rows)):
