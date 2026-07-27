@@ -19,8 +19,9 @@ export default function HardwareHighlight() {
 
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
-          {/* Cover + name */}
-          <div className="flex items-center gap-4 flex-shrink-0">
+          {/* Cover + name. Fixed md+ width matches the Athena band so the
+              two bands' copy columns start at the same x. */}
+          <div className="flex items-center gap-4 flex-shrink-0 md:w-[340px]">
             <div className="relative w-12 h-12 flex-shrink-0">
               <Image
                 src="/images/catalog.png"

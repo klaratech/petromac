@@ -4,9 +4,9 @@ import CatalogBrowser from '@/components/public/catalog/CatalogBrowser';
 import { buildCardModels, buildSearchIndex, catalog, categories } from '@/features/catalog/content';
 
 export const metadata = pageMetadata({
-  title: 'Product Catalogue',
+  title: 'Product Catalog',
   description:
-    'Petromac equipment catalogue — Wireline Express™ tool taxis, guides and holefinders, Focus™ precision centralisers and well intervention accessories.',
+    'Petromac equipment catalog — Wireline Express™ tool taxis, guides and holefinders, Focus™ precision centralisers and well intervention accessories.',
   path: '/catalog',
 });
 
@@ -28,11 +28,8 @@ export default function CatalogTestPage() {
       {/* Compact header */}
       <section className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
-          <p className="text-sm font-semibold uppercase tracking-wider text-brand mb-2">
-            {catalog.edition} Edition
-          </p>
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 mb-3">
-            Product Catalogue
+            Product Catalog
           </h1>
           <p className="text-slate-600 max-w-3xl">{catalog.about.intro[0]}</p>
         </div>

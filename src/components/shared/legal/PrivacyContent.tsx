@@ -43,8 +43,7 @@ export default function PrivacyContent() {
           operational details you choose to send us.
         </li>
         <li>
-          Email addresses entered to receive catalogues, success stories, or other Petromac
-          documents.
+          Email addresses entered to receive catalogs, success stories, or other Petromac documents.
         </li>
         <li>
           Staff identity details used for intranet or kiosk workflows, such as name and email

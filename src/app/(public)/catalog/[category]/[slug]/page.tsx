@@ -98,7 +98,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Catalogue', item: absoluteUrl('/catalog') },
+      { '@type': 'ListItem', position: 1, name: 'Catalog', item: absoluteUrl('/catalog') },
       {
         '@type': 'ListItem',
         position: 2,
@@ -119,7 +119,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
               <Link href="/catalog" className="hover:text-brand transition-colors">
-                Catalogue
+                Catalog
               </Link>
             </li>
             <li aria-hidden="true">/</li>
