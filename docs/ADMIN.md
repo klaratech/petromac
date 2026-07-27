@@ -84,23 +84,27 @@ tables, instant search) generated from the **InDesign source**, not the
 print PDF. It replaced the pdf.js viewer in Jul 2026 (`/catalogtest`, its
 refinement URL, redirects here).
 
-The UI is a sidebar workspace: categories on the left (with product counts,
-`?category=` deep links), the active category's product cards on the right,
-SSG product pages at `/catalog/<category>/<slug>`. Category tree note: the
-print catalog's "Fixed Angle Guides" section lives INSIDE Guides &
-Holefinders as a group (four sidebar categories total) — that mapping is in
-`catalog_config.json`, not the IDML. Two things content editors get for
-free:
+The UI is a three-level drill-down (Jul 2026): `/catalog` shows product-line
+bands with family cards plus the Device Finder; `/catalog/<category>` family
+pages render spec TABLES built from parsed spec fields; SSG product pages
+stay at `/catalog/<category>/<slug>`. Category tree note: the print
+catalog's "Fixed Angle Guides" section lives INSIDE Guides & Holefinders
+(vendor sections on the family page split it by SLB / Halliburton /
+Baker Hughes) — that mapping is in `catalog_config.json` + `enrich.ts`, not
+the IDML. Things content editors get for free:
 
-- **Card badges & spec tags** (e.g. "400°F rated", `Hole 8”–17.5”`) are
-  derived automatically from each product's Technical Specifications table —
-  fix a spec in the config and the card follows. Where models within one
-  product genuinely differ on a value, the tag is omitted rather than
-  showing one model's number.
-- **Email PDF** in the sidebar sends the catalog PDF as the signed-in staff
+- **Family tables & Device Finder values** (hole range, bore, temp, weight)
+  are parsed automatically from each product's Technical Specifications
+  table — fix a spec in the config, regenerate, and every surface follows.
+- **Email PDF** on the overview sends the catalog PDF as the signed-in staff
   member (Graph, lands in their Sent Items) or from `info@` for everyone
-  else — no content work involved; it attaches the same
-  `petromac-product-catalog.pdf` as the Download link.
+  else — it attaches the same `petromac-product-catalog.pdf` as the
+  Download link.
+- **Website enrichment layer**: after regenerating `catalog.json`, check
+  the build output for a `[catalog enrich]` warning — a NEW product needs
+  one curation row (vendor / finder purpose / taxi role) in
+  `src/features/catalog/content/enrich.ts`; per-slug overrides there cover
+  spec values the parser can't attribute. Everything else is automatic.
 
 **Source of truth:** the InDesign package — the `.idml` export **plus its
 `Links` folder** (original image assets). The `.indd` itself isn't used.

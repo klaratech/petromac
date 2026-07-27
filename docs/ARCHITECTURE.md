@@ -27,23 +27,19 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
   at a non-production domain. `app/robots.ts` / `app/sitemap.ts` are
   env-derived. JSON-LD: Organization (home), Product + BreadcrumbList
   (product pages), ScholarlyArticle ItemList (publications).
-- **HTML catalog** — `/catalog`, built from a committed content model
-  (`src/features/catalog/content/catalog.json`, generated from the InDesign
-  IDML — see [ADMIN.md](ADMIN.md) §2b). Landing is a client-side workspace
-  (`CatalogBrowser`): sticky category sidebar with counts (mobile:
-  horizontal chip bar), active category synced to `?category=` via
-  pushState/popstate, instant search that switches tab + scrolls to and
-  flashes the card. All four category panes are server-rendered with
-  inactive ones `hidden`, so the full product range is in the initial HTML
-  (hidden panes' images stay lazy). Four categories — Fixed Angle Guides lives inside
-  Guides & Holefinders as a group. Product pages are SSG at
-  `/catalog/<category>/<slug>` (all in the sitemap) with real HTML spec
-  tables (merged cells + footnotes preserved). Card badges/spec tags derive
-  automatically from each product's spec tables. "Email PDF" sends as the
-  signed-in staff member (Graph `/me/sendMail` via `/api/staff/send-pdf`)
-  or falls back to the `info@` sender. Replaced the pdf.js viewer Jul 2026
-  (react-pdf + `public/pdfjs/` removed); `/catalogtest/*` 308-redirects
-  here.
+- **HTML catalog** — three-level drill-down (Jul 2026), built from a
+  committed content model (`src/features/catalog/content/catalog.json`,
+  generated from the InDesign IDML — see [ADMIN.md](ADMIN.md) §2b) plus a
+  website enrichment layer (`enrich.ts`: vendor/purpose curation +
+  fraction-aware spec parser). `/catalog` = product-line bands with family
+  cards, Device Finder (client island), search that navigates to model
+  pages, PDF block. `/catalog/[category]` = SSG family pages rendering
+  spec tables (unified taxi table w/ Role+Bearing; Pathfinder featured +
+  vendor sections; Open/Cased hole; Accessories). `/catalog/[category]/
+[slug]` = SSG model pages (32, URLs stable) + "Other models in this
+  family" table. Old `?category=` URLs 308-redirect. "Email PDF" sends as
+  the signed-in staff member (Graph `/me/sendMail` via
+  `/api/staff/send-pdf`) or falls back to the `info@` sender.
 - **Intranet** — `/intranet` is server-gated behind Microsoft Entra sign-in
   (`/auth/microsoft/*`; AES-GCM session cookie, 12 h TTL; unauthenticated
   visitors 307 straight to Microsoft). Links to Athena and the kiosk.

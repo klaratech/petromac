@@ -5,6 +5,29 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Jul 2026 (late) — Catalog: three-level drill-down + enrichment layer
+
+- **Overview → families → models**, mirroring the print catalog's own
+  structure (product-line bands, vendor grouping from the PDF TOC). Family
+  pages carry dense spec TABLES instead of card grids — comparison is the
+  job at that level; narrative lives on model pages. All 32 model URLs
+  unchanged (indexed); family pages are new real URLs (SEO + sitemap).
+- **Enrichment layer over the generated content model.** catalog.json
+  stays pipeline-generated (never hand-edited); everything website-specific
+  — vendor sections, finder purposes, taxi roles, parsed numeric specs —
+  lives in `enrich.ts`, keyed by slug, so a new catalog edition is just
+  drop-IDML + regenerate. New products get safe defaults plus a build-time
+  warning to add one curation row. Bearing types derive from TTA/TTB model
+  prefixes; a fraction-aware parser reads hole/casing ranges, bore, temp,
+  weight from the display spec strings (5 PDF-verified per-slug overrides).
+- **Corruption fixed at the source**: the print font's fraction glyph
+  (mojibake `�`) is mapped in catalog_config.json replacements and table
+  titles now pass through replacements — 120 occurrences to zero, values
+  verified against the PDF.
+- **Device Finder v1**: hole/casing size + purpose over the parsed fields;
+  pure filter function (headlessly tested), client island, no SKU names in
+  the overview markup.
+
 ## Jul 2026 (late) — Track Record: map as hero, same-generation data
 
 - **The map is the page; stats are furniture.** The three big stat cards

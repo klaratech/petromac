@@ -25,8 +25,9 @@ website/
 │   │   ├── (public)/                     # 🌐 Public shell routes
 │   │   │   ├── page.tsx                  # Homepage
 │   │   │   ├── about/                    # About pages
-│   │   │   ├── catalog/                  # HTML catalog (sidebar workspace)
-│   │   │   │   └── [category]/[slug]/    # SSG product pages
+│   │   │   ├── catalog/                  # HTML catalog (three-level drill-down)
+│   │   │   │   └── [category]/           # SSG family pages
+│   │   │   │       └── [slug]/           # SSG product pages
 │   │   │   ├── track-record/             # Global deployment map
 │   │   │   ├── simulation/               # Athena planning/simulation page
 │   │   │   ├── contact/                  # Contact page (submits to backend API)
@@ -56,7 +57,7 @@ website/
 │   ├── components/
 │   │   ├── public/                       # Public website components
 │   │   │   ├── home/                     # Homepage sections
-│   │   │   └── catalog/                  # HTML catalog UI (browser, cards, search, spec tables)
+│   │   │   └── catalog/                  # HTML catalog UI (finder, family tables, search, spec tables)
 │   │   ├── shared/                       # Shared layout components
 │   │   │   └── pdf/                      # Shared PDF components
 │   │   ├── ui/                           # Shared UI primitives
