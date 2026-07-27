@@ -15,7 +15,6 @@ export default function AboutPage() {
       <div className="container mx-auto px-4 py-12 md:py-16">
         {/* Header band */}
         <header className="mb-10 md:mb-12 max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">About</p>
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4">
             Origins of Petromac
           </h1>

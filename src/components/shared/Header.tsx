@@ -14,8 +14,10 @@ const NAV_ITEMS = [
 ];
 
 // About's dropdown (desktop hover / focus) and mobile sub-links. Team lives
-// here rather than in the top bar.
+// here rather than in the top bar. Origins (= /about itself) is listed
+// explicitly so the page is discoverable without clicking the About label.
 const ABOUT_SUBLINKS = [
+  { name: 'Origins', href: '/about' },
   { name: 'Team', href: '/team' },
   { name: 'Patents', href: '/about/patents' },
   { name: 'Publications', href: '/about/publications' },
@@ -72,6 +74,11 @@ export default function Header() {
   }, [open]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
+
+  // Sub-links use exact matching for Origins (/about) so it doesn't light
+  // up on /about/patents and /about/publications alongside their own links.
+  const isSubActive = (href: string) =>
+    href === '/about' ? pathname === '/about' : isActive(href);
 
   // About owns /about/* and /team now that Team moved into its dropdown.
   const isAboutActive = () => isActive('/about') || isActive('/team');
@@ -146,9 +153,9 @@ export default function Header() {
                         <Link
                           key={sub.href}
                           href={sub.href}
-                          aria-current={isActive(sub.href) ? 'page' : undefined}
+                          aria-current={isSubActive(sub.href) ? 'page' : undefined}
                           className={`block px-4 py-2 text-sm transition-colors ${
-                            isActive(sub.href)
+                            isSubActive(sub.href)
                               ? 'text-white bg-white/10'
                               : 'text-slate-300 hover:text-white hover:bg-white/5'
                           }`}
@@ -277,10 +284,10 @@ export default function Header() {
                         <Link
                           key={sub.href}
                           href={sub.href}
-                          aria-current={isActive(sub.href) ? 'page' : undefined}
+                          aria-current={isSubActive(sub.href) ? 'page' : undefined}
                           className={[
                             'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                            isActive(sub.href)
+                            isSubActive(sub.href)
                               ? 'text-white bg-white/10'
                               : 'text-slate-400 hover:text-white hover:bg-white/5',
                           ].join(' ')}

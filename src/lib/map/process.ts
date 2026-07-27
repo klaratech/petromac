@@ -42,6 +42,47 @@ export function calculateCountryStats(
   );
 }
 
+export interface YearPoint {
+  year: number;
+  total: number;
+}
+
+/**
+ * Cumulative deployments per year for a filter selection — the single
+ * source of truth behind the Track Record page's live counter AND growth
+ * chart. Uses exactly the map's counting semantics (processMapData +
+ * per-row Successful sums, with the PathFinder-only special case), so the
+ * three surfaces can never disagree. The last point's `total` is the
+ * selection's overall deployment count.
+ */
+export function cumulativeDeploymentsByYear(
+  allData: JobRecord[],
+  selectedSystems: string[]
+): YearPoint[] {
+  const { filteredData, isPathfinderOnly } = processMapData(allData, selectedSystems);
+  const source = isPathfinderOnly ? allData : filteredData;
+
+  const perYear = new Map<number, number>();
+  for (const d of source) {
+    const year = Number(d.Year);
+    if (!Number.isFinite(year) || year < 2000) continue;
+    const n = isPathfinderOnly
+      ? (d['PathFinder Run (Y/N)'] || '').trim().toUpperCase() === 'YES'
+        ? 1
+        : 0
+      : +d.Successful || 0;
+    if (n <= 0) continue;
+    perYear.set(year, (perYear.get(year) ?? 0) + n);
+  }
+
+  const years = [...perYear.keys()].sort((a, b) => a - b);
+  let running = 0;
+  return years.map((year) => {
+    running += perYear.get(year) ?? 0;
+    return { year, total: running };
+  });
+}
+
 /**
  * Format deployment count for display
  */

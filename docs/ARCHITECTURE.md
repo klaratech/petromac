@@ -5,16 +5,18 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
 ## Components
 
 - **Public site** — Next.js 16 App Router route group `(public)`, Tailwind 4.
-  Notable pages: `/track-record` (map-as-hero server component: H1 + intro
-  sentence with the headline numbers, stat tiles overlaid inside the
-  `isolate`d map card, a build-time cumulative-deployments SVG chart, and a
-  verified "Records & milestones" strip ending in the Success Stories CTA;
-  the d3 drill-down map is the only client island, `TrackRecordMap`, whose
-  pre-fetch state is a crawlable summary and whose data fetch is versioned
-  with the stats snapshot's `generatedAt` so page copy and map counts always
-  describe the same dataset generation; the old `?stories=1` overlay was
-  retired Jul 2026 and redirects to `/success-stories/flipbook`) and the
-  HTML catalog below.
+  Notable pages: `/track-record` (map-as-hero: the page opens with the map
+  card, whose header row carries the H1, the system filter chips, a live
+  deployments counter, and a records anchor; one filter state in
+  `TrackRecordExperience` drives map + counter + the cumulative chart via
+  the shared `cumulativeDeploymentsByYear()`; the all-systems curve and
+  counter are baked at build, the crawler summary sentence is the chart
+  figcaption, the data fetch is versioned with the stats snapshot's
+  `generatedAt`, the card is `isolate`d, and the color legend was removed
+  by design — hover + Top 5/Show-all carry precise values; a verified
+  "Records & milestones" strip ends in the Success Stories CTA; the old
+  `?stories=1` overlay was retired Jul 2026 and redirects to
+  `/success-stories/flipbook`) and the HTML catalog below.
 - **SEO layer (Jul 2026)** — `src/lib/seo.ts` `pageMetadata()` gives every
   page a canonical + page-specific OG/Twitter tags; titles are un-branded
   (root template appends "| Petromac" once). Indexability derives from

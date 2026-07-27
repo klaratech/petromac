@@ -8,13 +8,21 @@ _current state_ and _how to operate it_; the reasoning lives here.
 ## Jul 2026 (late) — Track Record: map as hero, same-generation data
 
 - **The map is the page; stats are furniture.** The three big stat cards
-  duplicated the homepage band and pushed the map below the fold — they
-  became compact tiles overlaid inside the map card (server-rendered,
-  pointer-transparent on desktop), with the numbers also carried by the H1
-  intro sentence for crawlers. A verified "Records & milestones" strip
-  (facts checked against the success-stories PDF / publications list) and a
-  build-time cumulative-deployments SVG give the page substance beyond the
-  homepage numbers.
+  duplicated the homepage band and pushed the map below the fold. Second
+  iteration went further: no header band at all — the map card opens the
+  page, its own header row carrying the H1, the filter chips (moved out of
+  the in-map overlay), a live deployments counter, and a records anchor.
+  One filter state (in `TrackRecordExperience`) drives map, counter, and
+  the cumulative chart through a single shared calculation, with the
+  all-systems curve baked at build for crawlers. Countries/years tiles were
+  dropped; those figures live on in the chart's figcaption summary
+  sentence. A verified "Records & milestones" strip (facts checked against
+  the success-stories PDF / publications list) gives the page substance
+  beyond the homepage numbers.
+- **No color legend on the choropleth.** Darker-means-more is intuitive;
+  precise values come from the hover tooltip and the Top 5 / Show-all
+  panel. Removing it also removed the main legend-over-navbar stacking
+  risk (the card stays `isolate`d for the remaining overlays).
 - **Versioned data fetch.** Page copy is baked at build from
   `operations_stats.json`; the map fetched `operations_data.json` at
   runtime, so a CDN-cached older file could disagree with the page for up

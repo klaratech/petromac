@@ -1,8 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-// Build-time stamp — must match the versioned URL TrackRecordMap fetches,
-// or the prefetch warms the wrong cache entry.
+// Build-time stamp — must match the versioned URL the Track Record page
+// fetches, or the prefetch warms the wrong cache entry.
 import operationsStats from '../../../public/data/operations_stats.json';
 
 /**

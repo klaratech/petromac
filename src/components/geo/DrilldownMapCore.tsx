@@ -27,6 +27,14 @@ export interface DrilldownMapCoreProps {
    *  public Track Record page where the page already has a hero stats
    *  row above the map). */
   hideInlineStats?: boolean;
+  /** Controlled system selection. When provided, the map follows this
+   *  filter instead of its own state (the public Track Record page owns
+   *  the filter chips in its card header). Kiosk surfaces omit it and
+   *  keep the built-in behavior. */
+  selectedSystems?: string[];
+  /** Hides the built-in bottom filter bar (used when the filter is
+   *  controlled and rendered elsewhere). */
+  hideSystemFilter?: boolean;
   className?: string;
 }
 
@@ -38,11 +46,15 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   showSuccessStoriesLink = false,
   onSuccessStoriesClick,
   hideInlineStats = false,
+  selectedSystems: controlledSystems,
+  hideSystemFilter = false,
   className = 'relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white',
 }: DrilldownMapCoreProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const gRef = useRef<SVGGElement | null>(null);
-  const [selectedSystems, setSelectedSystems] = useState<string[]>([]);
+  const [internalSystems, setInternalSystems] = useState<string[]>([]);
+  const isControlled = controlledSystems !== undefined;
+  const selectedSystems = isControlled ? controlledSystems : internalSystems;
   const [tappedCountry, setTappedCountry] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [hover, setHover] = useState<HoverPayload | null>(null);
@@ -62,17 +74,17 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   }, [data]);
 
   useEffect(() => {
-    if (seededRef.current || systemOptions.length === 0) return;
+    if (isControlled || seededRef.current || systemOptions.length === 0) return;
     seededRef.current = true;
     if (initialSystem) {
       const matches = systemOptions.filter((s) =>
         s.toLowerCase().startsWith(initialSystem.toLowerCase())
       );
-      setSelectedSystems(matches.length > 0 ? matches : systemOptions);
+      setInternalSystems(matches.length > 0 ? matches : systemOptions);
     } else {
-      setSelectedSystems(systemOptions);
+      setInternalSystems(systemOptions);
     }
-  }, [initialSystem, systemOptions]);
+  }, [isControlled, initialSystem, systemOptions]);
 
   const processedData: ProcessedMapData = useMemo(
     () => processMapData(data, debouncedSelectedSystems),
@@ -143,17 +155,17 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   }, [data, filteredData, tappedCountry, isPathfinderOnly]);
 
   const handleSystemToggle = useCallback((system: string) => {
-    setSelectedSystems((prev) =>
+    setInternalSystems((prev) =>
       prev.includes(system) ? prev.filter((s) => s !== system) : [...prev, system]
     );
   }, []);
 
   const handleSelectAllSystems = useCallback(() => {
-    setSelectedSystems(systemOptions);
+    setInternalSystems(systemOptions);
   }, [systemOptions]);
 
   const handleClearSystems = useCallback(() => {
-    setSelectedSystems([]);
+    setInternalSystems([]);
   }, []);
 
   const handleCountryClick = useCallback((countryName: string | null) => {
@@ -324,32 +336,9 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
         </div>
       )}
 
-      {/* Legend — intensity scale */}
-      {!isLoading && intensity.max > 0 && (
-        <div
-          className="absolute top-4 right-4 z-40 bg-white/95 backdrop-blur-md border border-slate-200 rounded-lg shadow px-3 py-2.5"
-          role="img"
-          aria-label="Deployment intensity legend"
-        >
-          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-1.5">
-            Deployments
-          </p>
-          <div className="flex items-center gap-1">
-            {MAP_CONSTANTS.COLORS.INTENSITY_RAMP.map((c) => (
-              <span
-                key={c}
-                className="block w-5 h-3"
-                style={{ backgroundColor: c }}
-                aria-hidden="true"
-              />
-            ))}
-          </div>
-          <div className="flex justify-between text-[10px] text-slate-500 mt-1 tabular-nums">
-            <span>{intensity.min}</span>
-            <span>{intensity.max}+</span>
-          </div>
-        </div>
-      )}
+      {/* No color legend by design (Jul 2026): darker = more is intuitive;
+          precise values come from the hover tooltip and the Top 5 /
+          Show all panel. */}
 
       {/* Yearly stats — right-side drawer (or bottom sheet on mobile) */}
       {tappedCountry && yearlyStats.length > 0 && (
@@ -372,8 +361,9 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
         />
       </div>
 
-      {/* System filter pills — labeled, filled/outline toggle pattern */}
-      {systemOptions.length > 0 && (
+      {/* System filter pills — labeled, filled/outline toggle pattern.
+          Hidden when the filter is controlled/rendered by the page. */}
+      {!hideSystemFilter && systemOptions.length > 0 && (
         <div
           className="
             absolute z-40
