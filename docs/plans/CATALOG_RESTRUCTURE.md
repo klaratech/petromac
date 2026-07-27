@@ -62,7 +62,8 @@ new catalog PDF/IDML edition arrives (usually new devices or spec updates).
       from Phase 0 findings, parser, overrides); accessors: families list w/
       computed counts, per-family model rows, finder index; types. Unit-ish
       sanity via a small node script or typecheck-time asserts. Commit.
-- [ ] **Phase 2 — Family pages.**
+- [x] **Phase 2 — Family pages.** (done 2026-07-27; redirect passes the
+      old ?category= query through — harmless, canonical covers SEO)
       `/catalog/[category]/page.tsx` (SSG, generateStaticParams for 4 slugs)
       with the four shapes; redirects `?category=` → path (next.config or in
       /catalog page); update product breadcrumbs + JSON-LD to the family URL;

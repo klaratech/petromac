@@ -103,7 +103,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
         '@type': 'ListItem',
         position: 2,
         name: category.name,
-        item: absoluteUrl(`/catalog?category=${category.slug}`),
+        item: absoluteUrl(`/catalog/${category.slug}`),
       },
       { '@type': 'ListItem', position: 3, name: product.name },
     ],
@@ -125,7 +125,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
             <li aria-hidden="true">/</li>
             <li>
               <Link
-                href={`/catalog?category=${category.slug}`}
+                href={`/catalog/${category.slug}`}
                 className="hover:text-brand transition-colors"
               >
                 {category.name}

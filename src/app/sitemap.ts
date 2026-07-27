@@ -1,10 +1,17 @@
 import type { MetadataRoute } from 'next';
 import { getSiteUrl } from '@/lib/siteUrl';
-import { allProducts } from '@/features/catalog/content';
+import { allProducts, categories } from '@/features/catalog/content';
 
 const BASE_URL = getSiteUrl();
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  // Catalog family pages (Level 2 of the drill-down).
+  const familyUrls: MetadataRoute.Sitemap = categories.map((c) => ({
+    url: `${BASE_URL}/catalog/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  }));
   // Every catalog product has its own indexable page.
   const productUrls: MetadataRoute.Sitemap = allProducts.map((p) => ({
     url: `${BASE_URL}/catalog/${p.category}/${p.slug}`,
@@ -81,6 +88,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
+    ...familyUrls,
     ...productUrls,
   ];
 }

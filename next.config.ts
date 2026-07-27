@@ -78,6 +78,20 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // Categories were ?category= views on /catalog until the Jul 2026
+        // three-level restructure — send old bookmarks to the family pages.
+        source: '/catalog',
+        has: [
+          {
+            type: 'query',
+            key: 'category',
+            value: '(?<cat>tool-taxis|guides-holefinders|focus-centralisers|well-intervention)',
+          },
+        ],
+        destination: '/catalog/:cat',
+        permanent: true,
+      },
+      {
         // Success Stories used to open as a ?stories=1 overlay on Track
         // Record (retired Jul 2026) — send shared/bookmarked overlay URLs
         // to the standalone page.
