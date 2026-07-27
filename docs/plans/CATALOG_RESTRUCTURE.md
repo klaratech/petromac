@@ -68,7 +68,9 @@ new catalog PDF/IDML edition arrives (usually new devices or spec updates).
       with the four shapes; redirects `?category=` → path (next.config or in
       /catalog page); update product breadcrumbs + JSON-LD to the family URL;
       sitemap adds 4 URLs. Commit.
-- [ ] **Phase 3 — Overview rebuild.**
+- [x] **Phase 3 — Overview rebuild.** (done 2026-07-27; family cards show
+      PRODUCT counts (8/14/6/4) matching family-page tables; search renders
+      link-mode — no onSelect — so results navigate to model pages)
       Replace CatalogBrowser workspace with bands/family cards (computed
       counts, taglines from JSON categories[]), PDF block + caption, search
       navigates to model pages. Metadata: description mentions product lines,
