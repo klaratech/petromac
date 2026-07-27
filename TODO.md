@@ -14,11 +14,11 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       all three redirect URIs incl. petromac.co.nz pre-registered, /intranet
       server-gated, sign-out lands on the homepage. Secret in 1Password
       ("Petromac Entra Client Secret", renew ~Jul 2028).
-- [ ] Email go-live ([docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md)): add Graph
-      **application** `Mail.Send` permission + admin consent to the Entra app,
-      then set ENTRA*\* / MAIL_SENDER / CONTACT_TO_EMAIL / ALLOWED_EMAIL*\* in
-      `.env-backend`. Email features are dead in prod until then. (Code is
-      done — app-only Graph sender.)
+- [x] Email go-live DONE (27 Jul 2026): Graph application `Mail.Send` added + admin consent; `.env-backend` updated (Entra creds copied server-side
+      from the frontend env + MAIL_SENDER/CONTACT_TO_EMAIL/
+      ALLOWED_EMAIL_DOMAINS); end-to-end verified — live contact-form test
+      returned ok and delivered via Graph as info@. Backup:
+      `.env-backend.bak-*` on the server.
 - [ ] Production domain cutover: Cloudflare zone/tunnel hostname, then update
       `NEXT_PUBLIC_SITE_URL`/`NEXT_PUBLIC_BASE_URL`, `ALLOWED_ORIGINS` (both env
       files), and add the new Entra callback URL.
