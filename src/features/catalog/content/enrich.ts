@@ -100,6 +100,7 @@ const PARSE_OVERRIDES: Record<string, Partial<ParsedSpecs>> = {
   cp8: { holeMinIn: 7.5, holeMaxIn: 8.5 }, // min CH 7-1/2"; for 8-1/2" boreholes
   ca7: { holeMinIn: 7, holeMaxIn: 7 }, // adjustable across 7" casing weights
   cx9: { holeMinIn: 7, holeMaxIn: 9.625 }, // adjustable 7" – 9-5/8" casing
+  rs7: { holeMinIn: 7, holeMaxIn: 7 }, // Roller Standoff for 7" casing (no hole row in specs)
 };
 
 /* ------------------------------------------------------------------ */
@@ -416,6 +417,25 @@ export interface FinderEntry {
   holeMaxIn?: number;
   holeNoLimit?: boolean;
   holeRange: string;
+}
+
+/** Finder filtering — pure so it can be tested headlessly. A product
+ *  matches a size when its parsed range covers it (no-limit max counts);
+ *  products without hole data only match when no size is given. */
+export function filterFinderEntries(
+  entries: FinderEntry[],
+  query: { sizeIn?: number | undefined; purpose?: Purpose | '' | undefined }
+): FinderEntry[] {
+  const { sizeIn, purpose } = query;
+  return entries.filter((e) => {
+    if (purpose && e.purpose !== purpose) return false;
+    if (sizeIn != null && Number.isFinite(sizeIn)) {
+      if (e.holeMinIn == null && e.holeMaxIn == null) return false;
+      if (e.holeMinIn != null && sizeIn < e.holeMinIn) return false;
+      if (!e.holeNoLimit && e.holeMaxIn != null && sizeIn > e.holeMaxIn) return false;
+    }
+    return true;
+  });
 }
 
 export function buildFinderIndex(): FinderEntry[] {

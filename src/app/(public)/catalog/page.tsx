@@ -2,8 +2,13 @@ import { pageMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { buildSearchIndex, catalog } from '@/features/catalog/content';
-import { familySummaries, type FamilySummary } from '@/features/catalog/content/enrich';
+import {
+  buildFinderIndex,
+  familySummaries,
+  type FamilySummary,
+} from '@/features/catalog/content/enrich';
 import CatalogSearch from '@/components/public/catalog/CatalogSearch';
+import DeviceFinder from '@/components/public/catalog/DeviceFinder';
 import EmailPdfAction from '@/components/public/catalog/EmailPdfAction';
 
 export const metadata = pageMetadata({
@@ -40,9 +45,16 @@ export default function CatalogOverviewPage() {
           </h1>
           <p className="text-slate-600 max-w-3xl">{catalog.about.intro[0]}</p>
 
-          {/* Search — results navigate straight to model pages */}
-          <div className="mt-6 max-w-xl">
-            <CatalogSearch entries={searchEntries} />
+          {/* Device finder (client island) with the model search beside it —
+              two ways in: guided filtering or direct lookup. */}
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_340px] items-start">
+            <DeviceFinder entries={buildFinderIndex()} />
+            <div className="rounded-2xl border border-slate-200 bg-white shadow-card p-5">
+              <h2 className="font-heading text-base font-bold text-slate-900 mb-2">
+                Know what you&apos;re looking for?
+              </h2>
+              <CatalogSearch entries={searchEntries} />
+            </div>
           </div>
         </div>
       </section>

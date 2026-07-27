@@ -75,7 +75,10 @@ new catalog PDF/IDML edition arrives (usually new devices or spec updates).
       counts, taglines from JSON categories[]), PDF block + caption, search
       navigates to model pages. Metadata: description mentions product lines,
       not devices. Commit.
-- [ ] **Phase 4 — Device Finder v1.**
+- [x] **Phase 4 — Device Finder v1.** (done 2026-07-27; filter logic is
+      filterFinderEntries() in enrich.ts — pure + headlessly tested; rs7
+      got a hole override (7" casing); live-verified 8.5+convey → the 3
+      conveyance taxis)
       Client island on the overview: hole-size input + presets (6, 7, 8.5,
       9-5/8, 12.25, 17.5) + purpose dropdown → result list (model, family,
       summary, hole range) linking to model pages. SSR = inert inputs, zero
