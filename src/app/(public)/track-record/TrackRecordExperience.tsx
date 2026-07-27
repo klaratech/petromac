@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { preload } from 'react-dom';
 import type { JobRecord } from '@/types/JobRecord';
 import { fetchOperationsData } from '@/lib/map/data';
@@ -54,6 +54,13 @@ export default function TrackRecordExperience({
   // null = "everything" (pre-hydration / pre-data default); becomes a real
   // array once the user interacts or data seeds it.
   const [selectedSystems, setSelectedSystems] = useState<string[] | null>(null);
+  // While a country's yearly-stats drawer is open, the chart overlay yields
+  // the corner (it would clutter/overlap the drawer).
+  const [countrySelected, setCountrySelected] = useState(false);
+  const handleSelectedCountryChange = useCallback(
+    (country: string | null) => setCountrySelected(country !== null),
+    []
+  );
 
   // Parallelize the three big loads (operations JSON, world topojson, d3
   // chunk) instead of a serial waterfall. Effect-only: preload() in the
@@ -157,31 +164,22 @@ export default function TrackRecordExperience({
             )}
           </div>
 
-          {/* Live counter (tile style) + quiet records anchor */}
-          <div className="flex items-center justify-between md:justify-end gap-4">
-            <div
-              className="bg-white/95 border border-slate-200 rounded-lg shadow px-3 py-2"
-              role="status"
-              aria-live="polite"
-            >
-              <p className="text-lg font-bold text-brand tabular-nums leading-none">
-                {counterText}
-              </p>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-slate-500">
-                Deployments
-              </p>
-            </div>
-            <a
-              href="#records"
-              className="text-sm font-medium text-slate-500 hover:text-brand whitespace-nowrap transition-colors"
-            >
-              Records &amp; success stories ↓
-            </a>
-          </div>
+          {/* Quiet records anchor (the live counter lives in the in-map
+              chart overlay, top-right) */}
+          <a
+            href="#records"
+            className="self-start md:self-auto text-sm font-medium text-slate-500 hover:text-brand whitespace-nowrap transition-colors"
+          >
+            Records &amp; success stories ↓
+          </a>
         </div>
 
-        {/* Map area — the page's hero. */}
-        <div className="h-[62vh] min-h-[420px] md:h-[66vh] md:min-h-[520px]">
+        {/* Map area — the page's hero. The chart overlay (top-right, where
+            the legend used to live) merges the live deployment counter with
+            a filter-driven cumulative sparkline; pointer-transparent so it
+            never blocks map interaction. */}
+        <div className="relative h-[62vh] min-h-[420px] md:h-[66vh] md:min-h-[520px]">
+          {!countrySelected && <ChartOverlay points={chartPoints} counterText={counterText} />}
           {error ? (
             <div className="h-full flex flex-col items-center justify-center gap-3 p-6 text-center">
               <h3 className="text-lg font-semibold text-red-600">
@@ -211,115 +209,70 @@ export default function TrackRecordExperience({
               hideInlineStats
               hideSystemFilter
               selectedSystems={effectiveSelection}
+              onSelectedCountryChange={handleSelectedCountryChange}
               showSuccessStoriesLink={false}
               className="relative w-full h-full overflow-hidden bg-slate-50"
             />
           )}
         </div>
       </div>
-
-      {/* Growth chart — same filter state as the map and counter. */}
-      <div className="mt-3 rounded-2xl bg-white ring-1 ring-slate-200 shadow-2xl px-5 py-4 md:px-8 md:py-5">
-        <GrowthChart points={chartPoints} allSelected={allSelected || !data} summary={summary} />
-      </div>
     </div>
   );
 }
 
-/** Dependency-free inline-SVG cumulative area chart. Server-renders the
- *  all-systems default; re-renders client-side when the filter changes. */
-function GrowthChart({
-  points,
-  allSelected,
-  summary,
-}: {
-  points: YearPoint[];
-  allSelected: boolean;
-  summary: string;
-}) {
-  if (points.length < 2) {
-    return (
-      <div>
-        <p className="text-sm text-slate-500 py-6 text-center">
-          Not enough data for this selection.
-        </p>
-        <figcaption className="mt-1 text-xs text-slate-500">{summary}</figcaption>
-      </div>
-    );
+/** Compact in-map overlay: live deployment count + filter-driven
+ *  cumulative sparkline. Sits top-right (the old legend position),
+ *  pointer-transparent, server-rendered with the build-time defaults. */
+function ChartOverlay({ points, counterText }: { points: YearPoint[]; counterText: string }) {
+  const W = 200;
+  const H = 48;
+  const PAD = 3;
+  const hasCurve = points.length >= 2;
+
+  let line = '';
+  let area = '';
+  if (hasCurve) {
+    const minYear = points[0].year;
+    const maxYear = points[points.length - 1].year;
+    const maxTotal = points[points.length - 1].total;
+    const x = (year: number) =>
+      PAD + ((year - minYear) / Math.max(1, maxYear - minYear)) * (W - PAD * 2);
+    const y = (total: number) => PAD + (1 - total / maxTotal) * (H - PAD * 2);
+    line = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(p.year)},${y(p.total)}`).join(' ');
+    area = `${line} L${x(maxYear)},${H - PAD} L${x(points[0].year)},${H - PAD} Z`;
   }
 
-  const W = 800;
-  const H = 150;
-  const PAD = { top: 14, right: 16, bottom: 22, left: 16 };
-  const minYear = points[0].year;
-  const maxYear = points[points.length - 1].year;
-  const maxTotal = points[points.length - 1].total;
-
-  const x = (year: number) =>
-    PAD.left + ((year - minYear) / Math.max(1, maxYear - minYear)) * (W - PAD.left - PAD.right);
-  const y = (total: number) => PAD.top + (1 - total / maxTotal) * (H - PAD.top - PAD.bottom);
-
-  const line = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(p.year)},${y(p.total)}`).join(' ');
-  const area = `${line} L${x(maxYear)},${H - PAD.bottom} L${x(minYear)},${H - PAD.bottom} Z`;
-  const last = points[points.length - 1];
-
-  // Intermediate ticks every 3 years, always including the last year.
-  const ticks: number[] = [];
-  for (let yr = minYear; yr < maxYear; yr += 3) ticks.push(yr);
-  if (ticks[ticks.length - 1] !== maxYear) ticks.push(maxYear);
-
   return (
-    <figure aria-label={`Cumulative successful deployments, ${minYear} to ${maxYear}`}>
-      <div className="flex items-baseline justify-between gap-3">
-        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
-          Cumulative deployments{allSelected ? '' : ' — filtered'}
-        </p>
-      </div>
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="mt-1 w-full h-auto"
-        role="img"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <path d={area} fill="#1E4A9A" fillOpacity="0.08" />
-        <path d={line} fill="none" stroke="#1E4A9A" strokeWidth="2.5" strokeLinejoin="round" />
-        <circle cx={x(last.year)} cy={y(last.total)} r="4" fill="#1E4A9A" />
-        {ticks.map((yr) => (
-          <g key={yr}>
-            <line
-              x1={x(yr)}
-              x2={x(yr)}
-              y1={H - PAD.bottom}
-              y2={H - PAD.bottom + 4}
-              stroke="#cbd5e1"
-              strokeWidth="1"
-            />
-            <text
-              x={x(yr)}
-              y={H - 6}
-              fontSize="11"
-              fill="#64748b"
-              textAnchor={yr === maxYear ? 'end' : yr === minYear ? 'start' : 'middle'}
-            >
-              {yr}
-            </text>
-          </g>
-        ))}
-        <text
-          x={x(last.year) - 10}
-          y={y(last.total) + 4}
-          fontSize="12"
-          fontWeight="700"
-          fill="#1E4A9A"
-          textAnchor="end"
+    <div className="absolute top-3 right-3 md:top-4 md:right-4 z-40 w-[170px] md:w-[210px] pointer-events-none">
+      <div className="bg-white/95 backdrop-blur-md border border-slate-200 rounded-lg shadow px-3 py-2.5">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Deployments</p>
+        <p
+          className="mt-0.5 text-lg font-bold text-brand tabular-nums leading-none"
+          role="status"
+          aria-live="polite"
         >
-          {last.total.toLocaleString()}
-        </text>
-      </svg>
-      {/* The page's crawler-visible summary sentence lives here (the old
-          header band's intro). Static all-systems figures by design. */}
-      <figcaption className="mt-1.5 text-xs text-slate-500">{summary}</figcaption>
-    </figure>
+          {counterText}
+        </p>
+        {hasCurve ? (
+          <>
+            <svg
+              viewBox={`0 0 ${W} ${H}`}
+              className="mt-1.5 w-full h-auto"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d={area} fill="#1E4A9A" fillOpacity="0.1" />
+              <path d={line} fill="none" stroke="#1E4A9A" strokeWidth="2" strokeLinejoin="round" />
+            </svg>
+            <div className="flex justify-between text-[9px] text-slate-400 tabular-nums leading-none mt-0.5">
+              <span>{points[0].year}</span>
+              <span>{points[points.length - 1].year}</span>
+            </div>
+          </>
+        ) : (
+          <p className="mt-1.5 text-[10px] text-slate-400">No deployments for this selection</p>
+        )}
+      </div>
+    </div>
   );
 }

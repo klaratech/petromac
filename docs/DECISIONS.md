@@ -12,11 +12,12 @@ _current state_ and _how to operate it_; the reasoning lives here.
   iteration went further: no header band at all — the map card opens the
   page, its own header row carrying the H1, the filter chips (moved out of
   the in-map overlay), a live deployments counter, and a records anchor.
-  One filter state (in `TrackRecordExperience`) drives map, counter, and
-  the cumulative chart through a single shared calculation, with the
-  all-systems curve baked at build for crawlers. Countries/years tiles were
-  dropped; those figures live on in the chart's figcaption summary
-  sentence. A verified "Records & milestones" strip (facts checked against
+  One filter state (in `TrackRecordExperience`) drives the map and the
+  counter+sparkline overlay (one compact card in the old legend corner,
+  hidden while a country drawer is open) through a single shared
+  calculation, with the all-systems curve baked at build for crawlers.
+  Countries/years tiles were dropped; those figures live on in the map's
+  pre-load placeholder sentence. A verified "Records & milestones" strip (facts checked against
   the success-stories PDF / publications list) gives the page substance
   beyond the homepage numbers.
 - **No color legend on the choropleth.** Darker-means-more is intuitive;

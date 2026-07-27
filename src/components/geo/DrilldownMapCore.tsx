@@ -35,6 +35,10 @@ export interface DrilldownMapCoreProps {
   /** Hides the built-in bottom filter bar (used when the filter is
    *  controlled and rendered elsewhere). */
   hideSystemFilter?: boolean;
+  /** Notifies the host when a country is tapped/deselected — the public
+   *  Track Record page hides its chart overlay while a country's yearly
+   *  stats drawer is open. */
+  onSelectedCountryChange?: (_country: string | null) => void;
   className?: string;
 }
 
@@ -48,6 +52,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   hideInlineStats = false,
   selectedSystems: controlledSystems,
   hideSystemFilter = false,
+  onSelectedCountryChange,
   className = 'relative w-full h-[100vh] max-h-[100vh] overflow-hidden bg-white',
 }: DrilldownMapCoreProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -171,6 +176,13 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
   const handleCountryClick = useCallback((countryName: string | null) => {
     setTappedCountry((current) => (current === countryName ? null : countryName));
   }, []);
+
+  // Report selection changes to the host — an effect (rather than calling
+  // from the click handler) so every deselection path (Esc, drawer close,
+  // re-tap) is covered.
+  useEffect(() => {
+    onSelectedCountryChange?.(tappedCountry);
+  }, [tappedCountry, onSelectedCountryChange]);
 
   // Defensive guard (freeze audit, Jul 2026): mousemove fires per pixel and
   // each hover update re-renders this whole overlay tree. Coalesce to one

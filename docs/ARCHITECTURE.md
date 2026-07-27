@@ -6,12 +6,13 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
 
 - **Public site** — Next.js 16 App Router route group `(public)`, Tailwind 4.
   Notable pages: `/track-record` (map-as-hero: the page opens with the map
-  card, whose header row carries the H1, the system filter chips, a live
-  deployments counter, and a records anchor; one filter state in
-  `TrackRecordExperience` drives map + counter + the cumulative chart via
-  the shared `cumulativeDeploymentsByYear()`; the all-systems curve and
-  counter are baked at build, the crawler summary sentence is the chart
-  figcaption, the data fetch is versioned with the stats snapshot's
+  card, whose header row carries the H1, the system filter chips, and a
+  records anchor; the live deployments counter + cumulative sparkline sit
+  in one in-map overlay card (top-right, hides while a country drawer is
+  open); one filter state in `TrackRecordExperience` drives map + overlay
+  via the shared `cumulativeDeploymentsByYear()`; the all-systems curve is
+  baked at build, the crawler summary sentence lives in the map's
+  pre-load placeholder, the data fetch is versioned with the stats snapshot's
   `generatedAt`, the card is `isolate`d, and the color legend was removed
   by design — hover + Top 5/Show-all carry precise values; a verified
   "Records & milestones" strip ends in the Success Stories CTA; the old
