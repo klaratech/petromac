@@ -19,24 +19,22 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       ALLOWED_EMAIL_DOMAINS); end-to-end verified — live contact-form test
       returned ok and delivered via Graph as info@. Backup:
       `.env-backend.bak-*` on the server.
-- [ ] Production domain cutover (server prep DONE 27 Jul 2026): 1. Cloudflare zone work — in progress with the DNS agent (record
-      cleanup pre-flip, nameserver flip, then root+www → tunnel CNAME +
-      apex→www redirect; klaratech.it keeps serving for kiosks) 2. ✅ Tunnel ingress: www.petromac.co.nz + petromac.co.nz rules added
-      to /etc/cloudflared/config.yml (validated, rule-match tested,
-      backup config.yml.bak-_) 3. ✅ Server env: both ALLOWED_ORIGINS extended with the production
-      domains; containers recreated (backups .env-_.bak-\*) 4. WHEN THE ZONE IS ACTIVE: GitHub → Settings → Variables →
-      `NEXT_PUBLIC_SITE_URL=https://www.petromac.co.nz` +
-      `NEXT_PUBLIC_ENV=production`, re-run deploy (bakes production
-      identity — server env alone is NOT enough), THEN the agent swaps
-      the root/www records. Entra callback already registered ✓
-      **Indexability (Jul 2026):** staging ships noindex + Disallow-all
-      robots.txt automatically; the production deploy must set
-      `NEXT_PUBLIC_SITE_URL=https://www.petromac.co.nz` AND
-      `NEXT_PUBLIC_ENV=production` (the build fails if the pair is
-      inconsistent — see `src/lib/siteUrl.ts`). After cutover: verify
-      robots.txt/sitemap on the live domain, then submit the sitemap in
-      Google Search Console and run the Rich Results test on /, a product
-      page, and /about/publications
+- [ ] Production domain cutover — EVERYTHING PREPPED (27 Jul 2026), the
+      nameserver flip is the single remaining switch: - ✅ zone cleanup done by the DNS agent (25→13 records, mail A
+      deleted, non-web records DNS-only, SSL mode Full) - ✅ tunnel ingress for www.petromac.co.nz + petromac.co.nz
+      (config.yml, validated; backup config.yml.bak-\*) - ✅ ALLOWED_ORIGINS extended in both server env files - ✅ production identity DEPLOYED: repo variables
+      NEXT_PUBLIC_SITE_URL=https://www.petromac.co.nz +
+      NEXT_PUBLIC_ENV=production, deploy green, verified live
+      (canonicals/robots/sitemap on the production domain, noindex gone;
+      the next.config guard fails any inconsistent pair) - PENDING: agent pre-stages root+www → tunnel CNAME + apex→www
+      redirect in the pending zone (Entra callback already registered ✓) - FINAL SWITCH: Crazy Domains — verify no DS record, swap NS to
+      carol/harley.ns.cloudflare.com. Zone activates = new site live. - AFTER: post-cutover sweep (robots/sitemap/canonicals/redirect/
+      contact form from the new domain), submit sitemap in Google Search
+      Console, Rich Results test on / + a product page +
+      /about/publications, decide the Cloudflare AI-crawler policy on
+      the new zone (managed robots.txt currently blocks GPTBot/ClaudeBot
+      etc. on the klaratech zone), later: SPF trim → -all, drop
+      default.\_domainkey + link, SSL Full (strict), Always Use HTTPS
 - [ ] Re-prime kiosk tablets after the next deploy (SW cache changed)
 
 ## Security / hardening
