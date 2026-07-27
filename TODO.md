@@ -98,6 +98,6 @@ cache rule. Remaining:
 
 ## Notes
 
-- Email sends via Microsoft 365 SMTP (`info@petromac.co.nz`) by deliberate
-  choice — deviates from the org standard (Brevo). Revisit if it becomes a
-  maintenance burden.
+- Email sends via Microsoft Graph app-only `Mail.Send` as the `info@`
+  shared mailbox (not SMTP, not Brevo — org-standard deviation; see
+  docs/DECISIONS.md). Revisit if it becomes a maintenance burden.
