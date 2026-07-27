@@ -83,7 +83,8 @@ new catalog PDF/IDML edition arrives (usually new devices or spec updates).
       9-5/8, 12.25, 17.5) + purpose dropdown → result list (model, family,
       summary, hole range) linking to model pages. SSR = inert inputs, zero
       SKU names in HTML. Commit.
-- [ ] **Phase 5 — Model pages.**
+- [x] **Phase 5 — Model pages.** (done 2026-07-27; FamilySiblings section
+      before the prev/next nav, shared FAMILY_COLUMNS sets)
       "Other models in this family" table (same columns as Level 2) at the
       bottom of `[slug]/page.tsx`. Commit.
 - [ ] **Phase 6 — Cleanup, docs, verify.**

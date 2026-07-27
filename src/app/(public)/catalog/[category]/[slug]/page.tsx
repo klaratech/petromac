@@ -13,6 +13,8 @@ import {
 import type { CatalogImage } from '@/features/catalog/content/types';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 import { pageMetadata } from '@/lib/seo';
+import { familyTableRows } from '@/features/catalog/content/enrich';
+import FamilySpecTable, { FAMILY_COLUMNS } from '@/components/public/catalog/FamilySpecTable';
 
 interface Params {
   category: string;
@@ -296,6 +298,9 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
           </section>
         )}
 
+        {/* Lateral navigation: the rest of the family, Level-2 columns */}
+        <FamilySiblings categorySlug={category.slug} categoryName={category.name} slug={slug} />
+
         {/* Prev / next */}
         <nav
           aria-label="Adjacent products"
@@ -330,5 +335,39 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
         </nav>
       </div>
     </div>
+  );
+}
+
+/** "Other models in this family" — same columns as the family page. */
+function FamilySiblings({
+  categorySlug,
+  categoryName,
+  slug,
+}: {
+  categorySlug: string;
+  categoryName: string;
+  slug: string;
+}) {
+  const rows = familyTableRows(categorySlug).filter((r) => r.slug !== slug);
+  if (rows.length === 0) return null;
+  return (
+    <section aria-label="Other models in this family" className="mt-14">
+      <div className="flex items-baseline justify-between gap-4 mb-4">
+        <h2 className="font-heading text-xl md:text-2xl font-bold text-slate-900">
+          Other models in this family
+        </h2>
+        <Link
+          href={`/catalog/${categorySlug}`}
+          className="text-sm font-semibold text-brand hover:underline whitespace-nowrap"
+        >
+          All {categoryName} →
+        </Link>
+      </div>
+      <FamilySpecTable
+        rows={rows}
+        columns={FAMILY_COLUMNS[categorySlug] ?? ['hole', 'temp', 'weight']}
+        ariaLabel={`Other ${categoryName} models`}
+      />
+    </section>
   );
 }

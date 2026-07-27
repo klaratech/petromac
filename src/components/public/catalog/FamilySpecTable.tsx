@@ -3,6 +3,15 @@ import type { FamilyTableRow } from '@/features/catalog/content/enrich';
 
 export type FamilyColumn = 'role' | 'bearing' | 'hole' | 'bore' | 'temp' | 'weight';
 
+/** Column set per family — shared by the family pages and the model
+ *  pages' "Other models in this family" table. */
+export const FAMILY_COLUMNS: Record<string, FamilyColumn[]> = {
+  'tool-taxis': ['role', 'bearing', 'hole', 'bore', 'temp', 'weight'],
+  'guides-holefinders': ['hole', 'temp', 'weight'],
+  'focus-centralisers': ['hole', 'bore', 'temp', 'weight'],
+  'well-intervention': ['hole', 'bore', 'temp', 'weight'],
+};
+
 const COLUMN_HEADERS: Record<FamilyColumn, string> = {
   role: 'Role',
   bearing: 'Bearing',

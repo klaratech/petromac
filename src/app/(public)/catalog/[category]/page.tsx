@@ -9,7 +9,10 @@ import {
   type FamilyTableRow,
   type Vendor,
 } from '@/features/catalog/content/enrich';
-import FamilySpecTable, { type FamilyColumn } from '@/components/public/catalog/FamilySpecTable';
+import FamilySpecTable, {
+  FAMILY_COLUMNS,
+  type FamilyColumn,
+} from '@/components/public/catalog/FamilySpecTable';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 import { pageMetadata } from '@/lib/seo';
 
@@ -147,7 +150,7 @@ export default async function CatalogFamilyPage({ params }: { params: Promise<Pa
 /* ── tool-taxis: ONE unified table with Role + Bearing ─────────────── */
 
 function ToolTaxisSections({ rows }: { rows: FamilyTableRow[] }) {
-  const columns: FamilyColumn[] = ['role', 'bearing', 'hole', 'bore', 'temp', 'weight'];
+  const columns: FamilyColumn[] = FAMILY_COLUMNS['tool-taxis'];
   const image = sectionImage('tool-taxis', ['tta-505-ttb-505']);
   return (
     <section aria-label="Tool taxi models">
@@ -161,7 +164,7 @@ function ToolTaxisSections({ rows }: { rows: FamilyTableRow[] }) {
 
 function GuidesSections({ rows }: { rows: FamilyTableRow[] }) {
   const pathfinders = rows.filter((r) => r.vendor === 'universal');
-  const columns: FamilyColumn[] = ['hole', 'temp', 'weight'];
+  const columns: FamilyColumn[] = FAMILY_COLUMNS['guides-holefinders'];
   const vendors: Vendor[] = ['slb', 'halliburton', 'baker-hughes'];
   return (
     <>
@@ -229,7 +232,7 @@ function GuidesSections({ rows }: { rows: FamilyTableRow[] }) {
 /* ── focus-centralisers: Open Hole / Cased Hole sections ───────────── */
 
 function CentralisersSections({ rows }: { rows: FamilyTableRow[] }) {
-  const columns: FamilyColumn[] = ['hole', 'bore', 'temp', 'weight'];
+  const columns: FamilyColumn[] = FAMILY_COLUMNS['focus-centralisers'];
   const sections = [
     { title: 'Open hole', group: 'Open Hole' },
     { title: 'Cased hole', group: 'Cased Hole' },
@@ -261,7 +264,7 @@ function CentralisersSections({ rows }: { rows: FamilyTableRow[] }) {
 /* ── well-intervention: single Accessories table ───────────────────── */
 
 function InterventionSections({ rows }: { rows: FamilyTableRow[] }) {
-  const columns: FamilyColumn[] = ['hole', 'bore', 'temp', 'weight'];
+  const columns: FamilyColumn[] = FAMILY_COLUMNS['well-intervention'];
   const image = sectionImage('well-intervention', ['rs7']);
   return (
     <section aria-label="Well intervention accessories">
