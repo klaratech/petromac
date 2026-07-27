@@ -19,22 +19,28 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       ALLOWED_EMAIL_DOMAINS); end-to-end verified — live contact-form test
       returned ok and delivered via Graph as info@. Backup:
       `.env-backend.bak-*` on the server.
-- [ ] Production domain cutover — EVERYTHING PREPPED (27 Jul 2026), the
-      nameserver flip is the single remaining switch: - ✅ zone cleanup done by the DNS agent (25→13 records, mail A
-      deleted, non-web records DNS-only, SSL mode Full) - ✅ tunnel ingress for www.petromac.co.nz + petromac.co.nz
-      (config.yml, validated; backup config.yml.bak-\*) - ✅ ALLOWED_ORIGINS extended in both server env files - ✅ production identity DEPLOYED: repo variables
-      NEXT_PUBLIC_SITE_URL=https://www.petromac.co.nz +
-      NEXT_PUBLIC_ENV=production, deploy green, verified live
-      (canonicals/robots/sitemap on the production domain, noindex gone;
-      the next.config guard fails any inconsistent pair) - PENDING: agent pre-stages root+www → tunnel CNAME + apex→www
-      redirect in the pending zone (Entra callback already registered ✓) - FINAL SWITCH: Crazy Domains — verify no DS record, swap NS to
-      carol/harley.ns.cloudflare.com. Zone activates = new site live. - AFTER: post-cutover sweep (robots/sitemap/canonicals/redirect/
-      contact form from the new domain), submit sitemap in Google Search
-      Console, Rich Results test on / + a product page +
-      /about/publications, decide the Cloudflare AI-crawler policy on
-      the new zone (managed robots.txt currently blocks GPTBot/ClaudeBot
-      etc. on the klaratech zone), later: SPF trim → -all, drop
-      default.\_domainkey + link, SSL Full (strict), Always Use HTTPS
+- [x] Production domain cutover DONE (27 Jul 2026, ~20:30 UTC): NS swapped
+      at Crazy Domains → carol/harley.ns.cloudflare.com, zone active,
+      Universal SSL issued (Google Trust Services, apex+wildcard).
+      Post-cutover sweep ALL GREEN from the server: homepage 200 with
+      index,follow + production canonical, robots.txt + sitemap on the new
+      domain, apex→www 301, http→https 301, catalog/track-record/intranet
+      routes OK, contact form POST from the new origin returned ok (Graph
+      delivery as info@). Old Crazy Domains DNS records left in place
+      (inert — rollback snapshot). Staging petromac.klaratech.it unaffected.
+- [ ] Post-launch follow-ups (from the cutover):
+  - Submit the sitemap in Google Search Console + Rich Results test on
+    /, a product page, /about/publications (Rajesh)
+  - Decide the Cloudflare AI-crawler policy: the new zone's managed
+    robots.txt currently blocks GPTBot/ClaudeBot/CCBot etc. (verified
+    live 27 Jul) — recommendation is to allow, see the AI-crawler item
+    at the top of this list
+  - Days after activation: SPF trim to M365-only include, DMARC watch,
+    then -all; drop default.\_domainkey + link CNAME
+  - SSL Full (strict) once ChemiCloud hosting is retired
+  - Revoke the old all-zones Cloudflare user token
+  - (Optional hardening) enable DNSSEC: Cloudflare generates the DS,
+    paste it at Crazy Domains
 - [ ] Re-prime kiosk tablets after the next deploy (SW cache changed)
 
 ## Security / hardening
