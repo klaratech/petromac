@@ -59,8 +59,10 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 ## HTML catalog (live at /catalog since Jul 2026)
 
 The HTML catalog built from the IDML source replaced the pdf.js viewer;
-pipeline is `pnpm run data:catalog` (docs/ADMIN.md §2b). `/catalogtest`
-redirects to `/catalog`. Removed with the swap: `CatalogViewer.tsx`,
+restructured into a three-level drill-down (overview → family pages →
+model pages) with the Device Finder in late Jul 2026 — see
+docs/DECISIONS.md. Pipeline is `pnpm run data:catalog` + the enrichment
+layer (docs/ADMIN.md §2b). `/catalogtest` redirects to `/catalog`. Removed with the swap: `CatalogViewer.tsx`,
 `react-pdf`, `public/pdfjs/`, `search-index.json` + its pipeline step and
 cache rule. Remaining:
 
