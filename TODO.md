@@ -28,13 +28,18 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       routes OK, contact form POST from the new origin returned ok (Graph
       delivery as info@). Old Crazy Domains DNS records left in place
       (inert — rollback snapshot). Staging petromac.klaratech.it unaffected.
-- [ ] Post-launch follow-ups (from the cutover):
-  - Submit the sitemap in Google Search Console + Rich Results test on
-    /, a product page, /about/publications (Rajesh)
-  - Decide the Cloudflare AI-crawler policy: the new zone's managed
-    robots.txt currently blocks GPTBot/ClaudeBot/CCBot etc. (verified
-    live 27 Jul) — recommendation is to allow, see the AI-crawler item
-    at the top of this list
+- [ ] **TOMORROW MORNING (28 Jul) — Rajesh's human tasks, in order:**
+  1. AI-bots toggle: Cloudflare dashboard → petromac.co.nz → Security →
+     Bots → "Manage AI bots" → allow (the new zone's managed robots.txt
+     currently blocks GPTBot/ClaudeBot/CCBot etc., verified live 27 Jul;
+     decision = allow so AI assistants can learn Petromac products)
+  2. Google Search Console: add/verify www.petromac.co.nz property,
+     submit https://www.petromac.co.nz/sitemap.xml
+  3. Rich Results test (search.google.com/test/rich-results) on /,
+     one product page, /about/publications
+  4. Quick browse of the live site from your own machine (DNS caches
+     will have expired overnight) — homepage, catalog, track record,
+     contact form
   - Days after activation: SPF trim to M365-only include, DMARC watch,
     then -all; drop default.\_domainkey + link CNAME
   - SSL Full (strict) once ChemiCloud hosting is retired
