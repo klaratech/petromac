@@ -1,4 +1,4 @@
-import { useEffect, memo } from 'react';
+import { useEffect, useMemo, memo } from 'react';
 import { select } from 'd3-selection';
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
 import 'd3-transition';
@@ -57,8 +57,13 @@ const MapRenderer = memo(function MapRenderer({
   svgRef,
   gRef,
 }: MapRendererProps) {
+  // Trim once per data load. This used to sit inside the effect below, whose
+  // deps include countryMap/selectedCountry — so every filter or country click
+  // re-filtered 242 features and the USA's 127 polygons for no reason.
+  const visibleWorld = useMemo(() => (worldData ? trimWorld(worldData) : null), [worldData]);
+
   useEffect(() => {
-    if (!worldData || isLoading) return;
+    if (!visibleWorld || isLoading) return;
 
     const svg = select(svgRef.current);
     svg.selectAll('*').remove();
@@ -73,7 +78,6 @@ const MapRenderer = memo(function MapRenderer({
     // reads as operations in the mid-Pacific, the same misreading French
     // Guiana caused inside the France feature. It frees no space (Alaska and
     // Russia already set ±180) — it just stops saying something untrue.
-    const visibleWorld = trimWorld(worldData);
     const projection = geoNaturalEarth1().fitSize([width, height], visibleWorld);
     const path = geoPath(projection);
 
@@ -220,7 +224,7 @@ const MapRenderer = memo(function MapRenderer({
       svg.selectAll('*').remove();
     };
   }, [
-    worldData,
+    visibleWorld,
     countryMap,
     selectedCountry,
     onCountryClick,

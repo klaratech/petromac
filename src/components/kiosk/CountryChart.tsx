@@ -34,17 +34,15 @@ const CountryChart = memo(function CountryChart({
         bottom-4 left-4
         bg-white text-slate-900
         border border-slate-200 rounded-xl shadow-lg
-        px-4 py-3
-        w-[280px] md:w-[320px]
+        px-3.5 py-2.5
+        w-[240px] md:w-[260px]
       "
       role="region"
       aria-label="Top countries by deployments"
     >
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">
-            By Country
-          </p>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">By Country</p>
           <p className="text-sm font-semibold text-slate-900">
             {expanded ? 'All deployments' : 'Top 5'}
           </p>
@@ -69,9 +67,7 @@ const CountryChart = memo(function CountryChart({
             <li key={country}>
               <button
                 type="button"
-                onClick={() =>
-                  onCountryClick(selectedCountry === country ? null : country)
-                }
+                onClick={() => onCountryClick(selectedCountry === country ? null : country)}
                 className={`w-full grid grid-cols-[1fr_auto] items-center gap-2 px-2 py-1.5 rounded-md text-left hover:bg-slate-100 ${MAP_CONSTANTS.FOCUS_RING} ${
                   isSelected ? 'bg-blue-50 ring-1 ring-blue-200' : ''
                 }`}
@@ -92,9 +88,7 @@ const CountryChart = memo(function CountryChart({
                       className="h-full rounded-full transition-all duration-200"
                       style={{
                         width: `${Math.max(pct, 4)}%`,
-                        backgroundColor: isSelected
-                          ? MAP_CONSTANTS.COLORS.CHART_BAR
-                          : '#60a5fa',
+                        backgroundColor: isSelected ? MAP_CONSTANTS.COLORS.CHART_BAR : '#60a5fa',
                       }}
                     />
                   </div>
