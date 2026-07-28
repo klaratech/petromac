@@ -238,7 +238,7 @@ export default function ChallengeSelector() {
                   the success stories page supports filter deep links. */}
               <div className="mt-6">
                 <Link
-                  href="/success-stories/flipbook"
+                  href="/case-studies"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white bg-brand hover:bg-brand/90 shadow-lg shadow-blue-900/20 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2"
                 >
                   See success stories

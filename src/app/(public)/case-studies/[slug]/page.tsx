@@ -150,10 +150,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
               />
               <figcaption className="mt-3 text-center text-sm text-slate-500">
                 As published in the Petromac success stories collection —{' '}
-                <Link
-                  href="/success-stories/flipbook"
-                  className="font-medium text-brand hover:underline"
-                >
+                <Link href="/case-studies" className="font-medium text-brand hover:underline">
                   browse the full collection
                 </Link>
               </figcaption>

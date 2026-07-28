@@ -331,6 +331,55 @@ cache rule. Remaining:
 - [ ] Generate the download/email PDF from `catalog.json` via an HTML print
       template (≤4 MB, tagged text, TOC) instead of shipping the print PDF
 
+## Flipbook retirement (phased, Jul 2026)
+
+Decided after checking whether the flipbook still earned its keep: the same 46
+stories render twice from one source, and `/case-studies` wins on everything
+public (per-story URLs, real text, JSON-LD, sitemap). The measured gap is ~9%
+of the PDF's text — figure captions, chart axis labels, subtitles, SPE refs —
+which the extractor collects as `trailing` and never emits; all of it is still
+visible in each story's published-page image. The INGEST pipeline is NOT
+retired and never can be: `/case-studies` uses the generated page webps as its
+visuals, so `source.pdf` + `pnpm run data` stay.
+
+- [x] **Phase 1 — public flipbook retired (Jul 2026).**
+      `/success-stories/flipbook` + `/success-stories` 308 → `/case-studies`,
+      route deleted, dropped from the sitemap, and all 8 internal links
+      repointed (contact, case-studies index + slug, track-record ×4,
+      DrilldownMapCore, homepage ChallengeSelector — the map's `<a>` became a
+      `next/link` to satisfy the lint rule). `/track-record?stories=1` now
+      lands on `/case-studies` too. New `CaseStudiesBrowser` client island:
+      free-text search + region/challenge/product filters, result count,
+      Clear, and the filtered set as a PDF (download + email) — every story
+      carries its flipbook `page`, which is what the PDF endpoints take, so
+      nothing was lost. Filter logic is pure in
+      `src/features/case-studies/filters.ts` with 10 unit tests, ready for
+      phase 2 to reuse. All 46 cards remain in the SSR HTML for crawlers/no-JS.
+      Fixed in passing: white-on-emerald-600 in `EmailPdfButton` was 3.65:1,
+      under the 4.5:1 AA floor — now emerald-700, so a11y is 100 (this was
+      pre-existing on the flipbook page, just newly visible).
+- [ ] **Phase 2 — kiosk off the flipbook.** Two consumers left:
+      `/intranet/kiosk/successstories`, and the deeper one,
+      `LogsScreen.tsx`'s CH-lane **Case Studies** takeover, which embeds
+      `SuccessStoriesFlipbook` with per-product preset filters (tap Helix or
+      Rocker → that product's stories). That's a core trade-show demo path, so
+      it needs rebuilding on the case-studies data, reusing `filters.ts`.
+      CHECK BEFORE BUILDING: offline priming budget. The flipbook is 1 route +
+      52 images; case-studies would be 46 routes + images, and the manifest
+      has only ~11 route entries today against `MAX_STATIC_ENTRIES = 80`,
+      shared with JS chunks — likely needs raising or the LRU will evict
+      things a tablet needs offline.
+- [ ] **Phase 3 — delete the viewer.** Only after phase 2: `Flipbook.tsx`,
+      `SuccessStoriesFlipbook.tsx`, `FlipbookErrorBoundary.tsx`,
+      `SuccessStoriesFilters` and the success-stories feature services. KEEP
+      the ingest pipeline and `public/flipbooks/success-stories/pages/*.webp`.
+- [ ] Fix the `tags.csv` category typo at source: "Well Access:Deviation" (4
+      rows) → "Well Access: Deviation" (17 rows) — same category, missing
+      space. `filters.ts` normalizes it so the UI shows one merged option
+      (21), but the data should be clean. Also worth deciding whether the
+      dropped `trailing` text (captions/refs) should be emitted into a
+      captions field for SEO + screen readers.
+
 ## Backlog
 
 - [x] Case studies rebuilt (27 Jul 2026): 21 pages live under

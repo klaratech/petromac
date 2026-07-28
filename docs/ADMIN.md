@@ -45,7 +45,10 @@ numbers shown publicly need to be current.
 
 The **catalog PDF** (the download/email artifact behind the `/catalog` page's
 Download and Email buttons — the page itself is the HTML catalog, see §2b)
-and the **success stories** flipbook at `/success-stories/flipbook`.
+and the **success stories** collection, which is now published as the case
+studies at `/case-studies` (the public flipbook route was retired Jul 2026 —
+see CLAUDE.md; the flipbook page images are still generated, because each case
+study uses its page webp as the story visual).
 Generated bundles live in `public/flipbooks/{catalog,success-stories}/`.
 
 - **Catalog PDF** — the pipeline ships one linearized

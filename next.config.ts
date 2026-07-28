@@ -67,10 +67,19 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        // The bare parent path 404s otherwise — all internal links point at
-        // /flipbook, this catches typed/shared URLs.
+        // The public success-stories FLIPBOOK was retired Jul 2026 —
+        // /case-studies now carries the same 46 stories with per-story URLs,
+        // real text, filters and the filtered-PDF download/email. Both the
+        // /flipbook path and its bare parent land there, so indexed and
+        // shared links keep working. (The flipbook COMPONENT lives on for the
+        // kiosk; only the public route is gone.)
+        source: '/success-stories/flipbook',
+        destination: '/case-studies',
+        permanent: true,
+      },
+      {
         source: '/success-stories',
-        destination: '/success-stories/flipbook',
+        destination: '/case-studies',
         permanent: true,
       },
       {
@@ -107,12 +116,12 @@ const nextConfig: NextConfig = {
       {
         // Success Stories used to open as a ?stories=1 overlay on Track
         // Record (retired Jul 2026) — send shared/bookmarked overlay URLs
-        // to the standalone page.
-        // Next passes the matched query param through to the destination
-        // (?stories=1 stays in the URL); harmless — the flipbook ignores it.
+        // to the stories themselves. Next passes the matched query param
+        // through (?stories=1 stays in the URL); harmless, /case-studies
+        // ignores it.
         source: '/track-record',
         has: [{ type: 'query', key: 'stories', value: '1' }],
-        destination: '/success-stories/flipbook',
+        destination: '/case-studies',
         permanent: false,
       },
     ];

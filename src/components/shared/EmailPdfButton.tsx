@@ -122,7 +122,9 @@ export function EmailPdfButton({
       <button
         onClick={handleReveal}
         disabled={revealed || disabled}
-        className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed"
+        // emerald-700, not -600: white on emerald-600 is 3.65:1, under the
+        // 4.5:1 AA floor for 14px text (axe flagged it on /case-studies).
+        className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-emerald-700 hover:bg-emerald-800 shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed"
       >
         <svg
           className="h-4 w-4"
@@ -163,7 +165,7 @@ export function EmailPdfButton({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="h-8 w-8 flex items-center justify-center bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-green-300"
+                className="h-8 w-8 flex items-center justify-center bg-emerald-700 text-white rounded-md hover:bg-emerald-800 transition-colors disabled:bg-emerald-300"
                 title="Send"
                 aria-label="Send"
               >

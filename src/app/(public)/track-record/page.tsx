@@ -47,7 +47,7 @@ const RECORDS = [
     title: 'World-record gravity descent',
     context:
       'Free descent to 80° deviation in open hole — no tractoring, no pipe. The published record run reached near-horizontal.',
-    href: '/success-stories/flipbook',
+    href: '/case-studies',
     cta: 'Success stories',
   },
   {
@@ -55,7 +55,7 @@ const RECORDS = [
     title: 'Record slim-hole deviation — Kuwait',
     context:
       'Slim tool taxis carried a triple combo plus pressure testing to a record 72° in a 6" wellbore — no pipe-conveyed logging.',
-    href: '/success-stories/flipbook',
+    href: '/case-studies',
     cta: 'Success stories',
   },
   {
@@ -63,7 +63,7 @@ const RECORDS = [
     title: 'Pipe-conveyed logging eliminated — Mexico',
     context:
       'Gravity descent with Wireline Express replaced PCL on a deviated well, saving 8 days of rig time.',
-    href: '/success-stories/flipbook',
+    href: '/case-studies',
     cta: 'Success stories',
   },
   {
@@ -129,7 +129,7 @@ export default function TrackRecordPage() {
 
         <div className="mt-8 flex justify-center">
           <Link
-            href="/success-stories/flipbook"
+            href="/case-studies"
             className="
               inline-flex items-center gap-2 whitespace-nowrap
               px-7 py-3 rounded-full font-semibold text-white

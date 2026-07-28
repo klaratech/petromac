@@ -31,7 +31,7 @@ website/
 │   │   │   ├── track-record/             # Global deployment map
 │   │   │   ├── simulation/               # Athena planning/simulation page
 │   │   │   ├── contact/                  # Contact page (submits to backend API)
-│   │   │   ├── success-stories/flipbook/ # Success stories flipbook
+│   │   │   ├── case-studies/          # 46 story pages + filterable index
 │   │   │   ├── team/                     # Team page
 │   │   │   ├── privacy/                  # Privacy policy
 │   │   │   ├── terms/                    # Terms of use
