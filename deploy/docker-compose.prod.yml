@@ -1,17 +1,28 @@
-# Production docker-compose for Petromac on klaratech-1.
+# Production + test docker-compose for Petromac on klaratech-1.
 #
 # This file is the canonical reference. The live copy is at
 # /root/apps/petromac/docker-compose.yml on the server. Sibling files
 # (never committed):
-#   /root/apps/petromac/.env-frontend
-#   /root/apps/petromac/.env-backend
+#   /root/apps/petromac/.env-frontend        (prod)
+#   /root/apps/petromac/.env-backend         (prod)
+#   /root/apps/petromac/.env-frontend-test   (test)
+#   /root/apps/petromac/.env-backend-test    (test)
 #
-# See DEPLOY.md and the org-wide Tech Standards (Hetzner Server.md,
-# docker-compose Templates.md) for the broader pattern.
+# TWO STACKS, ONE FILE (Jul 2026):
+#   prod = www.petromac.co.nz  → frontend :3015 / backend :8012, image tag :prod
+#   test = test.petromac.co.nz → frontend :3016 / backend :8013, image tag :staging
+# Every push to main auto-deploys the TEST stack (deploy-staging.yml);
+# production only changes when the "Promote to Production" workflow runs.
+# CI deploys with explicit service names — `docker compose up -d frontend
+# backend` (prod) or `... frontend-test backend-test` — so one stack never
+# restarts the other.
+#
+# All ports bind 127.0.0.1 ONLY (cloudflared connects over loopback) — see
+# DEPLOY.md for why dropping the prefix is a security incident.
 
 services:
   frontend:
-    image: ghcr.io/klaratech/petromac-frontend:latest
+    image: ghcr.io/klaratech/petromac-frontend:prod
     container_name: petromac-frontend
     restart: unless-stopped
     env_file: .env-frontend
@@ -19,9 +30,25 @@ services:
       - '127.0.0.1:3015:3000'
 
   backend:
-    image: ghcr.io/klaratech/petromac-backend:latest
+    image: ghcr.io/klaratech/petromac-backend:prod
     container_name: petromac-backend
     restart: unless-stopped
     env_file: .env-backend
     ports:
       - '127.0.0.1:8012:8000'
+
+  frontend-test:
+    image: ghcr.io/klaratech/petromac-frontend:staging
+    container_name: petromac-frontend-test
+    restart: unless-stopped
+    env_file: .env-frontend-test
+    ports:
+      - '127.0.0.1:3016:3000'
+
+  backend-test:
+    image: ghcr.io/klaratech/petromac-backend:staging
+    container_name: petromac-backend-test
+    restart: unless-stopped
+    env_file: .env-backend-test
+    ports:
+      - '127.0.0.1:8013:8000'

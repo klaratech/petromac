@@ -117,6 +117,19 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       https://www.petromac.co.nz/intranet/kiosk?sd=1 — the old primed
       origin no longer resolves (see re-prime item above).
 
+- [x] Test/staging environment LIVE (28 Jul): https://test.petromac.co.nz
+      — public but noindex (staging identity build). Two stacks on
+      klaratech-1 (prod :3015/:8012 tag :prod; test :3016/:8013 tag
+      :staging), tunnel ingress + DNS added, all 29 zone records now
+      carry descriptive Cloudflare comments. CI: every push deploys TEST
+      only (deploy-staging.yml); production changes ONLY via the
+      "Promote to Production" workflow (deploy-prod.yml,
+      workflow_dispatch — the go-live button). Also fixed latent gap:
+      API_BASE_URL now absolute (docker-network URL) in both frontend
+      env files. REMAINING (Rajesh): add
+      https://test.petromac.co.nz/auth/microsoft/callback to the Entra
+      app so intranet sign-in works on the test site.
+
 ## Security / hardening
 
 - [x] Send-as-staff now survives the whole 12 h session (28 Jul): the ~1 h

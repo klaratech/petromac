@@ -27,6 +27,8 @@ Workflow we use: stage with `git add`, commit, push. Don't run `pnpm build` manu
 
 **For Claude:** when suggesting a commit or push, ALWAYS give the user one ready-to-paste shell command — full `git add <files> && git commit -m "..." && git push`, with the file list spelled out and the commit message inline. No placeholder fragments, no "then run git commit" prose split across paragraphs. Group everything in a single fenced block so it's one copy-paste action. When in doubt about which files to stage, prefer `git add -A` (or list every modified path explicitly) over leaving the user to figure it out.
 
+**Deploy model (Jul 2026): pushes go to TEST, production needs the button.** Every push to main auto-deploys https://test.petromac.co.nz (noindex staging build; share freely for feedback). Production (www.petromac.co.nz) changes ONLY via the "Promote to Production" workflow — `gh workflow run deploy-prod.yml` or GitHub → Actions. When Rajesh says "go live", run the promote. See DEPLOY.md.
+
 **Lockfile reminder:** `package.json` and `pnpm-lock.yaml` ALWAYS change together. Any `pnpm add` / `pnpm remove` / `pnpm update` produces a diff in both. If `git status` shows one without the other, that's a deploy-build trap — `pnpm install --frozen-lockfile` will fail. Stage both in the same commit. The pre-push hook does NOT catch this; only the deploy build does.
 
 ## Architecture

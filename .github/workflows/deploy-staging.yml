@@ -1,22 +1,17 @@
-name: Promote to Production
+name: Deploy to Test (staging)
 
-# THE go-live button. Runs only when dispatched (Actions → Promote to
-# Production → Run workflow). Builds the chosen ref (default: main HEAD)
-# with the PRODUCTION identity and flips the prod containers — the test
-# stack at test.petromac.co.nz is untouched. Day-to-day pushes deploy only
-# to test via deploy-staging.yml.
+# Every push to main lands on https://test.petromac.co.nz automatically.
+# Production (www.petromac.co.nz) is NOT touched — it only changes when the
+# "Promote to Production" workflow is run (deploy-prod.yml).
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Git ref to promote (branch, tag, or sha)'
-        required: false
-        default: 'main'
 
 concurrency:
-  group: deploy-prod
-  cancel-in-progress: false
+  group: deploy-staging-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   REGISTRY: ghcr.io
@@ -32,20 +27,16 @@ jobs:
       fail-fast: false
       matrix:
         component: [frontend, backend]
-    outputs:
-      short_sha: ${{ steps.meta.outputs.short_sha }}
     steps:
-      - name: Checkout promoted ref
+      - name: Checkout
         uses: actions/checkout@v6
-        with:
-          ref: ${{ inputs.ref }}
 
       - name: Compute image refs
         id: meta
         shell: bash
         run: |
           owner_lc="${GITHUB_REPOSITORY_OWNER,,}"
-          short_sha="$(git rev-parse --short=7 HEAD)"
+          short_sha="${GITHUB_SHA::7}"
           image="${REGISTRY}/${owner_lc}/${IMAGE_BASE}-${{ matrix.component }}"
           echo "image=$image" >> "$GITHUB_OUTPUT"
           echo "short_sha=$short_sha" >> "$GITHUB_OUTPUT"
@@ -78,17 +69,17 @@ jobs:
           platforms: linux/amd64
           push: true
           provenance: false
-          # PRODUCTION identity from repo variables (backend ignores these).
-          # next.config.ts fails the build on an inconsistent pair.
+          # STAGING identity: test-site URL, no NEXT_PUBLIC_ENV → the build
+          # derives noindex + Disallow-all robots automatically (siteUrl.ts).
+          # Turnstile widget hostname covers subdomains, same site key.
           build-args: |
-            NEXT_PUBLIC_SITE_URL=${{ vars.NEXT_PUBLIC_SITE_URL }}
-            NEXT_PUBLIC_ENV=${{ vars.NEXT_PUBLIC_ENV }}
+            NEXT_PUBLIC_SITE_URL=https://test.petromac.co.nz
             NEXT_PUBLIC_TURNSTILE_SITE_KEY=${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
           tags: |
-            ${{ steps.meta.outputs.image }}:prod
-            ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
-          cache-from: type=gha,scope=${{ matrix.component }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.component }}
+            ${{ steps.meta.outputs.image }}:staging
+            ${{ steps.meta.outputs.image }}:staging-${{ steps.meta.outputs.short_sha }}
+          cache-from: type=gha,scope=${{ matrix.component }}-staging
+          cache-to: type=gha,mode=max,scope=${{ matrix.component }}-staging
 
   deploy:
     needs: build-and-push
@@ -97,7 +88,7 @@ jobs:
       contents: read
       packages: read
     steps:
-      - name: SSH and redeploy PROD stack only
+      - name: SSH and redeploy TEST stack only
         uses: appleboy/ssh-action@v1
         env:
           GHCR_USERNAME: ${{ github.actor }}
@@ -111,22 +102,18 @@ jobs:
             set -euo pipefail
             cd /root/apps/petromac
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
-            docker compose pull frontend backend
-            docker compose up -d frontend backend
+            docker compose pull frontend-test backend-test
+            docker compose up -d frontend-test backend-test
             docker image prune -f
-            echo "--- prod stack after deploy ---"
-            docker compose ps frontend backend
+            echo "--- test stack after deploy ---"
+            docker compose ps frontend-test backend-test
 
-      - name: Write deployment summary
-        env:
-          SHORT_SHA: ${{ needs.build-and-push.outputs.short_sha }}
-          PROMOTED_REF: ${{ inputs.ref }}
+      - name: Summary
         run: |
           {
-            echo "## PROMOTED TO PRODUCTION"
+            echo "## Deployed to TEST"
             echo
-            echo "- https://www.petromac.co.nz"
-            echo "- Ref: \`${PROMOTED_REF}\` → \`sha-${SHORT_SHA}\`"
-            echo "- Images: \`:prod\` + \`:sha-${SHORT_SHA}\`"
-            echo "- Rollback: pin the previous \`:sha-*\` tag in the compose file (see DEPLOY.md)"
+            echo "- https://test.petromac.co.nz (noindex build)"
+            echo "- Images: \`:staging\` + \`:staging-${GITHUB_SHA::7}\`"
+            echo "- Production untouched — promote via the 'Promote to Production' workflow."
           } >> "$GITHUB_STEP_SUMMARY"

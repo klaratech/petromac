@@ -10,10 +10,13 @@ Browser → Cloudflare edge → cloudflared (klaratech-1) → 127.0.0.1:3015 (fr
 ```
 
 - Hostnames: `www.petromac.co.nz` + `petromac.co.nz` (apex 301s to www at
-  the edge). The pre-launch staging hostname `petromac.klaratech.it` was
-  retired post-cutover (Jul 2026).
-- Frontend container port: `127.0.0.1:3015` on host, `3000` in container
-- Backend container port: `127.0.0.1:8012` on host, `8000` in container
+  the edge) = PRODUCTION; `test.petromac.co.nz` = TEST/staging (public but
+  noindex — its build has no production identity, so every page carries
+  noindex + a Disallow-all robots.txt automatically). The pre-launch
+  staging hostname `petromac.klaratech.it` was retired post-cutover
+  (Jul 2026).
+- Production containers: frontend `127.0.0.1:3015`, backend `127.0.0.1:8012`
+- Test containers: frontend `127.0.0.1:3016`, backend `127.0.0.1:8013`
   - **Both bind to `127.0.0.1` only** — cloudflared connects over loopback, so
     nothing should be published on `0.0.0.0`. A server copy of the compose file
     once dropped the `127.0.0.1:` prefix and exposed both ports to the public
@@ -24,13 +27,25 @@ Browser → Cloudflare edge → cloudflared (klaratech-1) → 127.0.0.1:3015 (fr
 - Images: `ghcr.io/klaratech/petromac-frontend:latest`, `ghcr.io/klaratech/petromac-backend:latest`
 - DNS, TLS, and routing live in Cloudflare; the server has no public ports open beyond SSH.
 
-## CI/CD
+## CI/CD — test-first with a promote button (Jul 2026)
 
-`.github/workflows/deploy-prod.yml`:
+Two workflows, one rule: **pushes never touch production.**
 
-1. Builds frontend + backend images for `linux/amd64` only (no multi-arch — Hetzner is amd64).
-2. Pushes `:latest` and `:sha-<short>` tags to GHCR.
-3. SSHes into the server, logs Docker into GHCR with the workflow token, then runs `docker compose pull && docker compose up -d` from `/root/apps/petromac`.
+- `.github/workflows/deploy-staging.yml` — every push to main builds the
+  images with the TEST identity (`NEXT_PUBLIC_SITE_URL=https://test.petromac.co.nz`,
+  no `NEXT_PUBLIC_ENV` → noindex) as `:staging` + `:staging-<sha>` and
+  redeploys ONLY the `frontend-test` / `backend-test` services. Iterate,
+  check https://test.petromac.co.nz, share it for feedback.
+- `.github/workflows/deploy-prod.yml` ("Promote to Production") — the
+  go-live button. Run it from GitHub → Actions (or
+  `gh workflow run deploy-prod.yml`), optionally with a specific ref
+  (default: main HEAD). It rebuilds that ref with the PRODUCTION identity
+  (repo variables), tags `:prod` + `:sha-<short>`, and redeploys ONLY the
+  prod services. Nothing reaches www.petromac.co.nz any other way.
+
+Because the site identity is baked at build time, test and prod are
+separate image builds of the same commit — the promote rebuilds rather
+than retags, and `next.config.ts` refuses inconsistent production builds.
 
 ## Required GitHub Actions secrets
 
