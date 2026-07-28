@@ -381,6 +381,31 @@ cache rule. Remaining:
       Contact address stays `info@petromac.co.nz` for privacy and terms
       (confirmed — it's monitored).
 
+## Contact drawer (next up)
+
+- [x] Contact form short-message copy fixed (28 Jul). The friendly sentence was
+      unreachable: the textarea's `minLength={10}` made Chrome block submission
+      first with its own "Please lengthen this text to 10 characters or more" —
+      the exact robotic phrasing we were removing. Now validated in the submit
+      handler with the same wording the backend returns.
+- [ ] **Email icon in the header → contact form in a slide-out drawer**, so a
+      visitor can send a message without leaving the page they're browsing.
+      Design settled, one constraint verified the hard way: - Reuse the `LegalDrawer` LOOK (same slide-out, backdrop, Escape-to-close,
+      focus handling) but NOT its mounting strategy. LegalDrawer stays in the
+      DOM permanently and hides via `aria-hidden`/`inert`. **Turnstile cannot
+      run a challenge inside a hidden container** — that is precisely the
+      deadlock that broke all email sends on 28 Jul. The contact drawer must
+      CONDITIONALLY RENDER `ContactForm` on open and unmount on close, so the
+      widget mounts into a visible container each time. - `ContactForm` is already self-contained and theme-dark, and `/contact`
+      must stay as a real route for direct links and SEO — same split as
+      privacy/terms (shared content component, two surfaces). - Header has TWO icon sites to update: desktop (~Header.tsx:195) and the
+      mobile menu (~:322). - Leave `/catalog`'s "Contact our regional managers" pointing at the full
+      PAGE. Different intent: someone at the bottom of the catalog has
+      finished browsing, so a page is fine; the header icon serves people
+      mid-browse who don't want to lose their place. - VERIFY after building: submit a real message from the drawer, twice in
+      a row (the repeat-send case that exposed the Turnstile grace-flag bug),
+      and confirm the widget mounts on each open.
+
 ## Kiosk review (full pass) — OPEN, keep adding here
 
 Standing home for ALL kiosk work. There is a lot to do on the trade-show
