@@ -381,6 +381,33 @@ cache rule. Remaining:
       Contact address stays `info@petromac.co.nz` for privacy and terms
       (confirmed — it's monitored).
 
+## Performance regression — FIX FIRST (28 Jul)
+
+- [ ] **Homepage perf 89 → 68, LCP 3.8s → 6.6s, FCP 1.1s → 3.0s** (mobile,
+      production, reproducible across 3 runs — not variance). Cause is MINE:
+      the on-submit Turnstile rework dropped the IntersectionObserver gate on
+      the reasoning that "nothing is deferred when mounting is free". Mounting
+      is NOT free — the challenge doesn't run, but the script still DOWNLOADS.
+      Network records for the homepage now show ~128 KB of Turnstile at page
+      load (`api.js` + a 26 KB inner script + a 102 KB challenge-platform
+      bundle) on a page where most visitors never touch the contact form, plus
+      11 KB for the analytics beacon. LCP is 89% RENDER DELAY — the main thread
+      is parsing third-party JS instead of painting.
+      FIX: load the Turnstile script on FIRST INTERACTION with the form (focus
+      or first keystroke on any field), not on mount. The challenge only runs
+      at submit, so first-focus gives ample lead time at zero page-load cost,
+      and it cannot reintroduce the hidden-container deadlock because the
+      container is visible by then. `getTokenRef()` already awaits readiness,
+      so it also covers a submit that somehow beats the load.
+      Also set the analytics beacon to `strategy="lazyOnload"`.
+      VERIFY: Lighthouse mobile on / back to ~89 and LCP under 4s, THEN a real
+      contact-form submit twice in a row, plus one PDF email — this is the third
+      change to the Turnstile path in a day and the previous two both broke
+      sends.
+      /track-record also went 92 → 69 with TBT 310ms → 420ms; re-measure after
+      this fix before investigating separately, since the same two scripts load
+      there and `trimWorld` client work may also contribute.
+
 ## Contact drawer (next up)
 
 - [x] Contact form short-message copy fixed (28 Jul). The friendly sentence was
