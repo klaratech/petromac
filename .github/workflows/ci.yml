@@ -37,5 +37,11 @@ jobs:
       - name: Unit tests
         run: pnpm test:unit
 
+      # Guards the committed flipbook manifests/pages + the success-stories
+      # tags CSV against drift. Pure Node — no poppler/python needed, since
+      # it validates published assets rather than rebuilding them.
+      - name: Validate flipbook assets + success-stories tags
+        run: pnpm run data:check
+
       - name: Production build
         run: pnpm build

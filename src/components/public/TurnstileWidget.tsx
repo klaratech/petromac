@@ -110,5 +110,7 @@ export default function TurnstileWidget({
   }, [resetRef, onVerified]);
 
   if (!SITE_KEY) return null;
-  return <div ref={containerRef} aria-label="Human verification" />;
+  // role="group" is required for aria-label to be valid here — a bare div is
+  // a generic element, on which ARIA prohibits naming (axe:aria-prohibited-attr).
+  return <div ref={containerRef} role="group" aria-label="Human verification" />;
 }

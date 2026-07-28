@@ -132,17 +132,25 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Security / hardening
 
-- [x] Send-as-staff now survives the whole 12 h session (28 Jul): the ~1 h
-      delegated Graph token had no refresh path, so "email as me" silently
-      fell back to info@ an hour after sign-in (Rajesh hit this on the
-      success-stories send). Now: refresh token kept in an IN-MEMORY
-      server store keyed by a random tokenRef in the session cookie (the
-      token itself never fits the ~4 KB cookie), /api/staff/send-pdf
-      refreshes on demand + rotates, /api/staff/session reports
-      refreshability, and EmailPdfButton shows "sends from X" so a
-      fallback is never silent. Known limit BY DESIGN: a deploy/restart
-      empties the store → sends fall back to info@ (visibly) until next
-      sign-in. Also fixed: PDF emails linked www.petromac.com → .co.nz.
+- [x] Send-as-staff now survives the whole 12 h session INCLUDING deploys
+      (28 Jul, two rounds): the ~1 h delegated Graph token had no refresh
+      path, so "email as me" silently fell back to info@ an hour after
+      sign-in (Rajesh hit this on the success-stories send). Round 1 added
+      on-demand refresh + rotation in /api/staff/send-pdf, a
+      refreshability flag on /api/staff/session, and "sends from X" on
+      EmailPdfButton so a fallback is never silent — but parked the
+      refresh token in an IN-MEMORY server store, so every deploy emptied
+      it and the bug came straight back (Rajesh hit it again the same
+      morning, after three deploys). Round 2 moved the refresh token into
+      its own encrypted httpOnly cookie (`petromac_staff_rt`,
+      AES-256-GCM under STAFF_SESSION_SECRET, same size guard + expiry as
+      the session cookie; cleared on sign-out and on a revoked-token
+      refresh failure) and DELETED `lib/auth/tokenStore.ts` entirely — no
+      server-side state, so restarts/deploys/multi-replica are all fine.
+      3 unit tests cover the new cookie (round-trip, expiry, garbage +
+      wrong-payload rejection). Note: sessions created before round 2
+      have no refresh cookie — one fresh sign-in per user is needed.
+      Also fixed: PDF emails linked www.petromac.com → .co.nz.
 
 - [x] Cloudflare Turnstile LIVE on the contact form (28 Jul): lazy-loaded
       managed widget (site key baked via repo variable
@@ -160,8 +168,25 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       localhost; local dev uses the official always-pass TEST keys in
       .env.local. Optional hardening: drop "localhost" from the widget's
       hostname list (dev never uses the real key).
-- [ ] PDF-email domain allowlist permits any address in an allowed domain —
-      consider explicit recipient allowlist
+- [ ] PDF-email hardening — REFRAMED (28 Jul) after reading the code. The
+      old note ("consider explicit recipient allowlist") is the WRONG
+      remedy: `/api/email/send-pdf` backs the PUBLIC catalog action
+      (`EmailPdfAction`, "Available to everyone", placeholder
+      `name@company.com`), so prospects type arbitrary addresses — an
+      explicit recipient allowlist would break the feature by design, and
+      a domain allowlist can only ever be too tight (real prospects 403) or
+      too loose. Two things actually worth doing: 1. **Turnstile on this endpoint.** `verify_turnstile()` exists in
+      `backend/app/main.py` but is called ONLY from `/api/contact`
+      (line ~456). `/api/email/send-pdf` is unauthenticated with just
+      3 req/min/IP, and mails a ~4 MB attachment — a spam/amplification
+      vector trading on Petromac's M365 sending reputation. Reuse the
+      same widget + siteverify the contact form already has. 2. **Confirm the deployed value of `ALLOWED_EMAIL_DOMAINS`** in
+      `/root/apps/petromac/.env-backend`. If it is narrow (e.g. just
+      petromac.co.nz) then the public "Email PDF" is silently 403-ing
+      for every real prospect and the UI only says "Couldn't send" —
+      that would be a live go-live bug, not just hardening. Attachment
+      content is fixed (always the catalog/success-stories PDF), so
+      there is no data-exfiltration angle — abuse potential only.
 - [x] staffAuth unit tests DONE (28 Jul): 19 tests — session cookie
       round-trip/expiry/tamper/wrong-secret, OAuth state TTL + nonce,
       timing-safe compare, Graph-token skew, config detection, cookie
@@ -217,10 +242,35 @@ case-studies.json` (hand-editable — WordPress is gone; raw HTML
 - [ ] MapRenderer: split base path generation from style updates so filter
       clicks restyle instead of rebuilding all ~244 paths (from the Jul 2026
       audit; deferred — delicate component, clicks already debounced)
-- [ ] SEO audit remainder: performance scores (Lighthouse/CWV pass). The
-      structured-data half landed Jul 2026 (canonicals, per-page OG, JSON-LD
-      for Organization/Product/Breadcrumb/ScholarlyArticle, env-derived
-      robots+sitemap, staging noindex + launch guard)
+- [x] SEO audit remainder DONE (28 Jul) — Lighthouse/CWV pass run against
+      PRODUCTION (mobile, post-promote build). Baseline:
+      | page | perf | a11y | BP | SEO | LCP | TBT | CLS |
+      | / | 89 | 97 | 100 | 100 | 3.8 s | 10 ms | 0.015 |
+      | /catalog | 84 | 100 | 100 | 100 | 4.3 s | 20 ms | 0 |
+      | /track-record | 92 | 100 | 100 | 100 | 2.1 s | 310 ms | 0.046 |
+      **SEO + best-practices are 100 everywhere** — the structured-data half
+      (canonicals, per-page OG, JSON-LD, env-derived robots/sitemap, staging
+      noindex + launch guard) is confirmed clean on the live domain.
+      Findings on the two LCP outliers, both investigated and NOT worth
+      chasing: assets are already near their floor — the hero poster is
+      served as an 18 KB AVIF (next/image `formats: [avif, webp]` +
+      `priority`), the two woff2 faces are 40/48 KB in <45 ms, TBT ≤310 ms
+      and CLS ≤0.046 are inside "good". Home LCP is 81% "Load Time" on the
+      hero AVIF and /catalog LCP is 89% "Render Delay" on a TEXT node with
+      ZERO load time — i.e. both are artifacts of Lighthouse's SIMULATED
+      throttling, not real bytes. Correct next step is FIELD data (Search
+      Console → Core Web Vitals / CrUX) once there's traffic, rather than
+      optimising against lab numbers. Reports kept out of git.
+- [ ] Homepage a11y: `color-contrast` is the ONLY remaining audit failure
+      (a11y 97) and it is a FALSE POSITIVE — do not "fix" the colors. axe
+      samples text mid-`.scroll-reveal`, whose keyframe animates
+      `opacity: 0 → 1`, so it reads near-white foregrounds (#f5f7fb,
+      #f6f7f8 …) against white and reports 1.07. The real values pass
+      comfortably (`text-brand` #1E4A9A on white ≈ 7.4:1, AAA). Every
+      flagged node sits in a below-the-fold `.scroll-reveal` section. Only
+      worth acting on if an external accessibility scan needs a clean
+      sheet — then gate the reveal on a `prefers-reduced-motion`-style
+      static fallback rather than changing the palette.
 - [ ] Athena terminal (/simulation) shows illustrative values — confirm
       `MRIL-XL`, `--taxis 4`, and "est. rig time saved: 8.2 hrs" with the
       product team or swap in real simulation numbers
@@ -232,10 +282,17 @@ case-studies.json` (hand-editable — WordPress is gone; raw HTML
       LaunchAgent `com.petromac.data-update` removed (unloaded; backups
       of both in `Website_Archive/retired-automation/`). Content updates
       are drop-zone + manual runs per docs/ADMIN.md.
-- [ ] `pdf-flipbooks-build.yml` workflow: triggers when pipeline scripts
-      change, but CI has no `sources/` inputs (gitignored) — likely a
-      no-op that just validates + commits nothing. Review whether it
-      still earns its keep; low priority, harmless.
+- [x] `pdf-flipbooks-build.yml` RETIRED (28 Jul): reviewed — despite the
+      name it built nothing (no pipeline script was ever invoked) and its
+      commit-and-push step could never produce a diff, since `sources/` is
+      gitignored so CI has no inputs. It did, however, hold the ONLY run of
+      `validate:flipbooks` + `validate:successstories` anywhere in CI, and
+      only fired when one of three pipeline scripts changed. Fix: added
+      `pnpm run data:check` (both validators) to ci.yml so the committed
+      flipbook assets + tags CSV are guarded on EVERY push, then deleted
+      the workflow — which also drops a pointless poppler/python install
+      and a bot push-to-main. Validators are pure Node; both pass.
+      Archived at `Website_Archive/retired-automation/`.
 
 ## Notes
 
