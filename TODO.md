@@ -102,14 +102,18 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       AND move them to the production domain while at it: set the launch
       URL to https://www.petromac.co.nz/intranet/kiosk?sd=1, sign in,
       re-prime, verify offline.
-- [ ] AFTER the tablets are moved: retire petromac.klaratech.it (it
-      serves the same production build — staging role is over; kiosk
-      tablets are the only dependency). Sweep in one sitting:
-      Cloudflare DNS record (klaratech.it zone) + the two tunnel
-      ingress rules + ALLOWED_ORIGINS in both server env files (Claude,
-      via SSH/API); Entra redirect URI + Turnstile hostname (Rajesh,
-      dashboard); repo references in .env.example/docs (Claude). No
-      redirect planned — internal URL, bookmarks just die.
+- [ ] Retire petromac.klaratech.it — IN PROGRESS (28 Jul, Rajesh
+      approved doing it before the tablet re-prime; tablets will be
+      re-primed on the production URL later): - ✅ repo scrubbed (README/DEPLOY/ADMIN/EMAIL_SETUP/Entra-setup
+      docs/.env.example now reference www.petromac.co.nz; siteUrl.ts
+      DEFAULT_SITE_URL → http://localhost:3000) - ✅ Entra redirect URI removal + Turnstile hostname removal
+      (Rajesh, dashboard) - ⏳ BLOCKED on SSH (Mac ssh-agent won't sign — 1Password?):
+      delete the petromac CNAME in the klaratech.it zone, remove the
+      three klaratech.it ingress rules from /etc/cloudflared/config.yml
+      (+ restart cloudflared), drop the origin from ALLOWED_ORIGINS in
+      both server env files (+ docker compose up -d). Resume when SSH
+      works. - NOTE: until the server sweep lands, the hostname still serves
+      the production build — harmless (production canonicals).
 
 ## Security / hardening
 

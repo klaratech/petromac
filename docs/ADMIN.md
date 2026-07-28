@@ -265,7 +265,7 @@ big 60" screen instead of the default web-optimised ones.
 **Rules:**
 
 - `kiosk-hd/` files **are committed** (unlike `originals/`) — they have to be
-  in git so the Docker build ships them to `petromac.klaratech.it`.
+  in git so the Docker build ships them to `www.petromac.co.nz`.
 - Still respect GitHub's 100 MB-per-file limit. Transcode masters to 1080p
   H.264 (`-crf 20 -preset veryfast` is a good balance) rather than committing
   raw graphics exports. Current files land in the 50–95 MB range.
@@ -288,5 +288,5 @@ big 60" screen instead of the default web-optimised ones.
 | Kiosk HD videos | `public/videos/kiosk-hd/` (1080p, same filename as transcoded)    | transcode masters first           | the `.mp4` + bump `kiosk-sw.js` VERSION |
 
 After any push to `main`, CI runs and `deploy-prod.yml` builds the Docker
-images and redeploys the Hetzner box (`petromac.klaratech.it`). See
+images and redeploys the Hetzner box (`www.petromac.co.nz`). See
 [DEPLOY.md](../DEPLOY.md).

@@ -67,7 +67,7 @@ Redirect URIs:
 
 - Platform: `Web`
 - Add:
-  - `https://petromac.klaratech.it/auth/microsoft/callback`
+  - `https://www.petromac.co.nz/auth/microsoft/callback`
   - `http://localhost:3000/auth/microsoft/callback`
 
 Click `Register`.

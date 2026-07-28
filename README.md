@@ -2,7 +2,7 @@
 
 Next.js 16 + React 19 site: public marketing site, staff intranet, trade-show
 kiosk, and a FastAPI backend for email/PDF endpoints. Deployed on Hetzner
-(`klaratech-1`) behind a Cloudflare Tunnel at **petromac.klaratech.it**.
+(`klaratech-1`) behind a Cloudflare Tunnel at **www.petromac.co.nz**.
 
 ## Quick start
 

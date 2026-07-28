@@ -1,4 +1,8 @@
-const DEFAULT_SITE_URL = 'https://petromac.klaratech.it';
+// Fallback when no site URL env is set (local dev, ad-hoc builds) — such
+// builds are non-production by definition and ship noindex everywhere.
+// (Was the klaratech.it staging URL until that hostname was retired
+// post-launch, Jul 2026.)
+const DEFAULT_SITE_URL = 'http://localhost:3000';
 
 /** Domains that count as the live production site (www + apex). */
 export const PRODUCTION_SITE_URLS = ['https://www.petromac.co.nz', 'https://petromac.co.nz'];
