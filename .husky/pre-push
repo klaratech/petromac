@@ -2,10 +2,11 @@
 # fast-to-slow so you fail early on cheap checks before the 30-60s build:
 #   1. typecheck — catches TS/Next.js type errors
 #   2. lint      — catches eslint errors (warnings allowed)
+#   2b. unit tests — fast node:test suite (auth/csv logic)
 #   3. build     — catches Next.js build-time issues that tsc + eslint miss
 #                  (server/client boundary mistakes, dynamic-import paths,
 #                  route conflicts, production-only codepaths, etc.)
 #
 # Escape hatch when you really need it: `git push --no-verify`. Use sparingly
 # and only when you've verified the build separately.
-pnpm typecheck && pnpm lint && pnpm build
+pnpm typecheck && pnpm lint && pnpm test:unit && pnpm build

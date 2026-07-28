@@ -8,6 +8,7 @@ Next.js 16 (App Router) + React 19 + TypeScript website with public site, intran
 - **Lint**: `pnpm run lint`
 - **Typecheck**: `pnpm run typecheck`
 - **Build**: `pnpm run build` (also runs automatically on `git push` via husky)
+- **Unit tests**: `pnpm run test:unit` (node:test via tsx, all `src/**/*.test.ts`; runs in CI and pre-push)
 - **E2E tests**: `pnpm run test:e2e` (needs local server running)
 - **Data pipeline**: `pnpm run data` (rebuilds operations JSON + flipbooks)
 - **HTML catalog**: `pnpm run data:catalog` (rebuilds `catalog.json` + web images from the InDesign IDML in `sources/catalog/` — see docs/ADMIN.md §2b)

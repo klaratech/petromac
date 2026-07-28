@@ -18,6 +18,7 @@
     "validate:flipbooks": "tsx scripts/node/validate-flipbooks.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "test:unit": "find src -name '*.test.ts' -print0 | xargs -0 node --import tsx --test",
     "test:e2e": "playwright test",
     "prepare": "husky"
   },

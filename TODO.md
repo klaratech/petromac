@@ -84,6 +84,13 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       (28 Jul): the July copy pass made Name optional on the form but the
       backend still required it — backend now requires only email+message,
       falls back to "Website visitor". Verified live post-deploy.
+- [ ] Vercel retirement — IN PROGRESS (28 Jul): code side done (docs
+      scrubbed; no vercel.json/workflow ever existed). Dashboard agent
+      set Ignored Build Step → "don't build", now disconnecting the git
+      repo + DELETING the project (petromac.vercel.app goes offline —
+      intended: stale copy, no backend, noindex, no references; deletion
+      also disposes of any env vars). Rajesh afterwards: uninstall the
+      Vercel GitHub App from the klaratech org if nothing else uses it.
 - [ ] Sanity-check + clean up the Crazy Domains DNS panel against the
       now-canonical Cloudflare zone (with the other admin), so the inert
       panel doesn't mislead anyone again. Open verification questions
@@ -132,7 +139,12 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       hostname list (dev never uses the real key).
 - [ ] PDF-email domain allowlist permits any address in an allowed domain —
       consider explicit recipient allowlist
-- [ ] staffAuth unit tests (highest-logic auth code, thin coverage)
+- [x] staffAuth unit tests DONE (28 Jul): 19 tests — session cookie
+      round-trip/expiry/tamper/wrong-secret, OAuth state TTL + nonce,
+      timing-safe compare, Graph-token skew, config detection, cookie
+      attributes. Wired `pnpm test:unit` (node:test via tsx) into CI and
+      the pre-push hook — unit tests previously existed but NEVER ran
+      anywhere (one had silently drifted from the implementation).
 
 ## Content & assets (designer-dependent)
 
@@ -191,10 +203,16 @@ case-studies.json` (hand-editable — WordPress is gone; raw HTML
       product team or swap in real simulation numbers
 - [ ] Kiosk CH lane "Other" experience (Coming-soon placeholder; build last)
 - [ ] Longer term: job history off Excel into a database-backed source
-- [ ] `data-build.yaml` workflow still references the old xlsx-URL secret
-      mechanism — rework or disable (pipeline is drop-zone based now)
-- [ ] `scripts/daily-operations-update.sh` cron is a no-op unless something is
-      in `sources/operations/` — decide if it still has a purpose
+- [x] Stale automation retired (28 Jul): `data-build.yaml` workflow
+      deleted (weekly scheduled no-op tied to the pre-drop-zone xlsx-URL
+      secrets) and `scripts/daily-operations-update.sh` + its Mac
+      LaunchAgent `com.petromac.data-update` removed (unloaded; backups
+      of both in `Website_Archive/retired-automation/`). Content updates
+      are drop-zone + manual runs per docs/ADMIN.md.
+- [ ] `pdf-flipbooks-build.yml` workflow: triggers when pipeline scripts
+      change, but CI has no `sources/` inputs (gitignored) — likely a
+      no-op that just validates + commits nothing. Review whether it
+      still earns its keep; low priority, harmless.
 
 ## Notes
 
