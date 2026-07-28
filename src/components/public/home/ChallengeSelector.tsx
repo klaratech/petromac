@@ -120,7 +120,13 @@ export default function ChallengeSelector() {
   };
 
   return (
-    <section id="challenges" className="py-20 px-6 bg-white scroll-mt-16 scroll-reveal">
+    <section
+      id="challenges"
+      // Was bg-white, which landed as a hard flash straight after the dark hero
+      // video. A short gradient from slate-100 eases the transition and gives
+      // the cards below something to sit on instead of blowing out.
+      className="py-20 px-6 bg-gradient-to-b from-slate-100 via-slate-50 to-white scroll-mt-16 scroll-reveal"
+    >
       <div className="max-w-6xl mx-auto">
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-brand text-center mb-10">
           What challenge are you facing?
@@ -151,7 +157,7 @@ export default function ChallengeSelector() {
                 className={`rounded-lg border-2 px-3 py-3 md:py-3.5 text-sm md:text-[15px] font-semibold text-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${
                   selected
                     ? 'bg-brand border-brand text-white shadow-card'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-brand/40 hover:text-brand hover:bg-brand/[0.04] hover:shadow-sm'
+                    : 'bg-white border-slate-300 text-slate-700 shadow-sm hover:border-brand/50 hover:text-brand hover:bg-brand/[0.04] hover:shadow'
                 }`}
               >
                 {s.challenge}
@@ -166,7 +172,7 @@ export default function ChallengeSelector() {
           id={`challenge-panel-${active.id}`}
           aria-labelledby={`challenge-tab-${active.id}`}
           tabIndex={0}
-          className="rounded-xl border-2 border-slate-200 bg-slate-50 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+          className="rounded-xl border-2 border-slate-300 bg-white shadow-sm overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
         >
           <div className="grid lg:grid-cols-[3fr_2fr]">
             {/* Video preview — poster only; the player mounts in the

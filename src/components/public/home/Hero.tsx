@@ -10,7 +10,10 @@ import LazyVideo from './LazyVideo';
 const LEAD = 'Wireline logging';
 const TYPED_RUNS = [
   { text: ' — ', cls: '' },
-  { text: 'Optimised', cls: 'text-brand' },
+  // NOT text-brand: #1E4A9A is a dark navy, and on the dark hero video it read
+  // muddy and washed out. blue-400 is the same family (it's in the map's
+  // intensity ramp) but bright enough to carry on a dark background.
+  { text: 'Optimised', cls: 'text-blue-400' },
 ] as const;
 const TYPED_TEXT = TYPED_RUNS.map((r) => r.text).join('');
 const FULL_TEXT = LEAD + TYPED_TEXT;

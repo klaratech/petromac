@@ -337,9 +337,35 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
         </div>
       )}
 
-      {/* No color legend by design (Jul 2026): darker = more is intuitive;
-          precise values come from the hover tooltip and the Top 5 /
-          Show all panel. */}
+      {/* Colour legend — restored Jul 2026 on request (it had been dropped on
+          the reasoning that darker = more is self-evident and the tooltip plus
+          Top 5 panel carry exact values). Sits bottom-RIGHT: top-right is the
+          deployments counter card and bottom-left is the Top 5 panel. Desktop
+          only, like the Top 5 panel — on mobile it would collide with the
+          filter pills. Pointer-transparent so it can't intercept map hovers,
+          and hidden while a country drawer is open. Buckets come from the same
+          quantile scale that fills the map, so swatch and country always
+          agree. */}
+      {!tappedCountry && intensity.breaks.length > 0 && (
+        <div
+          className="pointer-events-none absolute bottom-4 right-4 hidden rounded-xl border border-slate-200 bg-white/95 px-3 py-2.5 shadow-lg backdrop-blur md:block"
+          role="img"
+          aria-label={`Colour scale: lighter shades are fewer deployments, darker are more, from ${intensity.min} up to ${intensity.max}.`}
+        >
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+            Deployments
+          </p>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] tabular-nums text-slate-500">{intensity.min}</span>
+            <div className="flex overflow-hidden rounded-sm">
+              {MAP_CONSTANTS.COLORS.INTENSITY_RAMP.map((c) => (
+                <span key={c} className="h-2.5 w-5" style={{ backgroundColor: c }} />
+              ))}
+            </div>
+            <span className="text-[10px] tabular-nums text-slate-500">{intensity.max}</span>
+          </div>
+        </div>
+      )}
 
       {/* Yearly stats — right-side drawer (or bottom sheet on mobile) */}
       {tappedCountry && yearlyStats.length > 0 && (
