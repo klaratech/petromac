@@ -297,7 +297,31 @@ DEPLOY.md.
 `worker-src blob:` (three.js workers), `connect-src blob:` (GLTFLoader
 fetches blob: URLs for textures embedded in Draco GLBs — found by testing).
 **Why:** Everything is self-hosted (fonts via next/font, pdf.js worker at
-`/pdfjs/`, Draco at `/draco/`), so a tight policy was cheap. Cloudflare Web
+`/pdfjs/`, Draco at `/draco/`), so a tight policy was cheap.
+
+### Edge caching (28 Jul 2026)
+
+Two Cache Rules were added after a header sweep found `/data/*.json` and
+`/_next/image` both returning `cf-cache-status: DYNAMIC` — Cloudflare caches
+neither `.json` nor query-string URLs by default, so the ~538 KB operations
+dataset and every optimised image were served from the origin on each visit.
+Rules: path starts-with `/data/` and ends-with `.json`; path equals
+`/_next/image`. Both cache-eligible, edge TTL driven by the origin's
+`cache-control`, browser TTL respect-origin.
+
+Zone **Browser Cache TTL was 14400 (4 h) and is now `0` = Respect Existing
+Headers.** A numeric value overrides the browser-facing `max-age` for
+everything, which defeated the cadence policy above — the whole point of the
+moderate `max-age` + long `stale-while-revalidate` pairs is that the app
+controls staleness, in version-controlled code rather than a dashboard setting.
+
+Traps, since the UI naming is inconsistent: Edge TTL has NO option called
+"Respect origin TTL" (use "Use cache-control header if present, bypass cache if
+not", which stores as `bypass_by_default`), whereas Browser TTL DOES have one
+and defaults to **Bypass cache** — so expanding that section and leaving it
+alone sets browser bypass. Never add a Cache Key setting to the `/_next/image`
+rule: the query string must stay in the key or all image sizes collapse to one
+entry. Cloudflare Web
 Analytics (added 28 Jul 2026) is the one third-party script — it needs
 `static.cloudflareinsights.com` in `script-src` and `cloudflareinsights.com` in
 `connect-src`, or the beacon is blocked silently.
