@@ -32,10 +32,15 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       delivery as info@). Old Crazy Domains DNS records left in place
       (inert — rollback snapshot). Staging petromac.klaratech.it unaffected.
 - [ ] **TOMORROW MORNING (28 Jul) — Rajesh's human tasks, in order:**
-  1. AI-bots toggle: Cloudflare dashboard → petromac.co.nz → Security →
-     Bots → "Manage AI bots" → allow (the new zone's managed robots.txt
-     currently blocks GPTBot/ClaudeBot/CCBot etc., verified live 27 Jul;
-     decision = allow so AI assistants can learn Petromac products)
+  1. AI-bots toggle (decision = allow, so AI assistants can learn
+     Petromac products): Cloudflare dash → petromac.co.nz → Security →
+     Bots → set "AI Scrapers and Crawlers" to Do-not-block AND toggle
+     OFF "Manage AI bots with robots.txt". NOT doable via the current
+     API token (Bot Management is a separate permission — add Zone →
+     Bot Management → Edit to the token if preferred, then Claude can
+     flip it). Side effect when done: Lighthouse SEO 92 → ~100
+     site-wide (the managed robots.txt's Content-Signal directive is
+     what fails the robots.txt audit).
   2. Google Search Console: add/verify www.petromac.co.nz property,
      submit https://www.petromac.co.nz/sitemap.xml
   3. Rich Results test (search.google.com/test/rich-results) on /,
@@ -146,6 +151,15 @@ case-studies.json` (hand-editable — WordPress is gone; raw HTML
       mirror archived in `Website_Archive/oldsite-case-studies/`).
       Optional polish: per-study dates, more cross-links from product
       pages.
+- [ ] Success-stories → individual case-study pages (idea 28 Jul,
+      scouted): the flipbook PDF holds 46 tagged one-page stories
+      (tags.csv: Year/Area/Country/WL Co/Category/Device/Page; PDF text
+      extracts cleanly). Plan: extract + overlap-report vs the 21
+      existing case studies first, then merge duplicates / add ~35 new
+      pages under /case-studies with page image + extracted text +
+      Article JSON-LD. Thin-content caveat: one PDF page ≈ 150–250
+      words — needs the full structured treatment to be worth indexing.
+      A new PDF edition regenerates via tags.csv. AWAITING GO.
 - [ ] MapRenderer: split base path generation from style updates so filter
       clicks restyle instead of rebuilding all ~244 paths (from the Jul 2026
       audit; deferred — delicate component, clicks already debounced)
