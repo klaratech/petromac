@@ -377,6 +377,19 @@ visuals, so `source.pdf` + `pnpm run data` stay.
       `SuccessStoriesFlipbook.tsx`, `FlipbookErrorBoundary.tsx`,
       `SuccessStoriesFilters` and the success-stories feature services. KEEP
       the ingest pipeline and `public/flipbooks/success-stories/pages/*.webp`.
+- [x] Success-stories PDF keeps its cover + back page (28 Jul): a filtered
+      extract was just the story pages, so it lost the cover and — more
+      importantly — the back page carrying the regional-manager contacts,
+      which is the point of a PDF you email a prospect. `build_success_stories_pdf`
+      now wraps any page selection in the publication's first and last page,
+      derived from the file rather than hardcoded so a new edition with a
+      different page count still works, and de-duped in case a selection
+      already contains them. Pages 2-3 are editorial front matter and stay OUT
+      of extracts, so a two-story PDF isn't mostly preamble. Unfiltered now
+      sends NO page list at all, so it returns the source untouched — the whole
+      50-page publication including that front matter. Verified: unfiltered 50,
+      3 stories → 5, 1 story → 3, all 46 → 48, cover first and contacts last
+      in every case.
 - [ ] Fix the `tags.csv` category typo at source: "Well Access:Deviation" (4
       rows) → "Well Access: Deviation" (17 rows) — same category, missing
       space. `filters.ts` normalizes it so the UI shows one merged option

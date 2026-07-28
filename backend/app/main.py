@@ -363,11 +363,27 @@ def build_success_stories_pdf(page_numbers: list[int] | None) -> tuple[bytes, in
         if len(normalized) > DEFAULT_MAX_PAGES:
             raise HTTPException(status_code=400, detail=f"Too many pages selected. Max {DEFAULT_MAX_PAGES} pages allowed.")
 
+        # A filtered extract still needs to look like a Petromac document, so
+        # it gets the publication's cover and back page. The back page carries
+        # the regional-manager contacts, which is the whole point of a PDF
+        # someone emails to a prospect. Derived from the file rather than
+        # hardcoded, so a new edition with a different page count still works.
+        # (Pages 2-3 are editorial front matter — deliberately left out, so a
+        # two-story extract isn't mostly generic preamble.)
+        cover_index = 0
+        back_index = total_pages - 1
+        story_indexes = [n - 1 for n in normalized if 0 <= n - 1 < total_pages]
+
+        ordered: list[int] = []
+        for index in [cover_index, *story_indexes, back_index]:
+            # Guard the edge cases: a selection that already contains the cover
+            # or back page, and a single-page source where they coincide.
+            if index not in ordered:
+                ordered.append(index)
+
         writer = PdfWriter()
-        for page_number in normalized:
-            index = page_number - 1
-            if 0 <= index < total_pages:
-                writer.add_page(reader.pages[index])
+        for index in ordered:
+            writer.add_page(reader.pages[index])
 
         buffer = io.BytesIO()
         writer.write(buffer)

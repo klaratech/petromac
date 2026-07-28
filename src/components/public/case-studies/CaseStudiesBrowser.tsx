@@ -36,6 +36,13 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
   const results = useMemo(() => filterCaseStudies(studies, query), [studies, query]);
   const active = isQueryActive(query);
   const pageNumbers = useMemo(() => pageNumbersFor(results), [results]);
+  /**
+   * Unfiltered means "the whole publication", so send NO page list and let the
+   * backend return the source PDF untouched — that way you get the editorial
+   * front matter (pages 2-3) too, not just cover + stories + back. A filtered
+   * request sends its pages and the backend wraps them in cover/back.
+   */
+  const requestPages = active ? pageNumbers : undefined;
 
   const set = <K extends keyof CaseStudyQuery>(key: K, value: CaseStudyQuery[K]) =>
     setQuery((q) => ({ ...q, [key]: value || undefined }));
@@ -55,7 +62,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
       const response = await fetch(buildClientApiUrl('/api/pdf/success-stories'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pageNumbers, mode: 'download' }),
+        body: JSON.stringify({ pageNumbers: requestPages, mode: 'download' }),
       });
       if (!response.ok) throw new Error('Failed to generate PDF');
       const blob = await response.blob();
@@ -107,7 +114,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
             <EmailPdfButton
               pdfType="success-stories"
               endpoint={buildClientApiUrl('/api/email/send-pdf')}
-              payload={{ pageNumbers, filters: pdfFilters }}
+              payload={{ pageNumbers: requestPages, filters: pdfFilters }}
               disabled={pageNumbers.length === 0}
               buttonLabel="Email"
             />
