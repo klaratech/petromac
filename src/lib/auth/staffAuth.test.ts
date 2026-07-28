@@ -4,11 +4,13 @@ import {
   buildOAuthStateCookieOptions,
   buildSessionCookieOptions,
   createOAuthStateValue,
+  createRefreshTokenCookieValue,
   createStaffSessionCookieValue,
   getStaffGraphToken,
   isStaffAuthConfigured,
   normalizeReturnTo,
   readOAuthStateCookie,
+  readRefreshTokenCookie,
   readStaffSessionCookie,
   verifyOAuthState,
 } from './staffAuth';
@@ -143,6 +145,29 @@ test('verifyOAuthState compares exactly', () => {
   assert.equal(verifyOAuthState('abc123', 'abc124'), false);
   assert.equal(verifyOAuthState('abc123', 'abc1234'), false);
   assert.equal(verifyOAuthState('', ''), true);
+});
+
+// ── refresh-token cookie: encrypt/decrypt round-trip ────────────────────
+
+test('refresh-token cookie round-trips while unexpired', () => {
+  const cookie = createRefreshTokenCookieValue('0.ARoA-refresh-token', Date.now() + 60_000);
+  assert.ok(!cookie.includes('refresh-token'), 'cookie must not leak plaintext');
+  assert.equal(readRefreshTokenCookie(cookie), '0.ARoA-refresh-token');
+});
+
+test('expired refresh-token cookie reads as null', () => {
+  const cookie = createRefreshTokenCookieValue('0.ARoA-refresh-token', Date.now() + 60_000);
+  withClockOffset(2 * 60_000, () => {
+    assert.equal(readRefreshTokenCookie(cookie), null);
+  });
+});
+
+test('garbage refresh-token cookie values read as null', () => {
+  assert.equal(readRefreshTokenCookie(''), null);
+  assert.equal(readRefreshTokenCookie(null), null);
+  assert.equal(readRefreshTokenCookie('not.a.cookie'), null);
+  // Session cookie payloads don't parse as refresh-token payloads.
+  assert.equal(readRefreshTokenCookie(createStaffSessionCookieValue(makeSession())), null);
 });
 
 // ── Graph token skew guard ──────────────────────────────────────────────

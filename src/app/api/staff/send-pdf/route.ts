@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import {
   buildSessionCookieOptions,
+  clearCookieOptions,
+  createRefreshTokenCookieValue,
   createStaffSessionCookieValue,
+  getRefreshTokenCookieName,
   getSessionCookieName,
   getStaffGraphToken,
+  readRefreshTokenCookie,
   readStaffSession,
 } from '@/lib/auth/staffAuth';
 import { refreshMicrosoftToken } from '@/lib/auth/entra';
-import { dropRefreshToken, getRefreshToken, putRefreshToken } from '@/lib/auth/tokenStore';
 import type { StaffSession } from '@/types/staffSession';
 import { buildServerApiUrl } from '@/lib/api';
 import { getRequestOrigin } from '@/lib/auth/requestOrigin';
@@ -19,34 +22,38 @@ import { getRequestOrigin } from '@/lib/auth/requestOrigin';
  * sign-in. This is the kiosk path; the public site (no staff session) uses
  * the FastAPI `info@` sender instead.
  *
- * The token lives in the httpOnly session cookie and is read only here — it
- * is never exposed to client JS and never sent to the FastAPI backend. On a
- * 401 the client falls back to the `info@` send.
+ * The tokens live in httpOnly cookies (session + refresh-token cookie) and
+ * are read only here — never exposed to client JS and never sent to the
+ * FastAPI backend. On a 401 the client falls back to the `info@` send.
  */
 const CATALOG_PDF_PATH = '/flipbooks/catalog/petromac-product-catalog.pdf';
 
 export async function POST(request: NextRequest) {
-  const session = readStaffSession(await cookies());
+  const cookieStore = await cookies();
+  const session = readStaffSession(cookieStore);
   if (!session) {
     return NextResponse.json({ error: 'no_staff_session' }, { status: 401 });
   }
 
   // Valid access token in the session? Use it. Otherwise mint a fresh one
-  // from the server-side refresh token (survives the ~1 h token lifetime for
-  // the whole 12 h session) and rotate the cookie on the way out.
+  // from the refresh-token cookie (survives server restarts for the whole
+  // 12 h session) and rotate both cookies on the way out.
   let token = getStaffGraphToken(session);
   let refreshedSession: StaffSession | null = null;
+  let rotatedRefreshToken: string | null = null;
   if (!token) {
-    const refreshToken = getRefreshToken(session.tokenRef);
+    const refreshToken = readRefreshTokenCookie(
+      cookieStore.get(getRefreshTokenCookieName())?.value
+    );
     if (!refreshToken) {
       return NextResponse.json({ error: 'no_staff_session' }, { status: 401 });
     }
     try {
       const fresh = await refreshMicrosoftToken(refreshToken);
       token = fresh.access_token;
-      if (fresh.refresh_token && session.tokenRef) {
+      if (fresh.refresh_token) {
         // Microsoft rotates refresh tokens — keep the newest one.
-        putRefreshToken(session.tokenRef, fresh.refresh_token, session.expiresAt - Date.now());
+        rotatedRefreshToken = fresh.refresh_token;
       }
       refreshedSession = {
         ...session,
@@ -56,9 +63,11 @@ export async function POST(request: NextRequest) {
         },
       };
     } catch {
-      // Refresh token revoked/expired — clean up and fall back to info@.
-      dropRefreshToken(session.tokenRef);
-      return NextResponse.json({ error: 'no_staff_session' }, { status: 401 });
+      // Refresh token revoked/expired — drop the dead cookie and fall back
+      // to info@.
+      const response = NextResponse.json({ error: 'no_staff_session' }, { status: 401 });
+      response.cookies.set(getRefreshTokenCookieName(), '', clearCookieOptions());
+      return response;
     }
   }
 
@@ -154,19 +163,32 @@ export async function POST(request: NextRequest) {
   if (refreshedSession) {
     // Persist the freshly minted access token so the next send within the
     // hour skips the refresh round-trip. Same cookie-size guard as sign-in:
-    // if the token pushes past the ~4 KB limit, skip the update — tokenRef
-    // alone keeps future sends refreshable.
+    // if the token pushes past the ~4 KB limit, skip the update — the
+    // refresh-token cookie alone keeps future sends refreshable.
+    const remainingSeconds = Math.max(
+      60,
+      Math.floor((refreshedSession.expiresAt - Date.now()) / 1000)
+    );
     const cookieValue = createStaffSessionCookieValue(refreshedSession);
     if (cookieValue.length <= 3800) {
-      const remainingSeconds = Math.max(
-        60,
-        Math.floor((refreshedSession.expiresAt - Date.now()) / 1000)
-      );
       response.cookies.set(
         getSessionCookieName(),
         cookieValue,
         buildSessionCookieOptions(remainingSeconds)
       );
+    }
+    if (rotatedRefreshToken) {
+      const refreshCookieValue = createRefreshTokenCookieValue(
+        rotatedRefreshToken,
+        refreshedSession.expiresAt
+      );
+      if (refreshCookieValue.length <= 3800) {
+        response.cookies.set(
+          getRefreshTokenCookieName(),
+          refreshCookieValue,
+          buildSessionCookieOptions(remainingSeconds)
+        );
+      }
     }
   }
   return response;

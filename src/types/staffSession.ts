@@ -20,10 +20,7 @@ export interface StaffSession {
   issuedAt: number;
   expiresAt: number;
   /** Delegated Graph token for send-as-staff. Short-lived (~1 h); when it
-   *  lapses, the server mints a fresh one via the refresh token referenced
-   *  by `tokenRef` (see lib/auth/tokenStore). */
+   *  lapses, the server mints a fresh one from the encrypted refresh-token
+   *  cookie (see lib/auth/staffAuth `readRefreshTokenCookie`). */
   graph?: StaffGraphToken;
-  /** Key into the server-side refresh-token store (the refresh token itself
-   *  never fits in the cookie). Random, meaningless off-server. */
-  tokenRef?: string;
 }

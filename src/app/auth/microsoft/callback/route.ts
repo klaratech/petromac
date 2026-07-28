@@ -3,8 +3,10 @@ import { getRequestOrigin } from '@/lib/auth/requestOrigin';
 import {
   buildSessionCookieOptions,
   clearCookieOptions,
+  createRefreshTokenCookieValue,
   createStaffSessionCookieValue,
   getOAuthStateCookieName,
+  getRefreshTokenCookieName,
   getSessionCookieName,
   getStaffSessionTtlSeconds,
   isStaffAuthConfigured,
@@ -13,8 +15,6 @@ import {
   verifyOAuthState,
 } from '@/lib/auth/staffAuth';
 import { exchangeMicrosoftCode, fetchMicrosoftUser } from '@/lib/auth/entra';
-import { putRefreshToken } from '@/lib/auth/tokenStore';
-import { randomBytes } from 'node:crypto';
 
 function errorRedirect(request: NextRequest, message: string) {
   const redirectUrl = new URL('/intranet', getRequestOrigin(request));
@@ -51,27 +51,16 @@ export async function GET(request: NextRequest) {
     const now = Date.now();
     const sessionTtlMs = getStaffSessionTtlSeconds() * 1000;
 
-    // The refresh token (too large for the cookie) goes into the in-memory
-    // server store; the cookie carries only a random reference to it. This
-    // lets send-as-staff mint fresh Graph tokens for the whole session
-    // instead of dying after the ~1 h access-token lifetime.
-    let tokenRef: string | undefined;
-    if (tokens.refresh_token) {
-      tokenRef = randomBytes(18).toString('base64url');
-      putRefreshToken(tokenRef, tokens.refresh_token, sessionTtlMs);
-    }
-
     const session = {
       user,
       issuedAt: now,
       expiresAt: now + sessionTtlMs,
       // Delegated Graph token for send-as-staff (~1 h; refreshed on demand
-      // via tokenRef when it lapses).
+      // from the refresh-token cookie when it lapses).
       graph: {
         accessToken: tokens.access_token,
         expiresAt: now + (tokens.expires_in ?? 3600) * 1000,
       },
-      ...(tokenRef ? { tokenRef } : {}),
     };
 
     // Cookie-size guard: the Graph token can push the encrypted cookie past
@@ -88,6 +77,22 @@ export async function GET(request: NextRequest) {
     const safeReturnTo = normalizeReturnTo(statePayload.returnTo);
     const response = NextResponse.redirect(new URL(safeReturnTo, getRequestOrigin(request)));
     response.cookies.set(getSessionCookieName(), cookieValue, buildSessionCookieOptions());
+    // The refresh token rides in its own encrypted cookie so send-as-staff
+    // keeps working across server restarts/deploys for the whole 12 h
+    // session. Same size guard as the session cookie.
+    if (tokens.refresh_token) {
+      const refreshCookieValue = createRefreshTokenCookieValue(
+        tokens.refresh_token,
+        now + sessionTtlMs
+      );
+      if (refreshCookieValue.length <= 3800) {
+        response.cookies.set(
+          getRefreshTokenCookieName(),
+          refreshCookieValue,
+          buildSessionCookieOptions()
+        );
+      }
+    }
     response.cookies.set(getOAuthStateCookieName(), '', clearCookieOptions());
     return response;
   } catch (error) {

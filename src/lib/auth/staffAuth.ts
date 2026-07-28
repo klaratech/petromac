@@ -19,6 +19,7 @@ interface CookieReader {
 }
 
 const SESSION_COOKIE_NAME = 'petromac_staff_session';
+const REFRESH_TOKEN_COOKIE_NAME = 'petromac_staff_rt';
 const OAUTH_STATE_COOKIE_NAME = 'petromac_staff_oauth_state';
 const STAFF_SESSION_TTL_SECONDS = 60 * 60 * 12;
 const OAUTH_STATE_TTL_SECONDS = 60 * 10;
@@ -92,6 +93,33 @@ export function getSessionCookieName() {
 
 export function getOAuthStateCookieName() {
   return OAUTH_STATE_COOKIE_NAME;
+}
+
+export function getRefreshTokenCookieName() {
+  return REFRESH_TOKEN_COOKIE_NAME;
+}
+
+interface RefreshTokenCookiePayload {
+  refreshToken: string;
+  expiresAt: number;
+}
+
+/**
+ * The delegated Microsoft refresh token travels in its own encrypted,
+ * httpOnly cookie (it doesn't fit in the session cookie next to the access
+ * token, and the frontend container has no persistent storage — a server-side
+ * store would be wiped on every deploy). AES-256-GCM under the same session
+ * secret; expiry is capped at the staff session's own expiry.
+ */
+export function createRefreshTokenCookieValue(refreshToken: string, expiresAt: number) {
+  return encryptJson({ refreshToken, expiresAt } as unknown as Record<string, unknown>);
+}
+
+export function readRefreshTokenCookie(value: string | undefined | null): string | null {
+  if (!value) return null;
+  const payload = decryptJson<RefreshTokenCookiePayload>(value);
+  if (!payload?.refreshToken || !payload.expiresAt || payload.expiresAt <= Date.now()) return null;
+  return payload.refreshToken;
 }
 
 export function normalizeReturnTo(value: string | null | undefined) {
