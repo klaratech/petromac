@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import ContactForm from '@/components/public/ContactForm';
 
 /**
@@ -17,8 +16,10 @@ import ContactForm from '@/components/public/ContactForm';
  * every email send on 28 Jul 2026. Mounting on open also means each open gets
  * a fresh widget, which suits single-use tokens.
  *
- * /contact remains a real route for direct links and SEO — same split as
- * privacy/terms, where one content component serves both surfaces.
+ * /contact remains a real route for direct links and SEO (same split as
+ * privacy/terms), but the drawer deliberately does NOT link to it — offering
+ * "go to the full page" next to a working form just invites people to abandon
+ * the one they're already looking at.
  */
 export default function ContactDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -95,12 +96,6 @@ export default function ContactDrawer({ open, onClose }: { open: boolean; onClos
             manager.
           </p>
           <ContactForm />
-          <p className="mt-6 border-t border-slate-800 pt-4 text-xs text-slate-500">
-            Prefer the full page?{' '}
-            <Link href="/contact" className="font-medium text-brand hover:underline">
-              Contact us
-            </Link>
-          </p>
         </div>
       </div>
     </div>
