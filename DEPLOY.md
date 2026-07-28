@@ -37,11 +37,15 @@ Two workflows, one rule: **pushes never touch production.**
   redeploys ONLY the `frontend-test` / `backend-test` services. Iterate,
   check https://test.petromac.co.nz, share it for feedback.
 - `.github/workflows/deploy-prod.yml` ("Promote to Production") — the
-  go-live button. Run it from GitHub → Actions (or
-  `gh workflow run deploy-prod.yml`), optionally with a specific ref
-  (default: main HEAD). It rebuilds that ref with the PRODUCTION identity
-  (repo variables), tags `:prod` + `:sha-<short>`, and redeploys ONLY the
-  prod services. Nothing reaches www.petromac.co.nz any other way.
+  go-live button, three equivalent triggers: tell Claude "go live";
+  GitHub → Actions → Promote to Production → Run workflow; or
+  `gh workflow run deploy-prod.yml` (add `-f ref=<sha>` to promote a
+  specific commit — also how you roll back). It rebuilds that ref with
+  the PRODUCTION identity (repo variables), tags `:prod` + `:sha-<short>`,
+  and redeploys ONLY the prod services. Nothing reaches
+  www.petromac.co.nz any other way. NOTE: prod containers restart only on
+  promote — server env-file edits need a promote or a manual
+  `docker compose up -d <services>` to take effect.
 
 Because the site identity is baked at build time, test and prod are
 separate image builds of the same commit — the promote rebuilds rather
@@ -108,6 +112,34 @@ web settings only affect the proxied site records:
 The domain cutover from the klaratech.it staging hostname happened
 27 Jul 2026 — history and the incident postmortem live in
 [docs/DNS.md](docs/DNS.md) and TODO.md.
+
+## Server access, logs & debugging
+
+- `ssh klaratech-1` from Rajesh's Mac (jump host + key in the 1Password
+  SSH agent — "communication with agent failed" means unlock 1Password
+  and retry). Tailscale is only part of this admin path; it plays no role
+  in serving the site.
+- Logs: `docker logs petromac-backend --since 1h` (same for the other
+  three containers) — the backend logs every request with status codes,
+  the first stop for "the form doesn't work" reports.
+- Debugging ladder: DNS (`dig @1.1.1.1`) → edge (`curl -I`, look for
+  `server: cloudflare` + CF-RAY) → tunnel (`systemctl status cloudflared`)
+  → containers (`docker ps`) → app logs. Local machines can lie — macOS
+  DNS caches have repeatedly resolved petromac.co.nz to the dead
+  ChemiCloud server; verify via `curl --resolve` against the edge IP
+  before trusting a local repro. Cloudflare zone specifics + DNS incident
+  history: [docs/DNS.md](docs/DNS.md); its API token lives at
+  `/root/.cloudflare-token` on the server (use via SSH).
+
+## Credentials index
+
+| Secret                                                        | Where it lives                                                                   |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Entra client secret (sign-in + Graph mail)                    | 1Password "Petromac Entra Client Secret" + server env files (renew ~Jul 2028)    |
+| `STAFF_SESSION_SECRET`, Turnstile secret                      | server env files (Turnstile secret also retrievable in the Cloudflare dashboard) |
+| Turnstile site key, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_ENV` | GitHub repo Actions **variables**                                                |
+| Deploy SSH key, `DEPLOY_HOST/USER`                            | GitHub Actions **secrets**                                                       |
+| Cloudflare API token (DNS/settings/cache/bots)                | `/root/.cloudflare-token` on klaratech-1                                         |
 
 ## Rollback
 

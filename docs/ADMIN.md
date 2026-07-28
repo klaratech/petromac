@@ -5,7 +5,10 @@ arrives, and how to publish it. Most of these are periodic (operations data,
 flipbooks) or event-driven (a new patent is granted, a team member joins).
 
 Every update follows the same shape: **change the source → rebuild or edit →
-commit → push → CI deploys.** The specifics per content type are below.
+commit → push → check https://test.petromac.co.nz → promote.** A push
+deploys only the TEST site; the live site updates when the "Promote to
+Production" workflow runs (see [DEPLOY.md](../DEPLOY.md)). The
+specifics per content type are below.
 
 For operations data and flipbooks there's a **drop zone**: put the new file
 into the matching `sources/` folder (any filename), run one command, commit

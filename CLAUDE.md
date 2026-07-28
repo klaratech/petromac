@@ -19,7 +19,7 @@ Next.js 16 (App Router) + React 19 + TypeScript website with public site, intran
 Git hooks (husky + lint-staged) gate commits and pushes. `pnpm install` activates them via the `prepare` script.
 
 - **pre-commit** runs `lint-staged` on whatever's staged: prettier on every text file, plus `eslint --fix` on `.ts/.tsx/.js/.jsx/.mjs/.cjs`. Fast — a few seconds. Files that get autofixed are re-staged before the commit lands. Unfixable eslint errors abort the commit.
-- **pre-push** runs `pnpm typecheck && pnpm lint && pnpm build` in that order — cheap checks first, ~30–60 s build last. Catches Next.js build-time issues that tsc/eslint miss (server/client component boundary mistakes, bad dynamic-import paths, route conflicts, production-only codepaths). The deploy build won't fail if pre-push passed.
+- **pre-push** runs `pnpm typecheck && pnpm lint && pnpm test:unit && pnpm build` in that order — cheap checks first, ~30–60 s build last. Catches Next.js build-time issues that tsc/eslint miss (server/client component boundary mistakes, bad dynamic-import paths, route conflicts, production-only codepaths). The deploy build won't fail if pre-push passed.
 
 Escape hatch when you really need it: `git commit --no-verify` or `git push --no-verify`. Use sparingly and only when you've verified separately — bypassing pre-push is how the deploy build catches you.
 
