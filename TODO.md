@@ -95,8 +95,16 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       staff member's delegated Graph token persisted + refreshed server-side.
       App already reserved Mail.Send delegated. Default stays info@.
 
-- [ ] Cloudflare Turnstile on the contact form (org standard; currently
-      honeypot + timing only)
+- [ ] Cloudflare Turnstile on the contact form — CODE DONE (28 Jul):
+      lazy-loaded managed widget (renders only when
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY is baked), backend siteverify check
+      (enforced only when TURNSTILE_SECRET_KEY set; fails open on
+      Cloudflare outages), CSP allows challenges.cloudflare.com,
+      Dockerfile/workflow build-arg wired. REMAINING (Rajesh, ~3 min): 1) Cloudflare dash → Turnstile → Add site (domains petromac.co.nz +
+      petromac.klaratech.it + localhost, mode Managed) → copy both keys; 2) GitHub repo variable NEXT_PUBLIC_TURNSTILE_SITE_KEY=<site key>; 3) TURNSTILE_SECRET_KEY=<secret> into .env-backend on the server
+      (I can do 3 via SSH once the key is in 1Password or pasted to me);
+      then push/redeploy. Until then the form runs exactly as before
+      (honeypot + timing).
 - [ ] PDF-email domain allowlist permits any address in an allowed domain —
       consider explicit recipient allowlist
 - [ ] staffAuth unit tests (highest-logic auth code, thin coverage)

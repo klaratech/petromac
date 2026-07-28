@@ -185,6 +185,34 @@ def is_email_configured() -> bool:
     )
 
 
+def verify_turnstile(token: str, remote_ip: str) -> bool:
+    """Server-side Cloudflare Turnstile check. Enforced only when
+    TURNSTILE_SECRET_KEY is set — dev/staging without keys keep working.
+    Fails CLOSED on missing/invalid tokens, but OPEN on siteverify outages
+    (a Cloudflare API blip shouldn't silence the contact form; honeypot,
+    timing and rate limits still apply)."""
+    secret = os.getenv("TURNSTILE_SECRET_KEY")
+    if not secret:
+        return True
+    if not token:
+        return False
+    data = urllib.parse.urlencode(
+        {"secret": secret, "response": token, "remoteip": remote_ip}
+    ).encode("utf-8")
+    req = urllib.request.Request(
+        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        data=data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+        return bool(payload.get("success"))
+    except Exception:
+        return True
+
+
 def _fetch_graph_token() -> str:
     tenant = os.getenv("ENTRA_TENANT_ID")
     data = urllib.parse.urlencode(
@@ -417,6 +445,14 @@ async def submit_contact(request: Request):
     # Upper bounds: keep outbound emails sane and reject junk payloads.
     if len(name) > 200 or len(email) > 320 or len(message) > 10_000:
         return JSONResponse({"ok": False, "error": "Validation failed"}, status_code=400)
+
+    if not verify_turnstile(
+        str(form.get("cf-turnstile-response", "")), get_client_ip(request.headers)
+    ):
+        return JSONResponse(
+            {"ok": False, "error": "Verification failed. Please try again."},
+            status_code=403,
+        )
 
     allowed, retry_after = check_rate_limit(
         f"contact:{get_client_ip(request.headers)}",

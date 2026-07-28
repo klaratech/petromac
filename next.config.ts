@@ -28,7 +28,9 @@ const isDev = process.env.NODE_ENV === 'development';
 const contentSecurityPolicy = [
   "default-src 'self'",
   // React dev mode needs eval() (source maps, refresh); production never does.
-  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${isDev ? " 'unsafe-eval'" : ''}`,
+  // challenges.cloudflare.com: the Turnstile widget on the contact form
+  // (script + its iframe).
+  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://challenges.cloudflare.com${isDev ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
@@ -37,6 +39,7 @@ const contentSecurityPolicy = [
   "connect-src 'self' blob:",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
+  'frame-src https://challenges.cloudflare.com',
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

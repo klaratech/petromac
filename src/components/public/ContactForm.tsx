@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, FormEvent } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
+import TurnstileWidget from '@/components/public/TurnstileWidget';
 
 /**
  * Contact form — form only, dark theme. The page chrome (heading, intro,
@@ -18,6 +19,8 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const formStartTimeRef = useRef(0);
+  // Turnstile tokens are single-use — reset after every submit attempt.
+  const turnstileResetRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     formStartTimeRef.current = Date.now();
@@ -53,6 +56,7 @@ export default function ContactForm() {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
+      turnstileResetRef.current?.();
     }
   };
 
@@ -132,6 +136,9 @@ export default function ContactForm() {
       <p className="text-xs text-slate-500">
         <span className="text-brand">*</span> required
       </p>
+
+      {/* Human verification (renders only when a Turnstile site key is set) */}
+      <TurnstileWidget resetRef={turnstileResetRef} />
 
       {/* Submit */}
       <div className="flex justify-end">
