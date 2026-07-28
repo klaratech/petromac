@@ -98,7 +98,18 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       panel doesn't mislead anyone again. Open verification questions
       (also in docs/DNS.md): office scanners' SMTP server; SPF IPs
       172.232.206.251 + 161.65.142.140; Skype/Lync records still needed?
-- [ ] Re-prime kiosk tablets after the next deploy (SW cache changed)
+- [ ] Re-prime kiosk tablets after the next deploy (SW cache changed) —
+      AND move them to the production domain while at it: set the launch
+      URL to https://www.petromac.co.nz/intranet/kiosk?sd=1, sign in,
+      re-prime, verify offline.
+- [ ] AFTER the tablets are moved: retire petromac.klaratech.it (it
+      serves the same production build — staging role is over; kiosk
+      tablets are the only dependency). Sweep in one sitting:
+      Cloudflare DNS record (klaratech.it zone) + the two tunnel
+      ingress rules + ALLOWED_ORIGINS in both server env files (Claude,
+      via SSH/API); Entra redirect URI + Turnstile hostname (Rajesh,
+      dashboard); repo references in .env.example/docs (Claude). No
+      redirect planned — internal URL, bookmarks just die.
 
 ## Security / hardening
 
