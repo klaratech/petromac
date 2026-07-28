@@ -27,16 +27,26 @@ export default function ContactForm() {
   // Turnstile runs its challenge ON SUBMIT and hands back a fresh single-use
   // token (see TurnstileWidget). Nothing to gate before the user acts.
   const getTurnstileToken = useRef<GetTurnstileToken | null>(null);
-  // Gate Send until the widget issues a token, so a fast submit can't race
-  // the lazy-loaded verification (the backend would 403 it). Fails OPEN
-  // after a grace period: if the script is blocked or slow, the button
-  // enables anyway and the backend stays the judge.
   useEffect(() => {
     formStartTimeRef.current = Date.now();
   }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Validated here rather than with the textarea's minLength attribute: the
+    // browser's native message for that is "Please lengthen this text to 10
+    // characters or more", which pre-empted our own copy and is exactly the
+    // robotic phrasing we were trying to avoid. Same wording as the backend's
+    // check, so a visitor sees one consistent sentence either way.
+    if (formData.message.trim().length < 10) {
+      setServerError(
+        'Could you tell us a little more? That helps us point you to the right person.'
+      );
+      setSubmitStatus('error');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
@@ -145,7 +155,6 @@ export default function ContactForm() {
           name="message"
           required
           aria-required="true"
-          minLength={10}
           maxLength={5000}
           rows={6}
           value={formData.message}
