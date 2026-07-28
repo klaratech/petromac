@@ -29,6 +29,9 @@ route through Rajesh.
 
 - **Website**: apex + www → CNAME `fcb4d36c-….cfargotunnel.com`,
   proxied. Cloudflare Tunnel to klaratech-1. Do not touch.
+- **Test site**: `test` → same tunnel CNAME, proxied (added 28 Jul 2026).
+  Serves the staging build (containers :3016/:8013) — public for user
+  feedback but noindex by build identity. See DEPLOY.md.
 - **Athena**: `athena` A → 52.64.209.109 (AWS Sydney). Separate app,
   managed by the other admin. (Its LE cert renews on that box.)
 - **ChemiCloud box** (172.232.197.9): `mail`, `webmail`, `cpanel`,
@@ -51,6 +54,10 @@ route through Rajesh.
 - **Skype for Business (legacy)**: `lyncdiscover`, `sip` CNAMEs +
   `_sip._tls`, `_sipfederationtls._tcp` SRVs — cleanup candidates once
   confirmed unused.
+
+Every record in the zone carries a descriptive Cloudflare comment
+(added 28 Jul 2026) — what it is and, for the dangerous ones, why not to
+delete it. Keep comments current when records change.
 
 ## Open verification questions (before any cleanup)
 
