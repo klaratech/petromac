@@ -122,9 +122,12 @@ export function EmailPdfButton({
       <button
         onClick={handleReveal}
         disabled={revealed || disabled}
-        // emerald-700, not -600: white on emerald-600 is 3.65:1, under the
-        // 4.5:1 AA floor for 14px text (axe flagged it on /case-studies).
-        className="inline-flex items-center gap-2 whitespace-nowrap px-6 py-3 rounded-full font-semibold text-sm text-white bg-emerald-700 hover:bg-emerald-800 shadow-lg shadow-emerald-900/20 ring-1 ring-emerald-900/10 transition-all hover:-translate-y-px hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2 focus:ring-offset-slate-50 disabled:bg-slate-300 disabled:hover:bg-slate-300 disabled:hover:translate-y-0 disabled:hover:shadow-lg disabled:cursor-not-allowed"
+        // Same secondary treatment as the catalog's Email action: brand
+        // outline beside a solid-brand Download. The old emerald pill was a
+        // flipbook-era one-off — arbitrary colour, promotional shadow and a
+        // hover lift nothing else on the site does, and white-on-emerald-600
+        // failed AA at 3.65:1 into the bargain.
+        className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg border-2 border-brand/30 bg-white px-4 py-2 text-sm font-semibold text-brand transition-colors hover:border-brand hover:bg-brand/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:border-slate-200 disabled:bg-white disabled:text-slate-300 disabled:cursor-not-allowed"
       >
         <svg
           className="h-4 w-4"
@@ -157,7 +160,7 @@ export function EmailPdfButton({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoFocus
-                className="w-full px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-400"
+                className="w-full px-3 py-1 text-sm border border-slate-300 rounded-md focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 placeholder:text-slate-400"
                 placeholder="name@example.com"
                 aria-label="Recipient"
               />
@@ -165,7 +168,7 @@ export function EmailPdfButton({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="h-8 w-8 flex items-center justify-center bg-emerald-700 text-white rounded-md hover:bg-emerald-800 transition-colors disabled:bg-emerald-300"
+                className="h-8 w-8 flex items-center justify-center bg-brand text-white rounded-md hover:bg-brand/90 transition-colors disabled:bg-slate-300"
                 title="Send"
                 aria-label="Send"
               >

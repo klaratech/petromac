@@ -98,30 +98,6 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       panel doesn't mislead anyone again. Open verification questions
       (also in docs/DNS.md): office scanners' SMTP server; SPF IPs
       172.232.206.251 + 161.65.142.140; Skype/Lync records still needed?
-- [ ] Re-prime kiosk tablets onto the PRODUCTION origin — iPad-side work
-      only, nothing left in the codebase (verified 28 Jul). Per tablet: set
-      the launch URL to https://www.petromac.co.nz/intranet/kiosk?sd=1, sign
-      in with the staff account, hit the splash's bottom-right "Prime
-      offline" pill, then airplane-mode and walk both lanes to confirm.
-      Keep the `?sd=1` — it skips the HD probe, so a prime stays ~50 MB of SD
-      video instead of pulling the 1080p set.
-      WHY (the old note said "SW cache changed", which was misleading): the
-      driver is the ORIGIN move, not a cache version. SW caches are
-      origin-scoped and the tablets were primed against the retired
-      petromac.klaratech.it, so their caches aren't stale — they're
-      unreachable. A routine code deploy needs no re-prime at all: kiosk
-      navigations are `networkFirst` (fresh HTML whenever online),
-      `/_next/static/` is content-hashed (new URLs, never stale hits), and
-      `public/data/kiosk-offline-assets.json` lists only stable paths, so it
-      doesn't rot between builds.
-      SW `VERSION` bumped v18 → v19 on 28 Jul deliberately BEFORE this
-      re-prime: the tablets have no cache on the production origin, so the
-      bump costs them nothing, and it clears the dead `/_next/static/`
-      entries that seven deploys in one day left competing for
-      `MAX_STATIC_ENTRIES` (80). Bumping after they primed would have forced
-      a second full download. See docs/KIOSK.md.
-      Turnstile does NOT affect the kiosk: with staff signed in the widget
-      never mounts, since the session cookie is the stronger check.
 - [x] petromac.klaratech.it RETIRED (28 Jul 2026): repo scrubbed
       (docs/.env.example → www.petromac.co.nz; siteUrl.ts default →
       localhost); Entra redirect URI + Turnstile hostname removed
@@ -133,9 +109,8 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       www 200 / apex 301 / Turnstile enforcing / old hostname dead /
       sibling klaratech apps unaffected. Tech Standards vault updated
       (Infrastructure Inventory, Domains & Registrars, Service
-      Providers). REMINDER: kiosk tablets must be re-primed on
-      https://www.petromac.co.nz/intranet/kiosk?sd=1 — the old primed
-      origin no longer resolves (see re-prime item above).
+      Providers). Kiosk consequence (tablets were primed against the retired
+      hostname) is tracked in the Kiosk review section, not here.
 
 - [x] Test/staging environment LIVE (28 Jul): https://test.petromac.co.nz
       — public but noindex (staging identity build). Two stacks on
@@ -304,18 +279,6 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       the pre-push hook — unit tests previously existed but NEVER ran
       anywhere (one had silently drifted from the implementation).
 
-## Content & assets (designer-dependent)
-
-- [ ] Helix product image (kiosk surfaces reuse the focus.png logo; see
-      ASSET_MANIFEST §1.4)
-- [ ] Case Studies images: `helix-cbl-setup.png`, `rocker-logs-1.png`
-- [ ] OH lane mechanism videos + case-study log images (Formation Testing /
-      High Deviation / PathFinder)
-- [ ] Corner-badge tool silhouettes (Helix/Rocker badges reuse focus.png)
-- [ ] `kiosk-hd/WirelineExpress-subtitled.mp4` 1080p master
-- [ ] Thor product video (card commented out until ready); Rocker GLB model
-- [ ] Rocker mechanism force-section schematic (interim crop in place)
-
 ## HTML catalog (live at /catalog since Jul 2026)
 
 The HTML catalog built from the IDML source replaced the pdf.js viewer;
@@ -330,6 +293,55 @@ cache rule. Remaining:
       SWHF configuration figures currently filed under AHFC)
 - [ ] Generate the download/email PDF from `catalog.json` via an HTML print
       template (≤4 MB, tagged text, TOC) instead of shipping the print PDF
+
+## Kiosk review (full pass) — OPEN, keep adding here
+
+Standing home for ALL kiosk work. There is a lot to do on the trade-show
+surfaces, so new kiosk findings go in this list rather than getting scattered
+across the go-live checklist, backlog and content sections. Nothing here is
+scheduled; it is a review backlog to work through as a block.
+
+### Code / behaviour
+
+- [ ] Phase 2 of the flipbook retirement — get the kiosk off
+      `SuccessStoriesFlipbook`. Two consumers: the thin
+      `/intranet/kiosk/successstories` wrapper, and the real work,
+      `LogsScreen.tsx`'s CH-lane **Case Studies** takeover with per-product
+      preset filters (tap Helix/Rocker → that product's stories). Rebuild on
+      the case-studies data, reusing `src/features/case-studies/filters.ts`
+      (already pure + unit-tested for exactly this). Detail in the
+      flipbook-retirement section below.
+- [ ] Offline prime budget — CHECK BEFORE building phase 2. The flipbook is 1
+      route + 52 images; per-story case-studies routes would be 46, and the
+      manifest holds only ~11 route entries today against
+      `MAX_STATIC_ENTRIES = 80`, shared with the JS chunks. Either raise the
+      cap or give the kiosk ONE filtered list view instead of 46 routes — the
+      single view is probably better kiosk UX regardless, since nobody
+      deep-links on a tablet mid-conversation.
+- [ ] CH lane "Other" experience — still a Coming-soon placeholder.
+- [ ] Move the tablets to the production origin: launch URL
+      `https://www.petromac.co.nz/intranet/kiosk?sd=1`, sign in, prime, verify
+      offline. Keep the `?sd=1` (skips the HD probe, so a prime stays ~50 MB of
+      SD video). Driver is the ORIGIN move, not a cache version — SW caches are
+      origin-scoped and the tablets were primed against the retired
+      petromac.klaratech.it, so those caches are unreachable rather than stale.
+      A routine code deploy needs neither a re-prime nor a version bump:
+      navigations are `networkFirst`, `/_next/static/` is content-hashed, and
+      `kiosk-offline-assets.json` lists only stable paths. SW `VERSION` was
+      bumped v18 → v19 on 28 Jul deliberately ahead of this, so the first prime
+      lands on the final version. See docs/KIOSK.md.
+
+### Content / assets (designer-dependent)
+
+- [ ] Helix product image — kiosk surfaces currently reuse the focus.png logo
+      (see ASSET_MANIFEST §1.4)
+- [ ] Corner-badge tool silhouettes — Helix/Rocker badges reuse focus.png
+- [ ] Case Studies images: `helix-cbl-setup.png`, `rocker-logs-1.png`
+- [ ] OH lane mechanism videos + case-study log images (Formation Testing /
+      High Deviation / PathFinder)
+- [ ] `kiosk-hd/WirelineExpress-subtitled.mp4` 1080p master
+- [ ] Thor product video (card commented out until ready); Rocker GLB model
+- [ ] Rocker mechanism force-section schematic (interim crop in place)
 
 ## Flipbook retirement (phased, Jul 2026)
 
@@ -358,17 +370,9 @@ visuals, so `source.pdf` + `pnpm run data` stay.
       Fixed in passing: white-on-emerald-600 in `EmailPdfButton` was 3.65:1,
       under the 4.5:1 AA floor — now emerald-700, so a11y is 100 (this was
       pre-existing on the flipbook page, just newly visible).
-- [ ] **Phase 2 — kiosk off the flipbook.** Two consumers left:
-      `/intranet/kiosk/successstories`, and the deeper one,
-      `LogsScreen.tsx`'s CH-lane **Case Studies** takeover, which embeds
-      `SuccessStoriesFlipbook` with per-product preset filters (tap Helix or
-      Rocker → that product's stories). That's a core trade-show demo path, so
-      it needs rebuilding on the case-studies data, reusing `filters.ts`.
-      CHECK BEFORE BUILDING: offline priming budget. The flipbook is 1 route +
-      52 images; case-studies would be 46 routes + images, and the manifest
-      has only ~11 route entries today against `MAX_STATIC_ENTRIES = 80`,
-      shared with JS chunks — likely needs raising or the LRU will evict
-      things a tablet needs offline.
+- [ ] **Phase 2 — kiosk off the flipbook.** Tracked in the **Kiosk review**
+      section above (with the prime-budget check it depends on), since it's
+      kiosk work and all of that now lives in one place.
 - [ ] **Phase 3 — delete the viewer.** Only after phase 2: `Flipbook.tsx`,
       `SuccessStoriesFlipbook.tsx`, `FlipbookErrorBoundary.tsx`,
       `SuccessStoriesFilters` and the success-stories feature services. KEEP
@@ -433,7 +437,6 @@ case-studies.json` (hand-editable — WordPress is gone; raw HTML
 - [ ] Athena terminal (/simulation) shows illustrative values — confirm
       `MRIL-XL`, `--taxis 4`, and "est. rig time saved: 8.2 hrs" with the
       product team or swap in real simulation numbers
-- [ ] Kiosk CH lane "Other" experience (Coming-soon placeholder; build last)
 - [ ] Longer term: job history off Excel into a database-backed source
 - [x] Stale automation retired (28 Jul): `data-build.yaml` workflow
       deleted (weekly scheduled no-op tied to the pre-drop-zone xlsx-URL
