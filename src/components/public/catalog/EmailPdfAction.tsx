@@ -33,14 +33,18 @@ export default function EmailPdfAction() {
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
   const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
+  // Bumped on every widget reset so the grace window RE-ARMS — otherwise it
+  // latched true 12 s after opening and the next send went out tokenless.
+  const [turnstileArm, setTurnstileArm] = useState(0);
 
   // Same 12 s fail-open grace as the contact form: if the script is blocked or
   // slow the button stops being held hostage, and the backend still enforces.
   useEffect(() => {
     if (!turnstileConfigured || !open) return;
+    setTurnstileGraceOver(false);
     const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
     return () => window.clearTimeout(t);
-  }, [open]);
+  }, [open, turnstileArm]);
 
   const sender = canSendAsStaff && user ? user.email : 'info@petromac.co.nz';
   const holdForVerification = needsTurnstile && !turnstileVerified && !turnstileGraceOver;
@@ -81,6 +85,7 @@ export default function EmailPdfAction() {
         // Tokens are single-use: clear ours and re-arm the widget either way.
         turnstileResetRef.current?.();
         setTurnstileToken('');
+        setTurnstileArm((n) => n + 1);
         if (response.status === 403) {
           setErrorText('Verification didn’t complete. Please try again.');
           throw new Error('turnstile rejected');

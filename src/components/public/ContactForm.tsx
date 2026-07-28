@@ -32,12 +32,18 @@ export default function ContactForm() {
   // enables anyway and the backend stays the judge.
   const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
   const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
+  // Bumped on every widget reset so the grace window RE-ARMS. Without this the
+  // flag latched true 12 s after mount and never cleared, so the second submit
+  // onward sailed through with no token and the backend 403'd it
+  // ("verification didn't complete") — the gate only ever worked once.
+  const [turnstileArm, setTurnstileArm] = useState(0);
 
   useEffect(() => {
     if (!turnstileConfigured) return;
+    setTurnstileGraceOver(false);
     const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [turnstileArm]);
 
   useEffect(() => {
     formStartTimeRef.current = Date.now();
@@ -80,6 +86,7 @@ export default function ContactForm() {
     } finally {
       setIsSubmitting(false);
       turnstileResetRef.current?.();
+      setTurnstileArm((n) => n + 1);
     }
   };
 

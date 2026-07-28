@@ -46,15 +46,19 @@ export function EmailPdfButton({
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
   const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
+  // Bumped on every widget reset so the grace window RE-ARMS — otherwise it
+  // latched true 12 s after reveal and the next send went out tokenless.
+  const [turnstileArm, setTurnstileArm] = useState(0);
   const holdForVerification = needsTurnstile && !turnstileVerified && !turnstileGraceOver;
 
   // 12 s fail-open grace, same as the contact form — a blocked/slow script
   // must not permanently disable sending; the backend still enforces.
   useEffect(() => {
     if (!turnstileConfigured || !revealed) return;
+    setTurnstileGraceOver(false);
     const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
     return () => window.clearTimeout(t);
-  }, [revealed]);
+  }, [revealed, turnstileArm]);
 
   const handleReveal = () => {
     if (disabled) return;
@@ -102,6 +106,7 @@ export function EmailPdfButton({
         // Tokens are single-use: drop ours and re-arm the widget either way.
         turnstileResetRef.current?.();
         setTurnstileToken('');
+        setTurnstileArm((n) => n + 1);
         if (response.status === 403) {
           errorText = 'Verification didn’t complete. Please try again.';
           throw new Error('turnstile rejected');
