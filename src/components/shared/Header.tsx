@@ -192,40 +192,46 @@ export default function Header() {
               Intranet
             </Link>
 
-            {/* Email — opens the contact drawer so the visitor keeps their place */}
-            <button
-              type="button"
-              onClick={() => setContactOpen(true)}
-              className="flex items-center justify-center w-9 h-9 rounded-full text-slate-300 hover:bg-white/10 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950"
-              aria-label="Contact us"
-              aria-haspopup="dialog"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
+            {/* Icons get their own tighter group: the nav's gap-7 is tuned for
+                text links and left a visible void between two 36px circular
+                buttons. gap-1 clusters them as a pair while the nav gap still
+                separates them from the links. */}
+            <div className="flex items-center gap-1">
+              {/* Email — opens the contact drawer so the visitor keeps their place */}
+              <button
+                type="button"
+                onClick={() => setContactOpen(true)}
+                className="flex items-center justify-center w-9 h-9 rounded-full text-slate-300 hover:bg-white/10 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950"
+                aria-label="Contact us"
+                aria-haspopup="dialog"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2"
+                  />
+                </svg>
+              </button>
 
-            {/* LinkedIn — circular hover background */}
-            <a
-              href="https://www.linkedin.com/company/petromac-ltd/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-9 h-9 rounded-full text-slate-300 hover:bg-white/10 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950"
-              aria-label="Visit Petromac on LinkedIn (opens in new tab)"
-            >
-              <LinkedInIcon />
-            </a>
+              {/* LinkedIn — circular hover background */}
+              <a
+                href="https://www.linkedin.com/company/petromac-ltd/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-9 h-9 rounded-full text-slate-300 hover:bg-white/10 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950"
+                aria-label="Visit Petromac on LinkedIn (opens in new tab)"
+              >
+                <LinkedInIcon />
+              </a>
+            </div>
           </nav>
 
           {/* Mobile menu button (below lg) */}
