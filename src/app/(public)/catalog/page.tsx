@@ -46,38 +46,44 @@ export default function CatalogOverviewPage() {
           actions drop directly beneath the intro, still above the finder. */}
       <section className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-            <div className="lg:max-w-3xl">
-              <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 mb-3">
-                Product Catalog
-              </h1>
-              <p className="text-slate-600">{catalog.about.intro[0]}</p>
-            </div>
-            <CatalogPdfActions />
+          <div className="max-w-3xl">
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 mb-3">
+              Product Catalog
+            </h1>
+            <p className="text-slate-600">{catalog.about.intro[0]}</p>
           </div>
 
-          {/* One panel, one job: find a product. Search is the most flexible
-              way in, so it leads; the size/purpose filters sit beneath it.
+          {/* Two balanced columns rather than a stacked label-over-buttons
+              block in the header, which read oddly: the finder gives up some
+              width and the PDF card sits beside it. On mobile the PDF card
+              comes FIRST (order-1) so the actions stay above the fold, then
+              the columns swap at lg.
+
+              The finder panel is one tool, one job. Search is the most
+              flexible way in, so it leads; size/purpose filters sit beneath.
               DeviceFinder stays a client island — the finder index reaches the
               browser only as serialized props, so no SKU names land in the
               page markup, and the family cards below remain the no-JS path. */}
-          <section
-            aria-labelledby="find-a-product"
-            className="mt-8 rounded-2xl border border-slate-200 bg-white shadow-card p-5 md:p-6"
-          >
-            <h2 id="find-a-product" className="font-heading text-base font-bold text-slate-900">
-              Find a product
-            </h2>
-            <p className="mt-0.5 text-xs text-slate-500">
-              Search by product or model, or narrow the catalogue by size and purpose.
-            </p>
-            <div className="mt-4 lg:max-w-2xl">
-              <CatalogSearch entries={searchEntries} />
-            </div>
-            <div className="mt-5 border-t border-slate-100 pt-5">
-              <DeviceFinder entries={buildFinderIndex()} />
-            </div>
-          </section>
+          <div className="mt-8 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+            <CatalogPdfActions />
+            <section
+              aria-labelledby="find-a-product"
+              className="order-2 rounded-2xl border border-slate-200 bg-white shadow-card p-5 md:p-6 lg:order-1"
+            >
+              <h2 id="find-a-product" className="font-heading text-base font-bold text-slate-900">
+                Find a product
+              </h2>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Search by product or model, or narrow the catalog by size and purpose.
+              </p>
+              <div className="mt-4">
+                <CatalogSearch entries={searchEntries} />
+              </div>
+              <div className="mt-5 border-t border-slate-100 pt-5">
+                <DeviceFinder entries={buildFinderIndex()} />
+              </div>
+            </section>
+          </div>
         </div>
       </section>
 
@@ -123,7 +129,7 @@ export default function CatalogOverviewPage() {
               download
               className="mt-2 inline-block text-xs font-medium text-slate-600 underline decoration-slate-300 underline-offset-2 hover:text-brand hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
             >
-              Download the complete catalogue PDF
+              Download the complete catalog PDF
             </a>
           </div>
           <Link
@@ -139,21 +145,27 @@ export default function CatalogOverviewPage() {
 }
 
 /**
- * Slim action row, not a promotional card: Download is primary, Email is the
- * secondary action beside it. Sits to the right of the intro on desktop and
- * beneath it on mobile, so it never squeezes the introductory paragraph.
+ * Narrow companion card to the finder panel — restrained, not promotional.
+ * Download is the primary action, Email the secondary one beneath it. Sits in
+ * the right column at lg and above the finder on mobile.
  */
 function CatalogPdfActions() {
   return (
-    <div className="shrink-0 lg:text-right">
+    <aside
+      aria-label="Complete catalog PDF"
+      className="order-1 rounded-2xl border border-slate-200 bg-slate-50 p-5 lg:order-2"
+    >
       <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-        Complete catalogue PDF
+        Complete catalog PDF
       </p>
-      <div className="mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 lg:justify-end">
+      <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+        Full specifications for every model — for offline use and sharing.
+      </p>
+      <div className="mt-3 space-y-2">
         <a
           href={CATALOG_PDF_HREF}
           download
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
         >
           <svg
             className="w-4 h-4"
@@ -171,11 +183,9 @@ function CatalogPdfActions() {
           </svg>
           Download PDF
         </a>
-        <div className="sm:w-52">
-          <EmailPdfAction />
-        </div>
+        <EmailPdfAction />
       </div>
-    </div>
+    </aside>
   );
 }
 

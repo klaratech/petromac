@@ -466,7 +466,7 @@ async def submit_contact(request: Request):
         )
     if len(message) < 10:
         return JSONResponse(
-            {"ok": False, "error": "Please write a few more words — messages need at least 10 characters."},
+            {"ok": False, "error": "Could you tell us a little more? That helps us point you to the right person."},
             status_code=400,
         )
     # Upper bounds: keep outbound emails sane and reject junk payloads.
