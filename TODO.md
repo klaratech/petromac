@@ -205,7 +205,27 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       complete" message on 403, matching the contact form.
       Verified: allowlist exercised across wildcard / narrow / unset (narrow
       reproduces the original bug), and the Turnstile gate confirmed to fail
-      closed with a secret set and open with none.
+      closed with a secret set and open with none. Live end-to-end confirmed
+      by Rajesh on prod — both info@ and signed-in-as-staff sends work.
+      DEPLOY ORDERING LESSON: the env value and the code must land together.
+      Rajesh ran the test + prod env commands back-to-back before promoting,
+      which left prod on OLD code reading `ALLOWED_EMAIL_DOMAINS=*` — the old
+      `is_recipient_allowed()` has no wildcard branch, so it treated `*` as a
+      literal domain and rejected EVERY address (petromac ones included).
+      Contact form was unaffected (`is_recipient_allowed` is called from
+      `send_pdf` only). Fixed by promoting. Next time make the code accept
+      BOTH old and new config shapes in the same deploy so ordering cannot
+      matter, rather than relying on a documented sequence.
+      Follow-up (28 Jul): widget made INVISIBLE on the PDF-email surfaces —
+      Rajesh reported it looked out of place, which it was: hardcoded
+      `theme: 'dark'` + `appearance: 'always'` on WHITE cards. TurnstileWidget
+      now takes `theme` / `appearance` / `className` props; the two PDF
+      widgets pass `theme="light"` + `appearance="interaction-only"` (renders
+      nothing unless Cloudflare actually demands interaction, so a challenged
+      visitor still has a way through) + `empty:hidden` so an invisible widget
+      contributes no layout. Defaults stay `dark`/`always`, so the CONTACT
+      form is deliberately unchanged — its dark panel already matches, and it
+      is the validated primary lead path. Switch it only on purpose.
 - [x] staffAuth unit tests DONE (28 Jul): 19 tests — session cookie
       round-trip/expiry/tamper/wrong-secret, OAuth state TTL + nonce,
       timing-safe compare, Graph-token skew, config detection, cookie

@@ -56,6 +56,9 @@ export default function TurnstileWidget({
   resetRef,
   onVerified,
   onToken,
+  theme = 'dark',
+  appearance = 'always',
+  className,
 }: {
   resetRef?: React.MutableRefObject<(() => void) | null>;
   /** Called with true when a token is issued, false when it expires/errors. */
@@ -67,6 +70,25 @@ export default function TurnstileWidget({
    * hidden `cf-turnstile-response` input Turnstile injects for free.
    */
   onToken?: ((_token: string) => void) | undefined;
+  /**
+   * Match the surrounding surface. The contact form is on a dark panel
+   * (`bg-slate-800/60`), hence the default; the PDF-email widgets sit on white
+   * and pass 'light' — a dark widget on white was visibly out of place.
+   */
+  theme?: 'dark' | 'light' | 'auto';
+  /**
+   * 'interaction-only' renders NOTHING for visitors who pass silently, and
+   * draws the widget only if Cloudflare actually demands interaction — so
+   * verification is invisible in the normal case without leaving a challenged
+   * visitor stuck with no way through. The PDF-email widgets use it.
+   * Default stays 'always' so the contact form keeps its established, visible
+   * widget; switch that deliberately, not as a side effect of this prop.
+   */
+  appearance?: 'always' | 'interaction-only' | 'execute';
+  /** Wrapper classes — spacing lives with the caller, since an invisible
+   *  widget must not contribute layout. `empty:hidden` collapses it before
+   *  Turnstile injects anything. */
+  className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -82,8 +104,8 @@ export default function TurnstileWidget({
         if (cancelled || !window.turnstile || container.childElementCount > 0) return;
         widgetId = window.turnstile.render(container, {
           sitekey: SITE_KEY,
-          theme: 'dark',
-          appearance: 'always',
+          theme,
+          appearance,
           callback: (token: string) => {
             onVerified?.(true);
             onToken?.(token);
@@ -125,10 +147,12 @@ export default function TurnstileWidget({
       io.disconnect();
       if (resetRef) resetRef.current = null;
     };
-  }, [resetRef, onVerified, onToken]);
+  }, [resetRef, onVerified, onToken, theme, appearance]);
 
   if (!SITE_KEY) return null;
   // role="group" is required for aria-label to be valid here — a bare div is
   // a generic element, on which ARIA prohibits naming (axe:aria-prohibited-attr).
-  return <div ref={containerRef} role="group" aria-label="Human verification" />;
+  return (
+    <div ref={containerRef} role="group" aria-label="Human verification" className={className} />
+  );
 }

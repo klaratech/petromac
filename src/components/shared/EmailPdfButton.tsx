@@ -230,13 +230,17 @@ export function EmailPdfButton({
               the token is read via onToken and sent in the JSON body, so it
               does not need the hidden FormData input. */}
           {needsTurnstile && (
-            <div className="mt-6 w-80">
-              <TurnstileWidget
-                resetRef={turnstileResetRef}
-                onVerified={setTurnstileVerified}
-                onToken={setTurnstileToken}
-              />
-            </div>
+            <TurnstileWidget
+              resetRef={turnstileResetRef}
+              onVerified={setTurnstileVerified}
+              onToken={setTurnstileToken}
+              theme="light"
+              appearance="interaction-only"
+              // Spacing lives here, not in a wrapper: an invisible widget must
+              // not leave a gap under the slider. empty:hidden collapses it
+              // until Turnstile actually injects a challenge.
+              className="mt-2 w-80 empty:hidden"
+            />
           )}
           {message && (
             <div

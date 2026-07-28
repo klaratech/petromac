@@ -179,12 +179,17 @@ export default function EmailPdfAction() {
         </button>
       </div>
       {/* Human verification — only on the public info@ path, and only when a
-          site key is configured (so dev/kiosk-staff flows are untouched). */}
+          site key is configured (so dev/kiosk-staff flows are untouched).
+          Invisible unless Cloudflare demands interaction; light theme + a
+          collapsing wrapper so it adds no visual weight to the white card. */}
       {needsTurnstile && (
         <TurnstileWidget
           resetRef={turnstileResetRef}
           onVerified={setTurnstileVerified}
           onToken={setTurnstileToken}
+          theme="light"
+          appearance="interaction-only"
+          className="empty:hidden"
         />
       )}
 
