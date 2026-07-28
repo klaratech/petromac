@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import ContactDrawer from '@/components/shared/ContactDrawer';
 
 const NAV_ITEMS = [
   { name: 'Home', href: '/' },
@@ -41,6 +42,7 @@ function LinkedInIcon({ className = 'w-5 h-5' }: { className?: string }) {
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -190,6 +192,30 @@ export default function Header() {
               Intranet
             </Link>
 
+            {/* Email — opens the contact drawer so the visitor keeps their place */}
+            <button
+              type="button"
+              onClick={() => setContactOpen(true)}
+              className="flex items-center justify-center w-9 h-9 rounded-full text-slate-300 hover:bg-white/10 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950"
+              aria-label="Contact us"
+              aria-haspopup="dialog"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2"
+                />
+              </svg>
+            </button>
+
             {/* LinkedIn — circular hover background */}
             <a
               href="https://www.linkedin.com/company/petromac-ltd/"
@@ -318,6 +344,33 @@ export default function Header() {
               Intranet
             </Link>
 
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setContactOpen(true);
+              }}
+              className="px-3 py-3 rounded-lg text-base font-medium text-slate-300 hover:text-white hover:bg-white/5 flex items-center gap-3 transition-colors text-left"
+              aria-label="Contact us"
+              aria-haspopup="dialog"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2"
+                />
+              </svg>
+              <span>Contact us</span>
+            </button>
+
             <a
               href="https://www.linkedin.com/company/petromac-ltd/"
               target="_blank"
@@ -331,6 +384,10 @@ export default function Header() {
           </nav>
         </div>
       )}
+
+      {/* Mounts only while open — ContactForm carries the Turnstile widget, and
+          Turnstile cannot run a challenge inside a hidden container. */}
+      <ContactDrawer open={contactOpen} onClose={() => setContactOpen(false)} />
     </header>
   );
 }

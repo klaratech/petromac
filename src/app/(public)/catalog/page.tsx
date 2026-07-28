@@ -109,11 +109,13 @@ export default function CatalogOverviewPage() {
       {/* Footer strip — supporting information, deliberately understated. The
           patent notice is legal/trust context, not part of the browsing
           journey, so it stays here rather than competing with the finder up
-          top. The contact action is the prominent thing in this strip; the PDF
-          gets a quiet text link so someone who has read to the bottom doesn't
-          have to scroll back up for it. */}
+          top. The PDF gets a quiet text link so someone who has read to the
+          bottom doesn't have to scroll back up for it. The old "Contact our
+          regional managers" button was removed Jul 2026 — contact now lives in
+          the header's email icon, which opens a drawer without making the
+          visitor leave the page. */}
       <section className="bg-slate-50 border-t border-slate-100 mt-8">
-        <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+        <div className="max-w-7xl mx-auto px-6 py-10">
           <div className="max-w-2xl">
             <p className="text-xs leading-relaxed text-slate-500">
               {catalog.about.patents}{' '}
@@ -132,12 +134,6 @@ export default function CatalogOverviewPage() {
               Download the complete catalog (PDF)
             </a>
           </div>
-          <Link
-            href="/contact"
-            className="inline-flex items-center rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand/90 transition-colors whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
-          >
-            Contact our regional managers
-          </Link>
         </div>
       </section>
     </div>

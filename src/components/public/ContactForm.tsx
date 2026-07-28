@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, FormEvent } from 'react';
+import { useEffect, useId, useRef, useState, FormEvent } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
 import TurnstileWidget, { type GetTurnstileToken } from '@/components/public/TurnstileWidget';
 
@@ -24,6 +24,13 @@ export default function ContactForm() {
   // short") — shown instead of the generic error when available.
   const [serverError, setServerError] = useState<string | null>(null);
   const formStartTimeRef = useRef(0);
+  // Unique per instance: the header's contact drawer can render a SECOND
+  // ContactForm on a page that already has one (/ and /contact both do), and
+  // duplicate ids break label-to-field association.
+  const uid = useId();
+  const nameId = `name-${uid}`;
+  const emailId = `email-${uid}`;
+  const messageId = `message-${uid}`;
   // Turnstile runs its challenge ON SUBMIT and hands back a fresh single-use
   // token (see TurnstileWidget). Nothing to gate before the user acts.
   const getTurnstileToken = useRef<GetTurnstileToken | null>(null);
@@ -111,12 +118,12 @@ export default function ContactForm() {
       {/* Full name + email — side by side on wider screens */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label htmlFor="name" className={labelClass}>
+          <label htmlFor={nameId} className={labelClass}>
             Name
           </label>
           <input
             type="text"
-            id="name"
+            id={nameId}
             name="name"
             maxLength={200}
             value={formData.name}
@@ -127,12 +134,12 @@ export default function ContactForm() {
         </div>
 
         <div>
-          <label htmlFor="email" className={labelClass}>
+          <label htmlFor={emailId} className={labelClass}>
             Email <span className="text-brand">*</span>
           </label>
           <input
             type="email"
-            id="email"
+            id={emailId}
             name="email"
             required
             aria-required="true"
@@ -147,11 +154,11 @@ export default function ContactForm() {
 
       {/* Message */}
       <div>
-        <label htmlFor="message" className={labelClass}>
+        <label htmlFor={messageId} className={labelClass}>
           Message <span className="text-brand">*</span>
         </label>
         <textarea
-          id="message"
+          id={messageId}
           name="message"
           required
           aria-required="true"
