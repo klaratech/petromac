@@ -4,20 +4,48 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   filterFinderEntries,
+  parseInchValues,
   PURPOSE_LABELS,
   type FinderEntry,
   type Purpose,
 } from '@/features/catalog/content/enrich';
 
-/** Common hole/casing sizes as one-tap presets. */
-const PRESETS: { label: string; value: number }[] = [
-  { label: '6″', value: 6 },
-  { label: '7″', value: 7 },
-  { label: '8-1/2″', value: 8.5 },
-  { label: '9-5/8″', value: 9.625 },
-  { label: '12-1/4″', value: 12.25 },
-  { label: '17-1/2″', value: 17.5 },
-];
+/**
+ * Common sizes as one-tap presets, split by where they come from: open hole is
+ * bit diameters, cased hole is casing ODs. Lumping them into one strip was
+ * confusing — the toggle tells you which number you're being asked for. Both
+ * feed the same numeric size filter (the catalog data has no open/cased
+ * dimension to filter on, so this is about clarity, not a second filter).
+ */
+type HoleKind = 'oh' | 'ch';
+
+const PRESETS: Record<HoleKind, { label: string; value: number }[]> = {
+  oh: [
+    { label: '6″', value: 6 },
+    { label: '8-1/2″', value: 8.5 },
+    { label: '12-1/4″', value: 12.25 },
+    { label: '17-1/2″', value: 17.5 },
+  ],
+  ch: [
+    { label: '7″', value: 7 },
+    { label: '9-5/8″', value: 9.625 },
+  ],
+};
+
+const KIND_LABELS: Record<HoleKind, { tab: string; field: string }> = {
+  oh: { tab: 'Open hole', field: 'Hole size (in)' },
+  ch: { tab: 'Cased hole', field: 'Casing size (in)' },
+};
+
+/**
+ * Free-text size → inches, via the same parser the spec pipeline uses, so the
+ * input accepts exactly what the catalog itself writes: `8.5`, `8-1/2`,
+ * `8 1/2`, `9-5/8`, and print typography like `8-¹⁄₂`. Undefined for junk or a
+ * half-typed value, which simply doesn't filter yet.
+ */
+function parseSizeInches(raw: string): number | undefined {
+  return parseInchValues(raw)[0];
+}
 
 /**
  * Device Finder v1 — hole/casing size + purpose → matching models.
@@ -29,8 +57,9 @@ const PRESETS: { label: string; value: number }[] = [
 export default function DeviceFinder({ entries }: { entries: FinderEntry[] }) {
   const [sizeText, setSizeText] = useState('');
   const [purpose, setPurpose] = useState<Purpose | ''>('');
+  const [kind, setKind] = useState<HoleKind>('oh');
 
-  const sizeIn = sizeText.trim() === '' ? undefined : Number(sizeText);
+  const sizeIn = parseSizeInches(sizeText);
   const active = sizeIn != null || purpose !== '';
 
   const results = useMemo(
@@ -43,27 +72,54 @@ export default function DeviceFinder({ entries }: { entries: FinderEntry[] }) {
     // "Find a product" panel, so the search box and these filters read as one
     // tool rather than two stacked widgets.
     <div>
+      {/* Open hole vs cased hole. This does NOT filter results — the catalog
+          data has no open/cased dimension — it selects which sizes you're
+          offered and relabels the field, so it's clear whether a bit diameter
+          or a casing OD is wanted. */}
+      <div
+        className="inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5"
+        role="group"
+        aria-label="Size type"
+      >
+        {(Object.keys(KIND_LABELS) as HoleKind[]).map((k) => (
+          <button
+            key={k}
+            type="button"
+            onClick={() => setKind(k)}
+            aria-pressed={kind === k}
+            className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+              kind === k ? 'bg-white text-brand shadow-sm' : 'text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            {KIND_LABELS[k].tab}
+          </button>
+        ))}
+      </div>
+
       {/* Size + purpose in one compact row. The size field is deliberately
           narrow (a short decimal never needs a full-width input); the presets
           sit directly beneath it so the link between them is obvious. */}
-      <div className="flex flex-wrap items-end gap-3">
+      <div className="mt-3 flex flex-wrap items-end gap-3">
         <div className="w-full sm:w-44">
           <label
             htmlFor="finder-size"
             className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1"
           >
-            Hole / casing size (in)
+            {KIND_LABELS[kind].field}
           </label>
+          {/* Free text, not a number spinner: the up/down counter was useless
+              for a value people either tap from the presets or type outright,
+              and it can't express "8-1/2" at all. parseSizeInches accepts both
+              decimals and fractions. */}
           <input
             id="finder-size"
-            type="number"
+            type="text"
             inputMode="decimal"
-            min={1}
-            max={30}
-            step={0.125}
+            autoComplete="off"
             value={sizeText}
             onChange={(e) => setSizeText(e.target.value)}
-            placeholder="e.g. 8.5"
+            placeholder="e.g. 8-1/2"
+            aria-describedby="finder-size-hint"
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
         </div>
@@ -105,8 +161,12 @@ export default function DeviceFinder({ entries }: { entries: FinderEntry[] }) {
         )}
       </div>
 
-      <div className="mt-2 flex flex-wrap gap-1.5">
-        {PRESETS.map((preset) => {
+      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+        <span id="finder-size-hint" className="sr-only">
+          Type a size in inches — decimals or fractions, for example 8.5 or 8-1/2 — or pick one of
+          the common sizes.
+        </span>
+        {PRESETS[kind].map((preset) => {
           const isOn = sizeIn === preset.value;
           return (
             <button

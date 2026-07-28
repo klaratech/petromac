@@ -101,6 +101,10 @@ export default function EmailPdfAction() {
       <button
         type="button"
         onClick={() => setOpen(true)}
+        // Visible label is just "Email" to avoid saying PDF three times in one
+        // small card; the accessible name still says what gets emailed, since
+        // a lone "Email" button is meaningless when tabbing through.
+        aria-label="Email the complete catalog"
         className="inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-brand/30 bg-white px-4 py-2 text-sm font-semibold text-brand hover:border-brand hover:bg-brand/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
       >
         <svg
@@ -117,7 +121,7 @@ export default function EmailPdfAction() {
             d="M3 8l9 6 9-6M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8M3 8l2-2h14l2 2"
           />
         </svg>
-        Email PDF
+        Email
       </button>
     );
   }

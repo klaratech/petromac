@@ -129,7 +129,7 @@ export default function CatalogOverviewPage() {
               download
               className="mt-2 inline-block text-xs font-medium text-slate-600 underline decoration-slate-300 underline-offset-2 hover:text-brand hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
             >
-              Download the complete catalog PDF
+              Download the complete catalog (PDF)
             </a>
           </div>
           <Link
@@ -156,15 +156,16 @@ function CatalogPdfActions() {
       className="order-1 rounded-2xl border border-slate-200 bg-slate-50 p-5 lg:order-2"
     >
       <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-        Complete catalog PDF
+        Complete catalog
       </p>
-      <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
-        Full specifications for every model — for offline use and sharing.
-      </p>
+      <p className="mt-1.5 text-xs leading-relaxed text-slate-500">Full specs for every model.</p>
       <div className="mt-3 space-y-2">
         <a
           href={CATALOG_PDF_HREF}
           download
+          // Visible label is just "Download"; the accessible name keeps the
+          // context a lone verb loses when tabbing through.
+          aria-label="Download the complete catalog PDF"
           className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
         >
           <svg
@@ -181,7 +182,7 @@ function CatalogPdfActions() {
               d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12m0 0l-4-4m4 4l4-4"
             />
           </svg>
-          Download PDF
+          Download
         </a>
         <EmailPdfAction />
       </div>
