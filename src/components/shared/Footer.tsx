@@ -31,6 +31,17 @@ export default function Footer() {
             <p>© 2026 Petromac. All rights reserved.</p>
           </div>
           <div className="flex items-center gap-4">
+            {/* Plain link, no drawer handler: /contact is indexed and was left
+                orphaned when the catalog CTA and the drawer's own footer link
+                were removed. A crawlable link back keeps the search-landing
+                path alive; the header's email icon remains the in-flow route. */}
+            <Link
+              href="/contact"
+              className="text-slate-300 hover:text-white transition-colors text-sm"
+            >
+              Contact
+            </Link>
+            <div className="h-4 w-px bg-slate-600" />
             <Link
               href="/privacy"
               onClick={openDrawer('privacy')}
