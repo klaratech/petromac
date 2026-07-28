@@ -15,8 +15,8 @@ if (process.env.NEXT_PUBLIC_ENV === 'production' && !PRODUCTION_SITE_URLS.includ
   );
 }
 
-// Everything is self-hosted (fonts via next/font, Draco decoder in
-// public/draco/, no analytics), so the CSP can be tight. The exceptions:
+// Almost everything is self-hosted (fonts via next/font, Draco decoder in
+// public/draco/), so the CSP can be tight. The exceptions:
 // - script-src 'unsafe-inline': App Router's inline bootstrap scripts (no
 //   nonce middleware); 'wasm-unsafe-eval': the Draco decoder wasm.
 // - style-src 'unsafe-inline': styled-jsx (Flipbook, EmailPdfButton) +
@@ -30,13 +30,15 @@ const contentSecurityPolicy = [
   // React dev mode needs eval() (source maps, refresh); production never does.
   // challenges.cloudflare.com: the Turnstile widget on the contact form
   // (script + its iframe).
-  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://challenges.cloudflare.com${isDev ? " 'unsafe-eval'" : ''}`,
+  // static.cloudflareinsights.com: Cloudflare Web Analytics beacon (cookieless).
+  `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://challenges.cloudflare.com https://static.cloudflareinsights.com${isDev ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
   // blob: is required — three.js GLTFLoader fetch()es blob: URLs for the
   // textures embedded in the Draco GLBs (img-src alone doesn't cover it).
-  "connect-src 'self' blob:",
+  // cloudflareinsights.com: where the analytics beacon POSTs its payload.
+  "connect-src 'self' blob: https://cloudflareinsights.com https://static.cloudflareinsights.com",
   "media-src 'self' blob:",
   "worker-src 'self' blob:",
   'frame-src https://challenges.cloudflare.com',

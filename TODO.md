@@ -315,6 +315,47 @@ cache rule. Remaining:
       Verified via the map's own `calculateCountryStats`: France 16, French
       Guiana absent, Guyana 58 unchanged.
 
+## Analytics & legal
+
+- [x] Cloudflare Web Analytics wired in (28 Jul): `WebAnalytics.tsx` in the root
+      layout, gated on `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` **and**
+      `isProductionSite()`, so test.petromac traffic never lands in the numbers
+      and an unset token ships no script at all. CSP updated —
+      `static.cloudflareinsights.com` in script-src, `cloudflareinsights.com` in
+      connect-src (the beacon would otherwise be silently blocked).
+      Chose it over GA4 deliberately: cookieless, no fingerprinting, no
+      cross-site tracking, therefore **no consent banner needed** — which the
+      site doesn't have. GA4 sets cookies, so with EU visitors it would need a
+      consent mechanism and a privacy rewrite: a much bigger job than the
+      analytics itself.
+- [ ] **Rajesh: paste the token.** Cloudflare dashboard → Web Analytics → add
+      petromac.co.nz → copy the `token` from the JS snippet → set it as the
+      GitHub repo **variable** `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` (it's baked at
+      build time via Docker build-arg, same as the Turnstile site key), then
+      promote. Until then the site simply ships no analytics.
+- [x] Cookie audit (28 Jul): **no cookies on public pages** — verified with
+      zero `Set-Cookie` headers on / and /catalog in production. The only
+      cookies in the codebase are the three staff-auth ones
+      (`petromac_staff_session`, `petromac_staff_rt`,
+      `petromac_staff_oauth_state`), set only after an intranet sign-in and
+      strictly necessary for it. Cloudflare may add a short-lived bot-detection
+      cookie. Conclusion: no consent banner required, and none should be added
+      unless something cookie-setting is introduced later.
+- [ ] **Privacy policy DIVERGED from counsel's .docx — needs Craig's sign-off.**
+      The cookies/analytics section claimed "We use Google Analytics", which was
+      never true (nothing was installed). Rewritten to match reality and bumped
+      to Version 2.4 / 28 July 2026; the divergence is flagged in
+      `PrivacyContent.tsx`'s docstring. Craig should review the new wording and
+      update "Privacy Policy Website.docx" so the source of truth matches.
+      The cookieless claim is load-bearing for running without a consent
+      banner, so it's worth him reading rather than rubber-stamping.
+      Terms of Use needed NO change — it only cross-references the privacy
+      policy and makes no cookie/analytics claims of its own.
+- [ ] Privacy contact address is `info@petromac.co.nz` (not craig@). Confirm
+      that's the right destination for privacy/data requests — info@ is
+      monitored, but if these should reach a named person, say so and it's a
+      one-line change.
+
 ## Kiosk review (full pass) — OPEN, keep adding here
 
 Standing home for ALL kiosk work. There is a lot to do on the trade-show

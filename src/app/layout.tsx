@@ -3,6 +3,7 @@ import { Inter, IBM_Plex_Sans } from 'next/font/google';
 import './globals.css';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { getSiteUrl, isProductionSite } from '@/lib/siteUrl';
+import WebAnalytics from '@/components/shared/WebAnalytics';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -95,6 +96,7 @@ export default function RootLayout({
         className={`${inter.variable} ${ibmPlexSans.variable} font-sans antialiased min-h-dvh flex flex-col`}
       >
         <ErrorBoundary>{children}</ErrorBoundary>
+        <WebAnalytics />
       </body>
     </html>
   );

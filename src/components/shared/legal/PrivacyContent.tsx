@@ -6,10 +6,21 @@
  * title and surrounding chrome are supplied by whichever wrapper renders
  * this. Source of truth: IP counsel ("Privacy Policy Website.docx",
  * Craig, May 2026).
+ *
+ * ⚠ DIVERGED FROM THE .docx (28 Jul 2026) — needs Craig's sign-off and the
+ * source document updating. The cookies/analytics section claimed "We use
+ * Google Analytics", which was never true: no analytics of any kind was
+ * installed. A privacy policy describing tracking that doesn't happen is
+ * itself a problem, so it was rewritten to match reality — no cookies on
+ * public pages (verified: zero Set-Cookie headers), staff-auth cookies only
+ * after intranet sign-in, and Cloudflare Web Analytics, which is cookieless
+ * and does no fingerprinting or cross-site tracking. That last point is what
+ * lets the site run without a consent banner, so the wording matters legally,
+ * not just factually.
  */
 
 export const PRIVACY_TITLE = 'Privacy Policy';
-export const PRIVACY_UPDATED = 'Last updated: 15 May 2026 · Version 2.3';
+export const PRIVACY_UPDATED = 'Last updated: 28 July 2026 · Version 2.4';
 
 export default function PrivacyContent() {
   return (
@@ -64,19 +75,31 @@ export default function PrivacyContent() {
       <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Cookies and similar technologies</h2>
 
       <p>
-        We use cookies and similar technologies where needed for website functionality, security,
-        staff sign-in, and session management. For example, staff intranet sign-in may use secure
-        session and OAuth state cookies. You can disable cookies in your browser, but some features
-        may not work properly.
+        Browsing this website sets no cookies. We do not use advertising, marketing, or cross-site
+        tracking cookies, and there is nothing here to opt into or out of.
       </p>
 
       <p>
-        We use Google Analytics to understand website performance and visitor trends, such as which
-        pages are visited, approximate location, and device and browser type. Google Analytics sets
-        its own cookies and may process this information outside New Zealand. We may also use
-        Cloudflare for website security, performance, and traffic analytics. Where required by
-        applicable law, we will provide any additional notice or consent mechanism needed for these
-        tools, and you can opt out of Google Analytics using the browser add-on Google provides.
+        The only cookies we set are for staff sign-in to our internal intranet: a secure session
+        cookie, a sign-in token, and a short-lived OAuth state cookie. They are set only after a
+        Petromac staff member signs in, they are strictly necessary to keep that session secure, and
+        they are never used to track browsing. Cloudflare, which serves and protects this website,
+        may also set a short-lived cookie to distinguish visitors from automated traffic.
+      </p>
+
+      <h2 className="text-2xl font-bold text-brand mt-8 mb-4">Analytics</h2>
+
+      <p>
+        We use Cloudflare Web Analytics to understand basic website trends, such as which pages are
+        visited, referring sites, and general country-level location. We chose it specifically
+        because it is privacy-preserving: it sets no cookies, does not fingerprint your device or
+        browser, and does not track you across other websites. The data is aggregated and does not
+        identify you. We do not use Google Analytics.
+      </p>
+
+      <p>
+        Cloudflare also provides security and performance protection for this website, which
+        involves processing request information such as IP address to block malicious traffic.
       </p>
 
       <h2 className="text-2xl font-bold text-brand mt-8 mb-4">How we use personal information</h2>
