@@ -84,13 +84,15 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       (28 Jul): the July copy pass made Name optional on the form but the
       backend still required it — backend now requires only email+message,
       falls back to "Website visitor". Verified live post-deploy.
-- [ ] Vercel retirement — IN PROGRESS (28 Jul): code side done (docs
-      scrubbed; no vercel.json/workflow ever existed). Dashboard agent
-      set Ignored Build Step → "don't build", now disconnecting the git
-      repo + DELETING the project (petromac.vercel.app goes offline —
-      intended: stale copy, no backend, noindex, no references; deletion
-      also disposes of any env vars). Rajesh afterwards: uninstall the
-      Vercel GitHub App from the klaratech org if nothing else uses it.
+- [x] Vercel retirement (28 Jul): code side fully scrubbed (docs,
+      .gitignore; only the historical note in CLAUDE.md remains, on
+      purpose; no vercel.json/workflow/deps ever existed). Dashboard
+      agent disabled builds + disconnected the git repo; the project's
+      three env vars are all reconstructible (NEXT*PUBLIC*\*, recorded
+      in .env.example). LAST TWO CLICKS (Rajesh): 1) Vercel → petromac
+      → Settings → General → bottom → Delete Project (petromac.vercel.app
+      goes offline — intended); 2) GitHub → klaratech org → Settings →
+      GitHub Apps → uninstall Vercel if nothing else uses it.
 - [ ] Sanity-check + clean up the Crazy Domains DNS panel against the
       now-canonical Cloudflare zone (with the other admin), so the inert
       panel doesn't mislead anyone again. Open verification questions
