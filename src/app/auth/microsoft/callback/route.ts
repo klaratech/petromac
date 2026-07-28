@@ -13,6 +13,8 @@ import {
   verifyOAuthState,
 } from '@/lib/auth/staffAuth';
 import { exchangeMicrosoftCode, fetchMicrosoftUser } from '@/lib/auth/entra';
+import { putRefreshToken } from '@/lib/auth/tokenStore';
+import { randomBytes } from 'node:crypto';
 
 function errorRedirect(request: NextRequest, message: string) {
   const redirectUrl = new URL('/intranet', getRequestOrigin(request));
@@ -47,16 +49,29 @@ export async function GET(request: NextRequest) {
     const user = await fetchMicrosoftUser(tokens.access_token);
 
     const now = Date.now();
+    const sessionTtlMs = getStaffSessionTtlSeconds() * 1000;
+
+    // The refresh token (too large for the cookie) goes into the in-memory
+    // server store; the cookie carries only a random reference to it. This
+    // lets send-as-staff mint fresh Graph tokens for the whole session
+    // instead of dying after the ~1 h access-token lifetime.
+    let tokenRef: string | undefined;
+    if (tokens.refresh_token) {
+      tokenRef = randomBytes(18).toString('base64url');
+      putRefreshToken(tokenRef, tokens.refresh_token, sessionTtlMs);
+    }
+
     const session = {
       user,
       issuedAt: now,
-      expiresAt: now + getStaffSessionTtlSeconds() * 1000,
-      // Keep the delegated Graph token so the kiosk can send mail as this
-      // staff member. Short-lived (Microsoft ~1 h); no refresh token stored.
+      expiresAt: now + sessionTtlMs,
+      // Delegated Graph token for send-as-staff (~1 h; refreshed on demand
+      // via tokenRef when it lapses).
       graph: {
         accessToken: tokens.access_token,
         expiresAt: now + (tokens.expires_in ?? 3600) * 1000,
       },
+      ...(tokenRef ? { tokenRef } : {}),
     };
 
     // Cookie-size guard: the Graph token can push the encrypted cookie past

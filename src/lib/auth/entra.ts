@@ -94,6 +94,35 @@ export async function exchangeMicrosoftCode(code: string, redirectUri: string) {
   return (await response.json()) as TokenResponse;
 }
 
+/**
+ * Exchange a refresh token for a fresh access token (and usually a rotated
+ * refresh token). Used by send-as-staff when the ~1 h delegated token has
+ * lapsed mid-session.
+ */
+export async function refreshMicrosoftToken(refreshToken: string) {
+  const params = new URLSearchParams({
+    client_id: getClientId(),
+    client_secret: getClientSecret(),
+    refresh_token: refreshToken,
+    grant_type: 'refresh_token',
+    scope: getScopes().join(' '),
+  });
+
+  const response = await fetch(tokenEndpoint(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`Microsoft token refresh failed: ${response.status} ${message}`);
+  }
+
+  return (await response.json()) as TokenResponse;
+}
+
 export async function fetchMicrosoftUser(accessToken: string): Promise<StaffUser> {
   const response = await fetch(
     'https://graph.microsoft.com/v1.0/me?$select=id,displayName,mail,userPrincipalName,givenName,surname',

@@ -119,9 +119,17 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Security / hardening
 
-- [ ] (Future) Send kiosk emails as the signed-in staff member — needs the
-      staff member's delegated Graph token persisted + refreshed server-side.
-      App already reserved Mail.Send delegated. Default stays info@.
+- [x] Send-as-staff now survives the whole 12 h session (28 Jul): the ~1 h
+      delegated Graph token had no refresh path, so "email as me" silently
+      fell back to info@ an hour after sign-in (Rajesh hit this on the
+      success-stories send). Now: refresh token kept in an IN-MEMORY
+      server store keyed by a random tokenRef in the session cookie (the
+      token itself never fits the ~4 KB cookie), /api/staff/send-pdf
+      refreshes on demand + rotates, /api/staff/session reports
+      refreshability, and EmailPdfButton shows "sends from X" so a
+      fallback is never silent. Known limit BY DESIGN: a deploy/restart
+      empties the store → sends fall back to info@ (visibly) until next
+      sign-in. Also fixed: PDF emails linked www.petromac.com → .co.nz.
 
 - [x] Cloudflare Turnstile LIVE on the contact form (28 Jul): lazy-loaded
       managed widget (site key baked via repo variable

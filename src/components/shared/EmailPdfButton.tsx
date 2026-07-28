@@ -28,9 +28,11 @@ export function EmailPdfButton({
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  // When a staff member is signed in (kiosk), send AS them via the Next.js
-  // staff route; otherwise send from info@ via the FastAPI backend.
-  const { canSendAsStaff } = useStaffSession();
+  // When a staff member is signed in, send AS them via the Next.js staff
+  // route; otherwise send from info@ via the FastAPI backend. The sender is
+  // displayed on the form so a fallback to info@ is never silent.
+  const { canSendAsStaff, user } = useStaffSession();
+  const sender = canSendAsStaff && user ? user.email : 'info@petromac.co.nz';
 
   const handleReveal = () => {
     if (disabled) return;
@@ -115,6 +117,9 @@ export function EmailPdfButton({
 
       {revealed && (
         <div className="absolute right-0 top-0 z-50 email-slider">
+          <div className="absolute -bottom-5 right-1 whitespace-nowrap text-[11px] text-gray-500">
+            sends from <span className="font-medium">{sender}</span>
+          </div>
           <div className="flex items-center gap-2 bg-white rounded-lg shadow-xl border border-gray-200 px-2 py-1 w-80 h-10">
             <form onSubmit={handleSubmit} className="flex items-center gap-2 w-full">
               <input

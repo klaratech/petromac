@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getStaffGraphToken, readStaffSession } from '@/lib/auth/staffAuth';
+import {
+  buildSessionCookieOptions,
+  createStaffSessionCookieValue,
+  getSessionCookieName,
+  getStaffGraphToken,
+  readStaffSession,
+} from '@/lib/auth/staffAuth';
+import { refreshMicrosoftToken } from '@/lib/auth/entra';
+import { dropRefreshToken, getRefreshToken, putRefreshToken } from '@/lib/auth/tokenStore';
+import type { StaffSession } from '@/types/staffSession';
 import { buildServerApiUrl } from '@/lib/api';
 import { getRequestOrigin } from '@/lib/auth/requestOrigin';
 
@@ -18,10 +27,39 @@ const CATALOG_PDF_PATH = '/flipbooks/catalog/petromac-product-catalog.pdf';
 
 export async function POST(request: NextRequest) {
   const session = readStaffSession(await cookies());
-  const token = getStaffGraphToken(session);
-  if (!token || !session) {
-    // No valid staff token → let the client fall back to the info@ sender.
+  if (!session) {
     return NextResponse.json({ error: 'no_staff_session' }, { status: 401 });
+  }
+
+  // Valid access token in the session? Use it. Otherwise mint a fresh one
+  // from the server-side refresh token (survives the ~1 h token lifetime for
+  // the whole 12 h session) and rotate the cookie on the way out.
+  let token = getStaffGraphToken(session);
+  let refreshedSession: StaffSession | null = null;
+  if (!token) {
+    const refreshToken = getRefreshToken(session.tokenRef);
+    if (!refreshToken) {
+      return NextResponse.json({ error: 'no_staff_session' }, { status: 401 });
+    }
+    try {
+      const fresh = await refreshMicrosoftToken(refreshToken);
+      token = fresh.access_token;
+      if (fresh.refresh_token && session.tokenRef) {
+        // Microsoft rotates refresh tokens — keep the newest one.
+        putRefreshToken(session.tokenRef, fresh.refresh_token, session.expiresAt - Date.now());
+      }
+      refreshedSession = {
+        ...session,
+        graph: {
+          accessToken: fresh.access_token,
+          expiresAt: Date.now() + (fresh.expires_in ?? 3600) * 1000,
+        },
+      };
+    } catch {
+      // Refresh token revoked/expired — clean up and fall back to info@.
+      dropRefreshToken(session.tokenRef);
+      return NextResponse.json({ error: 'no_staff_session' }, { status: 401 });
+    }
   }
 
   let body: {
@@ -112,5 +150,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'graph_send_failed' }, { status });
   }
 
-  return NextResponse.json({ ok: true, sentAs: session.user.email });
+  const response = NextResponse.json({ ok: true, sentAs: session.user.email });
+  if (refreshedSession) {
+    // Persist the freshly minted access token so the next send within the
+    // hour skips the refresh round-trip. Same cookie-size guard as sign-in:
+    // if the token pushes past the ~4 KB limit, skip the update — tokenRef
+    // alone keeps future sends refreshable.
+    const cookieValue = createStaffSessionCookieValue(refreshedSession);
+    if (cookieValue.length <= 3800) {
+      const remainingSeconds = Math.max(
+        60,
+        Math.floor((refreshedSession.expiresAt - Date.now()) / 1000)
+      );
+      response.cookies.set(
+        getSessionCookieName(),
+        cookieValue,
+        buildSessionCookieOptions(remainingSeconds)
+      );
+    }
+  }
+  return response;
 }
