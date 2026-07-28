@@ -11,9 +11,12 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 - [ ] Decide AI-crawler policy (Cloudflare currently blocks GPTBot/ClaudeBot/etc. —
       trade-off: content protection vs. AI assistants knowing Petromac products)
 - [x] Microsoft Entra staff sign-in LIVE (Jul 2026) — app "Petromac Intranet",
-      all three redirect URIs incl. petromac.co.nz pre-registered, /intranet
-      server-gated, sign-out lands on the homepage. Secret in 1Password
-      ("Petromac Entra Client Secret", renew ~Jul 2028).
+      /intranet server-gated, sign-out lands on the homepage. Secret in
+      1Password ("Petromac Entra Client Secret", renew ~Jul 2028).
+      28 Jul: the production callback had been pre-registered WITHOUT
+      www → AADSTS50011 on the live domain; Rajesh added
+      https://www.petromac.co.nz/auth/microsoft/callback (URIs match
+      character-for-character). Verified working.
 - [x] Email go-live DONE (27 Jul 2026): Graph application `Mail.Send` added + admin consent; `.env-backend` updated (Entra creds copied server-side
       from the frontend env + MAIL_SENDER/CONTACT_TO_EMAIL/
       ALLOWED_EMAIL_DOMAINS); end-to-end verified — live contact-form test
@@ -70,9 +73,20 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       scanner/printer SMTP relay (+ its IPs sit in the SPF). Cancelling
       kills those. Sequence: migrate legacy mailboxes + device relay to
       M365 → then cancel → then SPF trim + SSL Full (strict).
+- [x] DNS incident round 2 (28 Jul): SMTP2GO turned out to be in use for
+      scan-to-email (Steve's home scanner) — its em588925 +
+      s588925.\_domainkey CNAMEs had also been deleted; restored, scanner
+      recovered. Office printers/scanners confirmed working after round 1.
+      Full annotated zone + history now in docs/DNS.md.
+- [x] Contact form on production 400'd for blank-name submissions
+      (28 Jul): the July copy pass made Name optional on the form but the
+      backend still required it — backend now requires only email+message,
+      falls back to "Website visitor". Verified live post-deploy.
 - [ ] Sanity-check + clean up the Crazy Domains DNS panel against the
       now-canonical Cloudflare zone (with the other admin), so the inert
-      panel doesn't mislead anyone again.
+      panel doesn't mislead anyone again. Open verification questions
+      (also in docs/DNS.md): office scanners' SMTP server; SPF IPs
+      172.232.206.251 + 161.65.142.140; Skype/Lync records still needed?
 - [ ] Re-prime kiosk tablets after the next deploy (SW cache changed)
 
 ## Security / hardening
@@ -120,7 +134,7 @@ cache rule. Remaining:
       `/case-studies/<slug>` (SSG, Article+Breadcrumb JSON-LD, sitemap,
       old root-level WP slugs 301-redirected, "Case Studies" in the main
       nav). Canonical content: `src/features/case-studies/content/
-  case-studies.json` (hand-editable — WordPress is gone; raw HTML
+case-studies.json` (hand-editable — WordPress is gone; raw HTML
       mirror archived in `Website_Archive/oldsite-case-studies/`).
       Optional polish: per-study dates, more cross-links from product
       pages.

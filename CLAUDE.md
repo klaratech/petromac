@@ -74,6 +74,7 @@ All docs live in `docs/`:
 - [docs/KIOSK.md](docs/KIOSK.md) — Kiosk operations & offline caching
 - [docs/TAILWIND_THEME.md](docs/TAILWIND_THEME.md) — Brand colors & typography
 - [docs/EMAIL_SETUP.md](docs/EMAIL_SETUP.md) — Email (Microsoft Graph) configuration
+- [docs/DNS.md](docs/DNS.md) — DNS zone (Cloudflare = single source of truth), history & cleanup questions
 
 ## Current Tasks
 
