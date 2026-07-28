@@ -1,10 +1,18 @@
 import type { MetadataRoute } from 'next';
 import { getSiteUrl } from '@/lib/siteUrl';
 import { allProducts, categories } from '@/features/catalog/content';
+import { caseStudies } from '@/features/case-studies/content';
 
 const BASE_URL = getSiteUrl();
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  // Case studies — long-tail landing pages (tool + country + deviation).
+  const caseStudyUrls: MetadataRoute.Sitemap = caseStudies.map((cs) => ({
+    url: `${BASE_URL}/case-studies/${cs.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'yearly',
+    priority: 0.7,
+  }));
   // Catalog family pages (Level 2 of the drill-down).
   const familyUrls: MetadataRoute.Sitemap = categories.map((c) => ({
     url: `${BASE_URL}/catalog/${c.slug}`,
@@ -59,6 +67,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${BASE_URL}/case-studies`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/success-stories/flipbook`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -90,5 +104,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...familyUrls,
     ...productUrls,
+    ...caseStudyUrls,
   ];
 }

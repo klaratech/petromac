@@ -92,6 +92,16 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // The 21 WordPress case studies lived at ROOT-level slugs
+        // (petromac.co.nz/<slug>/) — rebuilt under /case-studies/<slug>
+        // Jul 2026. Slugs are frozen: they must match
+        // src/features/case-studies/content/case-studies.json.
+        source:
+          '/:slug(cast-cbl-successfully-deployed-to-82-deviation-in-norway|cement-evaluation-without-gemco-centralizers-to-85-deviation-in-ksa|elimination-of-pcl-saves-8-days-of-rig-time-in-mexico|expanding-logging-program|formation-testing-5000psi-overbalance|hermes-drag-planner-convinces-client-to-run-mdt-in-nigeria|high-quality-x-y-density-data-in-deviated-wellbores-in-new-zealand|high-side-sampling|holefinder-success-in-azerbaijan-2|image-tool-rotation|mril-d-conveyance-in-highly-deviated-casings-in-malaysia|ngi-logged-over-2400m-section-at-67-deviation-in-new-zealand|oriented-coring-avoids-wellbore-damage-in-the-gulf-of-mexico|oriented-hrsct-optimum-sidewall-core-recovery-in-mexico|positive-orientation-provides-100-fmi-image-coverage-in-iraq|slim-tool-taxis-facilitate-logging-a-highly-deviated-6-hole-section-on-wireline|smooth-mril-xl-logging-at-extreme-deviations-in-mexico|sonic-centralization|stick-slip|successful-open-hole-wireline-logging-to-79-deviation-in-uae|tlc-unable-to-pass-ledge)',
+        destination: '/case-studies/:slug',
+        permanent: true,
+      },
+      {
         // Success Stories used to open as a ?stories=1 overlay on Track
         // Record (retired Jul 2026) — send shared/bookmarked overlay URLs
         // to the standalone page.

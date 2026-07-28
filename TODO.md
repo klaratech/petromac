@@ -89,12 +89,14 @@ cache rule. Remaining:
 
 ## Backlog
 
-- [ ] Rebuild the 21 WordPress case studies as individual server-rendered
-      pages under `/case-studies/<slug>` (currently only 301-redirected).
-      They target long-tail queries (tool + country + deviation) that the
-      success-stories flipbook cannot rank for. Source content: WordPress
-      backup / petromac.co.nz case-studies pages. Add Article JSON-LD and
-      include them in the sitemap when built.
+- [x] Case studies rebuilt (27 Jul 2026): 21 pages live under
+      `/case-studies/<slug>` (SSG, Article+Breadcrumb JSON-LD, sitemap,
+      old root-level WP slugs 301-redirected, "Case Studies" in the main
+      nav). Canonical content: `src/features/case-studies/content/
+    case-studies.json` (hand-editable — WordPress is gone; raw HTML
+      mirror archived in `Website_Archive/oldsite-case-studies/`).
+      Optional polish: per-study dates, more cross-links from product
+      pages.
 - [ ] MapRenderer: split base path generation from style updates so filter
       clicks restyle instead of rebuilding all ~244 paths (from the Jul 2026
       audit; deferred — delicate component, clicks already debounced)
