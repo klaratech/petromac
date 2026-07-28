@@ -1,9 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
 import { useStaffSession } from '@/hooks/useStaffSession';
-import TurnstileWidget, { turnstileConfigured } from '@/components/public/TurnstileWidget';
+import TurnstileWidget, {
+  turnstileConfigured,
+  type GetTurnstileToken,
+} from '@/components/public/TurnstileWidget';
 
 const PDF_URL = '/flipbooks/catalog/petromac-product-catalog.pdf';
 
@@ -26,28 +29,14 @@ export default function EmailPdfAction() {
   // through /api/staff/send-pdf, where the session cookie is a stronger check
   // than a CAPTCHA. `forcePublic` covers the rare case where the staff token
   // lapses mid-session: the send 401s, we fall back to the public endpoint,
-  // and the widget has to appear so the retry can carry a token.
+  // so the widget must be mounted for the retry to mint a token.
   const [forcePublic, setForcePublic] = useState(false);
   const needsTurnstile = turnstileConfigured && (!canSendAsStaff || forcePublic);
-  const turnstileResetRef = useRef<(() => void) | null>(null);
-  const [turnstileToken, setTurnstileToken] = useState('');
-  const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
-  const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
-  // Bumped on every widget reset so the grace window RE-ARMS — otherwise it
-  // latched true 12 s after opening and the next send went out tokenless.
-  const [turnstileArm, setTurnstileArm] = useState(0);
-
-  // Same 12 s fail-open grace as the contact form: if the script is blocked or
-  // slow the button stops being held hostage, and the backend still enforces.
-  useEffect(() => {
-    if (!turnstileConfigured || !open) return;
-    setTurnstileGraceOver(false);
-    const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
-    return () => window.clearTimeout(t);
-  }, [open, turnstileArm]);
+  // The challenge runs on submit (see TurnstileWidget) — nothing to gate, no
+  // waiting state before the user has done anything.
+  const getTurnstileToken = useRef<GetTurnstileToken | null>(null);
 
   const sender = canSendAsStaff && user ? user.email : 'info@petromac.co.nz';
-  const holdForVerification = needsTurnstile && !turnstileVerified && !turnstileGraceOver;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,16 +65,16 @@ export default function EmailPdfAction() {
       }
 
       if (!response) {
+        // Run the challenge NOW, so the token is fresh and single-use. Resolves
+        // '' if verification is unavailable — we still POST, because the
+        // backend is the judge and no-ops when its secret is unset (dev).
+        const token = await getTurnstileToken.current?.();
         response = await fetch(buildClientApiUrl('/api/email/send-pdf'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           // Token only matters on this path — the backend ignores it otherwise.
-          body: JSON.stringify({ ...base, turnstileToken: turnstileToken || undefined }),
+          body: JSON.stringify({ ...base, turnstileToken: token || undefined }),
         });
-        // Tokens are single-use: clear ours and re-arm the widget either way.
-        turnstileResetRef.current?.();
-        setTurnstileToken('');
-        setTurnstileArm((n) => n + 1);
         if (response.status === 403) {
           setErrorText('Verification didn’t complete. Please try again.');
           throw new Error('turnstile rejected');
@@ -152,10 +141,10 @@ export default function EmailPdfAction() {
         />
         <button
           type="submit"
-          disabled={status === 'sending' || holdForVerification}
+          disabled={status === 'sending'}
           className="shrink-0 rounded-lg bg-brand px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand/90 transition-colors disabled:bg-slate-300"
         >
-          {status === 'sending' ? 'Sending…' : holdForVerification ? 'Verifying…' : 'Send'}
+          {status === 'sending' ? 'Sending…' : 'Send'}
         </button>
         <button
           type="button"
@@ -183,20 +172,10 @@ export default function EmailPdfAction() {
           </svg>
         </button>
       </div>
-      {/* Human verification — only on the public info@ path, and only when a
-          site key is configured (so dev/kiosk-staff flows are untouched).
-          Invisible unless Cloudflare demands interaction; light theme + a
-          collapsing wrapper so it adds no visual weight to the white card. */}
-      {needsTurnstile && (
-        <TurnstileWidget
-          resetRef={turnstileResetRef}
-          onVerified={setTurnstileVerified}
-          onToken={setTurnstileToken}
-          theme="light"
-          appearance="interaction-only"
-          className="empty:hidden"
-        />
-      )}
+      {/* Human verification — public info@ path only, so kiosk/staff sends are
+          untouched. Mounting is free: the challenge only runs on submit. No
+          display:none here — a hidden container deadlocks Turnstile. */}
+      {needsTurnstile && <TurnstileWidget getTokenRef={getTurnstileToken} theme="light" />}
 
       {status === 'sent' ? (
         <p className="text-xs text-emerald-600 font-medium">Sent!</p>

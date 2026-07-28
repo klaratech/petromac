@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, FormEvent } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
-import TurnstileWidget, { turnstileConfigured } from '@/components/public/TurnstileWidget';
+import TurnstileWidget, { type GetTurnstileToken } from '@/components/public/TurnstileWidget';
 
 /**
  * Contact form — form only, dark theme. The page chrome (heading, intro,
@@ -24,27 +24,13 @@ export default function ContactForm() {
   // short") — shown instead of the generic error when available.
   const [serverError, setServerError] = useState<string | null>(null);
   const formStartTimeRef = useRef(0);
-  // Turnstile tokens are single-use — reset after every submit attempt.
-  const turnstileResetRef = useRef<(() => void) | null>(null);
+  // Turnstile runs its challenge ON SUBMIT and hands back a fresh single-use
+  // token (see TurnstileWidget). Nothing to gate before the user acts.
+  const getTurnstileToken = useRef<GetTurnstileToken | null>(null);
   // Gate Send until the widget issues a token, so a fast submit can't race
   // the lazy-loaded verification (the backend would 403 it). Fails OPEN
   // after a grace period: if the script is blocked or slow, the button
   // enables anyway and the backend stays the judge.
-  const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
-  const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
-  // Bumped on every widget reset so the grace window RE-ARMS. Without this the
-  // flag latched true 12 s after mount and never cleared, so the second submit
-  // onward sailed through with no token and the backend 403'd it
-  // ("verification didn't complete") — the gate only ever worked once.
-  const [turnstileArm, setTurnstileArm] = useState(0);
-
-  useEffect(() => {
-    if (!turnstileConfigured) return;
-    setTurnstileGraceOver(false);
-    const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
-    return () => window.clearTimeout(t);
-  }, [turnstileArm]);
-
   useEffect(() => {
     formStartTimeRef.current = Date.now();
   }, []);
@@ -60,6 +46,14 @@ export default function ContactForm() {
       const formStartTime = formStartTimeRef.current || Date.now();
       const timeTaken = (Date.now() - formStartTime) / 1000;
       formDataObj.append('_timing', timeTaken.toString());
+
+      // Run the challenge now and set the token explicitly. In execute mode we
+      // can't rely on Turnstile's hidden `cf-turnstile-response` input being
+      // populated when FormData was snapshotted. '' when verification is
+      // unavailable — still POST, the backend is the judge (and no-ops when
+      // TURNSTILE_SECRET_KEY is unset, which is how dev works).
+      const token = await getTurnstileToken.current?.();
+      formDataObj.set('cf-turnstile-response', token ?? '');
 
       const response = await fetch(buildClientApiUrl('/api/contact'), {
         method: 'POST',
@@ -85,8 +79,6 @@ export default function ContactForm() {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
-      turnstileResetRef.current?.();
-      setTurnstileArm((n) => n + 1);
     }
   };
 
@@ -168,32 +160,21 @@ export default function ContactForm() {
         <span className="text-brand">*</span> required
       </p>
 
-      {/* Human verification (renders only when a Turnstile site key is set).
-          appearance="interaction-only" keeps it INVISIBLE for visitors who
-          pass silently and only draws it if Cloudflare demands interaction —
-          so a challenged visitor still has a way through. Theme stays dark
-          (default) to match this panel for that case. empty:hidden stops the
-          collapsed container eating a space-y-5 gap. The submit button still
-          shows "Verifying…" while held, so the wait is never unexplained. */}
-      <TurnstileWidget
-        resetRef={turnstileResetRef}
-        onVerified={setTurnstileVerified}
-        appearance="interaction-only"
-        className="empty:hidden"
-      />
+      {/* Human verification (mounts only when a Turnstile site key is set).
+          Invisible: the challenge runs on submit and only draws itself if
+          Cloudflare demands interaction, in which case the dark theme matches
+          this panel. Nothing is gated ahead of time, so there is no
+          "Verifying…" wait before the user has done anything. */}
+      <TurnstileWidget getTokenRef={getTurnstileToken} />
 
-      {/* Submit — held until verification completes (or the grace period ends) */}
+      {/* Submit */}
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={isSubmitting || (!turnstileVerified && !turnstileGraceOver)}
+          disabled={isSubmitting}
           className="rounded-lg bg-brand px-6 py-2.5 font-semibold text-white shadow-sm transition-all hover:bg-brand/90 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-700"
         >
-          {isSubmitting
-            ? 'Sending…'
-            : !turnstileVerified && !turnstileGraceOver
-              ? 'Verifying…'
-              : 'Send message'}
+          {isSubmitting ? 'Sending…' : 'Send message'}
         </button>
       </div>
 

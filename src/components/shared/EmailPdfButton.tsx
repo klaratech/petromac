@@ -1,9 +1,12 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
 import { useStaffSession } from '@/hooks/useStaffSession';
-import TurnstileWidget, { turnstileConfigured } from '@/components/public/TurnstileWidget';
+import TurnstileWidget, {
+  turnstileConfigured,
+  type GetTurnstileToken,
+} from '@/components/public/TurnstileWidget';
 
 interface EmailPdfButtonProps {
   pdfUrl?: string;
@@ -37,28 +40,13 @@ export function EmailPdfButton({
 
   // Turnstile guards only the PUBLIC info@ path — a signed-in staff send uses
   // /api/staff/send-pdf, where the session cookie beats a CAPTCHA. On the
-  // kiosk (staff signed in) no widget appears at all. `forcePublic` handles a
+  // kiosk (staff signed in) no widget mounts at all. `forcePublic` handles a
   // staff token lapsing mid-session: the send 401s, we fall back to the public
-  // endpoint, so the widget must appear for the retry to carry a token.
+  // endpoint, so the widget must be mounted for the retry to mint a token.
   const [forcePublic, setForcePublic] = useState(false);
   const needsTurnstile = turnstileConfigured && (!canSendAsStaff || forcePublic);
-  const turnstileResetRef = useRef<(() => void) | null>(null);
-  const [turnstileToken, setTurnstileToken] = useState('');
-  const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
-  const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
-  // Bumped on every widget reset so the grace window RE-ARMS — otherwise it
-  // latched true 12 s after reveal and the next send went out tokenless.
-  const [turnstileArm, setTurnstileArm] = useState(0);
-  const holdForVerification = needsTurnstile && !turnstileVerified && !turnstileGraceOver;
-
-  // 12 s fail-open grace, same as the contact form — a blocked/slow script
-  // must not permanently disable sending; the backend still enforces.
-  useEffect(() => {
-    if (!turnstileConfigured || !revealed) return;
-    setTurnstileGraceOver(false);
-    const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
-    return () => window.clearTimeout(t);
-  }, [revealed, turnstileArm]);
+  // Challenge runs on submit (see TurnstileWidget) — nothing to gate.
+  const getTurnstileToken = useRef<GetTurnstileToken | null>(null);
 
   const handleReveal = () => {
     if (disabled) return;
@@ -97,16 +85,15 @@ export function EmailPdfButton({
       }
 
       if (!response) {
+        // Run the challenge NOW so the token is fresh and single-use. Resolves
+        // '' when verification is unavailable — still POST, the backend judges.
+        const token = await getTurnstileToken.current?.();
         response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           // Only meaningful on the public endpoint; ignored elsewhere.
-          body: JSON.stringify({ ...base, turnstileToken: turnstileToken || undefined }),
+          body: JSON.stringify({ ...base, turnstileToken: token || undefined }),
         });
-        // Tokens are single-use: drop ours and re-arm the widget either way.
-        turnstileResetRef.current?.();
-        setTurnstileToken('');
-        setTurnstileArm((n) => n + 1);
         if (response.status === 403) {
           errorText = 'Verification didn’t complete. Please try again.';
           throw new Error('turnstile rejected');
@@ -175,10 +162,10 @@ export function EmailPdfButton({
 
               <button
                 type="submit"
-                disabled={isLoading || holdForVerification}
+                disabled={isLoading}
                 className="h-8 w-8 flex items-center justify-center bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-green-300"
-                title={holdForVerification ? 'Waiting for verification' : 'Send'}
-                aria-label={holdForVerification ? 'Waiting for verification' : 'Send'}
+                title="Send"
+                aria-label="Send"
               >
                 {isLoading ? (
                   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -231,21 +218,11 @@ export function EmailPdfButton({
             </form>
           </div>
           {/* Human verification — public info@ path only, so the kiosk (staff
-              signed in) never sees it. Sits outside the <form> on purpose:
-              the token is read via onToken and sent in the JSON body, so it
-              does not need the hidden FormData input. */}
+              signed in) never mounts it. Outside the <form> on purpose: the
+              token goes in the JSON body, so no hidden FormData input is
+              needed. No display:none — that deadlocks Turnstile. */}
           {needsTurnstile && (
-            <TurnstileWidget
-              resetRef={turnstileResetRef}
-              onVerified={setTurnstileVerified}
-              onToken={setTurnstileToken}
-              theme="light"
-              appearance="interaction-only"
-              // Spacing lives here, not in a wrapper: an invisible widget must
-              // not leave a gap under the slider. empty:hidden collapses it
-              // until Turnstile actually injects a challenge.
-              className="mt-2 w-80 empty:hidden"
-            />
+            <TurnstileWidget getTokenRef={getTurnstileToken} theme="light" className="mt-2 w-80" />
           )}
           {message && (
             <div

@@ -3,29 +3,46 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Cloudflare Turnstile widget (managed mode) for the contact form.
+ * Cloudflare Turnstile widget (managed mode) — challenge ON SUBMIT.
  *
- * - Renders nothing when NEXT_PUBLIC_TURNSTILE_SITE_KEY is unset, so dev
- *   and staging work without keys (the backend also skips verification
- *   when its secret is unset — set both or neither).
- * - The api.js script loads lazily, when the widget scrolls near the
- *   viewport — the contact section sits at the bottom of every page that
- *   has it, so first paint never pays for it.
- * - Turnstile injects a hidden `cf-turnstile-response` input into the
- *   surrounding <form>, which ContactForm's FormData picks up untouched.
- * - Tokens are single-use: pass `resetRef` and call it after each submit
- *   attempt so the next submit gets a fresh token.
+ * The widget is rendered in `execution: 'execute'` mode, so mounting it costs
+ * nothing: no challenge runs, no token is minted, nothing is displayed. The
+ * parent calls the `getTokenRef` function when the user actually submits; that
+ * runs the challenge and resolves with a fresh token.
+ *
+ * Why this shape rather than verifying up-front (28 Jul 2026): the previous
+ * version ran the challenge on mount and gated the submit button until a token
+ * arrived, with a 12 s fail-open grace. That was fragile in two ways —
+ * a) the grace latched, so the gate only worked for the FIRST submit, and
+ * b) an invisible widget has no way to tell the user why Send is disabled, so
+ * a slow or non-firing challenge just looked broken ("Verifying…" forever,
+ * then "verification didn't complete").
+ * Running it on submit removes the whole waiting-state problem: there is
+ * nothing to gate, and the token is always fresh (they are single-use, so a
+ * token minted at page load is the wrong thing to send anyway).
+ *
+ * Do NOT hide the container with `display:none` (e.g. Tailwind `empty:hidden`).
+ * Turnstile cannot run a challenge inside a hidden element, so it never
+ * injects anything, so an `:empty`-based rule stays applied — a deadlock that
+ * silently breaks verification. `interaction-only` already renders nothing
+ * until a challenge genuinely needs showing.
  */
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+/** Generous: a real interactive challenge can legitimately take a while. */
+const TOKEN_TIMEOUT_MS = 30_000;
 
 /** Whether this build has Turnstile enabled (site key baked in). */
 export const turnstileConfigured = Boolean(SITE_KEY);
 
+/** Resolves with a fresh token, or '' if verification is unavailable. */
+export type GetTurnstileToken = () => Promise<string>;
+
 interface TurnstileApi {
   render: (_el: HTMLElement, _opts: Record<string, unknown>) => string;
   reset: (_widgetId: string) => void;
+  execute: (_widgetIdOrEl: string | HTMLElement, _opts?: Record<string, unknown>) => void;
 }
 
 declare global {
@@ -53,101 +70,91 @@ function loadScript(): Promise<void> {
 }
 
 export default function TurnstileWidget({
-  resetRef,
-  onVerified,
-  onToken,
+  getTokenRef,
   theme = 'dark',
-  appearance = 'always',
   className,
 }: {
-  resetRef?: React.MutableRefObject<(() => void) | null>;
-  /** Called with true when a token is issued, false when it expires/errors. */
-  onVerified?: ((_ok: boolean) => void) | undefined;
   /**
-   * Called with the raw token (and '' when it expires/errors). Needed by the
-   * JSON APIs (`/api/email/send-pdf`), which must put the token in the request
-   * body — unlike the contact form, which posts FormData and so picks up the
-   * hidden `cf-turnstile-response` input Turnstile injects for free.
+   * Filled with a function the parent awaits on submit. Always resolves —
+   * with '' when verification is unavailable (script blocked, offline). The
+   * caller should still POST in that case: the backend is the judge, and it
+   * no-ops when TURNSTILE_SECRET_KEY is unset, which is how dev works.
    */
-  onToken?: ((_token: string) => void) | undefined;
-  /**
-   * Match the surrounding surface. The contact form is on a dark panel
-   * (`bg-slate-800/60`), hence the default; the PDF-email widgets sit on white
-   * and pass 'light' — a dark widget on white was visibly out of place.
-   */
+  getTokenRef?: React.MutableRefObject<GetTurnstileToken | null>;
+  /** Match the surrounding surface, for the rare visible-challenge case. */
   theme?: 'dark' | 'light' | 'auto';
-  /**
-   * 'interaction-only' renders NOTHING for visitors who pass silently, and
-   * draws the widget only if Cloudflare actually demands interaction — so
-   * verification is invisible in the normal case without leaving a challenged
-   * visitor stuck with no way through. The PDF-email widgets use it.
-   * Default stays 'always' so the contact form keeps its established, visible
-   * widget; switch that deliberately, not as a side effect of this prop.
-   */
-  appearance?: 'always' | 'interaction-only' | 'execute';
-  /** Wrapper classes — spacing lives with the caller, since an invisible
-   *  widget must not contribute layout. `empty:hidden` collapses it before
-   *  Turnstile injects anything. */
   className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const readyRef = useRef<Promise<void> | null>(null);
+  const waitersRef = useRef<((_token: string) => void)[]>([]);
 
   useEffect(() => {
     if (!SITE_KEY || !containerRef.current) return;
     const container = containerRef.current;
-    let widgetId: string | null = null;
     let cancelled = false;
 
-    const render = async () => {
-      try {
-        await loadScript();
-        if (cancelled || !window.turnstile || container.childElementCount > 0) return;
-        widgetId = window.turnstile.render(container, {
-          sitekey: SITE_KEY,
-          theme,
-          appearance,
-          callback: (token: string) => {
-            onVerified?.(true);
-            onToken?.(token);
-          },
-          'expired-callback': () => {
-            onVerified?.(false);
-            onToken?.('');
-          },
-          'error-callback': () => {
-            onVerified?.(false);
-            onToken?.('');
-          },
-        });
-        if (resetRef) {
-          resetRef.current = () => {
-            if (widgetId && window.turnstile) window.turnstile.reset(widgetId);
-            onVerified?.(false);
-            onToken?.('');
-          };
-        }
-      } catch {
-        /* script blocked/offline — backend will reject; the form's error
-           path (with the direct email address) covers the user */
-      }
+    const settle = (token: string) => {
+      const waiters = waitersRef.current;
+      waitersRef.current = [];
+      waiters.forEach((resolve) => resolve(token));
     };
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          io.disconnect();
-          void render();
-        }
-      },
-      { rootMargin: '400px' }
-    );
-    io.observe(container);
+    // Render once, lazily but eagerly enough that submit never waits on it.
+    // execution:'execute' means this does NOT run a challenge or mint a token.
+    readyRef.current = (async () => {
+      await loadScript();
+      if (cancelled || !window.turnstile || container.childElementCount > 0) return;
+      widgetIdRef.current = window.turnstile.render(container, {
+        sitekey: SITE_KEY,
+        theme,
+        execution: 'execute',
+        appearance: 'interaction-only',
+        callback: (token: string) => settle(token),
+        'error-callback': () => settle(''),
+        'timeout-callback': () => settle(''),
+        // Nothing to do: tokens are consumed immediately after execute().
+        'expired-callback': () => {},
+      });
+    })();
+
     return () => {
       cancelled = true;
-      io.disconnect();
-      if (resetRef) resetRef.current = null;
+      settle('');
     };
-  }, [resetRef, onVerified, onToken, theme, appearance]);
+  }, [theme]);
+
+  useEffect(() => {
+    if (!getTokenRef) return;
+    getTokenRef.current = async () => {
+      if (!SITE_KEY) return '';
+      try {
+        await readyRef.current;
+      } catch {
+        return ''; // script blocked or offline
+      }
+      const widgetId = widgetIdRef.current;
+      if (!window.turnstile || !widgetId) return '';
+
+      const token = new Promise<string>((resolve) => {
+        waitersRef.current.push(resolve);
+        window.setTimeout(() => resolve(''), TOKEN_TIMEOUT_MS);
+      });
+      try {
+        // Single-use tokens: reset first so a second submit gets a fresh one
+        // rather than replaying the last (which the backend would reject).
+        window.turnstile.reset(widgetId);
+        window.turnstile.execute(widgetId);
+      } catch {
+        return '';
+      }
+      return token;
+    };
+    return () => {
+      getTokenRef.current = null;
+    };
+  }, [getTokenRef]);
 
   if (!SITE_KEY) return null;
   // role="group" is required for aria-label to be valid here — a bare div is

@@ -187,6 +187,32 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       `localhost`. Keep `petromac.co.nz` — Turnstile matches subdomains, so
       that one entry covers www + test. `klaratech.it` should already be gone
       (removed at retirement); worth confirming while in there.
+- [x] Turnstile REARCHITECTED to challenge on submit (28 Jul, Rajesh's call —
+      "start the verification loop once they hit send instead of before").
+      The verify-on-mount design was wrong twice over and produced
+      "Verifying…" forever then "verification didn't complete": 1. `empty:hidden` on the container was a DEADLOCK — Turnstile cannot run
+      a challenge inside a `display:none` element, so it never injected
+      anything, so the `:empty` rule stayed applied, so it stayed hidden.
+      Never hide the container. This is the bug that broke sends outright. 2. Even without that, gating a submit button on a pre-fetched token is
+      fragile: the 12 s fail-open grace LATCHED, so the gate only worked
+      for the first submit and every later send went out tokenless; and an
+      invisible widget can't explain why Send is disabled.
+      Now: `execution: 'execute'` + `appearance: 'interaction-only'`, so
+      mounting costs nothing (no challenge, no token, nothing drawn) and the
+      parent awaits `getTokenRef.current()` on submit, which resets then
+      executes and resolves with a FRESH single-use token (30 s timeout, '' if
+      unavailable — callers still POST, since the backend judges and no-ops
+      when its secret is unset for dev). All gating state deleted from
+      ContactForm / EmailPdfAction / EmailPdfButton: no verified/grace/arm
+      flags, no "Verifying…" hold. ContactForm sets
+      `cf-turnstile-response` on the FormData explicitly, since in execute
+      mode the hidden input isn't populated when FormData is snapshotted.
+      Also dropped the IntersectionObserver gate (the script must be ready
+      before submit, and with no challenge on mount there's nothing to defer).
+      VERIFIED in a real browser: script loads on mount, execute() minted a
+      token in ~900 ms with no interaction and no visible widget, and three
+      consecutive reset→execute rounds each produced a fresh token — the
+      repeat-send case that was failing.
 - [x] Turnstile widget made INVISIBLE site-wide (28 Jul): after the
       PDF-email surfaces, the CONTACT form got the same
       `appearance="interaction-only"` treatment on Rajesh's go-ahead, so
