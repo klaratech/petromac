@@ -172,8 +172,33 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       "verification didn't complete" message on 403.
       Cloudflare account covers petromac.co.nz + klaratech.it +
       localhost; local dev uses the official always-pass TEST keys in
-      .env.local. Optional hardening: drop "localhost" from the widget's
-      hostname list (dev never uses the real key).
+      .env.local.
+- [ ] Turnstile hardening: drop "localhost" from the widget's hostname list
+      (dev never uses the real key — it uses Cloudflare's always-pass TEST
+      keys, so localhost is dead weight in the live widget's allowed
+      hostnames). BLOCKED FOR CLAUDE, needs Rajesh: the API token on
+      klaratech-1 (`/root/.cloudflare-token`) can read the zone but returns
+      `Authentication error` (code 10000) on
+      `/accounts/{acct}/challenges/widgets` — it has no Turnstile scope.
+      Either add **Turnstile: Edit** to that token (then it's API-doable from
+      the server), or do it in the dashboard: Turnstile → widget "petromac"
+      (sitekey `0x4AAAAAAD_qL5ZoaGRaXC4U`, account
+      `c6daece9c636efbd35ceea6353f48553`) → Hostname Management → remove
+      `localhost`. Keep `petromac.co.nz` — Turnstile matches subdomains, so
+      that one entry covers www + test. `klaratech.it` should already be gone
+      (removed at retirement); worth confirming while in there.
+- [x] Turnstile widget made INVISIBLE site-wide (28 Jul): after the
+      PDF-email surfaces, the CONTACT form got the same
+      `appearance="interaction-only"` treatment on Rajesh's go-ahead, so
+      verification is invisible for visitors who pass silently and only
+      appears if Cloudflare demands interaction. Theme stays dark there to
+      match the panel for that case; `empty:hidden` keeps the collapsed
+      container from eating a `space-y-5` gap. Submit still shows
+      "Verifying…" while held, so the wait is never unexplained, and the 12 s
+      fail-open grace + backend enforcement are unchanged. NOTE: this relies
+      on the widget being in Cloudflare's **Managed** mode (it is) — under
+      Managed, Turnstile still runs silently and fires the token callback
+      without drawing anything.
 - [x] PDF-email: public sends FIXED + hardened (28 Jul). The original note
       ("consider explicit recipient allowlist") was the wrong remedy —
       `/api/email/send-pdf` backs the PUBLIC catalog action

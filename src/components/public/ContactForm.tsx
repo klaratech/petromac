@@ -161,8 +161,19 @@ export default function ContactForm() {
         <span className="text-brand">*</span> required
       </p>
 
-      {/* Human verification (renders only when a Turnstile site key is set) */}
-      <TurnstileWidget resetRef={turnstileResetRef} onVerified={setTurnstileVerified} />
+      {/* Human verification (renders only when a Turnstile site key is set).
+          appearance="interaction-only" keeps it INVISIBLE for visitors who
+          pass silently and only draws it if Cloudflare demands interaction —
+          so a challenged visitor still has a way through. Theme stays dark
+          (default) to match this panel for that case. empty:hidden stops the
+          collapsed container eating a space-y-5 gap. The submit button still
+          shows "Verifying…" while held, so the wait is never unexplained. */}
+      <TurnstileWidget
+        resetRef={turnstileResetRef}
+        onVerified={setTurnstileVerified}
+        appearance="interaction-only"
+        className="empty:hidden"
+      />
 
       {/* Submit — held until verification completes (or the grace period ends) */}
       <div className="flex justify-end">
