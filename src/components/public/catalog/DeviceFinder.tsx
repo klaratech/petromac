@@ -39,15 +39,15 @@ export default function DeviceFinder({ entries }: { entries: FinderEntry[] }) {
   );
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-card p-5">
-      <h2 className="font-heading text-base font-bold text-slate-900">Device finder</h2>
-      <p className="mt-0.5 text-xs text-slate-500">
-        Filter by hole or casing size and what you need the device to do.
-      </p>
-
-      <div className="mt-4 flex flex-col sm:flex-row gap-3">
-        {/* Size */}
-        <div className="flex-1">
+    // No card chrome or heading of its own — this renders INSIDE the unified
+    // "Find a product" panel, so the search box and these filters read as one
+    // tool rather than two stacked widgets.
+    <div>
+      {/* Size + purpose in one compact row. The size field is deliberately
+          narrow (a short decimal never needs a full-width input); the presets
+          sit directly beneath it so the link between them is obvious. */}
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="w-full sm:w-44">
           <label
             htmlFor="finder-size"
             className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1"
@@ -66,30 +66,9 @@ export default function DeviceFinder({ entries }: { entries: FinderEntry[] }) {
             placeholder="e.g. 8.5"
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {PRESETS.map((preset) => {
-              const isOn = sizeIn === preset.value;
-              return (
-                <button
-                  key={preset.label}
-                  type="button"
-                  onClick={() => setSizeText(isOn ? '' : String(preset.value))}
-                  aria-pressed={isOn}
-                  className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
-                    isOn
-                      ? 'bg-blue-50 text-brand border border-brand/40'
-                      : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300'
-                  }`}
-                >
-                  {preset.label}
-                </button>
-              );
-            })}
-          </div>
         </div>
 
-        {/* Purpose */}
-        <div className="sm:w-56">
+        <div className="w-full sm:w-60">
           <label
             htmlFor="finder-purpose"
             className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1"
@@ -110,11 +89,46 @@ export default function DeviceFinder({ entries }: { entries: FinderEntry[] }) {
             ))}
           </select>
         </div>
+
+        {/* Only offered when something is actually filtered. */}
+        {active && (
+          <button
+            type="button"
+            onClick={() => {
+              setSizeText('');
+              setPurpose('');
+            }}
+            className="rounded-lg px-2.5 py-2 text-xs font-semibold text-slate-500 underline decoration-slate-300 underline-offset-2 hover:text-brand hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+          >
+            Clear filters
+          </button>
+        )}
       </div>
 
-      {/* Results */}
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {PRESETS.map((preset) => {
+          const isOn = sizeIn === preset.value;
+          return (
+            <button
+              key={preset.label}
+              type="button"
+              onClick={() => setSizeText(isOn ? '' : String(preset.value))}
+              aria-pressed={isOn}
+              className={`min-h-8 rounded-full px-3 py-1 text-[11px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 ${
+                isOn
+                  ? 'bg-brand text-white border border-brand'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:border-brand/40 hover:text-brand hover:bg-blue-50/50'
+              }`}
+            >
+              {preset.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Results — aria-live so the count is announced as filters change. */}
       {active && (
-        <div className="mt-4 border-t border-slate-100 pt-3">
+        <div className="mt-4 border-t border-slate-100 pt-3" aria-live="polite">
           {results.length === 0 ? (
             <p className="text-sm text-slate-500 py-2">
               No devices match — try a nearby size or clear the purpose.

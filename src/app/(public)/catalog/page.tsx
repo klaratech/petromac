@@ -18,10 +18,14 @@ export const metadata = pageMetadata({
   path: '/catalog',
 });
 
+/** Unchanged artifact — the compressed, linearized catalog PDF on the CDN. */
+const CATALOG_PDF_HREF = '/flipbooks/catalog/petromac-product-catalog.pdf';
+
 /**
  * Level 1 of the catalog drill-down: product-line bands with family cards
- * (no individual SKUs — those live on the family and model pages), search
- * that navigates straight to model pages, and the full-catalog PDF block.
+ * (no individual SKUs — those live on the family and model pages), a unified
+ * "Find a product" panel (search + size/purpose filters), and the catalog PDF
+ * actions up in the header where they're reachable without scrolling.
  */
 export default function CatalogOverviewPage() {
   const families = familySummaries();
@@ -37,25 +41,43 @@ export default function CatalogOverviewPage() {
 
   return (
     <div className="bg-white">
-      {/* Header */}
+      {/* Header — title + intro, with the catalog PDF actions alongside at
+          desktop widths so they're visible without scrolling. On mobile the
+          actions drop directly beneath the intro, still above the finder. */}
       <section className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
-          <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 mb-3">
-            Product Catalog
-          </h1>
-          <p className="text-slate-600 max-w-3xl">{catalog.about.intro[0]}</p>
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
+            <div className="lg:max-w-3xl">
+              <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 mb-3">
+                Product Catalog
+              </h1>
+              <p className="text-slate-600">{catalog.about.intro[0]}</p>
+            </div>
+            <CatalogPdfActions />
+          </div>
 
-          {/* Device finder (client island) with the model search beside it —
-              two ways in: guided filtering or direct lookup. */}
-          <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_340px] items-start">
-            <DeviceFinder entries={buildFinderIndex()} />
-            <div className="rounded-2xl border border-slate-200 bg-white shadow-card p-5">
-              <h2 className="font-heading text-base font-bold text-slate-900 mb-2">
-                Know what you&apos;re looking for?
-              </h2>
+          {/* One panel, one job: find a product. Search is the most flexible
+              way in, so it leads; the size/purpose filters sit beneath it.
+              DeviceFinder stays a client island — the finder index reaches the
+              browser only as serialized props, so no SKU names land in the
+              page markup, and the family cards below remain the no-JS path. */}
+          <section
+            aria-labelledby="find-a-product"
+            className="mt-8 rounded-2xl border border-slate-200 bg-white shadow-card p-5 md:p-6"
+          >
+            <h2 id="find-a-product" className="font-heading text-base font-bold text-slate-900">
+              Find a product
+            </h2>
+            <p className="mt-0.5 text-xs text-slate-500">
+              Search by product or model, or narrow the catalogue by size and purpose.
+            </p>
+            <div className="mt-4 lg:max-w-2xl">
               <CatalogSearch entries={searchEntries} />
             </div>
-          </div>
+            <div className="mt-5 border-t border-slate-100 pt-5">
+              <DeviceFinder entries={buildFinderIndex()} />
+            </div>
+          </section>
         </div>
       </section>
 
@@ -76,69 +98,83 @@ export default function CatalogOverviewPage() {
 
         {/* Well intervention — compact row */}
         {intervention && <InterventionRow family={intervention} />}
-
-        {/* Full-catalog PDF block */}
-        <section
-          aria-label="Catalog PDF"
-          className="rounded-2xl border border-slate-200 bg-slate-50 p-6 md:p-8"
-        >
-          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-            <div className="md:flex-1">
-              <h2 className="font-heading text-xl font-bold text-slate-900">
-                The complete catalog, as a PDF
-              </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Full specifications for every model — the exhaustive reference for offline use and
-                sharing.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:w-auto w-full">
-              <a
-                href="/flipbooks/catalog/petromac-product-catalog.pdf"
-                download
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12m0 0l-4-4m4 4l4-4"
-                  />
-                </svg>
-                Download PDF
-              </a>
-              <div className="sm:w-56">
-                <EmailPdfAction />
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
 
-      {/* Footer strip */}
+      {/* Footer strip — supporting information, deliberately understated. The
+          patent notice is legal/trust context, not part of the browsing
+          journey, so it stays here rather than competing with the finder up
+          top. The contact action is the prominent thing in this strip; the PDF
+          gets a quiet text link so someone who has read to the bottom doesn't
+          have to scroll back up for it. */}
       <section className="bg-slate-50 border-t border-slate-100 mt-8">
-        <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-sm text-slate-500">
-            {catalog.about.patents}{' '}
-            <Link href={catalog.about.patentsUrl} className="underline hover:text-brand">
-              View patents
-            </Link>
-          </p>
+        <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div className="max-w-2xl">
+            <p className="text-xs leading-relaxed text-slate-500">
+              {catalog.about.patents}{' '}
+              <Link
+                href={catalog.about.patentsUrl}
+                className="font-medium text-slate-600 underline decoration-slate-300 underline-offset-2 hover:text-brand hover:decoration-brand"
+              >
+                View patents
+              </Link>
+            </p>
+            <a
+              href={CATALOG_PDF_HREF}
+              download
+              className="mt-2 inline-block text-xs font-medium text-slate-600 underline decoration-slate-300 underline-offset-2 hover:text-brand hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+            >
+              Download the complete catalogue PDF
+            </a>
+          </div>
           <Link
             href="/contact"
-            className="inline-flex items-center rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand/90 transition-colors whitespace-nowrap"
+            className="inline-flex items-center rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand/90 transition-colors whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
           >
             Contact our regional managers
           </Link>
         </div>
       </section>
+    </div>
+  );
+}
+
+/**
+ * Slim action row, not a promotional card: Download is primary, Email is the
+ * secondary action beside it. Sits to the right of the intro on desktop and
+ * beneath it on mobile, so it never squeezes the introductory paragraph.
+ */
+function CatalogPdfActions() {
+  return (
+    <div className="shrink-0 lg:text-right">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+        Complete catalogue PDF
+      </p>
+      <div className="mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 lg:justify-end">
+        <a
+          href={CATALOG_PDF_HREF}
+          download
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12m0 0l-4-4m4 4l4-4"
+            />
+          </svg>
+          Download PDF
+        </a>
+        <div className="sm:w-52">
+          <EmailPdfAction />
+        </div>
+      </div>
     </div>
   );
 }
@@ -172,15 +208,17 @@ function FamilyCard({ family }: { family: FamilySummary }) {
   return (
     <Link
       href={family.href}
-      className="group flex flex-col rounded-2xl bg-white ring-1 ring-slate-200 shadow-card overflow-hidden hover:ring-brand/40 hover:shadow-lg transition-all"
+      className="group flex flex-col rounded-2xl bg-white ring-1 ring-slate-200 shadow-card overflow-hidden hover:ring-brand/40 hover:shadow-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
     >
-      <div className="relative h-44 bg-gradient-to-b from-slate-50 to-slate-100/60">
+      {/* h-40: the images are wide and shallow, so the taller box left a band
+          of empty gradient under every one. object-contain keeps them whole. */}
+      <div className="relative h-40 bg-slate-50">
         {family.image && (
           <Image
             src={family.image.src}
             alt={family.image.alt}
             fill
-            className="object-contain p-5 group-hover:scale-[1.03] transition-transform duration-300"
+            className="object-contain p-4 group-hover:scale-[1.03] transition-transform duration-300"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
         )}
@@ -224,7 +262,7 @@ function InterventionRow({ family }: { family: FamilySummary }) {
     <section aria-label={family.name}>
       <Link
         href={family.href}
-        className="group flex items-center gap-5 rounded-2xl bg-white ring-1 ring-slate-200 shadow-card p-5 hover:ring-brand/40 hover:shadow-lg transition-all"
+        className="group flex items-center gap-5 rounded-2xl bg-white ring-1 ring-slate-200 shadow-card p-5 hover:ring-brand/40 hover:shadow-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
       >
         {family.image && (
           <div className="relative hidden sm:block h-20 w-28 shrink-0 rounded-lg bg-slate-50 ring-1 ring-slate-100 overflow-hidden">
