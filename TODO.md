@@ -126,9 +126,15 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       "Promote to Production" workflow (deploy-prod.yml,
       workflow_dispatch — the go-live button). Also fixed latent gap:
       API_BASE_URL now absolute (docker-network URL) in both frontend
-      env files. REMAINING (Rajesh): add
-      https://test.petromac.co.nz/auth/microsoft/callback to the Entra
-      app so intranet sign-in works on the test site.
+      env files. Entra redirect URI
+      https://test.petromac.co.nz/auth/microsoft/callback ADDED by Rajesh
+      (28 Jul) — intranet sign-in works on the test site, nothing
+      outstanding. First-day gotcha worth remembering: the new subdomain
+      appeared dead locally for ~an hour because the ISP resolver had
+      cached the pre-existence NXDOMAIN; the site was serving fine all
+      along (confirmed by pinning the Cloudflare IP with `curl --resolve`)
+      and a local `dscacheutil -flushcache` cannot clear an upstream
+      negative cache. Fixed by pointing Wi-Fi DNS at 1.1.1.1.
 
 ## Security / hardening
 
@@ -175,18 +181,33 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       `name@company.com`), so prospects type arbitrary addresses — an
       explicit recipient allowlist would break the feature by design, and
       a domain allowlist can only ever be too tight (real prospects 403) or
-      too loose. Two things actually worth doing: 1. **Turnstile on this endpoint.** `verify_turnstile()` exists in
+      too loose.
+      **(a) CONFIRMED LIVE BUG (28 Jul)** — read from the server's
+      `/root/apps/petromac/.env-backend`:
+      `ALLOWED_EMAIL_DOMAINS=petromac.co.nz,petromac.com`, with
+      `ALLOWED_EMAIL_RECIPIENTS` unset. So `is_recipient_allowed()` permits
+      ONLY petromac addresses: EVERY real prospect using the public "Email
+      PDF" gets a 403, surfaced as the generic "Couldn't send. Please try
+      again." Staff-initiated sends are unaffected, which is why nobody
+      noticed — `/api/staff/send-pdf` (Next.js → Graph `/me/sendMail`)
+      never consults this allowlist, it only checks the address is
+      well-formed. NOT changed unilaterally: it is a production
+      email-security value AND a product decision. Rajesh picks:
+      (i) public self-service lead-gen → widen/remove the domain check for
+      this endpoint AND add Turnstile per (b), since widening is exactly
+      what makes the abuse vector real; or (ii) staff-only tool → gate the
+      button on a staff session so visitors never see an action that cannot
+      work for them.
+      **(b) Turnstile on this endpoint.** `verify_turnstile()` exists in
       `backend/app/main.py` but is called ONLY from `/api/contact`
       (line ~456). `/api/email/send-pdf` is unauthenticated with just
-      3 req/min/IP, and mails a ~4 MB attachment — a spam/amplification
-      vector trading on Petromac's M365 sending reputation. Reuse the
-      same widget + siteverify the contact form already has. 2. **Confirm the deployed value of `ALLOWED_EMAIL_DOMAINS`** in
-      `/root/apps/petromac/.env-backend`. If it is narrow (e.g. just
-      petromac.co.nz) then the public "Email PDF" is silently 403-ing
-      for every real prospect and the UI only says "Couldn't send" —
-      that would be a live go-live bug, not just hardening. Attachment
-      content is fixed (always the catalog/success-stories PDF), so
-      there is no data-exfiltration angle — abuse potential only.
+      3 req/min/IP and mails a ~4 MB attachment — a spam/amplification
+      vector trading on Petromac's M365 sending reputation. Reuse the same
+      widget + siteverify the contact form already has;
+      `TURNSTILE_SECRET_KEY` is ALREADY set server-side, so no new secret
+      is needed. Attachment content is fixed (always the
+      catalog/success-stories PDF), so there is no data-exfiltration
+      angle — abuse potential only.
 - [x] staffAuth unit tests DONE (28 Jul): 19 tests — session cookie
       round-trip/expiry/tamper/wrong-secret, OAuth state TTL + nonce,
       timing-safe compare, Graph-token skew, config detection, cookie

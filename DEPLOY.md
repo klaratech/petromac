@@ -115,10 +115,18 @@ The domain cutover from the klaratech.it staging hostname happened
 
 ## Server access, logs & debugging
 
-- `ssh klaratech-1` from Rajesh's Mac (jump host + key in the 1Password
-  SSH agent — "communication with agent failed" means unlock 1Password
-  and retry). Tailscale is only part of this admin path; it plays no role
-  in serving the site.
+- `ssh klaratech-1` from Rajesh's Mac — **direct to the public IP; Tailscale
+  is NOT required** (port 22 is open there, same path the GitHub Actions
+  deploy uses). Until 28 Jul 2026 the alias carried `ProxyJump hetzner`,
+  and `hetzner` is a Tailscale address, so admin SSH silently died whenever
+  Tailscale was stopped — with the misleading `Connection timed out during
+banner exchange`, which looks like a server fault but is purely local.
+  Fallback alias `klaratech-1-via-hetzner` still has the jump.
+  The key lives in the **1Password SSH agent**, so
+  `sign_and_send_pubkey: signing failed ... communication with agent failed`
+  means 1Password must authorise the signature — Rajesh approves the prompt
+  (note `ssh-add -l` still lists the keys in that state, so a good listing
+  does NOT mean SSH will work). Tailscale plays no role in serving the site.
 - Logs: `docker logs petromac-backend --since 1h` (same for the other
   three containers) — the backend logs every request with status codes,
   the first stop for "the form doesn't work" reports.
