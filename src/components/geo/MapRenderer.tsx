@@ -8,6 +8,44 @@ import { APP_CONSTANTS } from '@/constants/app';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
 import { formatDeploymentCount } from '@/lib/map/process';
 
+/** Whole features never drawn — no wells, and Antarctica dominates the fit. */
+const HIDDEN_COUNTRIES = new Set(['Antarctica']);
+
+/** Hawaii's bbox, used to drop it from the USA's MultiPolygon. */
+const HAWAII_BOX = { minLon: -161, maxLon: -154, minLat: 18, maxLat: 23.5 };
+
+function ringInsideHawaii(ring: number[][]): boolean {
+  return ring.every(
+    ([lon, lat]) =>
+      lon >= HAWAII_BOX.minLon &&
+      lon <= HAWAII_BOX.maxLon &&
+      lat >= HAWAII_BOX.minLat &&
+      lat <= HAWAII_BOX.maxLat
+  );
+}
+
+type WorldData = NonNullable<MapRendererProps['worldData']>;
+
+/**
+ * Inhabited-world view: drops Antarctica entirely and Hawaii out of the USA.
+ * Done here rather than in world-50m.json so the file stays canonical
+ * reference geometry — both really are US / Antarctic territory, we just don't
+ * want them on a wireline operations choropleth.
+ */
+function trimWorld(world: WorldData): WorldData {
+  const features = world.features
+    .filter((f) => !HIDDEN_COUNTRIES.has((f.properties?.name as string) || ''))
+    .map((f) => {
+      if ((f.properties?.name as string) !== 'United States of America') return f;
+      if (f.geometry?.type !== 'MultiPolygon') return f;
+      const kept = f.geometry.coordinates.filter(
+        (polygon) => !polygon.some((ring) => ringInsideHawaii(ring as number[][]))
+      );
+      return { ...f, geometry: { ...f.geometry, coordinates: kept } };
+    });
+  return { ...world, features } as WorldData;
+}
+
 const MapRenderer = memo(function MapRenderer({
   worldData,
   countryMap,
@@ -27,15 +65,38 @@ const MapRenderer = memo(function MapRenderer({
 
     const width = APP_CONSTANTS.MAP_WIDTH;
     const height = APP_CONSTANTS.MAP_HEIGHT;
-    const projection = geoNaturalEarth1().fitSize([width, height], worldData);
+    // Fit and draw the INHABITED world only. Antarctica reaches -90°, so
+    // including it stretched the latitude span to 173° and squeezed everything
+    // that matters into the middle — dropping it takes the southern bound to
+    // -58.5° (Chile/Argentina) and buys ~18% more vertical room at the same
+    // SVG size. Hawaii goes for a different reason: it shades with the USA and
+    // reads as operations in the mid-Pacific, the same misreading French
+    // Guiana caused inside the France feature. It frees no space (Alaska and
+    // Russia already set ±180) — it just stops saying something untrue.
+    const visibleWorld = trimWorld(worldData);
+    const projection = geoNaturalEarth1().fitSize([width, height], visibleWorld);
     const path = geoPath(projection);
 
+    // Then crop the canvas to what was actually drawn. fitSize preserves the
+    // aspect ratio, so a 2.5:1 world inside a 960x540 (1.78:1) box is
+    // width-constrained and letterboxes top and bottom — that was the wasted
+    // space, and dropping Antarctica made it worse, not better, by widening
+    // the content further. Setting the viewBox to the projected bounds removes
+    // the slack entirely and lets the map fill its container.
+    const [[x0, y0], [x1, y1]] = path.bounds(visibleWorld);
+    const boxWidth = Math.max(1, x1 - x0);
+    const boxHeight = Math.max(1, y1 - y0);
+    svg.attr('viewBox', `${x0} ${y0} ${boxWidth} ${boxHeight}`);
+
     // Ocean / canvas — gives the choropleth a frame instead of bleeding
-    // into the page background.
+    // into the page background. Matches the cropped viewBox, not the
+    // nominal constants.
     svg
       .append('rect')
-      .attr('width', width)
-      .attr('height', height)
+      .attr('x', x0)
+      .attr('y', y0)
+      .attr('width', boxWidth)
+      .attr('height', boxHeight)
       .attr('fill', '#f8fafc')
       .attr('rx', 0);
 
@@ -56,7 +117,7 @@ const MapRenderer = memo(function MapRenderer({
     // Add countries
     const countries = gSel
       .selectAll('path')
-      .data(worldData.features)
+      .data(visibleWorld.features)
       .enter()
       .append('path')
       .attr('d', (d) => path(d as Feature<Geometry>) || '')
@@ -170,6 +231,8 @@ const MapRenderer = memo(function MapRenderer({
     gRef,
   ]);
 
+  // viewBox below is the initial value only — the effect replaces it with the
+  // drawn content's projected bounds so the map crops tight, not letterboxed.
   return (
     <svg
       ref={svgRef}
