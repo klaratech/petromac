@@ -8,8 +8,14 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       "Respect origin TTL" (done Jul 2026 — cadence cache policy active; HTML
       kept out of edge cache)
 - [x] Cloudflare: Brotli confirmed on (Jul 2026)
-- [ ] Decide AI-crawler policy (Cloudflare currently blocks GPTBot/ClaudeBot/etc. —
-      trade-off: content protection vs. AI assistants knowing Petromac products)
+- [x] AI-crawler policy DECIDED + APPLIED (28 Jul): allow. Dashboard
+      agent set "Block AI bots" → do-not-block and disabled the managed
+      robots.txt; API confirms the zone is on the new policy model
+      (using_latest_model true) with ai/crawler/training/search/user
+      protections ALL disabled — incl. mixed-purpose crawlers, so the
+      legacy panel's "Sept 15" radio is moot. robots.txt verified clean
+      on the live domain. The API token now also carries Zone → Bot
+      Management, so this is API-manageable from klaratech-1.
 - [x] Microsoft Entra staff sign-in LIVE (Jul 2026) — app "Petromac Intranet",
       /intranet server-gated, sign-out lands on the homepage. Secret in
       1Password ("Petromac Entra Client Secret", renew ~Jul 2028).
@@ -100,16 +106,17 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       staff member's delegated Graph token persisted + refreshed server-side.
       App already reserved Mail.Send delegated. Default stays info@.
 
-- [ ] Cloudflare Turnstile on the contact form — CODE DONE (28 Jul):
-      lazy-loaded managed widget (renders only when
-      NEXT_PUBLIC_TURNSTILE_SITE_KEY is baked), backend siteverify check
-      (enforced only when TURNSTILE_SECRET_KEY set; fails open on
-      Cloudflare outages), CSP allows challenges.cloudflare.com,
-      Dockerfile/workflow build-arg wired. REMAINING (Rajesh, ~3 min): 1) Cloudflare dash → Turnstile → Add site (domains petromac.co.nz +
-      petromac.klaratech.it + localhost, mode Managed) → copy both keys; 2) GitHub repo variable NEXT_PUBLIC_TURNSTILE_SITE_KEY=<site key>; 3) TURNSTILE_SECRET_KEY=<secret> into .env-backend on the server
-      (I can do 3 via SSH once the key is in 1Password or pasted to me);
-      then push/redeploy. Until then the form runs exactly as before
-      (honeypot + timing).
+- [x] Cloudflare Turnstile LIVE on the contact form (28 Jul): lazy-loaded
+      managed widget (site key baked via repo variable
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY → Docker build-arg), backend
+      siteverify enforcement (TURNSTILE_SECRET_KEY in .env-backend,
+      added by Rajesh over SSH with hidden input; fails open on
+      Cloudflare outages, honeypot + timing + rate limits still apply),
+      CSP allows challenges.cloudflare.com. Widget "petromac" on the
+      Cloudflare account covers petromac.co.nz + klaratech.it +
+      localhost; local dev uses the official always-pass TEST keys in
+      .env.local. Optional hardening: drop "localhost" from the widget's
+      hostname list (dev never uses the real key).
 - [ ] PDF-email domain allowlist permits any address in an allowed domain —
       consider explicit recipient allowlist
 - [ ] staffAuth unit tests (highest-logic auth code, thin coverage)
