@@ -41,11 +41,38 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
      will have expired overnight) — homepage, catalog, track record,
      contact form
   - Days after activation: SPF trim to M365-only include, DMARC watch,
-    then -all; drop default.\_domainkey + link CNAME
+    then -all; drop default.\_domainkey + link CNAME. CAUTION (28 Jul):
+    the SPF currently ALSO authorises the ChemiCloud server + mailchannels
+    relay — scanners/printers and legacy mailboxes still send through
+    mail.petromac.co.nz. Do NOT trim those from SPF until that mail is
+    migrated to M365.
   - SSL Full (strict) once ChemiCloud hosting is retired
   - Revoke the old all-zones Cloudflare user token
   - (Optional hardening) enable DNSSEC: Cloudflare generates the DS,
     paste it at Crazy Domains
+- [x] Post-cutover DNS incident FIXED (28 Jul 2026): the DNS agent's zone
+      cleanup had deleted 13 live records → athena.petromac.co.nz, server
+      email (mail/webmail on the ChemiCloud box 172.232.197.9) and
+      scanner/printer relaying broke once caches expired. Restored from
+      the old authoritative zone (ns1.serverhostgroup.com still answered)
+      via the API: A athena→52.64.209.109; A mail/webmail/cpanel/
+      cpcalendars/cpcontacts/webdisk/whm/ftp→172.232.197.9; CNAME
+      lyncdiscover/sip; SRV \_sip.\_tls + \_sipfederationtls.\_tcp — all
+      DNS-only, TTL 300. Verified: athena 200, SMTP 587/465 + IMAP 993
+      open. Governance decided: Cloudflare is the SINGLE DNS home
+      (nameserver authority is all-or-nothing); the Crazy Domains panel
+      is an inert reference (it had drifted — portal/autoconfig/localhost
+      existed only in the panel, not the live zone); the other admin's
+      DNS changes route through Rajesh (or later: invite with a DNS-only
+      scoped role).
+- [ ] DO NOT CANCEL ChemiCloud until legacy mail is migrated: the box at
+      172.232.197.9 still hosts mail./webmail./cpanel mailboxes and the
+      scanner/printer SMTP relay (+ its IPs sit in the SPF). Cancelling
+      kills those. Sequence: migrate legacy mailboxes + device relay to
+      M365 → then cancel → then SPF trim + SSL Full (strict).
+- [ ] Sanity-check + clean up the Crazy Domains DNS panel against the
+      now-canonical Cloudflare zone (with the other admin), so the inert
+      panel doesn't mislead anyone again.
 - [ ] Re-prime kiosk tablets after the next deploy (SW cache changed)
 
 ## Security / hardening
@@ -93,7 +120,7 @@ cache rule. Remaining:
       `/case-studies/<slug>` (SSG, Article+Breadcrumb JSON-LD, sitemap,
       old root-level WP slugs 301-redirected, "Case Studies" in the main
       nav). Canonical content: `src/features/case-studies/content/
-    case-studies.json` (hand-editable — WordPress is gone; raw HTML
+  case-studies.json` (hand-editable — WordPress is gone; raw HTML
       mirror archived in `Website_Archive/oldsite-case-studies/`).
       Optional polish: per-study dates, more cross-links from product
       pages.
