@@ -294,6 +294,30 @@ cache rule. Remaining:
 - [ ] Generate the download/email PDF from `catalog.json` via an HTML print
       template (≤4 MB, tagged text, TOC) instead of shipping the print PDF
 
+## Track record
+
+- [x] French Guiana mislabelled as France (28 Jul, reported by a reviewer):
+      the map shaded a South American territory with a "France: 16
+      deployments" tooltip. Two causes, both fixed. (1) The source xlsx
+      records the Guyane Maritime work as "France" — legally true, but it
+      reads as metropolitan France. (2) world-50m has ONE France feature whose
+      MultiPolygon includes the overseas departments, so mainland Europe lit
+      up as well. Fix: split poly 9 (lon -54.6..-51.7, lat 2.1..5.8 —
+      identified by decoding each polygon's bbox) out of France into its own
+      `French Guiana` Polygon feature, id 254; France keeps Corsica, the
+      mainland, Mayotte, Réunion, Martinique and Guadeloupe. Added
+      `"France": "French Guiana"` to `COUNTRY_NORMALIZATION` so a pipeline
+      re-run keeps the rename, and applied it to the 18 committed rows in
+      operations_data.json + operations_full.json (the source xlsx isn't in
+      the repo, so the generated files needed patching directly).
+      Matching is by `properties.name`, so no id lookup needed updating.
+      Verified via the map's own `calculateCountryStats`: French Guiana 16
+      deployments, France absent (renders unshaded), Guyana unchanged at 58.
+      NOTE: if Petromac ever logs a well in metropolitan France, that alias
+      has to become conditional rather than blanket.
+- [ ] Check the source xlsx uses "French Guiana" at source, so the alias
+      becomes redundant rather than load-bearing.
+
 ## Kiosk review (full pass) — OPEN, keep adding here
 
 Standing home for ALL kiosk work. There is a lot to do on the trade-show
