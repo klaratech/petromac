@@ -4,9 +4,12 @@ import { caseStudies } from './content';
 import {
   buildCaseStudyOptions,
   filterCaseStudies,
+  isMajorServiceCompany,
   isQueryActive,
   normalizeCategory,
+  OTHER_COMPANY,
   pageNumbersFor,
+  SERVICE_COMPANIES,
 } from './filters';
 
 // ── category normalisation (the tags.csv typo) ──────────────────────────
@@ -85,6 +88,52 @@ test('isQueryActive ignores blank text', () => {
   assert.equal(isQueryActive({ text: '   ' }), false);
   assert.equal(isQueryActive({ text: 'ledge' }), true);
   assert.equal(isQueryActive({ region: 'APAC' }), true);
+  assert.equal(isQueryActive({ company: 'SLB' }), true);
+});
+
+// ── service company (majors + Other) ───────────────────────────────────
+
+test('company options name the majors and bucket the rest as Other', () => {
+  const { companies } = buildCaseStudyOptions(caseStudies);
+  assert.deepEqual(
+    companies.map((c) => c.label),
+    ['SLB', 'Halliburton', 'Baker Hughes', 'Other']
+  );
+  // Every story is accounted for exactly once across the four buckets.
+  assert.equal(
+    companies.reduce((sum, c) => sum + c.count, 0),
+    caseStudies.length
+  );
+});
+
+test('major company filter matches only that company', () => {
+  const slb = filterCaseStudies(caseStudies, { company: 'SLB' });
+  assert.ok(slb.length > 0);
+  assert.ok(slb.every((cs) => cs.wirelineCompany.toUpperCase() === 'SLB'));
+
+  // "hal" as free text over-matches ("challenging", "shallow"); the filter
+  // must not — that's the whole reason it exists.
+  const hal = filterCaseStudies(caseStudies, { company: 'HAL' });
+  assert.ok(hal.every((cs) => cs.wirelineCompany.toUpperCase() === 'HAL'));
+  assert.ok(hal.length < filterCaseStudies(caseStudies, { text: 'hal' }).length);
+});
+
+test('Other excludes all three majors and is non-empty', () => {
+  const other = filterCaseStudies(caseStudies, { company: OTHER_COMPANY });
+  assert.ok(other.length > 0, 'expected at least one non-major operator');
+  assert.ok(other.every((cs) => !isMajorServiceCompany(cs.wirelineCompany)));
+  assert.ok(other.every((cs) => cs.wirelineCompany.trim() !== ''));
+});
+
+test('the four company buckets partition the set with no overlap', () => {
+  const seen = new Set<string>();
+  for (const value of [...SERVICE_COMPANIES.map((c) => c.code), OTHER_COMPANY]) {
+    for (const cs of filterCaseStudies(caseStudies, { company: value })) {
+      assert.ok(!seen.has(cs.slug), `${cs.slug} matched two company buckets`);
+      seen.add(cs.slug);
+    }
+  }
+  assert.equal(seen.size, caseStudies.length);
 });
 
 // ── page numbers for the filtered PDF ──────────────────────────────────

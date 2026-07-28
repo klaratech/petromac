@@ -11,6 +11,34 @@ export interface CaseStudyQuery {
   region?: string;
   category?: string;
   device?: string;
+  /** A code from SERVICE_COMPANIES, or OTHER_COMPANY. */
+  company?: string;
+}
+
+/**
+ * Service company filter. The `WL Co` column holds SLB / HAL / BHI plus the
+ * occasional one-off (Geoplex today), so the majors get named options and
+ * everything else falls under "Other" — otherwise the dropdown grows a
+ * single-story entry every time an unusual operator appears.
+ */
+export const OTHER_COMPANY = '__other__';
+
+export const SERVICE_COMPANIES: { code: string; label: string }[] = [
+  { code: 'SLB', label: 'SLB' },
+  { code: 'HAL', label: 'Halliburton' },
+  { code: 'BHI', label: 'Baker Hughes' },
+];
+
+const MAJOR_CODES = SERVICE_COMPANIES.map((c) => c.code);
+
+export function isMajorServiceCompany(raw: string): boolean {
+  return MAJOR_CODES.includes(raw.trim().toUpperCase());
+}
+
+function matchesCompany(cs: CaseStudy, company: string): boolean {
+  const value = cs.wirelineCompany.trim().toUpperCase();
+  if (company === OTHER_COMPANY) return value !== '' && !MAJOR_CODES.includes(value);
+  return value === company.trim().toUpperCase();
 }
 
 /**
@@ -44,7 +72,25 @@ export function buildCaseStudyOptions(studies: CaseStudy[]) {
     regions: tally(studies.map((s) => s.region)),
     categories: tally(studies.flatMap(caseStudyCategories)),
     devices: tally(studies.map((s) => s.device)),
+    companies: buildCompanyOptions(studies),
   };
+}
+
+/** Named majors that actually appear, then "Other" if anything else does. */
+export function buildCompanyOptions(
+  studies: CaseStudy[]
+): { value: string; label: string; count: number }[] {
+  const options = SERVICE_COMPANIES.map(({ code, label }) => ({
+    value: code,
+    label,
+    count: studies.filter((s) => matchesCompany(s, code)).length,
+  })).filter((o) => o.count > 0);
+
+  const otherCount = studies.filter((s) => matchesCompany(s, OTHER_COMPANY)).length;
+  if (otherCount > 0) {
+    options.push({ value: OTHER_COMPANY, label: 'Other', count: otherCount });
+  }
+  return options;
 }
 
 /** Free-text haystack: title, place, product, company, categories, narrative. */
@@ -75,6 +121,7 @@ export function filterCaseStudies(studies: CaseStudy[], query: CaseStudyQuery): 
     if (query.region && cs.region !== query.region) return false;
     if (query.device && cs.device !== query.device) return false;
     if (query.category && !caseStudyCategories(cs).includes(query.category)) return false;
+    if (query.company && !matchesCompany(cs, query.company)) return false;
     if (terms.length > 0) {
       const hay = haystack(cs);
       if (!terms.every((t) => hay.includes(t))) return false;
@@ -85,7 +132,11 @@ export function filterCaseStudies(studies: CaseStudy[], query: CaseStudyQuery): 
 
 export function isQueryActive(query: CaseStudyQuery): boolean {
   return Boolean(
-    (query.text && query.text.trim() !== '') || query.region || query.category || query.device
+    (query.text && query.text.trim() !== '') ||
+    query.region ||
+    query.category ||
+    query.device ||
+    query.company
   );
 }
 

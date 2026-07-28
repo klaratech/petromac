@@ -121,20 +121,23 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
           </div>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="sm:col-span-2 lg:col-span-1">
-            <label htmlFor="cs-search" className={labelClass}>
-              Search
-            </label>
-            <input
-              id="cs-search"
-              type="search"
-              value={query.text ?? ''}
-              onChange={(e) => set('text', e.target.value)}
-              placeholder="e.g. ledge, world record, CCS"
-              className={selectClass}
-            />
-          </div>
+        {/* Search gets its own line — it's the broadest way in and reads badly
+            squeezed beside three dropdowns. The four filters sit under it. */}
+        <div className="mt-4">
+          <label htmlFor="cs-search" className={labelClass}>
+            Search
+          </label>
+          <input
+            id="cs-search"
+            type="search"
+            value={query.text ?? ''}
+            onChange={(e) => set('text', e.target.value)}
+            placeholder="e.g. ledge, world record, CCS"
+            className={selectClass}
+          />
+        </div>
+
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label htmlFor="cs-region" className={labelClass}>
               Region
@@ -189,13 +192,37 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
               ))}
             </select>
           </div>
+          <div>
+            <label htmlFor="cs-company" className={labelClass}>
+              Service company
+            </label>
+            <select
+              id="cs-company"
+              value={query.company ?? ''}
+              onChange={(e) => set('company', e.target.value)}
+              className={selectClass}
+            >
+              <option value="">All companies</option>
+              {options.companies.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label} ({o.count})
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3" aria-live="polite">
-          <p className="text-sm text-slate-500">
-            {results.length === studies.length
-              ? `All ${studies.length} stories`
-              : `${results.length} of ${studies.length} ${results.length === 1 ? 'story' : 'stories'}`}
+        {/* No running total: whether it's 46 or 56 tells nobody anything, and
+            it dates the page. The only count worth stating is zero, handled by
+            the empty state below. The Download label carries the number where
+            it's actually actionable. */}
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-slate-500">
+            For the aggregate picture, see the{' '}
+            <Link href="/track-record" className="font-medium text-brand hover:underline">
+              track record
+            </Link>
+            .
           </p>
           {active && (
             <button
@@ -237,15 +264,22 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
                     </span>
                   )}
                 </div>
+                {/* No "Read the case study" line: the whole card is the link,
+                    and 46 repetitions of the same sentence is wallpaper. The
+                    affordance is the title colouring on hover plus an arrow
+                    that slides — always visible, so it works on touch too. */}
                 <h3 className="font-heading text-lg font-bold text-slate-900 leading-snug group-hover:text-brand transition-colors">
                   {cs.title}
+                  <span
+                    aria-hidden="true"
+                    className="ml-1.5 inline-block align-baseline text-base font-normal text-brand transition-transform duration-200 group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
                 </h3>
                 <p className="mt-2 text-sm text-slate-600 leading-relaxed line-clamp-3">
                   {cs.metaDescription}
                 </p>
-                <span className="mt-auto pt-4 text-sm font-semibold text-brand">
-                  Read the case study →
-                </span>
               </Link>
             </li>
           ))}

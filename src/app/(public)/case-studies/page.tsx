@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { caseStudies } from '@/features/case-studies/content';
 import CaseStudiesBrowser from '@/components/public/case-studies/CaseStudiesBrowser';
 import { pageMetadata } from '@/lib/seo';
@@ -24,12 +23,8 @@ export default function CaseStudiesPage() {
             Case Studies
           </h1>
           <p className="text-slate-600 leading-relaxed">
-            What the well demanded, how the tool string was configured, and what the logs show —
-            well by well, worldwide. For the aggregate picture, see the{' '}
-            <Link href="/track-record" className="text-brand font-medium hover:underline">
-              track record
-            </Link>
-            .
+            Success stories from the field, worldwide — demanding well programmes and the
+            innovations that delivered them.
           </p>
         </header>
 
