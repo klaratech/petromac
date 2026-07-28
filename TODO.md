@@ -151,15 +151,14 @@ case-studies.json` (hand-editable — WordPress is gone; raw HTML
       mirror archived in `Website_Archive/oldsite-case-studies/`).
       Optional polish: per-study dates, more cross-links from product
       pages.
-- [ ] Success-stories → individual case-study pages (idea 28 Jul,
-      scouted): the flipbook PDF holds 46 tagged one-page stories
-      (tags.csv: Year/Area/Country/WL Co/Category/Device/Page; PDF text
-      extracts cleanly). Plan: extract + overlap-report vs the 21
-      existing case studies first, then merge duplicates / add ~35 new
-      pages under /case-studies with page image + extracted text +
-      Article JSON-LD. Thin-content caveat: one PDF page ≈ 150–250
-      words — needs the full structured treatment to be worth indexing.
-      A new PDF edition regenerates via tags.csv. AWAITING GO.
+- [x] Success-stories → case-study pages DONE (28 Jul): all 46 flipbook
+      stories now render as /case-studies pages (median ~240 words +
+      C/S/R + the published page image). The 21 WP-duplicates keep their
+      old slugs (zero redirect churn); 25 new slugs added, incl. CCS,
+      geothermal, Helix/Rocker stories. Old WP-era content + its 28
+      images deleted per Rajesh. Regeneration:
+      `scripts/python/build_case_studies.py` (new edition → add NEW_SLUG
+      entries, review TITLE_OVERRIDE).
 - [ ] MapRenderer: split base path generation from style updates so filter
       clicks restyle instead of rebuilding all ~244 paths (from the Jul 2026
       audit; deferred — delicate component, clicks already debounced)

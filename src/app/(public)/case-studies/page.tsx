@@ -6,11 +6,15 @@ import { pageMetadata } from '@/lib/seo';
 export const metadata: Metadata = pageMetadata({
   title: 'Case Studies',
   description:
-    'Field-proven results from Petromac wireline conveyance: world-record deviations, rig-time savings, and data-quality wins across 13 countries.',
+    'Field-proven results from Petromac wireline conveyance and centralisation: world-record deviations, rig-time savings, and data-quality wins worldwide.',
   path: '/case-studies',
 });
 
 export default function CaseStudiesPage() {
+  // Newest stories first — year is null for a handful of undated ones,
+  // which sort after the dated ones in original page order.
+  const ordered = [...caseStudies].sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+
   return (
     <div className="bg-white">
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -19,12 +23,13 @@ export default function CaseStudiesPage() {
             Case Studies
           </h1>
           <p className="text-slate-600 leading-relaxed">
-            Field stories from operations worldwide — what the well demanded, how the tool string
-            was configured, and what the logs show. For the aggregate picture, see the{' '}
+            {caseStudies.length} field stories from operations worldwide — what the well demanded,
+            how the tool string was configured, and what the logs show. For the aggregate picture,
+            see the{' '}
             <Link href="/track-record" className="text-brand font-medium hover:underline">
               track record
-            </Link>{' '}
-            and the{' '}
+            </Link>
+            ; to read the stories as published, open the{' '}
             <Link
               href="/success-stories/flipbook"
               className="text-brand font-medium hover:underline"
@@ -36,7 +41,7 @@ export default function CaseStudiesPage() {
         </header>
 
         <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {caseStudies.map((cs) => (
+          {ordered.map((cs) => (
             <li key={cs.slug}>
               <Link
                 href={`/case-studies/${cs.slug}`}
@@ -46,14 +51,14 @@ export default function CaseStudiesPage() {
                   <span className="rounded-full bg-brand/10 px-2.5 py-0.5 font-semibold text-brand">
                     {cs.country}
                   </span>
-                  {cs.products.map((p) => (
-                    <span
-                      key={p}
-                      className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600"
-                    >
-                      {p}
+                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
+                    {cs.device}
+                  </span>
+                  {cs.year && (
+                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
+                      {cs.year}
                     </span>
-                  ))}
+                  )}
                 </div>
                 <h2 className="font-heading text-lg font-bold text-slate-900 leading-snug group-hover:text-brand transition-colors">
                   {cs.title}

@@ -75,6 +75,14 @@ You can update just one flipbook — drop only a catalog PDF and success stories
 is left untouched, and vice versa. `pnpm run data` does flipbooks and
 operations together.
 
+**Case-study pages (after a success-stories update):** the `/case-studies`
+pages are generated FROM the flipbook — after step 2, run
+`python3 scripts/python/build_case_studies.py` to regenerate
+`src/features/case-studies/content/case-studies.json`. New stories in the
+edition need a `NEW_SLUG` entry in that script (it fails loudly on an
+unmapped page); existing slugs are frozen (indexed URLs + redirects).
+Skim the regenerated titles for PDF text-order gloms (`TITLE_OVERRIDE`).
+
 ---
 
 ## 2b. HTML catalog (`/catalog` page content)

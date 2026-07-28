@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { caseStudies, getCaseStudy, imageAlt } from '@/features/case-studies/content';
+import { caseStudies, getCaseStudy } from '@/features/case-studies/content';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 import { pageMetadata } from '@/lib/seo';
 
@@ -20,16 +20,15 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { slug } = await params;
   const cs = getCaseStudy(slug);
   if (!cs) return {};
-  const firstImage = cs.body.find((b) => b.type === 'image');
   return pageMetadata({
     title: cs.title,
     description: cs.metaDescription,
     path: `/case-studies/${slug}`,
-    ogImage: firstImage && {
-      url: firstImage.src,
-      width: firstImage.width,
-      height: firstImage.height,
-      alt: imageAlt(cs, firstImage.src),
+    ogImage: {
+      url: cs.image.src,
+      width: cs.image.width,
+      height: cs.image.height,
+      alt: `${cs.title} — published success story`,
     },
   });
 }
@@ -64,12 +63,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
     headline: cs.title,
     description: cs.metaDescription,
     url: absoluteUrl(`/case-studies/${cs.slug}`),
-    image: cs.body
-      .filter((b) => b.type === 'image')
-      .map((b) => absoluteUrl((b as { src: string }).src)),
+    image: [absoluteUrl(cs.image.src)],
     author: { '@type': 'Organization', name: 'Petromac' },
     publisher: { '@type': 'Organization', name: 'Petromac' },
-    about: cs.products.map((p) => ({ '@type': 'Product', name: p })),
+    about: [{ '@type': 'Product', name: cs.device, brand: { '@type': 'Brand', name: 'Petromac' } }],
   };
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -109,47 +106,58 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             <span className="rounded-full bg-brand/10 px-2.5 py-0.5 font-semibold text-brand">
               {cs.country}
             </span>
-            {cs.products.map((p) => (
+            <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
+              {cs.device}
+            </span>
+            {cs.categories.map((c) => (
               <span
-                key={p}
+                key={c}
                 className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600"
               >
-                {p}
+                {c}
               </span>
             ))}
+            {cs.year && (
+              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
+                {cs.year}
+              </span>
+            )}
           </div>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-            {cs.title}
-          </h1>
-          <p className="text-lg text-slate-600 leading-relaxed">{cs.headline}</p>
+          <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900">{cs.title}</h1>
         </header>
 
         <div className="grid lg:grid-cols-[1fr_320px] gap-10 lg:gap-14 items-start">
-          {/* Narrative: paragraphs interleaved with log/figure images */}
-          {/* First image is usually the LCP — preload it via priority. */}
-          <div className="space-y-6">
-            {cs.body.map((block) =>
-              block.type === 'paragraph' ? (
-                <p key={block.text.slice(0, 48)} className="text-slate-600 leading-relaxed">
-                  {block.text}
+          <div>
+            {/* Narrative */}
+            <div className="space-y-5 mb-10">
+              {cs.narrative.map((p) => (
+                <p key={p.slice(0, 48)} className="text-slate-600 leading-relaxed">
+                  {p}
                 </p>
-              ) : (
-                <figure
-                  key={block.src}
-                  className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+              ))}
+            </div>
+
+            {/* The published story page — carries the figures and logs */}
+            <figure className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <Image
+                src={cs.image.src}
+                alt={`${cs.title} — published success story with figures`}
+                width={cs.image.width}
+                height={cs.image.height}
+                className="w-full h-auto object-contain"
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                priority
+              />
+              <figcaption className="mt-3 text-center text-sm text-slate-500">
+                As published in the Petromac success stories collection —{' '}
+                <Link
+                  href="/success-stories/flipbook"
+                  className="font-medium text-brand hover:underline"
                 >
-                  <Image
-                    src={block.src}
-                    alt={imageAlt(cs, block.src)}
-                    width={block.width}
-                    height={block.height}
-                    className="w-full h-auto object-contain"
-                    sizes="(max-width: 1024px) 100vw, 60vw"
-                    priority={block === cs.body.find((b) => b.type === 'image')}
-                  />
-                </figure>
-              )
-            )}
+                  browse the full collection
+                </Link>
+              </figcaption>
+            </figure>
           </div>
 
           <aside className="space-y-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 lg:sticky lg:top-24">
