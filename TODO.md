@@ -381,6 +381,40 @@ cache rule. Remaining:
       Contact address stays `info@petromac.co.nz` for privacy and terms
       (confirmed — it's monitored).
 
+## Cloudflare edge caching
+
+- [x] `/data/*.json` and `/_next/image` now edge-cached (28 Jul). Both returned
+      `cf-cache-status: DYNAMIC`, so every visitor hit the Hetzner origin —
+      Cloudflare doesn't cache `.json` by default, and doesn't cache
+      query-string URLs like `/_next/image?url=…&w=…&q=…` without a rule. Found
+      by reading response headers; Lighthouse cannot see this.
+      Two Cache Rules created (zone `petromac.co.nz`, Caching → Cache Rules):
+      `Edge cache data JSON` — path starts with `/data/` and ends with `.json`;
+      `Edge cache Next image optimizer` — path equals `/_next/image`. Both
+      Eligible for cache, Edge TTL "use cache-control header if present, bypass
+      if not" (= `edge_ttl.mode: respect_origin`; there is NO option literally
+      labelled "Respect origin TTL" on Edge TTL, unlike Browser TTL which does
+      have one and defaults to **Bypass cache** — so leaving Browser TTL
+      untouched would have set browser bypass). Cache Key left at default,
+      which matters for `/_next/image`: the query string must stay in the key.
+      Verified independently: operations_data.json HIT, country_labels.json HIT
+      (so the rule covers all `/data/*.json`), and `w=256` HIT while `w=640`
+      MISS — proving the query string is in the cache key. Untouched classes
+      unchanged: `/_next/static/*` still HIT, homepage HTML still DYNAMIC by
+      design. The API token on klaratech-1 CANNOT write Cache Rules
+      ("request is not authorized") — it has DNS/settings/bots but not Cache
+      Rules; this was done via the dashboard.
+      Also closed two unknowns while in there: **zero Page Rules** exist (so
+      nothing legacy overrides these), and the zone-owned redirect ruleset from
+      27 Jul is just "Apex to www (canonical)" — a 301 from the cutover.
+- [ ] Zone **Browser Cache TTL is 14400 (4 h)**, but docs/DECISIONS say it
+      should be "Respect Existing Headers" — otherwise Cloudflare overrides the
+      cadence-based `max-age` values set in `next.config.ts` for browsers.
+      Confirmed unchanged at 14400 twice. Worth deciding: either set it to
+      Respect Existing Headers, or update the docs to match reality. Note the
+      new Cache Rules set Browser TTL to respect-origin for their own paths, so
+      this now only affects everything else.
+
 ## Performance regression — FIX FIRST (28 Jul)
 
 - [ ] **Homepage perf 89 → 68, LCP 3.8s → 6.6s, FCP 1.1s → 3.0s** (mobile,
