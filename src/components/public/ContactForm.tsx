@@ -20,6 +20,9 @@ export default function ContactForm() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error' | 'verify-failed'>(
     'idle'
   );
+  // Server-provided reason for a rejected submission (e.g. "message too
+  // short") — shown instead of the generic error when available.
+  const [serverError, setServerError] = useState<string | null>(null);
   const formStartTimeRef = useRef(0);
   // Turnstile tokens are single-use — reset after every submit attempt.
   const turnstileResetRef = useRef<(() => void) | null>(null);
@@ -61,15 +64,18 @@ export default function ContactForm() {
 
       if (response.ok && result.ok) {
         setSubmitStatus('success');
+        setServerError(null);
         setFormData({ name: '', email: '', message: '' });
         formStartTimeRef.current = Date.now();
       } else if (response.status === 403) {
         // Turnstile token missing/stale — a fresh widget pass usually fixes it.
         setSubmitStatus('verify-failed');
       } else {
+        setServerError(result.error ?? null);
         setSubmitStatus('error');
       }
     } catch {
+      setServerError(null);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -140,6 +146,7 @@ export default function ContactForm() {
           name="message"
           required
           aria-required="true"
+          minLength={10}
           maxLength={5000}
           rows={6}
           value={formData.message}
@@ -200,7 +207,7 @@ export default function ContactForm() {
             role="alert"
             className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300"
           >
-            Something went wrong. Please try again, or email us directly at{' '}
+            {serverError ?? 'Something went wrong.'} Please try again, or email us directly at{' '}
             <a href="mailto:info@petromac.co.nz" className="font-medium underline">
               info@petromac.co.nz
             </a>

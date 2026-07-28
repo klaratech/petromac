@@ -440,8 +440,15 @@ async def submit_contact(request: Request):
     if timing < 3:
         return {"ok": True}
     # Name is optional on the form — only email + message are required.
-    if len(message) < 10 or "@" not in email:
-        return JSONResponse({"ok": False, "error": "Validation failed"}, status_code=400)
+    if "@" not in email:
+        return JSONResponse(
+            {"ok": False, "error": "Please enter a valid email address."}, status_code=400
+        )
+    if len(message) < 10:
+        return JSONResponse(
+            {"ok": False, "error": "Please write a few more words — messages need at least 10 characters."},
+            status_code=400,
+        )
     # Upper bounds: keep outbound emails sane and reject junk payloads.
     if len(name) > 200 or len(email) > 320 or len(message) > 10_000:
         return JSONResponse({"ok": False, "error": "Validation failed"}, status_code=400)
