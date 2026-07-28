@@ -37,23 +37,14 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       routes OK, contact form POST from the new origin returned ok (Graph
       delivery as info@). Old Crazy Domains DNS records left in place
       (inert — rollback snapshot). Staging petromac.klaratech.it unaffected.
-- [ ] **TOMORROW MORNING (28 Jul) — Rajesh's human tasks, in order:**
-  1. AI-bots toggle (decision = allow, so AI assistants can learn
-     Petromac products): Cloudflare dash → petromac.co.nz → Security →
-     Bots → set "AI Scrapers and Crawlers" to Do-not-block AND toggle
-     OFF "Manage AI bots with robots.txt". NOT doable via the current
-     API token (Bot Management is a separate permission — add Zone →
-     Bot Management → Edit to the token if preferred, then Claude can
-     flip it). Side effect when done: Lighthouse SEO 92 → ~100
-     site-wide (the managed robots.txt's Content-Signal directive is
-     what fails the robots.txt audit).
-  2. Google Search Console: add/verify www.petromac.co.nz property,
+- [ ] **Rajesh's remaining human tasks** (AI-bots toggle done 28 Jul —
+      see the AI-crawler item above):
+  1. Google Search Console: add/verify www.petromac.co.nz property,
      submit https://www.petromac.co.nz/sitemap.xml
-  3. Rich Results test (search.google.com/test/rich-results) on /,
+  2. Rich Results test (search.google.com/test/rich-results) on /,
      one product page, /about/publications
-  4. Quick browse of the live site from your own machine (DNS caches
-     will have expired overnight) — homepage, catalog, track record,
-     contact form
+  3. Quick browse of the live site — homepage, catalog, track record,
+     case studies, contact form (submit once to see Turnstile)
   - Days after activation: SPF trim to M365-only include, DMARC watch,
     then -all; drop default.\_domainkey + link CNAME. CAUTION (28 Jul):
     the SPF currently ALSO authorises the ChemiCloud server + mailchannels
@@ -102,18 +93,20 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       AND move them to the production domain while at it: set the launch
       URL to https://www.petromac.co.nz/intranet/kiosk?sd=1, sign in,
       re-prime, verify offline.
-- [ ] Retire petromac.klaratech.it — IN PROGRESS (28 Jul, Rajesh
-      approved doing it before the tablet re-prime; tablets will be
-      re-primed on the production URL later): - ✅ repo scrubbed (README/DEPLOY/ADMIN/EMAIL_SETUP/Entra-setup
-      docs/.env.example now reference www.petromac.co.nz; siteUrl.ts
-      DEFAULT_SITE_URL → http://localhost:3000) - ✅ Entra redirect URI removal + Turnstile hostname removal
-      (Rajesh, dashboard) - ⏳ BLOCKED on SSH (Mac ssh-agent won't sign — 1Password?):
-      delete the petromac CNAME in the klaratech.it zone, remove the
-      three klaratech.it ingress rules from /etc/cloudflared/config.yml
-      (+ restart cloudflared), drop the origin from ALLOWED_ORIGINS in
-      both server env files (+ docker compose up -d). Resume when SSH
-      works. - NOTE: until the server sweep lands, the hostname still serves
-      the production build — harmless (production canonicals).
+- [x] petromac.klaratech.it RETIRED (28 Jul 2026): repo scrubbed
+      (docs/.env.example → www.petromac.co.nz; siteUrl.ts default →
+      localhost); Entra redirect URI + Turnstile hostname removed
+      (Rajesh); server sweep done — three klaratech.it ingress rules
+      removed from /etc/cloudflared/config.yml (validated, restarted;
+      backup config.yml.bak-retire-_), ALLOWED_ORIGINS trimmed to the
+      production pair in both env files (backups .env-_.bak-retire),
+      petromac CNAME deleted from the klaratech.it zone. Verified:
+      www 200 / apex 301 / Turnstile enforcing / old hostname dead /
+      sibling klaratech apps unaffected. Tech Standards vault updated
+      (Infrastructure Inventory, Domains & Registrars, Service
+      Providers). REMINDER: kiosk tablets must be re-primed on
+      https://www.petromac.co.nz/intranet/kiosk?sd=1 — the old primed
+      origin no longer resolves (see re-prime item above).
 
 ## Security / hardening
 
