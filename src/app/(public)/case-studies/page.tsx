@@ -24,9 +24,8 @@ export default function CaseStudiesPage() {
             Case Studies
           </h1>
           <p className="text-slate-600 leading-relaxed">
-            {caseStudies.length} field stories from operations worldwide — what the well demanded,
-            how the tool string was configured, and what the logs show. Each one shows the story as
-            published, figures and logs included. For the aggregate picture, see the{' '}
+            What the well demanded, how the tool string was configured, and what the logs show —
+            well by well, worldwide. For the aggregate picture, see the{' '}
             <Link href="/track-record" className="text-brand font-medium hover:underline">
               track record
             </Link>
