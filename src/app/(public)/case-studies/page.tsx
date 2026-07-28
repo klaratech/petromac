@@ -18,8 +18,11 @@ export default function CaseStudiesPage() {
   return (
     <div className="bg-white">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <header className="max-w-3xl mb-8">
-          <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-3">
+        {/* No max-width on the header: the intro is meant to sit on ONE line at
+            desktop, which a max-w-3xl container forces to wrap. Tightened
+            bottom margin so the filter box sits higher up the page. */}
+        <header className="mb-5">
+          <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-2">
             Case Studies
           </h1>
           <p className="text-slate-600 leading-relaxed">

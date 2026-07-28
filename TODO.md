@@ -39,8 +39,16 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       (inert — rollback snapshot). Staging petromac.klaratech.it unaffected.
 - [ ] **Rajesh's remaining human tasks** (AI-bots toggle done 28 Jul —
       see the AI-crawler item above):
-  1. Google Search Console: add/verify www.petromac.co.nz property,
-     submit https://www.petromac.co.nz/sitemap.xml
+  1. Google Search Console — STILL OUTSTANDING (28 Jul). Sign in with a
+     PETROMAC Google account, not a personal one; add a **Domain** property
+     for petromac.co.nz (DNS TXT verification covers www + apex + subdomains
+     in one go — send me the TXT value and I'll add it to Cloudflare), then
+     submit https://www.petromac.co.nz/sitemap.xml (94 URLs). Not required for
+     indexing; what it buys is confirmation Google can index us, the search
+     queries people actually arrive on, deindexing alerts, re-index requests
+     (useful now that /success-stories/flipbook retired and 46 case-study URLs
+     appeared), and Core Web Vitals FIELD data — the right next step for perf
+     instead of chasing lab numbers.
   2. Rich Results test (search.google.com/test/rich-results) on /,
      one product page, /about/publications
   3. Quick browse of the live site — homepage, catalog, track record,
@@ -328,11 +336,29 @@ cache rule. Remaining:
       site doesn't have. GA4 sets cookies, so with EU visitors it would need a
       consent mechanism and a privacy rewrite: a much bigger job than the
       analytics itself.
-- [ ] **Rajesh: paste the token.** Cloudflare dashboard → Web Analytics → add
-      petromac.co.nz → copy the `token` from the JS snippet → set it as the
-      GitHub repo **variable** `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` (it's baked at
-      build time via Docker build-arg, same as the Turnstile site key), then
-      promote. Until then the site simply ships no analytics.
+- [x] Token wired end to end (28 Jul). Repo variable
+      `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` added. IMPORTANT gap found afterwards:
+      a repo variable alone does nothing — `NEXT_PUBLIC_*` values only reach a
+      Next build through Docker **build-args**, and this one was never plumbed.
+      Added `ARG`/`ENV` in the Dockerfile and the build-arg in
+      deploy-prod.yml. Verified locally: a production-identity build with the
+      token inlines `beacon.min.js` + the token into the HTML; without it, no
+      script ships at all. Deliberately NOT passed in deploy-staging.yml —
+      `WebAnalytics` already gates on `isProductionSite()` (verified false for
+      the test URL), and withholding the token is a second, unconditional
+      guard so our own testing can never reach the production numbers.
+- [ ] **DECISION NEEDED — two beacons.** Cloudflare's Web Analytics site is set
+      to "Enable, excluding visitor data in the EU", which AUTO-INJECTS the
+      beacon into proxied HTML. The app now ships its own beacon too, so
+      non-EU pageviews will be counted twice. Pick one:
+      (a) switch Cloudflare to "Enable with JS Snippet installation" and keep
+      the app's — RECOMMENDED, because it captures EU visitors too (Norway,
+      France, and EU prospects matter here) and excludes test.petromac; or
+      (b) delete `WebAnalytics.tsx` and rely on auto-injection — simpler, but
+      loses all EU data and counts test traffic.
+      Symptom to watch meanwhile: pageviews roughly double for non-EU regions.
+      (Note: a curl from Italy shows NO beacon on production, which is
+      consistent with the EU-exclusion setting rather than a fault.)
 - [x] Cookie audit (28 Jul): **no cookies on public pages** — verified with
       zero `Set-Cookie` headers on / and /catalog in production. The only
       cookies in the codebase are the three staff-auth ones

@@ -297,7 +297,10 @@ DEPLOY.md.
 `worker-src blob:` (three.js workers), `connect-src blob:` (GLTFLoader
 fetches blob: URLs for textures embedded in Draco GLBs — found by testing).
 **Why:** Everything is self-hosted (fonts via next/font, pdf.js worker at
-`/pdfjs/`, Draco at `/draco/`, no analytics), so a tight policy was cheap.
+`/pdfjs/`, Draco at `/draco/`), so a tight policy was cheap. Cloudflare Web
+Analytics (added 28 Jul 2026) is the one third-party script — it needs
+`static.cloudflareinsights.com` in `script-src` and `cloudflareinsights.com` in
+`connect-src`, or the beacon is blocked silently.
 Self-hosting the decoders is itself a rule: the kiosk must work offline, so
 no dependency may silently fall back to a CDN.
 

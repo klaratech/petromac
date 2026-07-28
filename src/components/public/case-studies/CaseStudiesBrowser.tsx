@@ -217,7 +217,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
             the empty state below. The Download label carries the number where
             it's actually actionable. */}
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs text-slate-500">
+          <p className="text-sm text-slate-500">
             For the aggregate picture, see the{' '}
             <Link href="/track-record" className="font-medium text-brand hover:underline">
               track record

@@ -75,6 +75,11 @@ jobs:
           build-args: |
             NEXT_PUBLIC_SITE_URL=https://test.petromac.co.nz
             NEXT_PUBLIC_TURNSTILE_SITE_KEY=${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+            # NEXT_PUBLIC_CF_ANALYTICS_TOKEN is deliberately NOT passed here.
+            # WebAnalytics.tsx already gates on isProductionSite(), so the
+            # beacon wouldn't render on test anyway — withholding the token is a
+            # second, unconditional guard, so our own testing can never land in
+            # the production numbers even if that gate is ever removed.
           tags: |
             ${{ steps.meta.outputs.image }}:staging
             ${{ steps.meta.outputs.image }}:staging-${{ steps.meta.outputs.short_sha }}
