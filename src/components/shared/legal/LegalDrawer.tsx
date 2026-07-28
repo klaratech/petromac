@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import PrivacyContent, { PRIVACY_TITLE } from "./PrivacyContent";
-import TermsContent, { TERMS_TITLE } from "./TermsContent";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import PrivacyContent, { PRIVACY_TITLE } from './PrivacyContent';
+import TermsContent, { TERMS_TITLE } from './TermsContent';
 
 /** Which legal document the drawer is showing, or null when closed. */
-export type LegalDoc = "privacy" | "terms" | null;
+export type LegalDoc = 'privacy' | 'terms' | null;
 
-const TITLES: Record<"privacy" | "terms", string> = {
+const TITLES: Record<'privacy' | 'terms', string> = {
   privacy: PRIVACY_TITLE,
   terms: TERMS_TITLE,
 };
@@ -22,13 +22,7 @@ const TITLES: Record<"privacy" | "terms", string> = {
  *
  * Controlled component: parent owns the `doc` state and `onClose`.
  */
-export default function LegalDrawer({
-  doc,
-  onClose,
-}: {
-  doc: LegalDoc;
-  onClose: () => void;
-}) {
+export default function LegalDrawer({ doc, onClose }: { doc: LegalDoc; onClose: () => void }) {
   const open = doc !== null;
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -38,8 +32,7 @@ export default function LegalDrawer({
   // content doesn't vanish mid-slide. This is the React-sanctioned "adjust
   // state during render" pattern: when a new doc opens we sync immediately,
   // but when `doc` goes null on close we keep showing the previous one.
-  const [rendered, setRendered] =
-    useState<Exclude<LegalDoc, null>>("privacy");
+  const [rendered, setRendered] = useState<Exclude<LegalDoc, null>>('privacy');
   if (doc !== null && doc !== rendered) {
     setRendered(doc);
   }
@@ -51,14 +44,14 @@ export default function LegalDrawer({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         onClose();
         return;
       }
       // Lightweight focus trap: keep Tab focus within the panel.
-      if (e.key === "Tab" && panelRef.current) {
+      if (e.key === 'Tab' && panelRef.current) {
         const focusable = panelRef.current.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
         );
         if (focusable.length === 0) return;
         const first = focusable[0];
@@ -72,18 +65,18 @@ export default function LegalDrawer({
         }
       }
     },
-    [onClose],
+    [onClose]
   );
 
   useEffect(() => {
     if (!open) return;
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
     const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     // Move focus into the drawer for keyboard and screen-reader users.
     const t = window.setTimeout(() => closeRef.current?.focus(), 50);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = prevOverflow;
       window.clearTimeout(t);
     };
@@ -94,13 +87,17 @@ export default function LegalDrawer({
   return (
     <div
       aria-hidden={!open}
-      className={`fixed inset-0 z-[100] ${open ? "" : "pointer-events-none"}`}
+      // inert keeps the closed drawer's links/buttons out of the tab order —
+      // aria-hidden alone leaves focusable descendants reachable (axe:
+      // aria-hidden-focus).
+      inert={!open}
+      className={`fixed inset-0 z-[100] ${open ? '' : 'pointer-events-none'}`}
     >
       {/* Backdrop */}
       <div
         onClick={onClose}
         className={`absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 ${
-          open ? "opacity-100" : "opacity-0"
+          open ? 'opacity-100' : 'opacity-0'
         }`}
       />
 
@@ -111,18 +108,14 @@ export default function LegalDrawer({
         aria-modal="true"
         aria-label={title}
         className={`absolute right-0 top-0 flex h-full w-full max-w-xl flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
-          open ? "translate-x-0" : "translate-x-full"
+          open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Sticky header */}
         <div className="flex flex-shrink-0 items-center justify-between gap-4 border-b border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand">
-              Legal
-            </p>
-            <h2 className="truncate font-heading text-xl font-bold text-slate-900">
-              {title}
-            </h2>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand">Legal</p>
+            <h2 className="truncate font-heading text-xl font-bold text-slate-900">{title}</h2>
           </div>
           <button
             ref={closeRef}
@@ -130,13 +123,7 @@ export default function LegalDrawer({
             aria-label="Close"
             className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand"
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              aria-hidden="true"
-            >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
               <path
                 d="M4 4l10 10M14 4L4 14"
                 stroke="currentColor"
@@ -148,11 +135,8 @@ export default function LegalDrawer({
         </div>
 
         {/* Scrollable body */}
-        <div
-          ref={bodyRef}
-          className="flex-1 overflow-y-auto overscroll-contain px-6 py-6 sm:px-8"
-        >
-          {rendered === "privacy" ? <PrivacyContent /> : <TermsContent />}
+        <div ref={bodyRef} className="flex-1 overflow-y-auto overscroll-contain px-6 py-6 sm:px-8">
+          {rendered === 'privacy' ? <PrivacyContent /> : <TermsContent />}
         </div>
       </div>
     </div>

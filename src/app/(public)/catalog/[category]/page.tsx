@@ -108,7 +108,7 @@ export default async function CatalogFamilyPage({ params }: { params: Promise<Pa
       <JsonLd data={breadcrumbSchema} />
       <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-400">
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
               <Link href="/catalog" className="hover:text-brand transition-colors">

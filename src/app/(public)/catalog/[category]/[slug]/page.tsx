@@ -117,7 +117,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
       <JsonLd data={breadcrumbSchema} />
       <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-400">
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
               <Link href="/catalog" className="hover:text-brand transition-colors">
@@ -311,7 +311,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
               href={productHref(prev)}
               className="group max-w-[48%] text-left text-sm text-slate-500 hover:text-brand transition-colors"
             >
-              <span className="block text-xs uppercase tracking-wider text-slate-400 mb-1">
+              <span className="block text-xs uppercase tracking-wider text-slate-500 mb-1">
                 ← Previous
               </span>
               <span className="font-heading font-semibold">{prev.name}</span>
@@ -324,7 +324,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
               href={productHref(next)}
               className="group max-w-[48%] text-right text-sm text-slate-500 hover:text-brand transition-colors"
             >
-              <span className="block text-xs uppercase tracking-wider text-slate-400 mb-1">
+              <span className="block text-xs uppercase tracking-wider text-slate-500 mb-1">
                 Next →
               </span>
               <span className="font-heading font-semibold">{next.name}</span>

@@ -90,7 +90,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
       <JsonLd data={articleSchema} />
       <JsonLd data={breadcrumbSchema} />
       <article className="max-w-7xl mx-auto px-6 py-10">
-        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-400">
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
               <Link href="/case-studies" className="hover:text-brand transition-colors">
@@ -126,8 +126,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
         <div className="grid lg:grid-cols-[1fr_320px] gap-10 lg:gap-14 items-start">
           {/* Narrative: paragraphs interleaved with log/figure images */}
+          {/* First image is usually the LCP — preload it via priority. */}
           <div className="space-y-6">
-            {cs.body.map((block, i) =>
+            {cs.body.map((block) =>
               block.type === 'paragraph' ? (
                 <p key={block.text.slice(0, 48)} className="text-slate-600 leading-relaxed">
                   {block.text}
@@ -144,7 +145,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                     height={block.height}
                     className="w-full h-auto object-contain"
                     sizes="(max-width: 1024px) 100vw, 60vw"
-                    priority={i === 0}
+                    priority={block === cs.body.find((b) => b.type === 'image')}
                   />
                 </figure>
               )

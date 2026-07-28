@@ -128,9 +128,12 @@ export default function Hero() {
             source only attaches when its box is on screen — a display:none
             element never intersects, so mobile never downloads the 1.9 MB
             loop; LazyVideo also skips attaching for reduced-motion users. */}
+        {/* No `poster` here: browsers fetch a video's poster even when the
+            element is display:none, so mobile paid a duplicate 116 KB
+            download. The priority Image above shows the identical frame
+            until the video plays. */}
         <LazyVideo
           src="/videos/hero/hero-loop.mp4"
-          poster="/videos/hero/hero-loop-poster.jpg"
           className="absolute inset-0 w-full h-full object-cover hidden md:block"
         />
       </div>
