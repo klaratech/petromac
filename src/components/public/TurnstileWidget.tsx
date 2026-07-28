@@ -55,10 +55,18 @@ function loadScript(): Promise<void> {
 export default function TurnstileWidget({
   resetRef,
   onVerified,
+  onToken,
 }: {
   resetRef?: React.MutableRefObject<(() => void) | null>;
   /** Called with true when a token is issued, false when it expires/errors. */
   onVerified?: ((_ok: boolean) => void) | undefined;
+  /**
+   * Called with the raw token (and '' when it expires/errors). Needed by the
+   * JSON APIs (`/api/email/send-pdf`), which must put the token in the request
+   * body — unlike the contact form, which posts FormData and so picks up the
+   * hidden `cf-turnstile-response` input Turnstile injects for free.
+   */
+  onToken?: ((_token: string) => void) | undefined;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -76,14 +84,24 @@ export default function TurnstileWidget({
           sitekey: SITE_KEY,
           theme: 'dark',
           appearance: 'always',
-          callback: () => onVerified?.(true),
-          'expired-callback': () => onVerified?.(false),
-          'error-callback': () => onVerified?.(false),
+          callback: (token: string) => {
+            onVerified?.(true);
+            onToken?.(token);
+          },
+          'expired-callback': () => {
+            onVerified?.(false);
+            onToken?.('');
+          },
+          'error-callback': () => {
+            onVerified?.(false);
+            onToken?.('');
+          },
         });
         if (resetRef) {
           resetRef.current = () => {
             if (widgetId && window.turnstile) window.turnstile.reset(widgetId);
             onVerified?.(false);
+            onToken?.('');
           };
         }
       } catch {
@@ -107,7 +125,7 @@ export default function TurnstileWidget({
       io.disconnect();
       if (resetRef) resetRef.current = null;
     };
-  }, [resetRef, onVerified]);
+  }, [resetRef, onVerified, onToken]);
 
   if (!SITE_KEY) return null;
   // role="group" is required for aria-label to be valid here — a bare div is

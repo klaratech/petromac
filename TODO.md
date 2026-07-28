@@ -174,40 +174,38 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       localhost; local dev uses the official always-pass TEST keys in
       .env.local. Optional hardening: drop "localhost" from the widget's
       hostname list (dev never uses the real key).
-- [ ] PDF-email hardening — REFRAMED (28 Jul) after reading the code. The
-      old note ("consider explicit recipient allowlist") is the WRONG
-      remedy: `/api/email/send-pdf` backs the PUBLIC catalog action
-      (`EmailPdfAction`, "Available to everyone", placeholder
-      `name@company.com`), so prospects type arbitrary addresses — an
-      explicit recipient allowlist would break the feature by design, and
-      a domain allowlist can only ever be too tight (real prospects 403) or
-      too loose.
-      **(a) CONFIRMED LIVE BUG (28 Jul)** — read from the server's
-      `/root/apps/petromac/.env-backend`:
-      `ALLOWED_EMAIL_DOMAINS=petromac.co.nz,petromac.com`, with
-      `ALLOWED_EMAIL_RECIPIENTS` unset. So `is_recipient_allowed()` permits
-      ONLY petromac addresses: EVERY real prospect using the public "Email
-      PDF" gets a 403, surfaced as the generic "Couldn't send. Please try
-      again." Staff-initiated sends are unaffected, which is why nobody
-      noticed — `/api/staff/send-pdf` (Next.js → Graph `/me/sendMail`)
-      never consults this allowlist, it only checks the address is
-      well-formed. NOT changed unilaterally: it is a production
-      email-security value AND a product decision. Rajesh picks:
-      (i) public self-service lead-gen → widen/remove the domain check for
-      this endpoint AND add Turnstile per (b), since widening is exactly
-      what makes the abuse vector real; or (ii) staff-only tool → gate the
-      button on a staff session so visitors never see an action that cannot
-      work for them.
-      **(b) Turnstile on this endpoint.** `verify_turnstile()` exists in
-      `backend/app/main.py` but is called ONLY from `/api/contact`
-      (line ~456). `/api/email/send-pdf` is unauthenticated with just
-      3 req/min/IP and mails a ~4 MB attachment — a spam/amplification
-      vector trading on Petromac's M365 sending reputation. Reuse the same
-      widget + siteverify the contact form already has;
-      `TURNSTILE_SECRET_KEY` is ALREADY set server-side, so no new secret
-      is needed. Attachment content is fixed (always the
-      catalog/success-stories PDF), so there is no data-exfiltration
-      angle — abuse potential only.
+- [x] PDF-email: public sends FIXED + hardened (28 Jul). The original note
+      ("consider explicit recipient allowlist") was the wrong remedy —
+      `/api/email/send-pdf` backs the PUBLIC catalog action
+      (`EmailPdfAction`, placeholder `name@company.com`), so prospects type
+      arbitrary addresses and a recipient allowlist would break the feature
+      by design. What was actually wrong, read off the server:
+      `ALLOWED_EMAIL_DOMAINS=petromac.co.nz,petromac.com` (recipients list
+      unset) meant `is_recipient_allowed()` permitted ONLY petromac
+      addresses, so **every real prospect got a 403** shown as the generic
+      "Couldn't send." Staff sends were unaffected — `/api/staff/send-pdf`
+      (Next.js → Graph `/me/sendMail`) never consults that allowlist — which
+      is exactly why it went unnoticed in testing.
+      Shipped, both halves together (widening alone would have opened an
+      abuse vector): - `is_recipient_allowed()` now accepts `*` in `ALLOWED_EMAIL_DOMAINS`
+      = any domain, and the server env is set to `*`. Unset behaviour
+      (default recipient only) and explicit narrow lists still work. - Turnstile now enforced on `/api/email/send-pdf`: `turnstileToken` on
+      `SendPdfRequest`, verified via the existing `verify_turnstile()`
+      BEFORE the PDF build/Graph send. Same semantics as the contact form
+      — fails CLOSED on a missing/bad token, OPEN on a siteverify outage,
+      no-op when `TURNSTILE_SECRET_KEY` is unset (dev/staging keep
+      working). Needed no new secret; it was already set server-side. - `TurnstileWidget` gained an `onToken` prop, because these endpoints
+      are JSON — unlike the contact form, which posts FormData and gets
+      the hidden `cf-turnstile-response` input for free. - Widget added to `EmailPdfAction` + `EmailPdfButton`, but ONLY on the
+      public path (`!canSendAsStaff`), so the kiosk never sees a CAPTCHA —
+      a staff session is the stronger check. `forcePublic` covers a staff
+      token lapsing mid-session: the send 401s, we fall back to public, and
+      the widget appears so the retry can carry a token. 12 s fail-open
+      grace + single-use token reset + a specific "verification didn't
+      complete" message on 403, matching the contact form.
+      Verified: allowlist exercised across wildcard / narrow / unset (narrow
+      reproduces the original bug), and the Turnstile gate confirmed to fail
+      closed with a secret set and open with none.
 - [x] staffAuth unit tests DONE (28 Jul): 19 tests — session cookie
       round-trip/expiry/tamper/wrong-secret, OAuth state TTL + nonce,
       timing-safe compare, Graph-token skew, config detection, cookie

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
 import { useStaffSession } from '@/hooks/useStaffSession';
+import TurnstileWidget, { turnstileConfigured } from '@/components/public/TurnstileWidget';
 
 const PDF_URL = '/flipbooks/catalog/petromac-product-catalog.pdf';
 
@@ -19,13 +20,35 @@ export default function EmailPdfAction() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [errorText, setErrorText] = useState('Couldn’t send. Please try again.');
+
+  // Turnstile guards only the PUBLIC info@ path — a signed-in staff send goes
+  // through /api/staff/send-pdf, where the session cookie is a stronger check
+  // than a CAPTCHA. `forcePublic` covers the rare case where the staff token
+  // lapses mid-session: the send 401s, we fall back to the public endpoint,
+  // and the widget has to appear so the retry can carry a token.
+  const [forcePublic, setForcePublic] = useState(false);
+  const needsTurnstile = turnstileConfigured && (!canSendAsStaff || forcePublic);
+  const turnstileResetRef = useRef<(() => void) | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
+  const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
+
+  // Same 12 s fail-open grace as the contact form: if the script is blocked or
+  // slow the button stops being held hostage, and the backend still enforces.
+  useEffect(() => {
+    if (!turnstileConfigured || !open) return;
+    const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
+    return () => window.clearTimeout(t);
+  }, [open]);
 
   const sender = canSendAsStaff && user ? user.email : 'info@petromac.co.nz';
+  const holdForVerification = needsTurnstile && !turnstileVerified && !turnstileGraceOver;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
-    const requestBody = JSON.stringify({ email, pdfUrl: PDF_URL, pdfType: 'catalog' });
+    const base = { email, pdfUrl: PDF_URL, pdfType: 'catalog' };
 
     try {
       let response: Response | null = null;
@@ -36,11 +59,14 @@ export default function EmailPdfAction() {
         const staffRes = await fetch('/api/staff/send-pdf', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: requestBody,
+          body: JSON.stringify(base),
         });
         if (staffRes.ok) {
           response = staffRes;
-        } else if (staffRes.status !== 401) {
+        } else if (staffRes.status === 401) {
+          // Public fallback now needs a Turnstile token; surface the widget.
+          setForcePublic(true);
+        } else {
           throw new Error('staff send failed');
         }
       }
@@ -49,9 +75,20 @@ export default function EmailPdfAction() {
         response = await fetch(buildClientApiUrl('/api/email/send-pdf'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: requestBody,
+          // Token only matters on this path — the backend ignores it otherwise.
+          body: JSON.stringify({ ...base, turnstileToken: turnstileToken || undefined }),
         });
-        if (!response.ok) throw new Error('send failed');
+        // Tokens are single-use: clear ours and re-arm the widget either way.
+        turnstileResetRef.current?.();
+        setTurnstileToken('');
+        if (response.status === 403) {
+          setErrorText('Verification didn’t complete. Please try again.');
+          throw new Error('turnstile rejected');
+        }
+        if (!response.ok) {
+          setErrorText('Couldn’t send. Please try again.');
+          throw new Error('send failed');
+        }
       }
 
       setStatus('sent');
@@ -110,10 +147,10 @@ export default function EmailPdfAction() {
         />
         <button
           type="submit"
-          disabled={status === 'sending'}
+          disabled={status === 'sending' || holdForVerification}
           className="shrink-0 rounded-lg bg-brand px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand/90 transition-colors disabled:bg-slate-300"
         >
-          {status === 'sending' ? 'Sending…' : 'Send'}
+          {status === 'sending' ? 'Sending…' : holdForVerification ? 'Verifying…' : 'Send'}
         </button>
         <button
           type="button"
@@ -141,10 +178,20 @@ export default function EmailPdfAction() {
           </svg>
         </button>
       </div>
+      {/* Human verification — only on the public info@ path, and only when a
+          site key is configured (so dev/kiosk-staff flows are untouched). */}
+      {needsTurnstile && (
+        <TurnstileWidget
+          resetRef={turnstileResetRef}
+          onVerified={setTurnstileVerified}
+          onToken={setTurnstileToken}
+        />
+      )}
+
       {status === 'sent' ? (
         <p className="text-xs text-emerald-600 font-medium">Sent!</p>
       ) : status === 'error' ? (
-        <p className="text-xs text-red-600">Couldn&apos;t send. Please try again.</p>
+        <p className="text-xs text-red-600">{errorText}</p>
       ) : (
         <p className="text-xs text-slate-400">Sends from {sender}</p>
       )}

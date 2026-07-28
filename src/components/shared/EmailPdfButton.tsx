@@ -1,8 +1,9 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
 import { useStaffSession } from '@/hooks/useStaffSession';
+import TurnstileWidget, { turnstileConfigured } from '@/components/public/TurnstileWidget';
 
 interface EmailPdfButtonProps {
   pdfUrl?: string;
@@ -34,6 +35,27 @@ export function EmailPdfButton({
   const { canSendAsStaff, user } = useStaffSession();
   const sender = canSendAsStaff && user ? user.email : 'info@petromac.co.nz';
 
+  // Turnstile guards only the PUBLIC info@ path — a signed-in staff send uses
+  // /api/staff/send-pdf, where the session cookie beats a CAPTCHA. On the
+  // kiosk (staff signed in) no widget appears at all. `forcePublic` handles a
+  // staff token lapsing mid-session: the send 401s, we fall back to the public
+  // endpoint, so the widget must appear for the retry to carry a token.
+  const [forcePublic, setForcePublic] = useState(false);
+  const needsTurnstile = turnstileConfigured && (!canSendAsStaff || forcePublic);
+  const turnstileResetRef = useRef<(() => void) | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
+  const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
+  const holdForVerification = needsTurnstile && !turnstileVerified && !turnstileGraceOver;
+
+  // 12 s fail-open grace, same as the contact form — a blocked/slow script
+  // must not permanently disable sending; the backend still enforces.
+  useEffect(() => {
+    if (!turnstileConfigured || !revealed) return;
+    const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
+    return () => window.clearTimeout(t);
+  }, [revealed]);
+
   const handleReveal = () => {
     if (disabled) return;
     setRevealed(true);
@@ -45,7 +67,8 @@ export function EmailPdfButton({
     setIsLoading(true);
     setMessage(null);
 
-    const requestBody = JSON.stringify({ email, pdfUrl, pdfType, ...payload });
+    const base = { email, pdfUrl, pdfType, ...payload };
+    let errorText = 'Failed to send. Please try again.';
 
     try {
       let response: Response | null = null;
@@ -57,11 +80,14 @@ export function EmailPdfButton({
         const staffRes = await fetch('/api/staff/send-pdf', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: requestBody,
+          body: JSON.stringify(base),
         });
         if (staffRes.ok) {
           response = staffRes;
-        } else if (staffRes.status !== 401) {
+        } else if (staffRes.status === 401) {
+          // Public fallback needs a Turnstile token — surface the widget.
+          setForcePublic(true);
+        } else {
           throw new Error('Failed to send email');
         }
       }
@@ -70,8 +96,16 @@ export function EmailPdfButton({
         response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: requestBody,
+          // Only meaningful on the public endpoint; ignored elsewhere.
+          body: JSON.stringify({ ...base, turnstileToken: turnstileToken || undefined }),
         });
+        // Tokens are single-use: drop ours and re-arm the widget either way.
+        turnstileResetRef.current?.();
+        setTurnstileToken('');
+        if (response.status === 403) {
+          errorText = 'Verification didn’t complete. Please try again.';
+          throw new Error('turnstile rejected');
+        }
       }
 
       if (!response.ok) {
@@ -85,7 +119,7 @@ export function EmailPdfButton({
         setMessage(null);
       }, 2000);
     } catch {
-      setMessage({ type: 'error', text: 'Failed to send. Please try again.' });
+      setMessage({ type: 'error', text: errorText });
     } finally {
       setIsLoading(false);
     }
@@ -136,10 +170,10 @@ export function EmailPdfButton({
 
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || holdForVerification}
                 className="h-8 w-8 flex items-center justify-center bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-green-300"
-                title="Send"
-                aria-label="Send"
+                title={holdForVerification ? 'Waiting for verification' : 'Send'}
+                aria-label={holdForVerification ? 'Waiting for verification' : 'Send'}
               >
                 {isLoading ? (
                   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -191,6 +225,19 @@ export function EmailPdfButton({
               </button>
             </form>
           </div>
+          {/* Human verification — public info@ path only, so the kiosk (staff
+              signed in) never sees it. Sits outside the <form> on purpose:
+              the token is read via onToken and sent in the JSON body, so it
+              does not need the hidden FormData input. */}
+          {needsTurnstile && (
+            <div className="mt-6 w-80">
+              <TurnstileWidget
+                resetRef={turnstileResetRef}
+                onVerified={setTurnstileVerified}
+                onToken={setTurnstileToken}
+              />
+            </div>
+          )}
           {message && (
             <div
               className={`mt-2 px-3 py-2 rounded text-xs ${

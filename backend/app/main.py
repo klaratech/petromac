@@ -137,6 +137,19 @@ def is_origin_allowed(request: Request) -> bool:
 
 
 def is_recipient_allowed(email: str, default_recipient: str | None = None) -> bool:
+    """Whether we may mail this recipient.
+
+    `ALLOWED_EMAIL_DOMAINS` accepts `*` meaning ANY domain. That is the correct
+    setting for production: the PDF endpoints back a PUBLIC self-service action
+    ("email me the catalog"), where prospects type their own arbitrary work
+    addresses, so a domain list can only ever be too tight. It shipped as
+    `petromac.co.nz,petromac.com`, which silently 403'd every real prospect
+    (staff sends go through /api/staff/send-pdf and skip this check, which is
+    why it went unnoticed). Abuse is held off by Turnstile + the per-IP rate
+    limit instead, and the attachment is always the same public PDF.
+    Narrowing this to an explicit list is still supported — just be aware it
+    breaks public catalog requests.
+    """
     allowed_recipients = parse_env_list(os.getenv("ALLOWED_EMAIL_RECIPIENTS"))
     allowed_domains = [domain.lower() for domain in parse_env_list(os.getenv("ALLOWED_EMAIL_DOMAINS"))]
 
@@ -145,6 +158,9 @@ def is_recipient_allowed(email: str, default_recipient: str | None = None) -> bo
 
     if email in allowed_recipients:
         return True
+
+    if "*" in allowed_domains:
+        return "@" in email
 
     if "@" not in email:
         return False
@@ -369,6 +385,10 @@ class SendPdfRequest(BaseModel):
     pdfType: str = Field(pattern="^(catalog|success-stories)$")
     pageNumbers: list[int] | None = Field(default=None, max_length=DEFAULT_MAX_PAGES)
     filters: FiltersModel | None = None
+    # Cloudflare Turnstile token. This endpoint is unauthenticated and mails a
+    # multi-MB attachment, so it needs the same bot check as the contact form.
+    # JSON body rather than the hidden FormData input the contact form uses.
+    turnstileToken: str | None = Field(default=None, max_length=4096)
 
 
 class SuccessStoriesPdfRequest(BaseModel):
@@ -547,6 +567,14 @@ async def send_pdf(payload: SendPdfRequest, request: Request):
             status_code=429,
             headers={"Retry-After": str(retry_after)},
         )
+
+    # Bot check BEFORE the expensive PDF build + Graph send. Unauthenticated
+    # endpoint mailing a multi-MB attachment = spam/amplification vector on
+    # Petromac's M365 reputation, so it gets the same gate as the contact form.
+    # Staff sends never reach here (they use the Next.js /api/staff/send-pdf
+    # route, where the session cookie is the stronger check).
+    if not verify_turnstile(payload.turnstileToken or "", get_client_ip(request.headers)):
+        raise HTTPException(status_code=403, detail="Verification failed. Please try again.")
 
     if not allowlists_configured():
         raise HTTPException(
