@@ -7,16 +7,23 @@
  * this. Source of truth: IP counsel ("Privacy Policy Website.docx",
  * Craig, May 2026).
  *
- * ⚠ DIVERGED FROM THE .docx (28 Jul 2026) — needs Craig's sign-off and the
- * source document updating. The cookies/analytics section claimed "We use
- * Google Analytics", which was never true: no analytics of any kind was
- * installed. A privacy policy describing tracking that doesn't happen is
- * itself a problem, so it was rewritten to match reality — no cookies on
- * public pages (verified: zero Set-Cookie headers), staff-auth cookies only
- * after intranet sign-in, and Cloudflare Web Analytics, which is cookieless
- * and does no fingerprinting or cross-site tracking. That last point is what
- * lets the site run without a consent banner, so the wording matters legally,
- * not just factually.
+ * Cookies/analytics section REWRITTEN 28 Jul 2026, and it is now the accurate
+ * one — keep it in step with the code, not with the old .docx. It previously
+ * claimed "We use Google Analytics", which was inherited verbatim from the
+ * WordPress site (where GA really did run) and was never true of this site:
+ * no analytics of any kind was installed until Cloudflare Web Analytics went
+ * in on the same date. So this is not a departure from counsel's considered
+ * drafting — it is stale copy that came along with the migration.
+ *
+ * What it now says, and why each part matters:
+ * - No cookies while browsing. Verified: zero Set-Cookie headers on / and
+ *   /catalog in production.
+ * - Staff-auth cookies only after an intranet sign-in, strictly necessary.
+ * - Cloudflare Web Analytics is cookieless, with no fingerprinting or
+ *   cross-site tracking. THIS is what lets the site run with no consent
+ *   banner — so if anything cookie-setting is ever added (GA4, ad pixels,
+ *   embedded media that sets cookies), this section AND the banner question
+ *   both have to be revisited.
  */
 
 export const PRIVACY_TITLE = 'Privacy Policy';

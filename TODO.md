@@ -341,20 +341,19 @@ cache rule. Remaining:
       strictly necessary for it. Cloudflare may add a short-lived bot-detection
       cookie. Conclusion: no consent banner required, and none should be added
       unless something cookie-setting is introduced later.
-- [ ] **Privacy policy DIVERGED from counsel's .docx — needs Craig's sign-off.**
-      The cookies/analytics section claimed "We use Google Analytics", which was
-      never true (nothing was installed). Rewritten to match reality and bumped
-      to Version 2.4 / 28 July 2026; the divergence is flagged in
-      `PrivacyContent.tsx`'s docstring. Craig should review the new wording and
-      update "Privacy Policy Website.docx" so the source of truth matches.
-      The cookieless claim is load-bearing for running without a consent
-      banner, so it's worth him reading rather than rubber-stamping.
-      Terms of Use needed NO change — it only cross-references the privacy
-      policy and makes no cookie/analytics claims of its own.
-- [ ] Privacy contact address is `info@petromac.co.nz` (not craig@). Confirm
-      that's the right destination for privacy/data requests — info@ is
-      monitored, but if these should reach a named person, say so and it's a
-      one-line change.
+- [x] Privacy policy cookies/analytics section corrected (28 Jul). It claimed
+      "We use Google Analytics" — inherited verbatim from the WordPress site,
+      where GA really did run. It was never true of this site: no analytics of
+      any kind existed until Cloudflare Web Analytics went in the same day. So
+      this was stale migration copy, NOT a departure from counsel's drafting,
+      and needs no sign-off (confirmed with Rajesh). Rewritten to match the
+      code, bumped to Version 2.4 / 28 July 2026. The cookieless claim is what
+      justifies having no consent banner, so if anything cookie-setting is ever
+      added (GA4, ad pixels, cookie-setting embeds) this section and the banner
+      question both have to be revisited. Terms of Use needed NO change — it
+      only cross-references the privacy policy.
+      Contact address stays `info@petromac.co.nz` for privacy and terms
+      (confirmed — it's monitored).
 
 ## Kiosk review (full pass) — OPEN, keep adding here
 
