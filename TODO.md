@@ -296,27 +296,24 @@ cache rule. Remaining:
 
 ## Track record
 
-- [x] French Guiana mislabelled as France (28 Jul, reported by a reviewer):
-      the map shaded a South American territory with a "France: 16
-      deployments" tooltip. Two causes, both fixed. (1) The source xlsx
-      records the Guyane Maritime work as "France" — legally true, but it
-      reads as metropolitan France. (2) world-50m has ONE France feature whose
-      MultiPolygon includes the overseas departments, so mainland Europe lit
-      up as well. Fix: split poly 9 (lon -54.6..-51.7, lat 2.1..5.8 —
-      identified by decoding each polygon's bbox) out of France into its own
-      `French Guiana` Polygon feature, id 254; France keeps Corsica, the
-      mainland, Mayotte, Réunion, Martinique and Guadeloupe. Added
-      `"France": "French Guiana"` to `COUNTRY_NORMALIZATION` so a pipeline
-      re-run keeps the rename, and applied it to the 18 committed rows in
-      operations_data.json + operations_full.json (the source xlsx isn't in
-      the repo, so the generated files needed patching directly).
-      Matching is by `properties.name`, so no id lookup needed updating.
-      Verified via the map's own `calculateCountryStats`: French Guiana 16
-      deployments, France absent (renders unshaded), Guyana unchanged at 58.
-      NOTE: if Petromac ever logs a well in metropolitan France, that alias
-      has to become conditional rather than blanket.
-- [ ] Check the source xlsx uses "French Guiana" at source, so the alias
-      becomes redundant rather than load-bearing.
+- [x] French Guiana was highlighted although no work happened there (28 Jul,
+      reported by a reviewer). The jobs are in metropolitan FRANCE and in
+      GUYANA; nothing in French Guiana. It lit up only because world-50m has a
+      single France feature whose MultiPolygon includes the overseas
+      departments, so shading France shaded French Guiana too — and the
+      tooltip over that territory read "France: 16 deployments".
+      Fix is geometry-only: split poly 9 (lon -54.6..-51.7, lat 2.1..5.8,
+      identified by decoding every polygon's bbox) out of France into its own
+      `French Guiana` Polygon feature, id 254. France keeps Corsica, the
+      mainland, Mayotte, Réunion, Martinique and Guadeloupe — verified none of
+      its remaining polygons fall in the Guiana box. French Guiana now has no
+      data, so it renders unshaded like any other country with no jobs.
+      The DATA is unchanged and correct: France = 16 deployments, Guyana = 58.
+      (I first mis-read the report and renamed the France rows to French
+      Guiana — reverted. `COUNTRY_NORMALIZATION` now carries an explicit note
+      NOT to alias France, so nobody repeats it.)
+      Verified via the map's own `calculateCountryStats`: France 16, French
+      Guiana absent, Guyana 58 unchanged.
 
 ## Kiosk review (full pass) — OPEN, keep adding here
 

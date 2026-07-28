@@ -9,15 +9,10 @@ COUNTRY_NORMALIZATION = {
     "Cote D'Ivoire": "Côte d'Ivoire",
           # D3 uses the French name
     "Sao Tome & Principe": "São Tomé and Principe",
-    # The source xlsx records the Guyane Maritime work as "France". It is
-    # legally France, but on a map that reads as metropolitan France — and
-    # world-50m's single France feature spans both, so mainland Europe lit up
-    # with a French Guiana tooltip (reported 28 Jul 2026). The topology now
-    # carries French Guiana as its OWN feature (poly 9 of France's MultiPolygon,
-    # split out in world-50m.json), so this rename makes the data match it.
-    # If Petromac ever logs a well in metropolitan France, this alias has to
-    # become conditional rather than blanket.
-    "France": "French Guiana",
+    # NOTE: do NOT alias France. The France rows really are metropolitan
+    # France. French Guiana used to light up alongside it only because
+    # world-50m's single France feature included it — that is fixed in the
+    # topology (French Guiana is now its own feature with no data), not here.
 }
 
 # Region corrections
