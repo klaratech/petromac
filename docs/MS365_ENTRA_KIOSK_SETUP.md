@@ -155,14 +155,6 @@ Generate `STAFF_SESSION_SECRET` with something high entropy, for example:
 openssl rand -base64 48
 ```
 
-## Vercel
-
-If you later expose intranet/staff sign-in via Vercel as well, add the Vercel callback URL to the same Entra app:
-
-- `https://petromac.vercel.app/auth/microsoft/callback`
-
-Do not add this unless you intend to run the intranet/staff flow on Vercel.
-
 ## Current App Behavior
 
 After the env vars are set:

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, FormEvent } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
-import TurnstileWidget from '@/components/public/TurnstileWidget';
+import TurnstileWidget, { turnstileConfigured } from '@/components/public/TurnstileWidget';
 
 /**
  * Contact form — form only, dark theme. The page chrome (heading, intro,
@@ -17,10 +17,24 @@ export default function ContactForm() {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error' | 'verify-failed'>(
+    'idle'
+  );
   const formStartTimeRef = useRef(0);
   // Turnstile tokens are single-use — reset after every submit attempt.
   const turnstileResetRef = useRef<(() => void) | null>(null);
+  // Gate Send until the widget issues a token, so a fast submit can't race
+  // the lazy-loaded verification (the backend would 403 it). Fails OPEN
+  // after a grace period: if the script is blocked or slow, the button
+  // enables anyway and the backend stays the judge.
+  const [turnstileVerified, setTurnstileVerified] = useState(!turnstileConfigured);
+  const [turnstileGraceOver, setTurnstileGraceOver] = useState(!turnstileConfigured);
+
+  useEffect(() => {
+    if (!turnstileConfigured) return;
+    const t = window.setTimeout(() => setTurnstileGraceOver(true), 12_000);
+    return () => window.clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     formStartTimeRef.current = Date.now();
@@ -49,6 +63,9 @@ export default function ContactForm() {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', message: '' });
         formStartTimeRef.current = Date.now();
+      } else if (response.status === 403) {
+        // Turnstile token missing/stale — a fresh widget pass usually fixes it.
+        setSubmitStatus('verify-failed');
       } else {
         setSubmitStatus('error');
       }
@@ -138,16 +155,20 @@ export default function ContactForm() {
       </p>
 
       {/* Human verification (renders only when a Turnstile site key is set) */}
-      <TurnstileWidget resetRef={turnstileResetRef} />
+      <TurnstileWidget resetRef={turnstileResetRef} onVerified={setTurnstileVerified} />
 
-      {/* Submit */}
+      {/* Submit — held until verification completes (or the grace period ends) */}
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (!turnstileVerified && !turnstileGraceOver)}
           className="rounded-lg bg-brand px-6 py-2.5 font-semibold text-white shadow-sm transition-all hover:bg-brand/90 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-700"
         >
-          {isSubmitting ? 'Sending…' : 'Send message'}
+          {isSubmitting
+            ? 'Sending…'
+            : !turnstileVerified && !turnstileGraceOver
+              ? 'Verifying…'
+              : 'Send message'}
         </button>
       </div>
 
@@ -159,6 +180,19 @@ export default function ContactForm() {
             className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-300"
           >
             Thank you for your message — we&apos;ll get back to you soon.
+          </div>
+        )}
+        {submitStatus === 'verify-failed' && (
+          <div
+            role="alert"
+            className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-300"
+          >
+            Human verification didn&apos;t complete — please wait a moment for the checkbox above
+            the Send button, then try again. If it keeps failing, email us directly at{' '}
+            <a href="mailto:info@petromac.co.nz" className="font-medium underline">
+              info@petromac.co.nz
+            </a>
+            .
           </div>
         )}
         {submitStatus === 'error' && (

@@ -121,6 +121,11 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       added by Rajesh over SSH with hidden input; fails open on
       Cloudflare outages, honeypot + timing + rate limits still apply),
       CSP allows challenges.cloudflare.com. Widget "petromac" on the
+      28 Jul follow-up: Rajesh's live submit 403'd (stale pre-Turnstile
+      page or send-before-token race — the secret itself verified
+      valid); fix shipped: submit gated until the widget issues a token
+      (12 s fail-open grace, backend still enforces) + a specific
+      "verification didn't complete" message on 403.
       Cloudflare account covers petromac.co.nz + klaratech.it +
       localhost; local dev uses the official always-pass TEST keys in
       .env.local. Optional hardening: drop "localhost" from the widget's

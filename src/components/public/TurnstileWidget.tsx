@@ -20,6 +20,9 @@ import { useEffect, useRef } from 'react';
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 
+/** Whether this build has Turnstile enabled (site key baked in). */
+export const turnstileConfigured = Boolean(SITE_KEY);
+
 interface TurnstileApi {
   render: (_el: HTMLElement, _opts: Record<string, unknown>) => string;
   reset: (_widgetId: string) => void;
@@ -51,8 +54,11 @@ function loadScript(): Promise<void> {
 
 export default function TurnstileWidget({
   resetRef,
+  onVerified,
 }: {
   resetRef?: React.MutableRefObject<(() => void) | null>;
+  /** Called with true when a token is issued, false when it expires/errors. */
+  onVerified?: ((_ok: boolean) => void) | undefined;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -70,10 +76,14 @@ export default function TurnstileWidget({
           sitekey: SITE_KEY,
           theme: 'dark',
           appearance: 'always',
+          callback: () => onVerified?.(true),
+          'expired-callback': () => onVerified?.(false),
+          'error-callback': () => onVerified?.(false),
         });
         if (resetRef) {
           resetRef.current = () => {
             if (widgetId && window.turnstile) window.turnstile.reset(widgetId);
+            onVerified?.(false);
           };
         }
       } catch {
@@ -97,7 +107,7 @@ export default function TurnstileWidget({
       io.disconnect();
       if (resetRef) resetRef.current = null;
     };
-  }, [resetRef]);
+  }, [resetRef, onVerified]);
 
   if (!SITE_KEY) return null;
   return <div ref={containerRef} aria-label="Human verification" />;
