@@ -411,7 +411,8 @@ async def submit_contact(request: Request):
         return {"ok": True}
     if timing < 3:
         return {"ok": True}
-    if len(name) < 2 or len(message) < 10 or "@" not in email:
+    # Name is optional on the form — only email + message are required.
+    if len(message) < 10 or "@" not in email:
         return JSONResponse({"ok": False, "error": "Validation failed"}, status_code=400)
     # Upper bounds: keep outbound emails sane and reject junk payloads.
     if len(name) > 200 or len(email) > 320 or len(message) > 10_000:
@@ -436,13 +437,14 @@ async def submit_contact(request: Request):
             status_code=500,
         )
 
-    escaped_name = html.escape(name)
+    display_name = name or "Website visitor"
+    escaped_name = html.escape(display_name)
     escaped_email = html.escape(email)
     escaped_message = html.escape(message)
     send_email(
         to_address=contact_to_email,
         subject=f"Contact Form: {escaped_name}",
-        text_body=f"From: {name} <{email}>\n\nMessage:\n{message}",
+        text_body=f"From: {display_name} <{email}>\n\nMessage:\n{message}",
         html_body=(
             "<h2>New Contact Form Submission</h2>"
             f"<p><strong>Name:</strong> {escaped_name}</p>"
