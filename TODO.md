@@ -98,10 +98,30 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       panel doesn't mislead anyone again. Open verification questions
       (also in docs/DNS.md): office scanners' SMTP server; SPF IPs
       172.232.206.251 + 161.65.142.140; Skype/Lync records still needed?
-- [ ] Re-prime kiosk tablets after the next deploy (SW cache changed) —
-      AND move them to the production domain while at it: set the launch
-      URL to https://www.petromac.co.nz/intranet/kiosk?sd=1, sign in,
-      re-prime, verify offline.
+- [ ] Re-prime kiosk tablets onto the PRODUCTION origin — iPad-side work
+      only, nothing left in the codebase (verified 28 Jul). Per tablet: set
+      the launch URL to https://www.petromac.co.nz/intranet/kiosk?sd=1, sign
+      in with the staff account, hit the splash's bottom-right "Prime
+      offline" pill, then airplane-mode and walk both lanes to confirm.
+      Keep the `?sd=1` — it skips the HD probe, so a prime stays ~50 MB of SD
+      video instead of pulling the 1080p set.
+      WHY (the old note said "SW cache changed", which was misleading): the
+      driver is the ORIGIN move, not a cache version. SW caches are
+      origin-scoped and the tablets were primed against the retired
+      petromac.klaratech.it, so their caches aren't stale — they're
+      unreachable. A routine code deploy needs no re-prime at all: kiosk
+      navigations are `networkFirst` (fresh HTML whenever online),
+      `/_next/static/` is content-hashed (new URLs, never stale hits), and
+      `public/data/kiosk-offline-assets.json` lists only stable paths, so it
+      doesn't rot between builds.
+      SW `VERSION` bumped v18 → v19 on 28 Jul deliberately BEFORE this
+      re-prime: the tablets have no cache on the production origin, so the
+      bump costs them nothing, and it clears the dead `/_next/static/`
+      entries that seven deploys in one day left competing for
+      `MAX_STATIC_ENTRIES` (80). Bumping after they primed would have forced
+      a second full download. See docs/KIOSK.md.
+      Turnstile does NOT affect the kiosk: with staff signed in the widget
+      never mounts, since the session cookie is the stronger check.
 - [x] petromac.klaratech.it RETIRED (28 Jul 2026): repo scrubbed
       (docs/.env.example → www.petromac.co.nz; siteUrl.ts default →
       localhost); Entra redirect URI + Turnstile hostname removed

@@ -76,7 +76,7 @@ encoder to chew on.
 The kiosk service worker lives at `public/kiosk-sw.js` and uses a version string:
 
 ```js
-const VERSION = 'v16';
+const VERSION = 'v19'; // v19: 28 Jul 2026, ahead of the production-origin re-prime
 ```
 
 **When you need to refresh cached content** (e.g., new videos/flipbooks or data files):
@@ -86,6 +86,21 @@ const VERSION = 'v16';
 3. On the kiosk device, reload the kiosk once while online, then re-prime via the splash's "Prime offline" pill.
 
 This forces the old caches to be evicted during SW `activate` and rebuilds fresh caches.
+
+**A routine code deploy does NOT need a bump.** Kiosk navigations are
+`networkFirst`, so an online tablet always gets fresh HTML, and `/_next/static/`
+is content-hashed, so a new build yields new URLs rather than stale hits. The
+offline manifest lists only stable paths (routes, videos, flipbooks, models,
+icons) — no hashed build output — so it doesn't rot between deploys either.
+Bump only when you want to _evict_ accumulated caches: many deploys in a day
+leave dead `/_next/static/` entries competing for `MAX_STATIC_ENTRIES` (80),
+which can LRU-evict entries a tablet still needs offline.
+
+**Caches are ORIGIN-scoped.** Moving a tablet to a different hostname (as in the
+Jul 2026 `petromac.klaratech.it` → `www.petromac.co.nz` move) gives it an empty
+cache on the new origin — nothing to evict, so no bump is required for that.
+Corollary worth remembering: bump BEFORE a planned re-prime, never after, or
+the device primes on the old version and has to download everything twice.
 
 ### Range request handling (video seeking / offline playback)
 
