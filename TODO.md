@@ -87,7 +87,9 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
        both resolve to a 200 `application/pdf`, spaces in filenames included.
   2. Rich Results test (search.google.com/test/rich-results) on /,
      one product page, /about/publications
-  3. Quick browse of the live site — homepage, catalog, track record,
+  3. Ask Rolando for his actual Google account address (see the owner note
+     above) so the second Owner can be added without guessing.
+  4. Quick browse of the live site — homepage, catalog, track record,
      case studies, contact form (submit once to see Turnstile)
   - Days after activation: SPF trim to M365-only include, DMARC watch,
     then -all; drop default.\_domainkey + link CNAME. CAUTION (28 Jul):

@@ -6,6 +6,7 @@ import {
   filterCaseStudies,
   isMajorServiceCompany,
   isQueryActive,
+  categoryLabel,
   normalizeCategory,
   OTHER_COMPANY,
   pageNumbersFor,
@@ -24,8 +25,33 @@ test('the two Well Access: Deviation spellings collapse into one option', () => 
   const { categories } = buildCaseStudyOptions(caseStudies);
   const variants = categories.filter((c) => c.value.replace(/\s/g, '') === 'WellAccess:Deviation');
   assert.equal(variants.length, 1, 'expected a single merged option');
-  // 17 correctly spelled + 4 typo'd in the source data.
+  // 21 stories, all now spelled with the space since the tags.csv fix.
   assert.equal(variants[0]?.count, 21);
+});
+
+// ── display labels ─────────────────────────────────────────────────────
+
+test('categoryLabel drops the Well Access: prefix but keeps the bare value', () => {
+  assert.equal(categoryLabel('Well Access: Deviation'), 'Deviation');
+  assert.equal(categoryLabel('Well Access: Ledges'), 'Ledges');
+  // The one story tagged with no sub-category must still read as something.
+  assert.equal(categoryLabel('Well Access'), 'Well Access');
+  // Repairs the typo on the way through, so a regressed CSV can't leak a
+  // "Deviation" that fails to match its sibling's label.
+  assert.equal(categoryLabel('Well Access:Deviation'), 'Deviation');
+  // Unprefixed categories pass through untouched.
+  assert.equal(categoryLabel('Sticking Prevention'), 'Sticking Prevention');
+});
+
+test('categoryLabel never yields an empty badge', () => {
+  assert.equal(categoryLabel('Well Access:'), 'Well Access:');
+  assert.equal(categoryLabel('Well Access: '), 'Well Access:');
+});
+
+test('labels stay unique, so no two filter options read the same', () => {
+  const { categories } = buildCaseStudyOptions(caseStudies);
+  const labels = categories.map((c) => categoryLabel(c.value));
+  assert.equal(new Set(labels).size, labels.length, `duplicate labels: ${labels.join(', ')}`);
 });
 
 // ── options ────────────────────────────────────────────────────────────

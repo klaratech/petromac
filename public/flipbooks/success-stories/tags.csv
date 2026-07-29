@@ -9,24 +9,24 @@ Year,Area,Country,WL Co,Category 1,Category 2,Device,Page
 2018,MENA,UAE,SLB,Sticking Prevention,Sensor Orientation,Wireline Express,11
 2015,LAM,Trinidad,SLB,Sticking Prevention,Sensor Orientation,Wireline Express,12
 2018,NAM,Gulf of Mexico,SLB,Sensor Orientation,"",Wireline Express,13
-2020,LAM,Mexico,HAL,Operational Efficiency,Well Access:Deviation,Wireline Express - FT,14
+2020,LAM,Mexico,HAL,Operational Efficiency,Well Access: Deviation,Wireline Express - FT,14
 2017,MENA,Iraq,SLB,Sensor Orientation,Sticking Prevention,Wireline Express,15
 2019,APAC,New Zealand,SLB,Sticking Prevention,Well Access: Deviation,Wireline Express,16
 2020,LAM,Mexico,HAL,Well Access: Deviation,Sticking Prevention,Wireline Express,17
 2020,EUR,Norway,HAL,Well Access: Deviation,Centralization,Wireline Express,18
 2019,AFR,Nigeria,SLB,Well Access: Deviation,Sticking Prevention,Wireline Express - FT,19
 2017,APAC,New Zealand,SLB,Sensor Orientation,Well Access: Deviation,Wireline Express - FT,20
-2019,MENA,Kuwait,SLB,Operational Efficiency,Well Access:Deviation,Wireline Express,21
+2019,MENA,Kuwait,SLB,Operational Efficiency,Well Access: Deviation,Wireline Express,21
 2020,MENA,KSA,SLB,Well Access: Deviation,Centralization,Wireline Express,22
 2020,LAM,Mexico,HAL,Sensor Orientation,"",Wireline Express - FT,23
-2018,APAC,Malaysia,HAL,Sticking Prevention,Well Access:Deviation,Wireline Express,24
+2018,APAC,Malaysia,HAL,Sticking Prevention,Well Access: Deviation,Wireline Express,24
 2021,MENA,KSA,SLB,Well Access: Deviation,Centralization,Wireline Express - FT,25
 2021,MENA,KSA,SLB,Operational Efficiency,Well Access: Deviation,Wireline Express - FT,26
 2021,MENA,KSA,SLB,Operational Efficiency,Sensor Orientation,Wireline Express,27
 2021,MENA,KSA,SLB,Operational Efficiency,Well Access: Deviation,Wireline Express,28
 2024,LAM,Mexico,SLB,Operational Efficiency,Well Access: Deviation,Focus - CH,29
 2022,APAC,New Zealand,SLB,Well Access: Ledges,"",Pathfinder,30
-2021,AFR,Angola,SLB,Sticking Prevention,Well Access:Deviation,Wireline Express - FT,31
+2021,AFR,Angola,SLB,Sticking Prevention,Well Access: Deviation,Wireline Express - FT,31
 2021,MENA,Oman,SLB,Sensor Orientation,Well Access: Deviation,Wireline Express,32
 2021,LAM,Peru,SLB,Well Access: Ledges,"",Pathfinder,33
 2023,MENA,Kuwait,SLB,Sticking Prevention,Operational Efficiency,Wireline Express - FT,34

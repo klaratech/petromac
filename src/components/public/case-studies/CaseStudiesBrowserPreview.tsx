@@ -9,6 +9,7 @@ import type { CaseStudy } from '@/features/case-studies/content';
 import {
   buildCaseStudyOptions,
   caseStudyCategories,
+  categoryLabel,
   filterCaseStudies,
   isQueryActive,
   pageNumbersFor,
@@ -151,7 +152,7 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
               <option value="">All challenges</option>
               {options.categories.map((o) => (
                 <option key={o.value} value={o.value}>
-                  {o.value} ({o.count})
+                  {categoryLabel(o.value)} ({o.count})
                 </option>
               ))}
             </select>
@@ -261,7 +262,7 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
                     {primaryCategory && (
                       <div className="absolute bottom-3 left-3 z-10">
                         <span className="rounded-md bg-blue-500/20 text-blue-200 border border-blue-400/30 px-2 py-0.5 text-[11px] font-semibold tracking-wide backdrop-blur-md uppercase">
-                          {primaryCategory}
+                          {categoryLabel(primaryCategory)}
                         </span>
                       </div>
                     )}
@@ -271,16 +272,19 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
                   <div className="flex flex-1 flex-col p-6">
                     <h3 className="font-heading text-base font-bold text-slate-900 leading-snug group-hover:text-brand transition-colors">
                       {cs.title}
-                      <span
-                        aria-hidden="true"
-                        className="ml-1.5 inline-block align-baseline text-base font-normal text-brand transition-transform duration-200 group-hover:translate-x-1"
-                      >
-                        →
-                      </span>
                     </h3>
-                    <p className="mt-2 text-xs text-slate-600 leading-relaxed line-clamp-3">
+                    {/* flex-1 pins the arrow to the bottom of the card, so it
+                        lands at the same height across a row instead of
+                        following each description's length. */}
+                    <p className="mt-2 flex-1 text-xs text-slate-600 leading-relaxed line-clamp-3">
                       {cs.metaDescription}
                     </p>
+                    <span
+                      aria-hidden="true"
+                      className="mt-4 self-end text-base font-normal text-brand transition-transform duration-200 group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
                   </div>
                 </Link>
               </li>

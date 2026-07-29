@@ -42,13 +42,34 @@ function matchesCompany(cs: CaseStudy, company: string): boolean {
 }
 
 /**
- * `tags.csv` has "Well Access:Deviation" (4 stories) alongside
- * "Well Access: Deviation" (17) — the same category split by a missing space,
- * which would otherwise render as two separate filter options. Normalising
- * here keeps the UI honest; the underlying CSV typo is worth fixing at source.
+ * Whitespace-canonical form of a category, and the value everything else keys
+ * off. `tags.csv` once had "Well Access:Deviation" alongside
+ * "Well Access: Deviation" — the same category split by a missing space, which
+ * rendered as two separate filter options. That typo was fixed at source (Jul
+ * 2026), so this is now belt-and-braces: a future PDF edition can reintroduce
+ * it, and a duplicate filter option is a silent, easy-to-miss regression.
  */
 export function normalizeCategory(raw: string): string {
   return raw.replace(/:\s*/g, ': ').replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * How a category is SHOWN. The taxonomy nests siblings under a "Well Access:"
+ * prefix ("Well Access: Deviation", "Well Access: Ledges"), which is useful
+ * structure in the CSV but noise on screen — three options sharing eleven
+ * leading characters are harder to scan than "Deviation" and "Ledges", and the
+ * prefix eats width in a badge that has to sit next to a country and a product.
+ *
+ * Display only: `normalizeCategory()` output stays the filter key, so the one
+ * story tagged bare "Well Access" keeps its own distinct option instead of
+ * collapsing into a sibling — which is exactly why the prefix can't simply be
+ * stripped from the data.
+ */
+export function categoryLabel(raw: string): string {
+  const normalized = normalizeCategory(raw);
+  // Only strip when something survives: a hypothetical bare "Well Access:"
+  // must not render as an empty badge.
+  return normalized.replace(/^Well Access:\s*(?=\S)/, '');
 }
 
 export function caseStudyCategories(cs: CaseStudy): string[] {

@@ -8,6 +8,7 @@ import type { CaseStudy } from '@/features/case-studies/content';
 import {
   buildCaseStudyOptions,
   caseStudyCategories,
+  categoryLabel,
   filterCaseStudies,
   isQueryActive,
   pageNumbersFor,
@@ -170,7 +171,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
               <option value="">All challenges</option>
               {options.categories.map((o) => (
                 <option key={o.value} value={o.value}>
-                  {o.value} ({o.count})
+                  {categoryLabel(o.value)} ({o.count})
                 </option>
               ))}
             </select>
@@ -261,7 +262,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
                   )}
                   {caseStudyCategories(cs)[0] && (
                     <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
-                      {caseStudyCategories(cs)[0]}
+                      {categoryLabel(caseStudyCategories(cs)[0])}
                     </span>
                   )}
                 </div>
@@ -271,16 +272,20 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
                     that slides — always visible, so it works on touch too. */}
                 <h3 className="font-heading text-lg font-bold text-slate-900 leading-snug group-hover:text-brand transition-colors">
                   {cs.title}
-                  <span
-                    aria-hidden="true"
-                    className="ml-1.5 inline-block align-baseline text-base font-normal text-brand transition-transform duration-200 group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
                 </h3>
-                <p className="mt-2 text-sm text-slate-600 leading-relaxed line-clamp-3">
+                {/* flex-1 so the arrow below is pinned to the bottom of the
+                    card rather than floating under a short description —
+                    otherwise the arrows sit at a different height in every
+                    column of the grid. */}
+                <p className="mt-2 flex-1 text-sm text-slate-600 leading-relaxed line-clamp-3">
                   {cs.metaDescription}
                 </p>
+                <span
+                  aria-hidden="true"
+                  className="mt-4 self-end text-base font-normal text-brand transition-transform duration-200 group-hover:translate-x-1"
+                >
+                  →
+                </span>
               </Link>
             </li>
           ))}

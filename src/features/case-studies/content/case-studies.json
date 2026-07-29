@@ -293,7 +293,7 @@
     "year": 2020,
     "wirelineCompany": "HAL",
     "device": "Wireline Express - FT",
-    "categories": ["Operational Efficiency", "Well Access:Deviation"],
+    "categories": ["Operational Efficiency", "Well Access: Deviation"],
     "challenge": [
       "An operator in Mexico initially planned to log a 69° well using Pipe Conveyance (PCL). They were concerned with the rig time required with PCL and the associated risks with multi-latch operations and tripping in-hole blind."
     ],
@@ -490,7 +490,7 @@
     "year": 2019,
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
-    "categories": ["Operational Efficiency", "Well Access:Deviation"],
+    "categories": ["Operational Efficiency", "Well Access: Deviation"],
     "challenge": [
       "High deviation wireline logging in 6” wellbore, without resorting to Pipe Conveyed Logging (PCL)."
     ],
@@ -577,7 +577,7 @@
     "year": 2018,
     "wirelineCompany": "HAL",
     "device": "Wireline Express",
-    "categories": ["Sticking Prevention", "Well Access:Deviation"],
+    "categories": ["Sticking Prevention", "Well Access: Deviation"],
     "challenge": [
       "Successfully descend MRIL-D in a high-angle cased section well, where the magnetic drag is significant."
     ],
@@ -774,7 +774,7 @@
     "year": 2021,
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
-    "categories": ["Sticking Prevention", "Well Access:Deviation"],
+    "categories": ["Sticking Prevention", "Well Access: Deviation"],
     "challenge": [
       "Operator in Angola had very low confidence of running an MDT on a highly deviated well, due to historical issues with high-drag and differential sticking"
     ],
