@@ -46,9 +46,13 @@ export default function Hero() {
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     (async () => {
-      // Let the heading webfont settle so the probe measures the real width
-      // (bounded — don't stall the animation on a slow font).
-      await Promise.race([document.fonts?.ready, sleep(400)]);
+      // Let the heading webfont settle so the probe measures the real width,
+      // but keep the cap SHORT: until this resolves the headline is still
+      // opacity 0 (.anim-prehide), and it is the LCP element — every ms here
+      // is a ms of LCP. 150ms is enough for a cached font; a cold font just
+      // means the glide width is measured slightly off, which is far cheaper
+      // than delaying the largest paint on the page.
+      await Promise.race([document.fonts?.ready, sleep(150)]);
       if (!alive || !probeRef.current || !wrapRef.current) return;
 
       const typedW = probeRef.current.getBoundingClientRect().width;

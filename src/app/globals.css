@@ -150,9 +150,15 @@ svg path[tabindex='0']:focus-visible {
    soon as the animation takes over (inline styles govern from there). The
    0s/3s forwards animation is a dead-man switch: if hydration never runs,
    the content reveals itself — nothing can stay hidden for good. */
+/* Pre-hide the hero headline so the finished text doesn't flash before the
+   typewriter replays. The release delay is a hard cap on how long the LCP
+   element can sit invisible if hydration never happens (no-JS, JS error, slow
+   device) — it was 3s, which showed up as ~2.7s of LCP "render delay" because
+   Lighthouse cannot count a transparent element as painted. 0.4s still hides
+   the flash while keeping the LCP cost negligible. */
 html[data-motion-ok] .anim-prehide {
   opacity: 0;
-  animation: anim-prehide-release 0s 3s forwards;
+  animation: anim-prehide-release 0s 0.4s forwards;
 }
 
 @keyframes anim-prehide-release {
