@@ -2,7 +2,10 @@
 
 import { useEffect, useId, useRef, useState, FormEvent } from 'react';
 import { buildClientApiUrl } from '@/lib/api';
-import TurnstileWidget, { type GetTurnstileToken } from '@/components/public/TurnstileWidget';
+import TurnstileWidget, {
+  type GetTurnstileToken,
+  type WarmTurnstile,
+} from '@/components/public/TurnstileWidget';
 
 /**
  * Contact form — form only, dark theme. The page chrome (heading, intro,
@@ -34,6 +37,17 @@ export default function ContactForm() {
   // Turnstile runs its challenge ON SUBMIT and hands back a fresh single-use
   // token (see TurnstileWidget). Nothing to gate before the user acts.
   const getTurnstileToken = useRef<GetTurnstileToken | null>(null);
+  // Warm Turnstile the moment someone engages with the form: it loads the
+  // script and solves the challenge in the background, so Send doesn't have to
+  // wait for both. Nothing happens on mount, so a visitor who never touches the
+  // form pays nothing — that's what fixes the page-weight regression.
+  const warmTurnstile = useRef<WarmTurnstile | null>(null);
+  const warmedRef = useRef(false);
+  const warmOnFirstInteraction = () => {
+    if (warmedRef.current) return;
+    warmedRef.current = true;
+    warmTurnstile.current?.();
+  };
   useEffect(() => {
     formStartTimeRef.current = Date.now();
   }, []);
@@ -102,7 +116,12 @@ export default function ContactForm() {
   const labelClass = 'block text-sm font-medium text-slate-300 mb-1.5';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      onFocus={warmOnFirstInteraction}
+      onInput={warmOnFirstInteraction}
+      className="space-y-4"
+    >
       {/* Honeypot field — hidden from users */}
       <input
         type="text"
@@ -179,7 +198,7 @@ export default function ContactForm() {
           Cloudflare demands interaction, in which case the dark theme matches
           this panel. Nothing is gated ahead of time, so there is no
           "Verifying…" wait before the user has done anything. */}
-      <TurnstileWidget getTokenRef={getTurnstileToken} />
+      <TurnstileWidget getTokenRef={getTurnstileToken} warmRef={warmTurnstile} />
 
       {/* Submit */}
       <div className="flex justify-end">
