@@ -415,6 +415,36 @@ cache rule. Remaining:
       new Cache Rules set Browser TTL to respect-origin for their own paths, so
       this now only affects everything else.
 
+## Lighthouse lab scores are NOISY here — read before optimising (29 Jul)
+
+**Three runs of IDENTICAL code on test scored 84, 85 and 97, with LCP 4.1s,
+4.1s and 2.5s.** A 13-point / 1.6-second spread with nothing changed. Measured
+from Italy over the public internet against a Cloudflare edge, so LCP (the hero
+poster fetch) swings with network conditions.
+
+Consequences, learned the hard way in this session:
+
+- **Do not draw conclusions from single runs, or from comparing N runs to 1.**
+  I declared the Phase 2 code-splitting "consistently worse, not variance" by
+  comparing its three runs (88/84/87) against ONE Phase 1 run of 93. That was
+  unsound; the difference was probably noise. The revert that followed is
+  harmless but was NOT evidence-driven, whatever the commit message implies.
+- **Trust STRUCTURAL measurements instead** — they're deterministic and
+  verifiable: bytes on the wire (`curl -w %{size_download}`), what's in the
+  served HTML (`curl | grep -c`), request counts and `cf-cache-status` from
+  response headers, bundle sizes from `ANALYZE=true pnpm run build`. Every real
+  win today was confirmed this way, not by a score: the favicon (59.7KB → 8.3KB),
+  the privacy text off every page (document → 12KB), Turnstile's ~128KB gone from
+  page load (0 third-party requests), the `.anim-prehide` cap (3s → 0.4s in the
+  shipped CSS).
+- **For actual user-perceived performance, use FIELD data** — Search Console
+  Core Web Vitals / CrUX. That measures real visitors on real networks instead
+  of one machine in Milan. It is the correct next step and is already an open
+  item; lab scores have now misled this project twice in one day.
+- If a lab comparison is genuinely needed, run it LOCALLY against `pnpm start`
+  (5+ runs, take the median) so the network is out of the equation. Note the dev
+  server is NOT comparable — that mistake was also made today.
+
 ## Lighthouse pass (29 Jul) — favicon done, JS chunk open
 
 Measured on TEST (production-mode build), homepage mobile. Baseline after the
