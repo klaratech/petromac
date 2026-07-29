@@ -53,8 +53,8 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
      - The www property was verified ONLY by **HTML file** — a WP-era
        `google*.html` the Next.js site no longer serves. Google hadn't
        re-checked yet, but it would have unverified the property and silently
-       stopped reporting. Both properties now also carry `Domain name
-provider` (DNS) verification, so that can't happen.
+       stopped reporting. Both properties now also carry "Domain name
+       provider" (DNS) verification, so that can't happen.
      - ONE additive Cloudflare TXT record on the apex:
        `google-site-verification=m10EeI5HB9Fett6Js7GL60fuhOhJ4UKx-OXA36Xw2Zg`
        (record count 29 → 30, nothing else touched). Both properties issue the
@@ -63,11 +63,16 @@ provider` (DNS) verification, so that can't happen.
      - Declined Google's one-click Cloudflare flow: it works by granting
        Google OAuth **write access to the whole DNS account**, which is not a
        trade worth making for one TXT record on this account.
-       Still open: add a second Owner (Craig, or a Google account on
-       info@petromac.co.nz) under Settings → Users and permissions, so the
-       property doesn't die with one personal login — needs an email address I
-       don't have. 15 unread Search Console notifications were left unread.
-       Indexing as at 29 Jul: **36 indexed, 33 not** — 30 "Crawled – currently
+     - Second Owner added on BOTH properties (29 Jul): Rajesh asked for
+       rolando@petromac.co.nz, and Google resolved that to the Google account
+       **rv2020nz@gmail.com** (display name "rv2020nz") — the account that has
+       the work address attached. Petromac is on M365, so a petromac.co.nz
+       address is not itself a Google login; anyone added here has to have a
+       Google account. Rajesh to confirm rv2020nz@gmail.com is genuinely
+       Rolando; if not, remove it immediately (Settings → Users and
+       permissions → ⋮ → Remove).
+     - 15 unread Search Console notifications were left unread.
+     - Indexing as at 29 Jul: **36 indexed, 33 not** — 30 "Crawled – currently
        not indexed" (normal for the 46 case-study + catalog URLs that only just
        appeared; the sitemap submission is the fix), 1 "Page with redirect"
        (benign), and 2 genuine 404s, now fixed: WordPress served the patent PDFs
