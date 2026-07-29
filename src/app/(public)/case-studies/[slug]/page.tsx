@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { caseStudies, getCaseStudy } from '@/features/case-studies/content';
+import { caseStudyCategories } from '@/features/case-studies/filters';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 import { pageMetadata } from '@/lib/seo';
 
@@ -106,10 +107,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             <span className="rounded-full bg-brand/10 px-2.5 py-0.5 font-semibold text-brand">
               {cs.country}
             </span>
-            <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
-              {cs.device}
-            </span>
-            {cs.categories.map((c) => (
+            {cs.device && (
+              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
+                {cs.device}
+              </span>
+            )}
+            {caseStudyCategories(cs).map((c) => (
               <span
                 key={c}
                 className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600"
@@ -117,11 +120,6 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                 {c}
               </span>
             ))}
-            {cs.year && (
-              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
-                {cs.year}
-              </span>
-            )}
           </div>
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900">{cs.title}</h1>
         </header>

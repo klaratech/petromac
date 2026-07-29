@@ -7,6 +7,7 @@ import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
 import type { CaseStudy } from '@/features/case-studies/content';
 import {
   buildCaseStudyOptions,
+  caseStudyCategories,
   filterCaseStudies,
   isQueryActive,
   pageNumbersFor,
@@ -258,9 +259,9 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
                       {cs.device}
                     </span>
                   )}
-                  {cs.year && (
+                  {caseStudyCategories(cs)[0] && (
                     <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
-                      {cs.year}
+                      {caseStudyCategories(cs)[0]}
                     </span>
                   )}
                 </div>

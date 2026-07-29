@@ -615,6 +615,9 @@ visuals, so `source.pdf` + `pnpm run data` stay.
       Fixed in passing: white-on-emerald-600 in `EmailPdfButton` was 3.65:1,
       under the 4.5:1 AA floor — now emerald-700, so a11y is 100 (this was
       pre-existing on the flipbook page, just newly visible).
+- [x] **Case study badges updated (29 Jul):** replaced year badge (`2016`, `2018`)
+      with the primary application/challenge category tag (`Sensor Orientation`,
+      `Sticking Prevention`, etc.) on `CaseStudiesBrowser` cards and detail pages.
 - [ ] **Phase 2 — kiosk off the flipbook.** Tracked in the **Kiosk review**
       section above (with the prime-budget check it depends on), since it's
       kiosk work and all of that now lives in one place.
