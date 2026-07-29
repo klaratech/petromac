@@ -271,20 +271,16 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
                   <div className="flex flex-1 flex-col p-6">
                     <h3 className="font-heading text-base font-bold text-slate-900 leading-snug group-hover:text-brand transition-colors">
                       {cs.title}
-                    </h3>
-                    <p className="mt-2.5 text-xs text-slate-600 leading-relaxed line-clamp-3 flex-1">
-                      {cs.metaDescription}
-                    </p>
-
-                    <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-brand">
-                      <span>View case study</span>
                       <span
                         aria-hidden="true"
-                        className="transition-transform duration-200 group-hover:translate-x-1"
+                        className="ml-1.5 inline-block align-baseline text-base font-normal text-brand transition-transform duration-200 group-hover:translate-x-1"
                       >
                         →
                       </span>
-                    </div>
+                    </h3>
+                    <p className="mt-2 text-xs text-slate-600 leading-relaxed line-clamp-3">
+                      {cs.metaDescription}
+                    </p>
                   </div>
                 </Link>
               </li>

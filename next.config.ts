@@ -116,6 +116,16 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // WordPress served the patent PDFs from /pdf/<file>; the rebuild moved
+        // them to /patent_pdfs/<file> with the SAME filenames. Search Console
+        // was reporting the old paths as 404s (Jul 2026) — Google had them
+        // indexed from the WP-era patents page. Filenames carry spaces (e.g.
+        // "MY-169945 B.pdf"), which :file* passes through fine.
+        source: '/pdf/:file*',
+        destination: '/patent_pdfs/:file*',
+        permanent: true,
+      },
+      {
         // Success Stories used to open as a ?stories=1 overlay on Track
         // Record (retired Jul 2026) — send shared/bookmarked overlay URLs
         // to the stories themselves. Next passes the matched query param

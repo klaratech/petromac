@@ -39,16 +39,43 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       (inert — rollback snapshot). Staging petromac.klaratech.it unaffected.
 - [ ] **Rajesh's remaining human tasks** (AI-bots toggle done 28 Jul —
       see the AI-crawler item above):
-  1. Google Search Console — STILL OUTSTANDING (28 Jul). Sign in with a
-     PETROMAC Google account, not a personal one; add a **Domain** property
-     for petromac.co.nz (DNS TXT verification covers www + apex + subdomains
-     in one go — send me the TXT value and I'll add it to Cloudflare), then
-     submit https://www.petromac.co.nz/sitemap.xml (94 URLs). Not required for
-     indexing; what it buys is confirmation Google can index us, the search
-     queries people actually arrive on, deindexing alerts, re-index requests
-     (useful now that /success-stories/flipbook retired and 46 case-study URLs
-     appeared), and Core Web Vitals FIELD data — the right next step for perf
-     instead of chasing lab numbers.
+  1. Google Search Console — **DONE 29 Jul.** It turned out a property
+     already existed and was live: URL-prefix `https://www.petromac.co.nz/`
+     under **rthatha@gmail.com**, with real history (240 clicks / 1.7K
+     impressions / CTR 14.1% / avg position 7.3 over 3 months). Personal
+     account is fine and stays — Petromac is on Microsoft 365, so there is no
+     company Google Workspace account to prefer, and Search Console ownership
+     is proved by DNS, not by who owns the domain. What was done:
+     - Submitted `https://www.petromac.co.nz/sitemap.xml` → **Success**, 94
+       pages discovered.
+     - Added a **Domain** property `sc-domain:petromac.co.nz` (covers apex +
+       www + every subdomain + http/https) and verified it by DNS TXT.
+     - The www property was verified ONLY by **HTML file** — a WP-era
+       `google*.html` the Next.js site no longer serves. Google hadn't
+       re-checked yet, but it would have unverified the property and silently
+       stopped reporting. Both properties now also carry `Domain name
+provider` (DNS) verification, so that can't happen.
+     - ONE additive Cloudflare TXT record on the apex:
+       `google-site-verification=m10EeI5HB9Fett6Js7GL60fuhOhJ4UKx-OXA36Xw2Zg`
+       (record count 29 → 30, nothing else touched). Both properties issue the
+       SAME token, so one record covers both. **Don't delete it** — it is what
+       keeps verification alive.
+     - Declined Google's one-click Cloudflare flow: it works by granting
+       Google OAuth **write access to the whole DNS account**, which is not a
+       trade worth making for one TXT record on this account.
+       Still open: add a second Owner (Craig, or a Google account on
+       info@petromac.co.nz) under Settings → Users and permissions, so the
+       property doesn't die with one personal login — needs an email address I
+       don't have. 15 unread Search Console notifications were left unread.
+       Indexing as at 29 Jul: **36 indexed, 33 not** — 30 "Crawled – currently
+       not indexed" (normal for the 46 case-study + catalog URLs that only just
+       appeared; the sitemap submission is the fix), 1 "Page with redirect"
+       (benign), and 2 genuine 404s, now fixed: WordPress served the patent PDFs
+       from `/pdf/<file>` and the rebuild moved them to `/patent_pdfs/<file>`
+       with identical filenames, so Google was still requesting the old paths
+       (`/pdf/MY-169945 B.pdf`, `/pdf/CN108104751B.pdf`, last crawled 26 Jan).
+       `next.config.ts` now 308s `/pdf/:file*` → `/patent_pdfs/:file*`; verified
+       both resolve to a 200 `application/pdf`, spaces in filenames included.
   2. Rich Results test (search.google.com/test/rich-results) on /,
      one product page, /about/publications
   3. Quick browse of the live site — homepage, catalog, track record,
