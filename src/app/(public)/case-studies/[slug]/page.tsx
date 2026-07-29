@@ -112,14 +112,11 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                 {cs.device}
               </span>
             )}
-            {caseStudyCategories(cs).map((c) => (
-              <span
-                key={c}
-                className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600"
-              >
-                {c}
+            {caseStudyCategories(cs)[0] && (
+              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
+                {caseStudyCategories(cs)[0]}
               </span>
-            ))}
+            )}
           </div>
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900">{cs.title}</h1>
         </header>
