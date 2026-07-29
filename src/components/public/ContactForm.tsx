@@ -47,9 +47,7 @@ export default function ContactForm() {
     // robotic phrasing we were trying to avoid. Same wording as the backend's
     // check, so a visitor sees one consistent sentence either way.
     if (formData.message.trim().length < 10) {
-      setServerError(
-        'Could you tell us a little more? That helps us point you to the right person.'
-      );
+      setServerError('Could you tell us a bit more? Your message is too short.');
       setSubmitStatus('error');
       return;
     }
@@ -104,7 +102,7 @@ export default function ContactForm() {
   const labelClass = 'block text-sm font-medium text-slate-300 mb-1.5';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-4">
       {/* Honeypot field — hidden from users */}
       <input
         type="text"
@@ -163,7 +161,7 @@ export default function ContactForm() {
           required
           aria-required="true"
           maxLength={5000}
-          rows={6}
+          rows={4}
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
           className={`${fieldClass} resize-none`}

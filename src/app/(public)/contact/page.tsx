@@ -39,24 +39,27 @@ const SITEMAP: { heading: string; links: { href: string; label: string }[] }[] =
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="container mx-auto px-6 py-16 md:py-20">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+      {/* Tighter vertical rhythm than the rest of the site on purpose: this
+          page is a form, and a form you have to scroll to reach the Send button
+          on a laptop is a form people abandon. */}
+      <div className="container mx-auto px-6 py-10 md:py-12">
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
           {/* Left half — the form */}
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-brand font-semibold mb-3">
               Contact
             </p>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+            <h1 className="font-heading text-3xl md:text-4xl font-bold text-white tracking-tight mb-3">
               Get in touch
             </h1>
-            <p className="text-base md:text-lg text-slate-400 leading-relaxed mb-8 max-w-md">
+            <p className="text-base text-slate-400 leading-relaxed mb-6 max-w-md">
               Questions about our conveyance and centralisation systems, a product enquiry, or want
               to see Athena in action? Send us a message and the right person will get back to you.
             </p>
 
             <ContactForm />
 
-            <p className="mt-8 pt-6 border-t border-slate-800 text-sm text-slate-400">
+            <p className="mt-5 pt-4 border-t border-slate-800 text-sm text-slate-400">
               Prefer email?{' '}
               <a
                 href="mailto:info@petromac.co.nz"
