@@ -415,6 +415,38 @@ cache rule. Remaining:
       new Cache Rules set Browser TTL to respect-origin for their own paths, so
       this now only affects everything else.
 
+## Lighthouse pass (29 Jul) — favicon done, JS chunk open
+
+Measured on TEST (production-mode build), homepage mobile. Baseline after the
+Turnstile warm-up fix was perf 83 / LCP 4.3s / FCP 1.1s.
+
+- [x] **Favicon was a 500x500 PNG renamed to .ico** — 59,755 bytes, the
+      second-heaviest asset on the homepage, larger than either webfont, on every
+      page, for a 16px icon. Converted to a real MS Windows icon resource with
+      16/32/48 embedded: **8,298 bytes, -86%**. Measured effect: perf 83 → 86,
+      LCP 4.3s → 3.9s, TBT 50ms → 30ms. Best value-per-effort of the whole pass.
+- [x] Tried a modern `browserslist` (chrome/edge 92, firefox 90, safari 15.4) to
+      kill the `legacy-javascript` polyfills — `Array.prototype.at`, `.flat`,
+      `.flatMap`, `Object.fromEntries`. **It did nothing and was REVERTED.**
+      Next.js does not drive its polyfill bundle from browserslist; it injects a
+      fixed core-js set for its own baseline. legacy-javascript stayed at exactly
+      150ms/13KB and the main chunk at 70KB. Don't retry this approach — the
+      lever is elsewhere (Next config / upgrade), not browserslist.
+- [ ] **`unused-javascript`: 25KB unused of a 69KB chunk (36%), ~200-330ms.**
+      Both this and legacy-javascript live in the SAME main chunk. Needs real
+      analysis rather than a config tweak: run `@next/bundle-analyzer` (already a
+      dependency) to see what's in it, then decide what can be dynamically
+      imported off the homepage's critical path. Worth ~5 points; more effort
+      than the favicon by an order of magnitude.
+- [ ] **Fonts — where the remaining LCP time actually is.** PAUSED at Rajesh's
+      request, and it's the biggest remaining item. LCP is now ~62% RENDER DELAY,
+      not download: the hero poster fetches in ~1.2s then the browser waits
+      ~2.7s before painting. Two webfonts at 48KB and 40KB are the prime
+      suspects, since text and layout block on font loading. Check whether both
+      weights are needed above the fold and whether preloading helps. CAUTION:
+      fonts are load-bearing for CLS — a careless preload can improve one metric
+      while making layout shift worse, so measure CLS alongside LCP.
+
 ## Performance regression — FIX FIRST (28 Jul)
 
 - [ ] **Homepage perf 89 → 68, LCP 3.8s → 6.6s, FCP 1.1s → 3.0s** (mobile,
