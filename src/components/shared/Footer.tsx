@@ -2,7 +2,13 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import LegalDrawer, { type LegalDoc } from './legal/LegalDrawer';
+import dynamic from 'next/dynamic';
+import { type LegalDoc } from './legal/LegalDrawer';
+
+// Loaded on demand. This one also trims the HTML, not just JS: LegalDrawer
+// stays mounted when closed, so the FULL privacy policy and terms text was
+// being server-rendered into the footer of every single page.
+const LegalDrawer = dynamic(() => import('./legal/LegalDrawer'), { ssr: false });
 
 export default function Footer() {
   // Which legal document (if any) is open in the slide-out drawer.

@@ -1,9 +1,9 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import VideoLightbox from './VideoLightbox';
 
 interface Solution {
   id: string;
@@ -98,6 +98,10 @@ const SOLUTIONS: Solution[] = [
  * preview (poster only — the player mounts in the lightbox on demand) plus
  * product, summary, proof points, and one catalog CTA.
  */
+// Loaded on demand: the <dialog> video player is only needed once someone
+// actually presses Play.
+const VideoLightbox = dynamic(() => import('./VideoLightbox'), { ssr: false });
+
 export default function ChallengeSelector() {
   const [activeId, setActiveId] = useState(SOLUTIONS[0].id);
   const [lightboxOpen, setLightboxOpen] = useState(false);

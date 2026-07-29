@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import ContactDrawer from '@/components/shared/ContactDrawer';
+import dynamic from 'next/dynamic';
 
 const NAV_ITEMS = [
   { name: 'Home', href: '/' },
@@ -38,6 +38,11 @@ function LinkedInIcon({ className = 'w-5 h-5' }: { className?: string }) {
     </svg>
   );
 }
+
+// Loaded on demand: the drawer pulls in ContactForm and the Turnstile
+// wrapper, none of which the majority of visitors ever need. ssr:false because
+// a closed modal has nothing to server-render.
+const ContactDrawer = dynamic(() => import('@/components/shared/ContactDrawer'), { ssr: false });
 
 export default function Header() {
   const pathname = usePathname();
