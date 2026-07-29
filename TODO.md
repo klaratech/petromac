@@ -427,8 +427,18 @@ cache rule. Remaining:
       bundle) on a page where most visitors never touch the contact form, plus
       11 KB for the analytics beacon. LCP is 89% RENDER DELAY — the main thread
       is parsing third-party JS instead of painting.
-      FIX: load the Turnstile script on FIRST INTERACTION with the form (focus
-      or first keystroke on any field), not on mount. The challenge only runs
+      FIX (refined 28 Jul, Rajesh's suggestion — it solves BOTH symptoms):
+      warm the whole thing up on FIRST INTERACTION with the form — on first
+      focus or keystroke, load the script AND run the challenge in the
+      background, so the token is already in hand by the time they finish
+      typing. That kills the page-load cost (nothing happens until someone
+      engages) AND the send latency Rajesh reported, where Send waits for
+      script-download + challenge before the POST starts.
+      MUST HANDLE: tokens are single-use and expire (~5 min), so a long message
+      can outlive its token. Re-arm on `expired-callback`, and keep
+      `getToken()`'s execute-and-await path as the fallback for when no fresh
+      token exists — otherwise a slow send becomes a failed one.
+      Do NOT load on mount. The challenge only runs
       at submit, so first-focus gives ample lead time at zero page-load cost,
       and it cannot reintroduce the hidden-container deadlock because the
       container is visible by then. `getTokenRef()` already awaits readiness,
