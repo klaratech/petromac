@@ -132,8 +132,13 @@ export default function ChallengeSelector() {
           What challenge are you facing?
         </h2>
 
-        {/* Challenge tabs — 2×2 on mobile, one row from md up. Constant
-            border width so the active state never shifts layout. */}
+        {/* Challenge tabs — 2×2 on mobile, one row from md up. Constant border
+            width so the active state never shifts layout.
+            Each tab is a flex box with an explicit min-height: "Centralisation"
+            is one word while the other three wrap to two lines, so without this
+            its text block was a different height from its neighbours' — and on
+            the mobile 2×2 the two rows sized independently, which made it look
+            like a different shape rather than one of four equals. */}
         <div
           role="tablist"
           aria-label="Wireline logging challenges"
@@ -154,7 +159,7 @@ export default function ChallengeSelector() {
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActiveId(s.id)}
                 onKeyDown={(e) => onTabKeyDown(e, i)}
-                className={`rounded-lg border-2 px-3 py-3 md:py-3.5 text-sm md:text-[15px] font-semibold text-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${
+                className={`flex min-h-[3.25rem] md:min-h-[3.75rem] items-center justify-center rounded-lg border-2 px-3 py-2 text-sm md:text-[15px] font-semibold leading-snug text-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${
                   selected
                     ? 'bg-brand border-brand text-white shadow-card'
                     : 'bg-white border-slate-300 text-slate-700 shadow-sm hover:border-brand/50 hover:text-brand hover:bg-brand/[0.04] hover:shadow'
