@@ -66,22 +66,22 @@ Petromac website vocabulary, search mapping, and meta title/description standard
 
 ## 5. Guides & Holefinders (14 Models)
 
-| Slug            | Current Base Title                   | Proposed Base Title                              | Full SERP Title (`+ \| Petromac`)                              | SERP Chars |
-| :-------------- | :----------------------------------- | :----------------------------------------------- | :------------------------------------------------------------- | :--------: |
-| `pathfinder`    | Pathfinder                           | Pathfinder Hole Finder — Wireline Re-Entry Guide | `Pathfinder Hole Finder — Wireline Re-Entry Guide \| Petromac` |   **59**   |
-| `pathfinder-ht` | Pathfinder HT                        | Pathfinder HT — High-Temperature Hole Finder     | `Pathfinder HT — High-Temperature Hole Finder \| Petromac`     |   **55**   |
-| `ahfc`          | Adjustable Angle Guide AHFC          | Adjustable Angle Hole Finder AHFC — Ledges       | `Adjustable Angle Hole Finder AHFC — Ledges \| Petromac`       |   **53**   |
-| `hf-ait-zait`   | Fixed Angle Guide for AIT & ZAIT     | AIT & ZAIT Hole Finder — Fixed Angle Guide       | `AIT & ZAIT Hole Finder — Fixed Angle Guide \| Petromac`       |   **53**   |
-| `shf-ait`       | Fixed Angle Guide SHF-AIT            | Slim AIT Hole Finder SHF-AIT — Fixed Angle       | `Slim AIT Hole Finder SHF-AIT — Fixed Angle \| Petromac`       |   **53**   |
-| `hf-qait`       | Fixed Angle Guide QAIT               | QAIT Hole Finder — Fixed Angle Wireline Guide    | `QAIT Hole Finder — Fixed Angle Wireline Guide \| Petromac`    |   **56**   |
-| `hf-fmi`        | Fixed Angle Guide FMI                | FMI Hole Finder — Full Image Log Coverage        | `FMI Hole Finder — Full Image Log Coverage \| Petromac`        |   **52**   |
-| `shf-fmi`       | Fixed Angle Guide SHF-FMI            | Slim FMI Hole Finder SHF-FMI — Image Coverage    | `Slim FMI Hole Finder SHF-FMI — Image Coverage \| Petromac`    |   **56**   |
-| `hf8-msct`      | Fixed Angle Guide HF8-MSCT           | MSCT Hole Finder — Sidewall Coring Re-Entry      | `MSCT Hole Finder — Sidewall Coring Re-Entry \| Petromac`      |   **54**   |
-| `hf6-mdt`       | Fixed Angle Guide HF6-MDT            | MDT Hole Finder — Formation Tester Re-Entry      | `MDT Hole Finder — Formation Tester Re-Entry \| Petromac`      |   **54**   |
-| `hf9-bn6`       | Fixed Angle Guide HF9-BN6            | HF9-BN6 Hole Finder — Fixed Angle Guide          | `HF9-BN6 Hole Finder — Fixed Angle Guide \| Petromac`          |   **50**   |
-| `hf9j`          | Hole Finder Guide J-Latch HF9J       | J-Latch Hole Finder HF9J — Tool String Re-Entry  | `J-Latch Hole Finder HF9J — Tool String Re-Entry \| Petromac`  |   **58**   |
-| `hf9-acrt`      | Hole Finder Guide Induction HF9-ACRT | ACRT Induction Hole Finder — Wireline Re-Entry   | `ACRt Induction Hole Finder — Wireline Re-Entry \| Petromac`   |   **57**   |
-| `hf-b-wts`      | Hole Finder Guide WTS Connection     | WTS Hole Finder Guide — Wireline Re-Entry        | `WTS Hole Finder Guide — Wireline Re-Entry \| Petromac`        |   **52**   |
+| Slug            | Current Base Title                   | Proposed Base Title                                 | Full SERP Title (`+ \| Petromac`)                                 | SERP Chars |
+| :-------------- | :----------------------------------- | :-------------------------------------------------- | :---------------------------------------------------------------- | :--------: |
+| `pathfinder`    | Pathfinder                           | Pathfinder Hole Finder — Universal Guide            | `Pathfinder Hole Finder — Universal Guide \| Petromac`            |   **51**   |
+| `pathfinder-ht` | Pathfinder HT                        | Pathfinder HT HPHT Hole Finder — Universal Guide    | `Pathfinder HT HPHT Hole Finder — Universal Guide \| Petromac`    |   **56**   |
+| `ahfc`          | Adjustable Angle Guide AHFC          | AHFC Adjustable Angle Hole Finder — Ledges (SLB)    | `AHFC Adjustable Angle Hole Finder — Ledges (SLB) \| Petromac`    |   **58**   |
+| `hf-ait-zait`   | Fixed Angle Guide for AIT & ZAIT     | AIT & ZAIT Hole Finder — Fixed Angle Guide (SLB)    | `AIT & ZAIT Hole Finder — Fixed Angle Guide (SLB) \| Petromac`    |   **59**   |
+| `shf-ait`       | Fixed Angle Guide SHF-AIT            | SHF-AIT Slim Hole Finder for AIT (SLB)              | `SHF-AIT Slim Hole Finder for AIT (SLB) \| Petromac`              |   **49**   |
+| `hf-qait`       | Fixed Angle Guide QAIT               | QAIT Hole Finder — Fixed Angle Guide (SLB)          | `QAIT Hole Finder — Fixed Angle Guide (SLB) \| Petromac`          |   **52**   |
+| `hf-fmi`        | Fixed Angle Guide FMI                | FMI Hole Finder — Fixed Angle Guide (SLB)           | `FMI Hole Finder — Fixed Angle Guide (SLB) \| Petromac`           |   **51**   |
+| `shf-fmi`       | Fixed Angle Guide SHF-FMI            | SHF-FMI Slim Hole Finder for FMI (SLB)              | `SHF-FMI Slim Hole Finder for FMI (SLB) \| Petromac`              |   **49**   |
+| `hf8-msct`      | Fixed Angle Guide HF8-MSCT           | MSCT / XL-Rock Hole Finder — Sidewall Coring (SLB)  | `MSCT / XL-Rock Hole Finder — Sidewall Coring (SLB) \| Petromac`  |   **60**   |
+| `hf6-mdt`       | Fixed Angle Guide HF6-MDT            | HF6-MDT MDT Hole Finder for Formation Testers (SLB) | `HF6-MDT MDT Hole Finder for Formation Testers (SLB) \| Petromac` |   **60**   |
+| `hf9-bn6`       | Fixed Angle Guide HF9-BN6            | HF9-BN6 Fixed Angle Hole Finder (SLB)               | `HF9-BN6 Fixed Angle Hole Finder (SLB) \| Petromac`               |   **47**   |
+| `hf9j`          | Hole Finder Guide J-Latch HF9J       | J-Latch Hole Finder HF9J (Halliburton)              | `J-Latch Hole Finder HF9J (Halliburton) \| Petromac`              |   **49**   |
+| `hf9-acrt`      | Hole Finder Guide Induction HF9-ACRT | HF9-ACRt Induction Hole Finder (Halliburton)        | `HF9-ACRt Induction Hole Finder (Halliburton) \| Petromac`        |   **54**   |
+| `hf-b-wts`      | Hole Finder Guide WTS Connection     | WTS Connection Hole Finder Guide (BHI)              | `WTS Connection Hole Finder Guide (BHI) \| Petromac`              |   **48**   |
 
 ---
 
