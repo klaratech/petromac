@@ -111,6 +111,7 @@ jobs:
             docker compose pull backend-test
             docker compose up -d frontend-test backend-test
             docker image prune -f
+            docker logout ghcr.io || true
             echo "--- test stack after deploy ---"
             docker compose ps frontend-test backend-test
 

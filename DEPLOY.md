@@ -130,6 +130,8 @@ banner exchange`, which looks like a server fault but is purely local.
 - Logs: `docker logs petromac-backend --since 1h` (same for the other
   three containers) — the backend logs every request with status codes,
   the first stop for "the form doesn't work" reports.
+- **Image Pulls & Containerd Hygiene**: CI workflows pull images sequentially (`docker compose pull frontend-test` then `backend-test`) rather than in parallel to avoid `containerd` layer extraction race conditions (`commit failed: rename ... /ingest/...`). Workflows execute `docker logout ghcr.io` post-deploy to scrub ephemeral login tokens from `/root/.docker/config.json` (resolving Docker's standard unencrypted credentials warning).
+- **Server Prune**: Reclaim disk space on `klaratech-1` via `docker image prune -a -f && docker builder prune -a -f`.
 - Debugging ladder: DNS (`dig @1.1.1.1`) → edge (`curl -I`, look for
   `server: cloudflare` + CF-RAY) → tunnel (`systemctl status cloudflared`)
   → containers (`docker ps`) → app logs. Local machines can lie — macOS

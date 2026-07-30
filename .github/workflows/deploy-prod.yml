@@ -116,6 +116,7 @@ jobs:
             docker compose pull backend
             docker compose up -d frontend backend
             docker image prune -f
+            docker logout ghcr.io || true
             echo "--- prod stack after deploy ---"
             docker compose ps frontend backend
 
