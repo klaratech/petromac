@@ -28,6 +28,18 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
   at a non-production domain. `app/robots.ts` / `app/sitemap.ts` are
   env-derived. JSON-LD: Organization (home), Product + BreadcrumbList
   (product pages), ScholarlyArticle ItemList (publications).
+- **URL migration layer (Jul 2026)** — every redirect the site has lives in
+  `src/lib/redirects.ts` (a pure, unit-tested mapping table) and is applied
+  by `src/proxy.ts`. NOT in `next.config.ts` `redirects()`: Next normalises
+  the trailing slash before consulting that table, so an indexed WordPress
+  URL like `/contacts/` was rewritten to `/contacts` and only then matched —
+  producing a redirect chain at best and a 404 at worst. `next.config.ts`
+  therefore sets `skipTrailingSlashRedirect` and the proxy owns slash
+  canonicalisation, which is what makes both `/legacy/` and `/legacy`
+  resolve in a single 301 hop. Dead WP feed URLs return 410; unrecognised
+  query strings on public pages return 404 instead of a 200 homepage
+  (tracking params like `utm_*`/`gclid` are always allowed — see the
+  allowlists in redirects.ts).
 - **HTML catalog** — three-level drill-down (Jul 2026), built from a
   committed content model (`src/features/catalog/content/catalog.json`,
   generated from the InDesign IDML — see [ADMIN.md](ADMIN.md) §2b) plus a
@@ -38,7 +50,7 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
   spec tables (unified taxi table w/ Role+Bearing; Pathfinder featured +
   vendor sections; Open/Cased hole; Accessories). `/catalog/[category]/
 [slug]` = SSG model pages (32, URLs stable) + "Other models in this
-  family" table. Old `?category=` URLs 308-redirect. "Email PDF" sends as
+  family" table. Old `?category=` URLs 301-redirect. "Email PDF" sends as
   the signed-in staff member (Graph `/me/sendMail` via
   `/api/staff/send-pdf`) or falls back to the `info@` sender.
 - **Intranet** — `/intranet` is server-gated behind Microsoft Entra sign-in

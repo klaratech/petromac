@@ -183,6 +183,14 @@ counsel sends (a Word doc, updated roughly every 12 months).
    (e.g. `US12,320,216` → `US12320216.pdf`). Add the matching
    `link: "/patent_pdfs/<filename>"` field to each patent entry.
    Patents without a PDF yet render as plain text — that's fine.
+   **Filenames must match `[A-Za-z0-9._-]` — no spaces, no commas.** Four
+   files broke that rule until Jul 2026 and Google had them indexed in their
+   percent-encoded form (`/patent_pdfs/MY-169945%20B.pdf`), which is awkward
+   to cite and easy for link-checkers to mangle. They were renamed, with
+   301s from the old paths in `PATENT_PDF_RENAMES` (`src/lib/redirects.ts`);
+   `redirects.test.ts` fails the build if a new file needs escaping. If you
+   ever have to rename a PDF that has been live, add a `PATENT_PDF_RENAMES`
+   entry rather than breaking the URL.
 4. Terminology: use **"category"**, not "family" — per counsel, a patent
    "family" has a specific legal meaning (patents sharing one filing) and a
    product category here can span multiple unrelated families.

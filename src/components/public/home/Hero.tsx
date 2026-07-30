@@ -16,6 +16,11 @@ const TYPED_RUNS = [
   { text: 'Optimised', cls: 'text-blue-400' },
 ] as const;
 const TYPED_TEXT = TYPED_RUNS.map((r) => r.text).join('');
+// Shared by the <h1> and the width probe below it. The probe measures a pixel
+// width, so the two MUST render in identical typography — keeping it in one
+// constant is what stops them drifting apart.
+const HEADLINE_TYPE =
+  'font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05]';
 const FULL_TEXT = LEAD + TYPED_TEXT;
 // Each run's starting character offset within the typed segment.
 const RUN_STARTS = TYPED_RUNS.map((_, i) =>
@@ -153,7 +158,7 @@ export default function Hero() {
         {/* Full headline is always in the markup (SEO/LCP); the typewriter
             only animates opacity/transform/substring after hydration. */}
         <h1
-          className="relative font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] mb-6"
+          className={`relative ${HEADLINE_TYPE} text-white mb-6`}
           aria-label={animating ? FULL_TEXT : undefined}
         >
           <span
@@ -220,16 +225,27 @@ export default function Hero() {
               )}
             </span>
           </span>
-          {/* Hidden probe: real font, real size — measures the typed
-              segment's final pixel width for the glide + reservation. */}
-          <span
-            ref={probeRef}
-            aria-hidden="true"
-            className="absolute left-0 top-0 invisible whitespace-pre pointer-events-none"
-          >
-            {TYPED_TEXT}
-          </span>
         </h1>
+
+        {/* Hidden probe: real font, real size — measures the typed segment's
+            final pixel width for the glide + reservation.
+            It lives OUTSIDE the <h1> deliberately. It used to sit inside it,
+            and although `invisible` + aria-hidden keep it off the screen and
+            away from screen readers, neither hides it from TEXT EXTRACTION —
+            so the heading read "Wireline logging — Optimised — Optimised" to
+            crawlers (found in the Jul 2026 Search Console audit).
+            It must keep HEADLINE_TYPE: the probe measures a pixel width, so
+            any typography drift between it and the <h1> silently mis-sizes
+            the glide. Sharing the constant is what stops them diverging.
+            `invisible` (visibility:hidden), never `hidden` — a display:none
+            element has no box and would measure 0. */}
+        <span
+          ref={probeRef}
+          aria-hidden="true"
+          className={`absolute left-0 top-0 invisible whitespace-pre pointer-events-none ${HEADLINE_TYPE}`}
+        >
+          {TYPED_TEXT}
+        </span>
 
         <div
           className={`${showBelow ? '' : 'pointer-events-none'}${
