@@ -67,7 +67,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
     image: [absoluteUrl(cs.image.src)],
     author: { '@type': 'Organization', name: 'Petromac' },
     publisher: { '@type': 'Organization', name: 'Petromac' },
-    about: [{ '@type': 'Product', name: cs.device, brand: { '@type': 'Brand', name: 'Petromac' } }],
+    about: [{ '@type': 'Thing', name: cs.device }],
   };
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
