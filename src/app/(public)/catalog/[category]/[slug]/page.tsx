@@ -13,7 +13,7 @@ import {
 import type { CatalogImage } from '@/features/catalog/content/types';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 import { pageMetadata } from '@/lib/seo';
-import { familyTableRows } from '@/features/catalog/content/enrich';
+import { familyTableRows, PRODUCT_TITLES } from '@/features/catalog/content/enrich';
 import FamilySpecTable, { FAMILY_COLUMNS } from '@/components/public/catalog/FamilySpecTable';
 
 interface Params {
@@ -36,8 +36,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   // raster image. Title is the bare product name — the root template
   // appends "| Petromac" exactly once.
   const ogImage = product.images.find((img) => !img.src.endsWith('.svg'));
+  const title = PRODUCT_TITLES[slug] ?? product.name;
   return pageMetadata({
-    title: product.name,
+    title,
     description: product.summary,
     path: `/catalog/${category}/${slug}`,
     ogImage: ogImage && {

@@ -82,6 +82,15 @@ const CURATION: Record<string, CurationEntry> = {
   'tws-30': { purpose: 'intervention' },
 };
 
+/** Custom SEO page titles for catalog products (un-branded; suffix ' | Petromac' added by root layout). */
+export const PRODUCT_TITLES: Record<string, string> = {
+  // well-intervention
+  rs7: 'RS7 Roller Standoff — 7in CBL-VDL',
+  ro17: 'RO17 Roller Slip-over for 1-11/16in Toolstrings',
+  'twt-28': 'TWT-28 Titan Weight Bar Rollers / Wheels',
+  'tws-30': 'TWS-30 Taxi Weight Bar Rollers — SLB Intervention',
+};
+
 /** Category fallback purposes for products missing a curation entry
  *  (future editions). */
 const CATEGORY_DEFAULT_PURPOSE: Record<string, Purpose> = {
