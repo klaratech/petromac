@@ -176,7 +176,7 @@ test('legacy query-shaped views still redirect', () => {
   assertSingleHop('/catalogtest/tool-taxis', '/catalog/tool-taxis');
 });
 
-test('unrecognised query strings 404 instead of serving a 200 homepage', () => {
+test('valueless junk query strings 404 instead of serving a 200 homepage', () => {
   // The four junk URLs Google crawled as separate pages, plus /?entry/.
   for (const search of [
     '?11667727895.html',
@@ -191,11 +191,38 @@ test('unrecognised query strings 404 instead of serving a 200 homepage', () => {
       `/${search} should 404`
     );
   }
-  // A legacy param with a value that was never a real family is noise too.
-  assert.deepEqual(resolveLegacyRequest('/catalog', '?category=not-a-family'), {
-    type: 'notFound',
-  });
-  assert.deepEqual(resolveLegacyRequest('/track-record', '?stories=99'), { type: 'notFound' });
+});
+
+test('an unknown param WITH a value is left alone, not 404ed', () => {
+  // Deliberate: only valueless params are junk. Policing values needs a list of
+  // every tracking param in the industry, which is stale the day it is written
+  // — see the note on rule 10. These serve their page as they did before.
+  assert.equal(resolveLegacyRequest('/catalog', '?category=not-a-family'), null);
+  assert.equal(resolveLegacyRequest('/track-record', '?stories=99'), null);
+  assert.equal(resolveLegacyRequest('/catalog/tool-taxis', '?tab=specs'), null);
+});
+
+test('tracking params outside the allowlist still resolve', () => {
+  // Regression guard. The first cut of rule 10 404ed anything not explicitly
+  // allowlisted, which broke real inbound traffic: srsltid is appended by
+  // GOOGLE, igshid by Instagram, mkt_tok by Marketo, _hsenc by HubSpot.
+  for (const param of [
+    'srsltid',
+    'igshid',
+    'dclid',
+    'twclid',
+    'yclid',
+    'mkt_tok',
+    '_hsenc',
+    'epik',
+    'si',
+  ]) {
+    assert.equal(
+      resolveLegacyRequest('/', `?${param}=abc123`),
+      null,
+      `?${param}= must not 404 — it is real inbound traffic`
+    );
+  }
 });
 
 test('campaign and app query params are never 404ed', () => {

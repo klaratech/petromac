@@ -271,15 +271,28 @@ export function resolveLegacyRequest(rawPathname: string, search = ''): LegacyRe
     return { type: 'redirect', location: withSearch(path, search), status: 308 };
   }
 
-  // 10. Unrecognised query strings. Google had crawled `/?11667727895.html`,
+  // 10. Junk query strings. Google had crawled `/?11667727895.html`,
   //     `/?entry/` and friends as separate URLs, all serving a 200 homepage.
   //     Files are exempt (extensions are asset requests, not pages).
+  //
+  //     Only VALUELESS params 404. The junk Google indexed is uniformly
+  //     valueless (`?11667727895.html`, `?entry/`) while every real tracking
+  //     param carries a value, so this kills the duplicates without an
+  //     allowlist that has to be maintained forever.
+  //
+  //     An allowlist was tried first and is the wrong shape: it shipped
+  //     missing `srsltid` — which GOOGLE ITSELF appends to result URLs — plus
+  //     `igshid`, `dclid`, `twclid`, `yclid`, `mkt_tok`, `_hsenc` and `epik`,
+  //     so an organic click, an Instagram share or a HubSpot campaign landed
+  //     on a 404. Any list of the industry's tracking params is out of date the
+  //     day it's written; "has a value" never is. It also defuses
+  //     ROUTE_QUERY_PARAMS as a footgun: a future page reading `?tab=specs`
+  //     works whether or not anyone remembers to register it.
   if (search && !isAssetPath(path) && !path.split('/').pop()?.includes('.')) {
     const allowed = ROUTE_QUERY_PARAMS[key] ?? [];
-    for (const name of params.keys()) {
-      if (!GLOBAL_QUERY_PARAMS.has(name) && !allowed.includes(name)) {
-        return { type: 'notFound' };
-      }
+    for (const [name, value] of params.entries()) {
+      if (GLOBAL_QUERY_PARAMS.has(name) || allowed.includes(name)) continue;
+      if (value === '') return { type: 'notFound' };
     }
   }
 
