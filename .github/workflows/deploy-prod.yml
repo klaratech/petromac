@@ -112,7 +112,8 @@ jobs:
             set -euo pipefail
             cd /root/apps/petromac
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
-            docker compose pull frontend backend
+            docker compose pull frontend
+            docker compose pull backend
             docker compose up -d frontend backend
             docker image prune -f
             echo "--- prod stack after deploy ---"
