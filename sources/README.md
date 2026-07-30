@@ -21,6 +21,18 @@ pipeline:
 A tags `.xlsx` on its own re-tags the published stories in place (page
 images untouched) — you don't need to re-drop the PDF for a tags-only fix.
 
+**Success stories: one extra step.** The public `/case-studies` pages are built
+from the flipbook's `source.pdf` + `tags.csv`, and that build is NOT part of
+`pnpm run data`. After any success-stories change — PDF or tags — also run:
+
+```bash
+python3 scripts/python/build_case_studies.py
+```
+
+Skip it and 46 live pages keep describing the previous edition while the
+flipbook images show the new one. Category spellings in the xlsx are
+user-visible: they become the badges and filter options on those pages.
+
 Or just run `pnpm run data` to process everything that's been dropped.
 
 The pipeline picks the **newest** file in each folder, builds the published
@@ -34,5 +46,9 @@ curating `scripts/python/catalog_config.json`. Its outputs are committed:
 `src/features/catalog/content/catalog.json` + `public/images/catalog/`.
 Review the `catalog.json` git diff after each run (docs/ADMIN.md §2b).
 
-Nothing here needs renaming. Drop, run, commit the changes in `public/`
-(and, for the HTML catalog, `src/features/catalog/content/`).
+Nothing here needs renaming. Drop, run, commit the changes in `public/` (plus
+`src/features/catalog/content/` for the HTML catalog, and
+`src/features/case-studies/content/case-studies.json` for success stories).
+
+A push deploys **TEST** only — production needs the "Promote to Production"
+workflow. See [../DEPLOY.md](../DEPLOY.md).

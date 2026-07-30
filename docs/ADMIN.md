@@ -293,6 +293,8 @@ big 60" screen instead of the default web-optimised ones.
 | Large media     | graphics delivery                                                 | transcode/compress first          | the asset file                          |
 | Kiosk HD videos | `public/videos/kiosk-hd/` (1080p, same filename as transcoded)    | transcode masters first           | the `.mp4` + bump `kiosk-sw.js` VERSION |
 
-After any push to `main`, CI runs and `deploy-prod.yml` builds the Docker
-images and redeploys the Hetzner box (`www.petromac.co.nz`). See
-[DEPLOY.md](../DEPLOY.md).
+A push to `main` deploys to **TEST only** (https://test.petromac.co.nz).
+`www.petromac.co.nz` changes ONLY when someone runs the "Promote to
+Production" workflow — `gh workflow run deploy-prod.yml`, or GitHub → Actions.
+So content updates land on test for review first, and go live on your say-so.
+See [DEPLOY.md](../DEPLOY.md).

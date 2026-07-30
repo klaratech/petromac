@@ -77,9 +77,13 @@ pnpm run data
 This will:
 
 1. build `public/data/operations_data.json` from the newest `sources/operations/` file
-2. rebuild `public/flipbooks/*` from the newest `sources/catalog/` (one compressed PDF + search index) and `sources/success-stories/` (WebP pages + `email.pdf`) files
+2. rebuild `public/flipbooks/*` from the newest `sources/catalog/` (one compressed PDF — the pdf.js viewer and its search index were retired Jul 2026) and `sources/success-stories/` (WebP pages + `tags.csv` + `email.pdf`) files
 3. run flipbook/success-stories validators
 4. move consumed inputs into `sources/_archive/` (date-stamped)
+
+It does NOT rebuild the public case-studies pages. If the success-stories PDF or
+tags changed, run `python3 scripts/python/build_case_studies.py` as well — see
+[FLIPBOOKS.md](FLIPBOOKS.md).
 
 An empty `sources/` subfolder is simply skipped. See [sources/README.md](../sources/README.md).
 

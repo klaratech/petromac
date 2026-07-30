@@ -8,7 +8,17 @@ How the two documents are built and updated. Rationale: [DECISIONS.md](DECISIONS
    - catalog PDF → `sources/catalog/`
    - success-stories PDF **and** its tags `.xlsx` ("Kiosk" sheet) → `sources/success-stories/`
 2. `pnpm run data:flipbooks` (or `pnpm run data` for everything)
-3. Commit the changes under `public/` and push. Deploy is automatic.
+3. **If the success-stories PDF or its tags changed, also run
+   `python3 scripts/python/build_case_studies.py`.** This is NOT part of
+   `pnpm run data` — the public `/case-studies` pages are generated from
+   `source.pdf` + `tags.csv`, so skipping it leaves 46 live pages describing the
+   previous edition while the flipbook images show the new one. Check the
+   regenerated `case-studies.json` diff before committing: slugs are FROZEN
+   (21 carry WordPress-era 301s), and a new edition needs a `NEW_SLUG` entry in
+   the script rather than a silently renamed URL.
+4. Commit the changes under `public/` (plus `case-studies.json`) and push. A
+   push deploys **TEST** only; production needs the "Promote to Production"
+   workflow — see [../DEPLOY.md](../DEPLOY.md).
 
 The pipeline picks the newest file per folder, builds, validates, re-syncs the
 kiosk offline-asset list, and archives inputs to `sources/_archive/`.
@@ -28,7 +38,13 @@ kiosk offline-asset list, and archives inputs to `sources/_archive/`.
 
 - `pages/NNNN.webp` — page images (WebP q80), rendered at 150 DPI
 - `manifest.json` — page count/format (imported at build time by the app)
-- `tags.csv` — filter data, generated from the xlsx "Kiosk" sheet
+- `tags.csv` — filter data, **generated** from the xlsx "Kiosk" sheet. It is
+  committed, so it is tempting to hand-edit — don't: the next flipbook build
+  overwrites it from the xlsx. Category spellings feed the public case-studies
+  badges and filters, so a typo there is user-visible. Fix the **xlsx** (in
+  `sources/success-stories/`, which is gitignored and lives outside the repo)
+  and rebuild. `filters.ts`'s `normalizeCategory()` is the safety net for
+  whitespace slips that get through anyway.
 - `source.pdf` (full-res master) + `email.pdf` (compressed, for the email feature)
 
 ## Prerequisites (local build)

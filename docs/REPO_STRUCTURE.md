@@ -9,7 +9,7 @@ The repository contains:
 1. **Public Website** - Public-facing marketing site at `/`
 2. **Intranet Portal** - Internal portal at `/intranet`
 3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
-4. **Documents** - HTML catalog at `/catalog` (generated from the InDesign source); interactive image flipbook for success stories
+4. **Documents** - HTML catalog at `/catalog` (generated from the InDesign source); case studies at `/case-studies` (46 pages generated from the success-stories publication). The interactive image flipbook is KIOSK-ONLY since Jul 2026 — the public `/success-stories` routes 308 to `/case-studies`.
 5. **Backend Service** - FastAPI service for contact email, PDFs, and data passthrough endpoints
 
 ## Directory Structure
@@ -31,7 +31,8 @@ website/
 │   │   │   ├── track-record/             # Global deployment map
 │   │   │   ├── simulation/               # Athena planning/simulation page
 │   │   │   ├── contact/                  # Contact page (submits to backend API)
-│   │   │   ├── case-studies/          # 46 story pages + filterable index
+│   │   │   ├── case-studies/             # 46 story pages + filterable index
+│   │   │   ├── case-studies-preview/     # Design-proposal route (noindex, unlinked)
 │   │   │   ├── team/                     # Team page
 │   │   │   ├── privacy/                  # Privacy policy
 │   │   │   ├── terms/                    # Terms of use
@@ -43,11 +44,13 @@ website/
 │   │   │       ├── datacheck/            # Data validation tools
 │   │   │       └── successstories/       # Success stories flipbook
 │   │   ├── api/staff/session/            # Staff session API
+│   │   ├── api/staff/send-pdf/           # Emails a PDF AS the signed-in staffer (Graph /me/sendMail)
 │   │   ├── auth/microsoft/               # Entra login/callback/logout routes
 │   │   ├── layout.tsx                    # Root layout (global)
 │   │   └── globals.css                   # Global styles
 │   ├── features/                         # Feature modules (shared)
-│   │   ├── success-stories/              # ✅ Single source of truth
+│   │   ├── case-studies/                 # Public source of truth: content + pure filters (+ tests)
+│   │   ├── success-stories/              # KIOSK ONLY since Jul 2026 (public flipbook retired)
 │   │   │   ├── components/               # Filters + flipbook UI
 │   │   │   └── services/                 # CSV parsing/filtering
 │   │   ├── flipbooks/                    # Flipbook manifest/services
@@ -98,14 +101,15 @@ website/
 │   │   ├── extract_catalog_idml.py       # HTML catalog: IDML → raw spread dump
 │   │   ├── build_catalog_content.py      # HTML catalog: raw + config → catalog.json + images
 │   │   ├── update_catalog.py             # HTML catalog: one-command wrapper (pnpm run data:catalog)
-│   │   └── catalog_config.json           # Curated product↔spread mapping + text fixes
+│   │   ├── catalog_config.json           # Curated product↔spread mapping + text fixes
+│   │   ├── update_flipbooks.py           # Flipbooks: PDF + tags xlsx → pages/manifest/tags.csv
+│   │   └── build_case_studies.py         # /case-studies content — MANUAL, not part of `pnpm run data`
 │   └── node/                             # Node.js utilities
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml                        # Lint/typecheck/build validation
-│       ├── deploy-prod.yml               # Production deploy
-│       ├── data-build.yaml               # Automated data processing
-│       └── pdf-flipbooks-build.yml       # Automated flipbook generation
+│       ├── deploy-staging.yml            # TEST deploy — every push to main
+│       └── deploy-prod.yml               # Production — workflow_dispatch ONLY (manual promote)
 ├── .env.example                          # Environment variables template
 ├── package.json                          # Node.js dependencies
 ├── pnpm-lock.yaml                        # pnpm lockfile

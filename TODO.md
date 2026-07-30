@@ -443,13 +443,17 @@ cache rule. Remaining:
       Also closed two unknowns while in there: **zero Page Rules** exist (so
       nothing legacy overrides these), and the zone-owned redirect ruleset from
       27 Jul is just "Apex to www (canonical)" — a 301 from the cutover.
-- [ ] Zone **Browser Cache TTL is 14400 (4 h)**, but docs/DECISIONS say it
-      should be "Respect Existing Headers" — otherwise Cloudflare overrides the
-      cadence-based `max-age` values set in `next.config.ts` for browsers.
-      Confirmed unchanged at 14400 twice. Worth deciding: either set it to
-      Respect Existing Headers, or update the docs to match reality. Note the
-      new Cache Rules set Browser TTL to respect-origin for their own paths, so
-      this now only affects everything else.
+- [x] Zone **Browser Cache TTL** — RESOLVED (verified 29 Jul). This entry and
+      docs/DECISIONS.md contradicted each other (14400 vs "now 0 = Respect
+      Existing Headers"); the live response headers settle it in DECISIONS'
+      favour. A hashed chunk under `/_next/static/` returns
+      `max-age=31536000, immutable` and `/data/operations_stats.json` returns
+      `max-age=86400, stale-while-revalidate=604800` — both the origin's own
+      values, reaching the browser intact. On a 4 h zone override they would
+      read `max-age=14400`. `/_next/static/` is covered by neither Cache Rule
+      (they scope to `/data/*.json` and `/_next/image`), so the zone setting
+      itself must be respecting headers. Leave it alone: raising it re-breaks
+      the cadence policy in `next.config.ts` for every path without a rule.
 
 ## Lighthouse lab scores are NOISY here — read before optimising (29 Jul)
 
@@ -674,12 +678,19 @@ visuals, so `source.pdf` + `pnpm run data` stay.
       50-page publication including that front matter. Verified: unfiltered 50,
       3 stories → 5, 1 story → 3, all 46 → 48, cover first and contacts last
       in every case.
-- [ ] Fix the `tags.csv` category typo at source: "Well Access:Deviation" (4
-      rows) → "Well Access: Deviation" (17 rows) — same category, missing
-      space. `filters.ts` normalizes it so the UI shows one merged option
-      (21), but the data should be clean. Also worth deciding whether the
-      dropped `trailing` text (captions/refs) should be emitted into a
-      captions field for SEO + screen readers.
+- [x] `tags.csv` category typo FIXED (29 Jul): the 4 "Well Access:Deviation"
+      rows now read "Well Access: Deviation", and `case-studies.json` was
+      regenerated — verified the regeneration changed exactly those 4 category
+      values, same 46 slugs, every other field byte-identical.
+- [ ] **Carry the same fix into the tags XLSX.** `public/flipbooks/success-stories/tags.csv`
+      is GENERATED from the xlsx in `sources/success-stories/` (gitignored, not
+      in the repo), so the CSV fix above survives only until the next flipbook
+      rebuild re-derives it. If the xlsx still says "Well Access:Deviation", the
+      typo comes back. `normalizeCategory()` keeps the UI correct either way,
+      which is why this is tidiness rather than a live bug — but the fix is not
+      truly "at source" until the xlsx is corrected.
+- [ ] Decide whether the dropped `trailing` text (captions/refs) should be
+      emitted into a captions field for SEO + screen readers.
 
 ## Backlog
 

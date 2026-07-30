@@ -104,8 +104,10 @@ Browser → Cloudflare edge → cloudflared tunnel (klaratech-1)
                               └→ 127.0.0.1:8012  backend  (/api/*)
 ```
 
-GitHub Actions builds both images to GHCR on push to `main` and SSH-redeploys.
-Containers MUST bind `127.0.0.1:` only. Security headers incl. CSP in
-`next.config.ts`; cache policy is cadence-based (quarterly assets / weekly
-data) and requires Cloudflare "Respect Existing Headers". Details:
-[DEPLOY.md](../DEPLOY.md).
+GitHub Actions builds both images to GHCR and SSH-redeploys. A push to `main`
+deploys **TEST** (test.petromac.co.nz) only; **production is manual** — the
+"Promote to Production" workflow (`deploy-prod.yml`). Containers MUST bind
+`127.0.0.1:` only. Security headers incl. CSP in `next.config.ts`; cache policy
+is cadence-based (quarterly assets / weekly data) and needs the zone's Browser
+Cache TTL left at "Respect Existing Headers" so those headers survive the edge.
+Details: [DEPLOY.md](../DEPLOY.md).
