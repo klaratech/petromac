@@ -5,6 +5,44 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Jul 2026 (late) — Redirects moved out of next.config into src/proxy.ts
+
+**Decision:** all URL redirects now live in `src/lib/redirects.ts` (a pure
+mapping table with a unit test) applied by `src/proxy.ts`, and
+`next.config.ts` sets `skipTrailingSlashRedirect: true`. `redirects()` in
+next.config is gone.
+
+**Why:** the 30 Jul 2026 Search Console audit found six previously-indexed
+WordPress pages 404ing, including `/contacts/` at 59 clicks / 1,045
+impressions over six months — the site's second-biggest traffic source.
+WordPress served everything with a trailing slash, and those slashed URLs
+are what Google has indexed. Next normalises the trailing slash BEFORE it
+consults `redirects()`, so `/contacts/` became `/contacts` and only then
+looked for a rule: where a rule existed the visitor got a 308 → 301 chain,
+and where none existed (the six pages) they got a plain 404. Middleware
+doesn't help — it runs after `redirects()`, later still. The only way to
+match the slashed form in one hop is to turn the built-in normalisation off
+and do the lookup and the slash handling in the same pass. The proxy
+therefore also owns the ordinary `/page/` → `/page` 308 that Next used to
+emit; drop that and every page grows a duplicate URL.
+
+**Also settled here:** legacy hops are 301 rather than Next's `permanent:
+true` 308 — Google treats them identically, but 301 is what every SEO tool
+and every person reading the audit expects. Dead WordPress feed URLs return
+410 (drops from the index faster than 404). Unrecognised query strings on
+public URLs return 404, because Google had crawled `/?11667727895.html` and
+friends as four separate 200-serving pages; `utm_*`, `gclid`, `fbclid` and
+the rest of the campaign params stay allowed, and the route allowlist in
+redirects.ts is the extension point for any future page that reads
+`searchParams`.
+
+**Cost:** one more moving part in the request path, and a page that starts
+reading a query param without adding it to `ROUTE_QUERY_PARAMS` will 404.
+The unit test covers the whole mapping table, both slash forms, and asserts
+no destination is itself redirected.
+
+---
+
 ## Jul 2026 (late) — Catalog: three-level drill-down + enrichment layer
 
 - **Overview → families → models**, mirroring the print catalog's own
@@ -107,7 +145,7 @@ _current state_ and _how to operate it_; the reasoning lives here.
 took over `/catalog` outright (10 Jul 2026). The pdf.js viewer, `react-pdf`
 (~350 KB gz), `public/pdfjs/` and `search-index.json` were removed; the
 compressed print PDF remains only as the download/email artifact.
-`/catalogtest/*` 308-redirects to `/catalog/*`; all 32 product pages are SSG
+`/catalogtest/*` 301-redirects to `/catalog/*`; all 32 product pages are SSG
 and in the sitemap. Category tree diverges from print deliberately: Fixed
 Angle Guides is a group inside Guides & Holefinders (four categories total)
 — per Rajesh, they're one section in practice.
@@ -231,7 +269,7 @@ embedding (the kiosk uses the same API).
 footer, so visitors landed in a bare window with no navigation — it read as a
 bug, and was inconsistent with the homepage cards linking to the standalone
 page. The button now navigates to `/success-stories/flipbook`;
-`?stories=1` 307-redirects there (next.config.ts) for old shared links.
+`?stories=1` 307-redirects there (`src/lib/redirects.ts`) for old shared links.
 StoriesOverlay.tsx was deleted. The kiosk's embedded usage is unaffected.
 
 ## Jul 2026 — Cache policy: moderate max-age + long stale-while-revalidate

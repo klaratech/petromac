@@ -69,12 +69,14 @@ website/
 │   ├── hooks/                            # Custom React hooks
 │   ├── lib/                              # Utility functions
 │   │   ├── map/                          # Map data fetching + processing
+│   │   ├── redirects.ts                  # WordPress-migration URL map (pure; + tests)
 │   │   ├── seo.ts                        # pageMetadata() — canonical + per-page OG builder
 │   │   └── siteUrl.ts                    # Site URL + isProductionSite() (staging noindex)
 │   ├── types/                            # TypeScript type definitions
 │   ├── data/                             # Static data modules (small)
 │   │   └── team.ts                       # Team member data
-│   └── constants/                        # Constants and enums
+│   ├── constants/                        # Constants and enums
+│   └── proxy.ts                          # Runs redirects.ts (ALL redirects live here, not next.config)
 ├── public/                               # Static assets served by Next.js
 │   ├── kiosk-sw.js                       # 🔧 Kiosk-only service worker
 │   ├── data/                             # Data files (JSON/CSV for maps, ops)

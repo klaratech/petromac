@@ -93,7 +93,7 @@ const DEVICES: Device[] = [
         title: 'Sensor Transportation Apparatus and Guide Device',
         number: 'MY-169945',
         jurisdiction: 'Malaysia',
-        link: '/patent_pdfs/MY-169945%20B.pdf',
+        link: '/patent_pdfs/MY-169945-B.pdf',
       },
       {
         title: 'Sensor Transportation Apparatus and Guide Device',
@@ -136,7 +136,7 @@ const DEVICES: Device[] = [
           'Transport apparatus for transporting a wireline logging tool and guide device combination through a wellbore',
         number: 'BR 112015010666.8',
         jurisdiction: 'Brazil',
-        link: '/patent_pdfs/BR%20taxi.pdf',
+        link: '/patent_pdfs/BR-taxi.pdf',
       },
       {
         title: 'Sensor Transportation Device',
@@ -199,7 +199,7 @@ const DEVICES: Device[] = [
         title: 'A Guide Device',
         number: 'CA3085434',
         jurisdiction: 'Canada',
-        link: '/patent_pdfs/CA3085434%20Granted%20specification.pdf',
+        link: '/patent_pdfs/CA3085434.pdf',
       },
       {
         title: 'Guide Device',
@@ -257,7 +257,7 @@ const DEVICES: Device[] = [
         title: 'Device for centering sensor assembly in a bore',
         number: 'US12,281,525',
         jurisdiction: 'USA',
-        link: '/patent_pdfs/US12%2C281%2C525.pdf',
+        link: '/patent_pdfs/US12281525.pdf',
       },
       {
         title: 'Device for centering sensor assembly in a bore',

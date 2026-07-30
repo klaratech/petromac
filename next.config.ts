@@ -66,78 +66,17 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  async redirects() {
-    return [
-      {
-        // The public success-stories FLIPBOOK was retired Jul 2026 —
-        // /case-studies now carries the same 46 stories with per-story URLs,
-        // real text, filters and the filtered-PDF download/email. Both the
-        // /flipbook path and its bare parent land there, so indexed and
-        // shared links keep working. (The flipbook COMPONENT lives on for the
-        // kiosk; only the public route is gone.)
-        source: '/success-stories/flipbook',
-        destination: '/case-studies',
-        permanent: true,
-      },
-      {
-        source: '/success-stories',
-        destination: '/case-studies',
-        permanent: true,
-      },
-      {
-        // The HTML catalog was refined at /catalogtest before replacing
-        // /catalog (Jul 2026) — keep review-era bookmarks working.
-        source: '/catalogtest/:path*',
-        destination: '/catalog/:path*',
-        permanent: true,
-      },
-      {
-        // Categories were ?category= views on /catalog until the Jul 2026
-        // three-level restructure — send old bookmarks to the family pages.
-        source: '/catalog',
-        has: [
-          {
-            type: 'query',
-            key: 'category',
-            value: '(?<cat>tool-taxis|guides-holefinders|focus-centralisers|well-intervention)',
-          },
-        ],
-        destination: '/catalog/:cat',
-        permanent: true,
-      },
-      {
-        // The 21 WordPress case studies lived at ROOT-level slugs
-        // (petromac.co.nz/<slug>/) — rebuilt under /case-studies/<slug>
-        // Jul 2026. Slugs are frozen: they must match
-        // src/features/case-studies/content/case-studies.json.
-        source:
-          '/:slug(cast-cbl-successfully-deployed-to-82-deviation-in-norway|cement-evaluation-without-gemco-centralizers-to-85-deviation-in-ksa|elimination-of-pcl-saves-8-days-of-rig-time-in-mexico|expanding-logging-program|formation-testing-5000psi-overbalance|hermes-drag-planner-convinces-client-to-run-mdt-in-nigeria|high-quality-x-y-density-data-in-deviated-wellbores-in-new-zealand|high-side-sampling|holefinder-success-in-azerbaijan-2|image-tool-rotation|mril-d-conveyance-in-highly-deviated-casings-in-malaysia|ngi-logged-over-2400m-section-at-67-deviation-in-new-zealand|oriented-coring-avoids-wellbore-damage-in-the-gulf-of-mexico|oriented-hrsct-optimum-sidewall-core-recovery-in-mexico|positive-orientation-provides-100-fmi-image-coverage-in-iraq|slim-tool-taxis-facilitate-logging-a-highly-deviated-6-hole-section-on-wireline|smooth-mril-xl-logging-at-extreme-deviations-in-mexico|sonic-centralization|stick-slip|successful-open-hole-wireline-logging-to-79-deviation-in-uae|tlc-unable-to-pass-ledge)',
-        destination: '/case-studies/:slug',
-        permanent: true,
-      },
-      {
-        // WordPress served the patent PDFs from /pdf/<file>; the rebuild moved
-        // them to /patent_pdfs/<file> with the SAME filenames. Search Console
-        // was reporting the old paths as 404s (Jul 2026) — Google had them
-        // indexed from the WP-era patents page. Filenames carry spaces (e.g.
-        // "MY-169945 B.pdf"), which :file* passes through fine.
-        source: '/pdf/:file*',
-        destination: '/patent_pdfs/:file*',
-        permanent: true,
-      },
-      {
-        // Success Stories used to open as a ?stories=1 overlay on Track
-        // Record (retired Jul 2026) — send shared/bookmarked overlay URLs
-        // to the stories themselves. Next passes the matched query param
-        // through (?stories=1 stays in the URL); harmless, /case-studies
-        // ignores it.
-        source: '/track-record',
-        has: [{ type: 'query', key: 'stories', value: '1' }],
-        destination: '/case-studies',
-        permanent: false,
-      },
-    ];
-  },
+  // Every redirect the site had used to live in `redirects()` below. They all
+  // moved to src/proxy.ts + src/lib/redirects.ts in Jul 2026 because Next
+  // normalises the trailing slash BEFORE consulting this table: a request for
+  // an indexed WordPress URL like /contacts/ became /contacts first, so the
+  // legacy rules either never matched (404) or matched only after an extra
+  // hop. Owning the slash ourselves is what makes /legacy-page/ and
+  // /legacy-page both resolve in a single 301 — see redirects.ts.
+  //
+  // Consequence: nothing else re-adds the slash-stripping 308, so the proxy
+  // MUST keep doing it for ordinary pages.
+  skipTrailingSlashRedirect: true,
   images: {
     formats: ['image/avif', 'image/webp'],
   },
