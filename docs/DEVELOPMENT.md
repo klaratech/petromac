@@ -92,7 +92,14 @@ An empty `sources/` subfolder is simply skipped. See [sources/README.md](../sour
 - Run lint/typecheck before commits (`pnpm run lint`, `pnpm run typecheck`)
 - Syntax check backend Python (`python3 -m compileall backend`)
 - Run data validation (`pnpm run validate:successstories`)
-- Run smoke tests (`pnpm run test:e2e`) with a local server running
+- Unit tests (`pnpm run test:unit`) — pure logic; runs in CI and pre-push
+- Smoke tests (`pnpm run test:e2e`) — Playwright starts its own `next start`, so
+  run `pnpm build` first and skip the separate-server step. Runs in CI as the
+  `e2e` job; failures annotate the PR diff and upload an HTML report artifact.
+  Set `PLAYWRIGHT_BASE_URL` to point at a deployed environment instead, which
+  also disables the local server. It asserts against a PRODUCTION build on
+  purpose: the URL-migration rules live in middleware, whose status codes and
+  404 rewrite are the wrong thing to test against `next dev`.
 - Production deploys build in GitHub Actions and run on Hetzner (`klaratech-1`) via Docker Compose — see [DEPLOY.md](../DEPLOY.md)
 - If you are testing Microsoft staff sign-in locally, add the localhost callback URL to the Entra app and populate the Entra env vars in `.env.dev`
 

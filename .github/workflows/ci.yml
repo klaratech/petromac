@@ -45,3 +45,48 @@ jobs:
 
       - name: Production build
         run: pnpm build
+
+  # Separate job so a browser failure reads as "e2e" rather than "CI", and so
+  # the Playwright browser download stays out of the fast lint/typecheck lane.
+  # It builds again rather than sharing an artifact with the job above: the
+  # build is ~20 s, and passing .next between jobs costs more in upload time
+  # than it saves.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Chromium only — the config defines no other project, so anything else
+      # is a wasted download.
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      # test:e2e drives `next start`, so the build has to exist first.
+      - name: Production build
+        run: pnpm build
+
+      # Playwright starts and stops the server itself (see webServer in
+      # playwright.config.ts). The FastAPI backend is not running here, so the
+      # PDF-endpoint test skips itself rather than failing.
+      - name: End-to-end tests
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
