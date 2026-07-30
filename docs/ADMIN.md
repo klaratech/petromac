@@ -191,19 +191,10 @@ counsel sends (a Word doc, updated roughly every 12 months).
    `redirects.test.ts` fails the build if a new file needs escaping. If you
    ever have to rename a PDF that has been live, add a `PATENT_PDF_RENAMES`
    entry rather than breaking the URL.
-4. Run `pnpm run data:patents` for a dry-run report, then
-   `pnpm run data:patents --apply` to write it. Patent offices issue enormous
-   scans — the set was 206 MB before the Jul 2026 pass and is 130 MB after.
-   **Do NOT reach for `gs -dPDFSETTINGS=/ebook` here**, the recipe the catalog
-   PDF uses: these files are already JPEG2000 page scans, and re-encoding them
-   through pdfwrite makes them BIGGER (measured: 7.3 MB → 8.2 MB). The script
-   rasterises pages instead, and only for files with no text layer, so a
-   searchable patent is never flattened. See its header comment for the
-   reasoning.
-5. Terminology: use **"category"**, not "family" — per counsel, a patent
+4. Terminology: use **"category"**, not "family" — per counsel, a patent
    "family" has a specific legal meaning (patents sharing one filing) and a
    product category here can span multiple unrelated families.
-6. Commit and push.
+5. Commit and push.
 
 ---
 
@@ -304,7 +295,7 @@ big 60" screen instead of the default web-optimised ones.
 | --------------- | ----------------------------------------------------------------- | --------------------------------- | --------------------------------------- |
 | Operations data | `sources/operations/` (`.xlsx`)                                   | `pnpm run data:operations`        | `public/data/operations_data.json`      |
 | Flipbooks       | `sources/catalog/`, `sources/success-stories/` (`.pdf` + `.xlsx`) | `pnpm run data:flipbooks`         | `public/flipbooks/**`                   |
-| Patents         | counsel's Word doc                                                | hand-edit + `pnpm data:patents`   | that file + `public/patent_pdfs/`       |
+| Patents         | counsel's Word doc                                                | hand-edit `PatentsClient.tsx`     | that file + `public/patent_pdfs/`       |
 | Publications    | new paper                                                         | hand-edit `publications/page.tsx` | that file                               |
 | Team            | —                                                                 | hand-edit `src/data/team.ts`      | that file + `public/images/team/`       |
 | Large media     | graphics delivery                                                 | transcode/compress first          | the asset file                          |

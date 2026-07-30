@@ -12,7 +12,6 @@ Next.js 16 (App Router) + React 19 + TypeScript website with public site, intran
 - **E2E tests**: `pnpm run test:e2e` (needs local server running)
 - **Data pipeline**: `pnpm run data` (rebuilds operations JSON + flipbooks)
 - **HTML catalog**: `pnpm run data:catalog` (rebuilds `catalog.json` + web images from the InDesign IDML in `sources/catalog/` — see docs/ADMIN.md §2b)
-- **Patent PDFs**: `pnpm run data:patents` (dry-run) / `--apply` — shrinks new granted-patent scans. NOT the `/ebook` recipe the catalog uses; that makes these files bigger. See docs/ADMIN.md §3.
 - **Validate**: `pnpm run validate:flipbooks && pnpm run validate:successstories`
 
 ## Commit & Push

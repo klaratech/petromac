@@ -105,8 +105,7 @@ website/
 │   │   ├── update_catalog.py             # HTML catalog: one-command wrapper (pnpm run data:catalog)
 │   │   ├── catalog_config.json           # Curated product↔spread mapping + text fixes
 │   │   ├── update_flipbooks.py           # Flipbooks: PDF + tags xlsx → pages/manifest/tags.csv
-│   │   ├── build_case_studies.py         # /case-studies content — MANUAL, not part of `pnpm run data`
-│   │   └── compress_patent_pdfs.py       # Shrinks patent scans (pnpm run data:patents) — MANUAL
+│   │   └── build_case_studies.py         # /case-studies content — MANUAL, not part of `pnpm run data`
 │   └── node/                             # Node.js utilities
 ├── .github/
 │   └── workflows/
