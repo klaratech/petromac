@@ -51,16 +51,16 @@ Petromac website vocabulary, search mapping, and meta title/description standard
 
 ## 4. Wireline Express™ Tool Taxis (8 Models)
 
-| Slug               | Current Base Title                        | Proposed Base Title                             | Full SERP Title (`+ \| Petromac`)                             | SERP Chars |
-| :----------------- | :---------------------------------------- | :---------------------------------------------- | :------------------------------------------------------------ | :--------: |
-| `tta-505-ttb-505`  | Orienting Taxis TTA-505 & TTB-505         | Orienting Tool Taxi — Sidewall Coring & Imaging | `Orienting Tool Taxi — Sidewall Coring & Imaging \| Petromac` |   **59**   |
-| `tta-515-ttb-515`  | Conveyance Taxis TTA-515 & TTB-515        | Conveyance Tool Taxi TTA-515 — High Deviation   | `Conveyance Tool Taxi TTA-515 — High Deviation \| Petromac`   |   **56**   |
-| `ttb-715`          | Conveyance Taxi TTB-715                   | Tool Taxi TTB-715 — 7in Wireline Conveyance     | `Tool Taxi TTB-715 — 7in Wireline Conveyance \| Petromac`     |   **54**   |
-| `ttb-x-515`        | Centering Taxi TTB-X-515                  | Centering Tool Taxi — Deviated Wellbore Logging | `Centering Tool Taxi — Deviated Wellbore Logging \| Petromac` |   **59**   |
-| `ttb-s75-ttb-s85`  | Formation Tester Taxis TTB-S75 & TTB-S85  | Formation Tester Taxi — Sticking Prevention     | `Formation Tester Taxi — Sticking Prevention \| Petromac`     |   **54**   |
-| `ttb-s75u-ttb-s85` | Formation Tester Taxis TTB-S75U & TTB-S85 | Formation Tester Taxi TTB-S75U — MDT Conveyance | `Formation Tester Taxi TTB-S75U — MDT Conveyance \| Petromac` |   **58**   |
-| `ttb-ttc-il6o`     | In-line Orienting Tool Taxi TTB/TTC-IL6O  | In-line Orienting Tool Taxi — Image Coverage    | `In-line Orienting Tool Taxi — Image Coverage \| Petromac`    |   **55**   |
-| `ttb-il6c`         | In-line Conveyance Tool Taxi TTB-IL6C     | In-line Conveyance Tool Taxi — TLC Alternative  | `In-line Conveyance Tool Taxi — TLC Alternative \| Petromac`  |   **57**   |
+| Slug               | Current Base Title                        | Proposed Base Title                               | Full SERP Title (`+ \| Petromac`)                               | SERP Chars |
+| :----------------- | :---------------------------------------- | :------------------------------------------------ | :-------------------------------------------------------------- | :--------: |
+| `tta-505-ttb-505`  | Orienting Taxis TTA-505 & TTB-505         | Orienting Tool Taxis / Rollers — High Deviation   | `Orienting Tool Taxis / Rollers — High Deviation \| Petromac`   |   **59**   |
+| `tta-515-ttb-515`  | Conveyance Taxis TTA-515 & TTB-515        | Conveyance Tool Taxi — Sticking Prevention        | `Conveyance Tool Taxi — Sticking Prevention \| Petromac`        |   **53**   |
+| `ttb-715`          | Conveyance Taxi TTB-715                   | TTB-715 Tool Taxi — Sticking Prevention           | `TTB-715 Tool Taxi — Sticking Prevention \| Petromac`           |   **50**   |
+| `ttb-x-515`        | Centering Taxi TTB-X-515                  | Centering Tool Taxi — Wellbore Centralisation     | `Centering Tool Taxi — Wellbore Centralisation \| Petromac`     |   **57**   |
+| `ttb-s75-ttb-s85`  | Formation Tester Taxis TTB-S75 & TTB-S85  | Formation Testing Wheels & Rollers                | `Formation Testing Wheels & Rollers \| Petromac`                |   **45**   |
+| `ttb-s75u-ttb-s85` | Formation Tester Taxis TTB-S75U & TTB-S85 | HPHT Formation Testing Wheels & Rollers           | `HPHT Formation Testing Wheels & Rollers \| Petromac`           |   **50**   |
+| `ttb-ttc-il6o`     | In-line Orienting Tool Taxi TTB/TTC-IL6O  | Orienting Inline Wheels for Slim Open Hole — SLB  | `Orienting Inline Wheels for Slim Open Hole — SLB \| Petromac`  |   **59**   |
+| `ttb-il6c`         | In-line Conveyance Tool Taxi TTB-IL6C     | Conveyance Inline Wheels for Slim Open Hole — SLB | `Conveyance Inline Wheels for Slim Open Hole — SLB \| Petromac` |   **60**   |
 
 ---
 

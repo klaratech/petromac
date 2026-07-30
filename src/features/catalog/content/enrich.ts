@@ -84,6 +84,15 @@ const CURATION: Record<string, CurationEntry> = {
 
 /** Custom SEO page titles for catalog products (un-branded; suffix ' | Petromac' added by root layout). */
 export const PRODUCT_TITLES: Record<string, string> = {
+  // tool-taxis
+  'tta-505-ttb-505': 'Orienting Tool Taxis / Rollers — High Deviation',
+  'tta-515-ttb-515': 'Conveyance Tool Taxi — Sticking Prevention',
+  'ttb-715': 'TTB-715 Tool Taxi — Sticking Prevention',
+  'ttb-x-515': 'Centering Tool Taxi — Wellbore Centralisation',
+  'ttb-s75-ttb-s85': 'Formation Testing Wheels & Rollers',
+  'ttb-s75u-ttb-s85': 'HPHT Formation Testing Wheels & Rollers',
+  'ttb-ttc-il6o': 'Orienting Inline Wheels for Slim Open Hole — SLB',
+  'ttb-il6c': 'Conveyance Inline Wheels for Slim Open Hole — SLB',
   // well-intervention
   rs7: 'RS7 Roller Standoff — 7in CBL-VDL',
   ro17: 'RO17 Roller Slip-over for 1-11/16in Toolstrings',
