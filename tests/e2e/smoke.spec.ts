@@ -6,58 +6,92 @@ test('public home loads', async ({ page }) => {
   await expect(page.getByRole('banner')).toBeVisible();
 });
 
-test('catalog browser loads with categories, search, and deep links', async ({ page }) => {
+test('catalog loads with search, and family pages deep-link to products', async ({ page }) => {
   await page.goto('/catalog');
-  await expect(page.getByRole('heading', { name: /product catalogue/i })).toBeVisible();
+  // House spelling is "catalog", never "catalogue" — see CLAUDE.md.
+  await expect(page.getByRole('heading', { name: 'Product Catalog' })).toBeVisible();
   await expect(page.getByLabel('Search the catalog')).toBeVisible();
 
-  // Category deep link renders the right tab and its product cards.
-  await page.goto('/catalog?category=focus-centralisers');
-  await expect(page.getByRole('heading', { name: 'Focus™ Centralisers' })).toBeVisible();
-  await page.getByRole('link', { name: /CX9 — Helix Centraliser/i }).click();
+  // Categories became their own SSG pages in the Jul 2026 three-level
+  // restructure; the old ?category= view is a redirect, covered below.
+  await page.goto('/catalog/focus-centralisers');
+  await page.getByRole('link', { name: /CX9/i }).first().click();
   await expect(page).toHaveURL(/\/catalog\/focus-centralisers\/cx9/);
-  await expect(page.getByRole('heading', { name: /CX9 — Helix Centraliser/i })).toBeVisible();
   // Spec tables are real HTML tables on the product page.
   await expect(page.getByRole('table').first()).toBeVisible();
 });
 
-test('track record links to the Success Stories page', async ({ page }) => {
+test('track record links to the case studies', async ({ page }) => {
   await page.goto('/track-record');
   await page.getByRole('link', { name: /read the success stories/i }).click();
-  await expect(page).toHaveURL(/\/success-stories\/flipbook$/);
-  await expect(page.getByRole('heading', { name: /success stories/i })).toBeVisible();
-  // The page carries the full site chrome (the retired ?stories=1 overlay didn't).
+  await expect(page).toHaveURL(/\/case-studies$/);
+  await expect(page.getByRole('heading', { name: 'Case Studies' })).toBeVisible();
   await expect(page.getByRole('banner')).toBeVisible();
-  // Back link returns to Track Record.
-  await page.getByRole('link', { name: /back to track record/i }).click();
-  await expect(page).toHaveURL(/\/track-record$/);
 });
 
-test('legacy ?stories=1 overlay URL redirects to the Success Stories page', async ({ page }) => {
-  await page.goto('/track-record?stories=1');
-  // Next passes the matched query param through to the destination.
-  await expect(page).toHaveURL(/\/success-stories\/flipbook/);
+test('case studies index filters down to a subset', async ({ page }) => {
+  await page.goto('/case-studies');
+  // All 46 cards are server-rendered, so they exist before hydration.
+  const cards = page.locator('a[href^="/case-studies/"]');
+  const total = await cards.count();
+  expect(total).toBeGreaterThan(1);
+
+  // Narrowing by challenge must reduce the set. Selected by VALUE, which keeps
+  // the "Well Access: " prefix — the visible label drops it via categoryLabel(),
+  // so this also pins the value/label split that keeps the bare "Well Access"
+  // story from collapsing into a sibling.
+  const challenge = page.getByLabel('Challenge');
+  await expect(challenge.locator('option', { hasText: /^Deviation \(\d+\)$/ })).toHaveCount(1);
+  await challenge.selectOption('Well Access: Deviation');
+  await expect(async () => {
+    expect(await cards.count()).toBeLessThan(total);
+  }).toPass();
 });
 
-test('success stories loads', async ({ page }) => {
-  await page.goto('/success-stories/flipbook');
-  await expect(page.getByRole('heading', { name: /success stories/i })).toBeVisible();
+test('a case study page renders its own content', async ({ page }) => {
+  await page.goto('/case-studies/stick-slip');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.getByRole('banner')).toBeVisible();
 });
 
-test('success stories filters update results', async ({ page }) => {
-  await page.goto('/success-stories/flipbook');
-  // The default-state subtitle was removed (Jul 2026); the filter panel
-  // being interactive is the readiness signal instead.
-  await expect(page.getByLabel('Area multiselect')).toBeVisible();
+test.describe('WordPress-migration URLs', () => {
+  // The unit tests in src/lib/redirects.test.ts assert the mapping table; these
+  // confirm the proxy is actually wired in and the destinations render. The
+  // retired routes used to be asserted here as live pages, which is why this
+  // file went stale — it navigated to /success-stories/flipbook for months
+  // after that route was deleted.
+  const cases: [string, RegExp][] = [
+    ['/contacts/', /\/contact$/],
+    ['/contacts', /\/contact$/],
+    ['/patents/', /\/about\/patents$/],
+    ['/success-stories/flipbook', /\/case-studies$/],
+    ['/stick-slip/', /\/case-studies\/stick-slip$/],
+    ['/track-record?stories=1', /\/case-studies$/],
+    ['/catalog?category=focus-centralisers', /\/catalog\/focus-centralisers$/],
+  ];
 
-  await page.getByLabel('Area multiselect').click();
-  const firstOption = page.getByRole('option').first();
-  await firstOption.click();
-  await page.keyboard.press('Escape');
+  for (const [from, to] of cases) {
+    test(`${from} lands on its replacement`, async ({ page }) => {
+      const response = await page.goto(from);
+      await expect(page).toHaveURL(to);
+      expect(response?.status()).toBe(200);
+    });
+  }
 
-  await expect(
-    page.getByText(/^Showing \d+ of \d+ stories that match your filters\.$/)
-  ).toBeVisible();
+  test('dead WordPress feeds are gone, not merely missing', async ({ request }) => {
+    // 410 rather than 404 so Google drops them promptly.
+    for (const url of ['/feed/', '/comments/feed/', '/stick-slip/feed/']) {
+      expect((await request.get(url)).status(), url).toBe(410);
+    }
+  });
+
+  test('junk query strings 404 but campaign links do not', async ({ request }) => {
+    expect((await request.get('/?11667727895.html')).status()).toBe(404);
+    // Valued params are real inbound traffic — srsltid is appended by Google.
+    for (const q of ['?utm_source=linkedin', '?gclid=abc', '?srsltid=xyz']) {
+      expect((await request.get(`/${q}`)).status(), q).toBe(200);
+    }
+  });
 });
 
 test('success stories PDF endpoint returns 200', async ({ request }) => {
