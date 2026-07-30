@@ -3,7 +3,7 @@ import { regionalManagers, hqTeam } from '@/data/team';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
-  title: 'Our Team',
+  title: 'Our Team — Wireline Engineering Specialists',
   description:
     "Meet Petromac's team of regional managers and headquarters staff supporting wireline logging operations worldwide.",
   path: '/team',

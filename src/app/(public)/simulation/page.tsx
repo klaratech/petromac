@@ -5,7 +5,7 @@ import WhyPetromac from '@/components/public/simulation/WhyPetromac';
 import ContactForm from '@/components/public/ContactForm';
 
 export const metadata = pageMetadata({
-  title: 'Athena — Wireline Planning Partner',
+  title: 'Athena — Wireline Job Planning & Drag Modelling',
   description:
     'Athena turns a well plan into a go/no-go call before the run starts — combining Hermes drag-and-tension modelling, AI configuration checks, and regional-manager experience.',
   path: '/simulation',

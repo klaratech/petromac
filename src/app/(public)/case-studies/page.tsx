@@ -4,7 +4,7 @@ import CaseStudiesBrowser from '@/components/public/case-studies/CaseStudiesBrow
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({
-  title: 'Case Studies',
+  title: 'Wireline Logging Case Studies — 21 Countries',
   description:
     'Field-proven results from Petromac wireline conveyance and centralisation: world-record deviations, rig-time savings, and data-quality wins worldwide.',
   path: '/case-studies',

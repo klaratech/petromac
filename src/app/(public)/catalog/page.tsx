@@ -12,7 +12,7 @@ import DeviceFinder from '@/components/public/catalog/DeviceFinder';
 import EmailPdfAction from '@/components/public/catalog/EmailPdfAction';
 
 export const metadata = pageMetadata({
-  title: 'Product Catalog',
+  title: 'Wireline Conveyance & Centraliser Catalog',
   description:
     'Petromac product lines — the Wireline Express™ tool taxi system with guides and holefinders, Focus™ precision centralisers, and well intervention accessories.',
   path: '/catalog',

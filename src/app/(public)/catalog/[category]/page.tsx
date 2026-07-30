@@ -26,12 +26,20 @@ export function generateStaticParams(): Params[] {
 
 export const dynamicParams = false;
 
+const CATEGORY_TITLES: Record<string, string> = {
+  'tool-taxis': 'Tool Taxis — Conveyance Accessories for Sticking Reduction',
+  'guides-holefinders': 'Holefinders & Guides for Wireline Logging',
+  'focus-centralisers': 'Centralisers for Wireline Logging — Open & Cased Hole',
+  'well-intervention': 'Rollers for Well Intervention — Over Body & Wireline',
+};
+
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { category } = await params;
   const cat = getCategory(category);
   if (!cat) return {};
+  const title = CATEGORY_TITLES[category] ?? cat.name;
   return pageMetadata({
-    title: cat.name,
+    title,
     description: cat.tagline,
     path: `/catalog/${cat.slug}`,
   });

@@ -23,7 +23,7 @@ const STATS = {
 };
 
 export const metadata = pageMetadata({
-  title: 'Track Record',
+  title: '3,100+ Wireline Deployments in 52 Countries',
   description: `Explore Petromac's global deployment history across ${STATS.countries}+ countries with our interactive operations map.`,
   path: '/track-record',
 });

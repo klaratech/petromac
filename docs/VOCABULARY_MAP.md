@@ -30,22 +30,22 @@ Petromac website vocabulary, search mapping, and meta title/description standard
 
 ## 3. Core & Category Page Titles (14 Routes)
 
-| Route                         | Current Base Title                               | Proposed Base Title                              | Full SERP Title (`+ \| Petromac`)                              | SERP Chars |
-| :---------------------------- | :----------------------------------------------- | :----------------------------------------------- | :------------------------------------------------------------- | :--------: |
-| `/`                           | Wireline Conveyance, Centralisers & Hole Finders | Wireline Conveyance, Centralisers & Hole Finders | `Wireline Conveyance, Centralisers & Hole Finders \| Petromac` |   **59**   |
-| `/catalog`                    | Product Catalog                                  | Wireline Conveyance & Centraliser Catalog        | `Wireline Conveyance & Centraliser Catalog \| Petromac`        |   **52**   |
-| `/catalog/tool-taxis`         | Tool Taxis                                       | Tool Taxis — Conveyance in Deviated Wells        | `Tool Taxis — Conveyance in Deviated Wells \| Petromac`        |   **52**   |
-| `/catalog/guides-holefinders` | Guides & Holefinders                             | Hole Finders & Wireline Re-Entry Guides          | `Hole Finders & Wireline Re-Entry Guides \| Petromac`          |   **50**   |
-| `/catalog/focus-centralisers` | Focus™ Centralisers                              | Wireline Centralisers for Cement Evaluation      | `Wireline Centralisers for Cement Evaluation \| Petromac`      |   **54**   |
-| `/catalog/well-intervention`  | Well Intervention Accessories                    | Well Intervention Rollers & Weight Bars          | `Well Intervention Rollers & Weight Bars \| Petromac`          |   **50**   |
-| `/case-studies`               | Case Studies                                     | Wireline Logging Case Studies — 21 Countries     | `Wireline Logging Case Studies — 21 Countries \| Petromac`     |   **55**   |
-| `/track-record`               | Track Record                                     | 3,100+ Wireline Deployments in 52 Countries      | `3,100+ Wireline Deployments in 52 Countries \| Petromac`      |   **53**   |
-| `/simulation`                 | Athena — Wireline Planning Partner               | Athena — Wireline Job Planning & Drag Modelling  | `Athena — Wireline Job Planning & Drag Modelling \| Petromac`  |   **58**   |
-| `/about`                      | About                                            | About Petromac — Wireline Conveyance Engineering | `About Petromac — Wireline Conveyance Engineering \| Petromac` |   **59**   |
-| `/patents`                    | Patents                                          | Patents — Wireline Conveyance & Centralisation   | `Patents — Wireline Conveyance & Centralisation \| Petromac`   |   **57**   |
-| `/about/publications`         | Publications                                     | Technical Papers on Wireline Conveyance          | `Technical Papers on Wireline Conveyance \| Petromac`          |   **50**   |
-| `/team`                       | Our Team                                         | Our Team — Wireline Engineering Specialists      | `Our Team — Wireline Engineering Specialists \| Petromac`      |   **54**   |
-| `/contact`                    | Contact Us                                       | Contact Petromac — Talk to a Wireline Engineer   | `Contact Petromac — Talk to a Wireline Engineer \| Petromac`   |   **57**   |
+| Route                         | Current Base Title                               | Proposed Base Title                                        | Full SERP Title (`+ \| Petromac`)                                        | SERP Chars |
+| :---------------------------- | :----------------------------------------------- | :--------------------------------------------------------- | :----------------------------------------------------------------------- | :--------: |
+| `/`                           | Wireline Conveyance, Centralisers & Hole Finders | Wireline Conveyance, Centralisers & Hole Finders           | `Wireline Conveyance, Centralisers & Hole Finders \| Petromac`           |   **59**   |
+| `/catalog`                    | Product Catalog                                  | Wireline Conveyance & Centraliser Catalog                  | `Wireline Conveyance & Centraliser Catalog \| Petromac`                  |   **52**   |
+| `/catalog/tool-taxis`         | Tool Taxis                                       | Tool Taxis — Conveyance Accessories for Sticking Reduction | `Tool Taxis — Conveyance Accessories for Sticking Reduction \| Petromac` |   **58**   |
+| `/catalog/guides-holefinders` | Guides & Holefinders                             | Holefinders & Guides for Wireline Logging                  | `Holefinders & Guides for Wireline Logging \| Petromac`                  |   **52**   |
+| `/catalog/focus-centralisers` | Focus™ Centralisers                              | Centralisers for Wireline Logging — Open & Cased Hole      | `Centralisers for Wireline Logging — Open & Cased Hole \| Petromac`      |   **60**   |
+| `/catalog/well-intervention`  | Well Intervention Accessories                    | Rollers for Well Intervention — Over Body & Wireline       | `Rollers for Well Intervention — Over Body & Wireline \| Petromac`       |   **60**   |
+| `/case-studies`               | Case Studies                                     | Wireline Logging Case Studies — 21 Countries               | `Wireline Logging Case Studies — 21 Countries \| Petromac`               |   **55**   |
+| `/track-record`               | Track Record                                     | 3,100+ Wireline Deployments in 52 Countries                | `3,100+ Wireline Deployments in 52 Countries \| Petromac`                |   **53**   |
+| `/simulation`                 | Athena — Wireline Planning Partner               | Athena — Wireline Job Planning & Drag Modelling            | `Athena — Wireline Job Planning & Drag Modelling \| Petromac`            |   **58**   |
+| `/about`                      | About                                            | About Petromac — Wireline Conveyance Engineering           | `About Petromac — Wireline Conveyance Engineering \| Petromac`           |   **59**   |
+| `/patents`                    | Patents                                          | Patents — Wireline Conveyance & Centralisation             | `Patents — Wireline Conveyance & Centralisation \| Petromac`             |   **57**   |
+| `/about/publications`         | Publications                                     | Technical Papers on Wireline Conveyance                    | `Technical Papers on Wireline Conveyance \| Petromac`                    |   **50**   |
+| `/team`                       | Our Team                                         | Our Team — Wireline Engineering Specialists                | `Our Team — Wireline Engineering Specialists \| Petromac`                |   **54**   |
+| `/contact`                    | Contact Us                                       | Contact Petromac — Talk to a Wireline Engineer             | `Contact Petromac — Talk to a Wireline Engineer \| Petromac`             |   **57**   |
 
 ---
 

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
-  title: 'About',
+  title: 'About Petromac — Wireline Conveyance Engineering',
   description:
     "Learn about Petromac's origins, our founder Stephen McCormick, and the engineering drive behind our wireline logging solutions.",
   path: '/about',

@@ -3,7 +3,7 @@ import { pageMetadata } from '@/lib/seo';
 import JsonLd from '@/components/shared/JsonLd';
 
 export const metadata = pageMetadata({
-  title: 'Publications',
+  title: 'Technical Papers on Wireline Conveyance',
   description:
     "Published papers and conference presentations on Petromac's wireline conveyance and centraliser technologies.",
   path: '/about/publications',

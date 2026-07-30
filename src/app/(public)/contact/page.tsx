@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
-  title: 'Contact Us',
+  title: 'Contact Petromac — Talk to a Wireline Engineer',
   description:
     'Get in touch with Petromac for wireline logging solutions, product enquiries, or to request an Athena demo.',
   path: '/contact',
