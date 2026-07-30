@@ -89,8 +89,8 @@ Petromac website vocabulary, search mapping, and meta title/description standard
 
 | Slug   | Current Base Title                      | Proposed Base Title                           | Full SERP Title (`+ \| Petromac`)                           | SERP Chars |
 | :----- | :-------------------------------------- | :-------------------------------------------- | :---------------------------------------------------------- | :--------: |
-| `cp12` | CP12 — Centering Parallelogram for 12in | CP12 Wireline Centralizer — 12in Cased Hole   | `CP12 Wireline Centralizer — 12in Cased Hole \| Petromac`   |   **54**   |
-| `cp8`  | CP8 — Co-Pivot Centraliser for 8.5in    | CP8 Wireline Centraliser — 8-1/2in Cased Hole | `CP8 Wireline Centraliser — 8-1/2in Cased Hole \| Petromac` |   **56**   |
+| `cp12` | CP12 — Centering Parallelogram for 12in | CP12 Wireline Centralizer — 12in Open Hole    | `CP12 Wireline Centralizer — 12in Open Hole \| Petromac`    |   **53**   |
+| `cp8`  | CP8 — Co-Pivot Centraliser for 8.5in    | CP8 Wireline Centraliser — 8-1/2in Open Hole  | `CP8 Wireline Centraliser — 8-1/2in Open Hole \| Petromac`  |   **55**   |
 | `ca7`  | CA7 — Centering Adjustable Taxi for 7in | CA7 Adjustable Centralizer — 7in Casing       | `CA7 Adjustable Centralizer — 7in Casing \| Petromac`       |   **51**   |
 | `cril` | CRIL — Centraliser Rocker In-Line       | CRIL In-line Rocker Centraliser — Cement Logs | `CRIL In-line Rocker Centraliser — Cement Logs \| Petromac` |   **56**   |
 | `cru`  | CRU — Centraliser Rocker for USIT       | CRU Centralizer for USIT — Cement Evaluation  | `CRU Centralizer for USIT — Cement Evaluation \| Petromac`  |   **55**   |

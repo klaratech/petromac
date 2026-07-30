@@ -108,6 +108,13 @@ export const PRODUCT_TITLES: Record<string, string> = {
   hf9j: 'J-Latch Hole Finder HF9J (Halliburton)',
   'hf9-acrt': 'HF9-ACRt Induction Hole Finder (Halliburton)',
   'hf-b-wts': 'WTS Connection Hole Finder Guide (BHI)',
+  // focus-centralisers
+  cp12: 'CP12 Wireline Centralizer — 12in Open Hole',
+  cp8: 'CP8 Wireline Centraliser — 8-1/2in Open Hole',
+  ca7: 'CA7 Adjustable Centralizer — 7in Casing',
+  cril: 'CRIL In-line Rocker Centraliser — Cement Logs',
+  cru: 'CRU Centralizer for USIT — Cement Evaluation',
+  cx9: 'CX9 Helix Centraliser — Ultra-Low Drag',
   // well-intervention
   rs7: 'RS7 Roller Standoff — 7in CBL-VDL',
   ro17: 'RO17 Roller Slip-over for 1-11/16in Toolstrings',
