@@ -96,6 +96,17 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
     brand: { '@type': 'Brand', name: 'Petromac' },
     url: absoluteUrl(productHref(product)),
     image: product.images.filter((i) => !i.src.endsWith('.svg')).map((i) => absoluteUrl(i.src)),
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'USD',
+      price: '0.00',
+      availability: 'https://schema.org/InStock',
+      url: absoluteUrl(productHref(product)),
+      seller: {
+        '@type': 'Organization',
+        name: 'Petromac',
+      },
+    },
   };
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
