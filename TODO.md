@@ -63,18 +63,18 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
      - Declined Google's one-click Cloudflare flow: it works by granting
        Google OAuth **write access to the whole DNS account**, which is not a
        trade worth making for one TXT record on this account.
-     - Second Owner STILL OUTSTANDING (29 Jul), and there is a trap here.
-       Adding `rolando@petromac.co.nz` did NOT add that address: Petromac is on
-       M365, so a petromac.co.nz address is not a Google login, and Google
-       silently resolved it to **rv2020nz@gmail.com** — whichever Google
-       account has that work address attached as an alternate. The grant went
-       to that account, under the strongest permission there is (an Owner can
-       add and remove other users). Since nobody had confirmed it was actually
-       Rolando's, it was REMOVED from both properties the same day (removing it
-       from the Domain property cleared the www one too — delegated ownership
-       propagates). To finish: get the actual Gmail address from Rolando and
-       add THAT, rather than typing a petromac.co.nz address and trusting
-       whatever Google maps it to.
+     - Second Owner DONE (29 Jul): **rv2020nz@gmail.com** (Rolando), Owner on
+       both properties. Worth knowing how we got there, because the first
+       attempt was a near miss. Adding `rolando@petromac.co.nz` did NOT add
+       that address — Petromac is on M365, so a petromac.co.nz address is not a
+       Google login, and Google silently resolved it to whichever Google
+       account carries it as an alternate, granting THAT account Owner (which
+       can add and remove other users). It was removed until Rajesh confirmed
+       the account with Rolando directly, then re-added using the Gmail address
+       itself. Rule: ask the person for their actual Google account address;
+       never type a petromac.co.nz address into a Google user field and trust
+       the mapping. Adding or removing on the Domain property propagates to the
+       www property — one action covers both.
      - 15 unread Search Console notifications were left unread.
      - Indexing as at 29 Jul: **36 indexed, 33 not** — 30 "Crawled – currently
        not indexed" (normal for the 46 case-study + catalog URLs that only just
@@ -87,9 +87,7 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
        both resolve to a 200 `application/pdf`, spaces in filenames included.
   2. Rich Results test (search.google.com/test/rich-results) on /,
      one product page, /about/publications
-  3. Ask Rolando for his actual Google account address (see the owner note
-     above) so the second Owner can be added without guessing.
-  4. Quick browse of the live site — homepage, catalog, track record,
+  3. Quick browse of the live site — homepage, catalog, track record,
      case studies, contact form (submit once to see Turnstile)
   - Days after activation: SPF trim to M365-only include, DMARC watch,
     then -all; drop default.\_domainkey + link CNAME. CAUTION (28 Jul):
