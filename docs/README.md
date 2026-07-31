@@ -15,6 +15,7 @@
 - [TAILWIND_THEME.md](TAILWIND_THEME.md) - Brand theme
 - [EMAIL_SETUP.md](EMAIL_SETUP.md) - Email configuration (Microsoft Graph)
 - [DNS.md](DNS.md) - DNS zone (Cloudflare = single source of truth), history & cleanup
+- [VOCABULARY_MAP.md](VOCABULARY_MAP.md) - SEO vocabulary, spelling policy & the signed-off page titles
 - [MS365_ENTRA_KIOSK_SETUP.md](MS365_ENTRA_KIOSK_SETUP.md) - Microsoft staff sign-in setup
 - [ASSET_MANIFEST.md](ASSET_MANIFEST.md) - Image/video/3D model optimization specs for designers
 - [BrandBook.pdf](BrandBook.pdf) - Petromac brand book

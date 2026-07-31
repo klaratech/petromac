@@ -83,12 +83,28 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
        from `/pdf/<file>` and the rebuild moved them to `/patent_pdfs/<file>`
        with identical filenames, so Google was still requesting the old paths
        (`/pdf/MY-169945 B.pdf`, `/pdf/CN108104751B.pdf`, last crawled 26 Jan).
-       `next.config.ts` now 308s `/pdf/:file*` → `/patent_pdfs/:file*`; verified
-       both resolve to a 200 `application/pdf`, spaces in filenames included.
-  2. Rich Results test (search.google.com/test/rich-results) on /,
-     one product page, /about/publications
+       SUPERSEDED 30 Jul: this was first done as a 308 in `next.config.ts`, but
+       the whole redirect table has since moved to `src/lib/redirects.ts` (see
+       the SEO & URL migration section) and `/pdf/:file*` is now a literal
+       **301**. The four filenames carrying spaces/commas were also renamed, so
+       `/pdf/<old name>` folds both moves into a single hop. Verified 200
+       `application/pdf` either way.
+  2. Rich Results test — **effectively DONE 30 Jul**, and it found two things,
+     both since fixed in code: case-study `Article.about` was `Product`
+     (→ `Thing`, `98766f5`) and product pages were flagged for a missing
+     `offers` field (`37de8ba` — **but see the open decision item in the SEO &
+     URL migration section: the fix that shipped claims a $0.00 price and
+     should probably be backed out**). Worth ONE re-run of the test on /,
+     a product page and /about/publications to confirm clean.
   3. Quick browse of the live site — homepage, catalog, track record,
-     case studies, contact form (submit once to see Turnstile)
+     case studies, contact form (submit once to see Turnstile). STILL OPEN,
+     and now more worth doing than it was: the redirect layer, every page
+     title and the CI deploy path all changed on 30 Jul.
+  4. NEW — spot-check the six recovered WP URLs on production, with and
+     without the trailing slash, and confirm each is a single 301 hop:
+     `/contacts/`, `/patents/`, `/origins/`, `/publications/`,
+     `/privacy-policy/`, `/terms-of-use/`. The unit test proves the mapping
+     table; it does not prove the deployed edge behaves.
   - Days after activation: SPF trim to M365-only include, DMARC watch,
     then -all; drop default.\_domainkey + link CNAME. CAUTION (28 Jul):
     the SPF currently ALSO authorises the ChemiCloud server + mailchannels
@@ -323,6 +339,98 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       the pre-push hook — unit tests previously existed but NEVER ran
       anywhere (one had silently drifted from the implementation).
 
+## SEO & URL migration (30–31 Jul) — the Search Console audit block
+
+All of this is LIVE on production (promoted 31 Jul 05:43 UTC, run 30607605926).
+Reasoning for the redirect architecture is in docs/DECISIONS.md; the title
+standards are in docs/VOCABULARY_MAP.md.
+
+- [x] **WordPress-migration redirects FIXED (P0, `ac75d14` via PR #2).** The
+      30 Jul Search Console audit found six previously-indexed WP pages 404ing,
+      `/contacts/` among them at **59 clicks / 1,045 impressions** over six
+      months — the site's second-biggest traffic source. Root cause: WordPress
+      served every URL with a trailing slash and those are the indexed forms,
+      but Next normalises the slash BEFORE consulting `next.config.ts`
+      `redirects()`, so `/contacts/` became `/contacts` and only then looked for
+      a rule — chaining 308→301 where a rule existed and 404ing where it didn't.
+      Fix: `skipTrailingSlashRedirect: true`, `redirects()` deleted from
+      next.config, and the whole table moved to `src/lib/redirects.ts` (pure,
+      unit-tested) applied by `src/proxy.ts`, which now also owns the ordinary
+      `/page/` → `/page` 308. Added 301s for `/contacts`, `/patents`,
+      `/origins`, `/publications`, `/privacy-policy`, `/terms-of-use`,
+      `/download`, `/category/orientation`, `/author/adm_petromac` — each a
+      SINGLE hop with and without the slash. Dead WP feed URLs → 410. Four
+      patent PDFs with spaces/commas in their filenames renamed with 301s.
+      `redirects.test.ts` asserts no destination is itself redirected.
+      **Do not put a redirect back in `next.config.ts`** — that is the trap
+      this fixed. CLAUDE.md and DECISIONS.md both record it.
+- [x] **Query-string handling narrowed (`f85e997`).** The first cut 404'd
+      anything off an allowlist; it now 404s only VALUELESS params. Google had
+      crawled `/?11667727895.html` and siblings as separate 200 pages.
+      `utm_*`/`gclid`/`fbclid` stay allowed. **A page that starts reading
+      `searchParams` without registering it in `ROUTE_QUERY_PARAMS` will 404** —
+      that is the live footgun this leaves behind.
+- [x] **Vocabulary map applied to every page title** (`ee7f0d6`, `a9f4b1f`,
+      `4f3997e`, `7d25c46`, `504e766`, `7419abf`). 14 core/category routes plus
+      all 32 product models, all ≤60 SERP chars including the ` | Petromac`
+      suffix. Product titles live in `PRODUCT_TITLES` in `enrich.ts` — an
+      SEO-ONLY map, so **no visible H1 or product name changed**. The -iser /
+      -izer split is now a written policy in the map (§1), not folklore.
+- [x] Case-study `Article.about` changed `Product` → `Thing` (`98766f5`) —
+      Search Console validation error. Correct: a case study is about a tool,
+      it does not offer one.
+- [ ] **DECIDE: back out the fake `$0.00` `offers` block on product pages**
+      (`37de8ba`, `catalog/[category]/[slug]/page.tsx`). It was added to clear a
+      Search Console structured-data complaint, but `offers` is a RECOMMENDED
+      field for Product snippets, not a required one — so the complaint was a
+      non-blocking warning. What shipped in its place is a claim that every
+      Petromac tool costs **USD 0.00 and is InStock**, which is not true of
+      made-to-order oilfield hardware. Two live risks: Google can surface "$0.00"
+      in a rich result, and misrepresenting price is a structured-data quality
+      violation (manual-action territory). Recommended: delete the `offers`
+      block and accept the warning, or replace price with a
+      `priceSpecification` carrying no amount. Cheap either way — one file.
+- [ ] Vocabulary map §2 is only HALF applied. The six high-yield queries
+      (`hrsct`, `bowspring`, `tlc logging`, `holefinder`, `oriented core`,
+      `wireline malaysia`) each call for the term in **titles AND copy**. Titles
+      are done; the body-copy and H1 pass is not started. That is where the
+      remaining ranking upside is — a title alone rarely moves position 23 →
+      page 1.
+- [ ] Meta DESCRIPTIONS were never in scope of the map (it is a title
+      proposal). Worth a follow-up pass now that the titles set the vocabulary.
+- [ ] **`/case-studies-preview` is an orphan design-proposal route awaiting
+      Rajesh's call** (`c2bfad3`, refined `b4f7afd`/`7419abf`). Nothing links to
+      it, it is out of the sitemap, and it carries an explicit
+      `robots: index:false` because none of that makes a public URL private.
+      It duplicates `CaseStudiesBrowser` as `CaseStudiesBrowserPreview` (297
+      lines, dark theme). Decide: promote the design to `/case-studies` and
+      delete the preview, or delete the preview. Do not leave a second copy of
+      the browser drifting — the two will diverge.
+
+## CI, build & repo hygiene (30 Jul)
+
+- [x] **E2E suite actually runs in CI now** (`9f6eea0` + `a18ce15`). The smoke
+      suite was rewritten against the current site (it had drifted), Playwright
+      manages its own `next start`, and it runs as its own `e2e` job. Point it
+      at a deployed env with `PLAYWRIGHT_BASE_URL=https://test.petromac.co.nz`.
+- [x] **Patent PDFs shrunk 206 MB → 130 MB** (`88d89a1` via PR #4), via
+      `scripts/python/compress_patent_pdfs.py` / `pnpm run data:patents`
+      (dry-run by default, `--apply` to write). NOTE this is deliberately NOT
+      the `/ebook` recipe the catalog uses — that recipe makes these scans
+      BIGGER. Documented in docs/ADMIN.md §3.
+- [x] **Docker pull race fixed** (`d6867c2`, `f1b764a`). Parallel image pulls
+      hit containerd layer-ingestion races (`commit failed: rename … /ingest/…`);
+      both deploy workflows now pull sequentially and `docker logout ghcr.io`
+      afterwards so ephemeral tokens don't sit in `/root/.docker/config.json`.
+      DEPLOY.md carries the fix plus the disk-reclaim command for klaratech-1.
+- [x] Docs sweep (`105630c`) — verified claims against code and live headers
+      rather than against each other. Fixed three docs that still said "push to
+      main deploys production" (it deploys TEST). AGENTS.md was a forgotten
+      stale copy of CLAUDE.md, now a pointer. Gap found and documented in three
+      places: `build_case_studies.py` is NOT part of `pnpm run data`, so a
+      success-stories update that skips it leaves 46 live pages on the old
+      edition.
+
 ## HTML catalog (live at /catalog since Jul 2026)
 
 The HTML catalog built from the IDML source replaced the pdf.js viewer;
@@ -517,9 +625,29 @@ Turnstile warm-up fix was perf 83 / LCP 4.3s / FCP 1.1s.
       fonts are load-bearing for CLS — a careless preload can improve one metric
       while making layout shift worse, so measure CLS alongside LCP.
 
-## Performance regression — FIX FIRST (28 Jul)
+## Performance regression (28 Jul) — FIXED 29 Jul
 
-- [ ] **Homepage perf 89 → 68, LCP 3.8s → 6.6s, FCP 1.1s → 3.0s** (mobile,
+- [x] **FIXED (`3dd100a`, 29 Jul): Turnstile is now warmed on FIRST
+      INTERACTION, not on mount.** `TurnstileWidget` takes a `warmRef` that the
+      form calls on first focus/keystroke; the token is banked and consumed on
+      submit (fast path), with `getToken()`'s execute-and-await still there as
+      the slow path, and `expired-callback` re-warming — so the single-use /
+      ~5-min-expiry hazard called out below is handled. Page-load cost is gone
+      for the ~everyone who never touches a form. The 29 Jul Lighthouse pass
+      measured the post-fix baseline at perf 83 / LCP 4.3s, and the favicon work
+      then took it to 86 / 3.9s. **Read the Lighthouse-noise section above
+      before reading anything into those numbers.** This item sat unchecked
+      through the 30 Jul docs sweep; closing it now.
+      ONE PIECE NOT DONE: the prescribed `strategy="lazyOnload"` on the
+      analytics beacon — `WebAnalytics.tsx:28` is still `afterInteractive`. It's
+      an 11 KB script, so this is a rounding error next to the ~128 KB that was
+      actually the problem. Change it only if a future pass shows it mattering.
+      VERIFY step from the original spec was NOT re-run end-to-end after the
+      fix (two contact submits + one PDF email). Worth doing on the next pass —
+      this path has broken sends twice.
+
+      Original diagnosis, kept because it is the record of what went wrong —
+      **Homepage perf 89 → 68, LCP 3.8s → 6.6s, FCP 1.1s → 3.0s** (mobile,
       production, reproducible across 3 runs — not variance). Cause is MINE:
       the on-submit Turnstile rework dropped the IntersectionObserver gate on
       the reasoning that "nothing is deferred when mounting is free". Mounting
@@ -554,14 +682,20 @@ Turnstile warm-up fix was perf 83 / LCP 4.3s / FCP 1.1s.
       this fix before investigating separately, since the same two scripts load
       there and `trimWorld` client work may also contribute.
 
-## Contact drawer (next up)
+## Contact drawer
 
 - [x] Contact form short-message copy fixed (28 Jul). The friendly sentence was
       unreachable: the textarea's `minLength={10}` made Chrome block submission
       first with its own "Please lengthen this text to 10 characters or more" —
       the exact robotic phrasing we were removing. Now validated in the submit
       handler with the same wording the backend returns.
-- [ ] **Email icon in the header → contact form in a slide-out drawer**, so a
+- [x] **DONE 28 Jul** (`0e0611f`) — `ContactDrawer.tsx` ships, wired into
+      `Header.tsx:396` from both the desktop and mobile mail icons, and the
+      catalog's "Contact our regional managers" CTA was dropped in the same
+      commit. The spec below was followed as written, including the
+      conditional-render mounting (the item sat unchecked through the 30 Jul
+      docs sweep; closing it now).
+      Original spec, kept for the Turnstile constraint it records:
       visitor can send a message without leaving the page they're browsing.
       Design settled, one constraint verified the hard way: - Reuse the `LegalDrawer` LOOK (same slide-out, backdrop, Escape-to-close,
       focus handling) but NOT its mounting strategy. LegalDrawer stays in the
