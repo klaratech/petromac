@@ -6,7 +6,7 @@ import operationsStats from '../../../../public/data/operations_stats.json';
 
 export const metadata: Metadata = {
   ...pageMetadata({
-    title: 'Case Studies Preview',
+    title: 'Wireline Logging Case Studies — 21 Countries',
     description: 'Design proposal preview for Petromac case studies showcase.',
     path: '/case-studies-preview',
   }),
