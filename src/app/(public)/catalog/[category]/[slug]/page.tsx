@@ -85,8 +85,21 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   const figures = product.images.filter((i) => i.role === 'figure');
   const { prev, next } = adjacentProducts(product);
 
-  // schema.org rich data — name/summary/images straight from catalog.json,
-  // no offers/ratings (industrial equipment, no listed pricing).
+  // schema.org rich data — name/summary/images straight from catalog.json.
+  //
+  // DELIBERATELY NO `offers` BLOCK. Do not add one back to clear a Search
+  // Console complaint — that was tried on 30 Jul 2026 and was wrong twice over:
+  //   1. It fixed nothing. The "Either offers, review, or aggregateRating
+  //      should be specified" error was raised against two /case-studies pages,
+  //      whose `Article.about` was typed as `Product`; NO catalog page was ever
+  //      in that report. The real fix was `about` -> `Thing`, made separately.
+  //   2. An `offers` with a price turns a Product into a MERCHANT LISTING in
+  //      Google's eyes. The Rich Results Test duly started reporting these as
+  //      merchant listings and asking for shippingDetails and
+  //      hasMerchantReturnPolicy — while publishing "USD 0.00" and "InStock"
+  //      for made-to-order equipment that has neither a price nor stock.
+  // `offers` is RECOMMENDED, not required, for Product snippets, so its absence
+  // is a warning we accept on purpose. See TODO.md and docs/DECISIONS.md.
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -96,17 +109,6 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
     brand: { '@type': 'Brand', name: 'Petromac' },
     url: absoluteUrl(productHref(product)),
     image: product.images.filter((i) => !i.src.endsWith('.svg')).map((i) => absoluteUrl(i.src)),
-    offers: {
-      '@type': 'Offer',
-      priceCurrency: 'USD',
-      price: '0.00',
-      availability: 'https://schema.org/InStock',
-      url: absoluteUrl(productHref(product)),
-      seller: {
-        '@type': 'Organization',
-        name: 'Petromac',
-      },
-    },
   };
   const breadcrumbSchema = {
     '@context': 'https://schema.org',

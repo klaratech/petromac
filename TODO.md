@@ -379,17 +379,24 @@ standards are in docs/VOCABULARY_MAP.md.
 - [x] Case-study `Article.about` changed `Product` → `Thing` (`98766f5`) —
       Search Console validation error. Correct: a case study is about a tool,
       it does not offer one.
-- [ ] **DECIDE: back out the fake `$0.00` `offers` block on product pages**
-      (`37de8ba`, `catalog/[category]/[slug]/page.tsx`). It was added to clear a
-      Search Console structured-data complaint, but `offers` is a RECOMMENDED
-      field for Product snippets, not a required one — so the complaint was a
-      non-blocking warning. What shipped in its place is a claim that every
-      Petromac tool costs **USD 0.00 and is InStock**, which is not true of
-      made-to-order oilfield hardware. Two live risks: Google can surface "$0.00"
-      in a rich result, and misrepresenting price is a structured-data quality
-      violation (manual-action territory). Recommended: delete the `offers`
-      block and accept the warning, or replace price with a
-      `priceSpecification` carrying no amount. Cheap either way — one file.
+- [x] **Fake `$0.00` `offers` block REMOVED (31 Jul).** Added in `37de8ba` to
+      clear a Search Console structured-data complaint. The 31 Jul audit showed
+      it fixed nothing: the Product-snippets report held **Invalid 2 / Valid 0**,
+      and both invalid items were **/case-studies pages** (item name "Wireline
+      Express"), flagged because `Article.about` was typed as `Product` with no
+      offers. NO catalog page was ever in that report. The real fix was
+      `about` → `Thing` (`98766f5`, three minutes later) — verified live, that
+      page now emits `Thing` and no `Product` node at all, so those 2 invalid
+      items are stale and clear on recrawl.
+      Meanwhile the block did active harm: a Product carrying a price becomes a
+      **merchant listing** to Google, and the Rich Results Test had duly started
+      reporting CX9 as one and asking for `shippingDetails` /
+      `hasMerchantReturnPolicy` — while publishing "USD 0.00" and "InStock" for
+      made-to-order equipment with neither. `offers` is RECOMMENDED, not
+      required, for Product snippets; the warning is accepted on purpose. A
+      long comment in `catalog/[category]/[slug]/page.tsx` records this so the
+      block doesn't get re-added by the next person reading a warning as an
+      error. See [[structured-data-warnings-not-errors]] in memory.
 - [ ] Vocabulary map §2 is only HALF applied. The six high-yield queries
       (`hrsct`, `bowspring`, `tlc logging`, `holefinder`, `oriented core`,
       `wireline malaysia`) each call for the term in **titles AND copy**. Titles
@@ -491,18 +498,19 @@ cache rule. Remaining:
       `WebAnalytics` already gates on `isProductionSite()` (verified false for
       the test URL), and withholding the token is a second, unconditional
       guard so our own testing can never reach the production numbers.
-- [ ] **DECISION NEEDED — two beacons.** Cloudflare's Web Analytics site is set
-      to "Enable, excluding visitor data in the EU", which AUTO-INJECTS the
-      beacon into proxied HTML. The app now ships its own beacon too, so
-      non-EU pageviews will be counted twice. Pick one:
-      (a) switch Cloudflare to "Enable with JS Snippet installation" and keep
-      the app's — RECOMMENDED, because it captures EU visitors too (Norway,
-      France, and EU prospects matter here) and excludes test.petromac; or
-      (b) delete `WebAnalytics.tsx` and rely on auto-injection — simpler, but
-      loses all EU data and counts test traffic.
-      Symptom to watch meanwhile: pageviews roughly double for non-EU regions.
-      (Note: a curl from Italy shows NO beacon on production, which is
-      consistent with the EU-exclusion setting rather than a fault.)
+- [x] **Two beacons — RESOLVED, option (a) was taken** (confirmed in the
+      Cloudflare dashboard 31 Jul 2026). The RUM setting for petromac.co.nz
+      reads "**Enable with JS Snippet installation**", so Cloudflare no longer
+      auto-injects and the app's own `WebAnalytics.tsx` beacon is the only one.
+      Confirming signal: EU visitors now appear in the country breakdown
+      (Italy, Ireland), which auto-injection with EU-exclusion could never have
+      produced. No double counting.
+      Worth knowing for next time: this could NOT be settled by curling
+      production from Italy — an EU request sees no injected beacon under
+      EITHER setting, so the HTML looks identical whichever mode is active.
+      The dashboard (or a non-EU vantage point) is the only way to tell. The
+      zone API token can't read it either: Web Analytics is an ACCOUNT-level
+      resource and that token is zone-scoped.
 - [x] Cookie audit (28 Jul): **no cookies on public pages** — verified with
       zero `Set-Cookie` headers on / and /catalog in production. The only
       cookies in the codebase are the three staff-auth ones
@@ -585,10 +593,20 @@ Consequences, learned the hard way in this session:
   the privacy text off every page (document → 12KB), Turnstile's ~128KB gone from
   page load (0 third-party requests), the `.anim-prehide` cap (3s → 0.4s in the
   shipped CSS).
-- **For actual user-perceived performance, use FIELD data** — Search Console
-  Core Web Vitals / CrUX. That measures real visitors on real networks instead
-  of one machine in Milan. It is the correct next step and is already an open
-  item; lab scores have now misled this project twice in one day.
+- **For actual user-perceived performance, use FIELD data** — but NOT from
+  Search Console. **Checked 31 Jul: CWV reports "Not enough usage data in the
+  last 90 days" for BOTH mobile and desktop, and probably always will.** CrUX
+  needs a far bigger sample than this site's traffic (246 clicks / 1.71K
+  impressions per quarter, ~56 visits/day). Waiting for it is a dead end.
+  **Use Cloudflare Web Analytics instead — it already has RUM data**, from our
+  own beacon, on real visitors. First read (31 Jul, last 24 h):
+  **LCP P75 3,176 ms** (P50 2,148 / P90 4,288), split 56% good / 33% needs
+  improvement / 11% poor; **INP 100% good**; page load 2,835 ms. So LCP sits in
+  "needs improvement", not "poor" — worth work, not a crisis, and now measured
+  on real visitors rather than one machine in Milan.
+  CAVEAT before leaning on those numbers: 38 of 65 visits in that window came
+  from China, which looks like scraper traffic surviving the bot filter and
+  could skew the distribution. Re-read over 7-30 days before deciding anything.
 - If a lab comparison is genuinely needed, run it LOCALLY against `pnpm start`
   (5+ runs, take the median) so the network is out of the equation. Note the dev
   server is NOT comparable — that mistake was also made today.
@@ -617,7 +635,11 @@ Turnstile warm-up fix was perf 83 / LCP 4.3s / FCP 1.1s.
       imported off the homepage's critical path. Worth ~5 points; more effort
       than the favicon by an order of magnitude.
 - [ ] **Fonts — where the remaining LCP time actually is.** PAUSED at Rajesh's
-      request, and it's the biggest remaining item. LCP is now ~62% RENDER DELAY,
+      request, and it's the biggest remaining item. NOW HAS REAL FIELD DATA to
+      judge against (31 Jul): Cloudflare RUM puts **LCP P75 at 3,176 ms** with
+      11% of visits "poor" — needs improvement, not critical. Search Console
+      CWV will never answer this; see the Lighthouse-noise section above.
+      LCP is now ~62% RENDER DELAY,
       not download: the hero poster fetches in ~1.2s then the browser waits
       ~2.7s before painting. Two webfonts at 48KB and 40KB are the prime
       suspects, since text and layout block on font loading. Check whether both
