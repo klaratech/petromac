@@ -193,6 +193,37 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Security / hardening
 
+- [x] **Next 16.2.4 → 16.2.12 + `pnpm audit` in CI (31 Jul).** Prompted by
+      Rajesh asking whether the WordPress malware/link-injection experience can
+      repeat here. It can't, and the reason is structural, worth writing down:
+      there is **no database**, **nothing writes to disk at runtime** (the only
+      "write" in the backend is an `io.BytesIO()` buffer for PDF assembly), the
+      container is **immutable and rebuilt from git**, and there is no admin UI,
+      plugin installer or upload directory. WordPress was injectable because it
+      had mutable server-side state that became page content, plus a writable
+      directory that was executable. Neither exists here.
+      The risk therefore moves to the **supply chain** — hostile code reaches
+      production by riding in through a dependency at BUILD time. The audit was
+      27 vulnerabilities (14 high); the Next bump took it to **5 (3 high)**.
+      All 5 remaining are transitive through `next` itself (postcss, sharp,
+      @babel/core) and cannot be fixed here until Next bumps its own ranges —
+      which is why the CI gate fires on **critical only**, with a second
+      informational step that prints the full count. Gating on `high` would fail
+      every run forever and train everyone to ignore a red X.
+      Verified after the upgrade: typecheck, lint, 55 unit tests, production
+      build, and the full e2e suite incl. the WordPress-migration redirects
+      through the real middleware.
+- [ ] **Branch protection on `main` + audit who has write access to the
+      klaratech org.** Now the highest-value credential by some distance: a
+      commit to main auto-deploys TEST, and one button deploys PRODUCTION, so
+      repo write access _is_ website write access. Needs Rajesh (GitHub
+      settings). Confirm 2FA is enforced org-wide while in there.
+- [ ] Optional, bigger job: **nonce-based CSP to drop `'unsafe-inline'`** from
+      `script-src`. App Router's inline bootstrap requires it today, which means
+      CSP is not a reliable XSS backstop. Low exposure — the site renders no
+      user-generated content — but it is the one genuinely soft spot in the
+      header set. `src/proxy.ts` already exists, which is where a nonce would go.
+
 - [x] Send-as-staff now survives the whole 12 h session INCLUDING deploys
       (28 Jul, two rounds): the ~1 h delegated Graph token had no refresh
       path, so "email as me" silently fell back to info@ an hour after

@@ -41,7 +41,7 @@
     "d3-selection": "^3.0.0",
     "d3-transition": "^3.0.1",
     "framer-motion": "^12.7.3",
-    "next": "16.2.4",
+    "next": "16.2.12",
     "page-flip": "^2.0.7",
     "papaparse": "^5.4.1",
     "react": "^19.2.5",
@@ -50,7 +50,7 @@
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^16.2.4",
+    "@next/bundle-analyzer": "^16.2.12",
     "@playwright/test": "^1.58.0",
     "@tailwindcss/postcss": "^4",
     "@types/d3-array": "^3.2.2",
@@ -67,7 +67,7 @@
     "@types/topojson-client": "^3.1.5",
     "@types/topojson-specification": "^1.0.5",
     "eslint": "^9",
-    "eslint-config-next": "^16.2.4",
+    "eslint-config-next": "^16.2.12",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",

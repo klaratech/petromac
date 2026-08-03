@@ -28,6 +28,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Supply chain is this site's real attack surface: there is no database
+      # and nothing writes to disk at runtime, so the way hostile code reaches
+      # production is by riding in through a dependency at BUILD time.
+      #
+      # Two steps on purpose. The gate fails only on CRITICAL, because
+      # everything below that is currently transitive through `next` itself
+      # (postcss, sharp, @babel/core) and cannot be fixed here until Next bumps
+      # its own ranges — gating on `high` would fail every run forever, and a
+      # check that always fails is a check everyone learns to ignore. The
+      # informational step then prints the full count so the number stays
+      # visible and someone notices when it climbs.
+      - name: Audit dependencies (gate — critical only)
+        run: pnpm audit --prod --audit-level critical
+
+      - name: Audit dependencies (informational, never fails)
+        if: ${{ always() }}
+        continue-on-error: true
+        run: pnpm audit --prod
+
       - name: TypeScript typecheck
         run: pnpm typecheck
 
