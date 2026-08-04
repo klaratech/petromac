@@ -16,10 +16,17 @@ const NAV_ITEMS = [
 ];
 
 // About's dropdown (desktop hover / focus) and mobile sub-links. Team lives
-// here rather than in the top bar. Origins (= /about itself) is listed
-// explicitly so the page is discoverable without clicking the About label.
+// here rather than in the top bar.
+//
+// There is deliberately NO "Origins" entry. It used to sit here pointing at
+// `/about` — the same href as the "About" item itself — on the reasoning that
+// it made the page discoverable without clicking the About label. In practice
+// the duplicate was the bug: two adjacent menu entries went to the same URL,
+// so whichever one you tapped second was a same-route navigation that did
+// nothing (Aug 2026 report). `/about`'s own H1 is "Origins of Petromac", so
+// the About label already leads there unambiguously. Keep every entry here
+// pointing at a DISTINCT destination.
 const ABOUT_SUBLINKS = [
-  { name: 'Origins', href: '/about' },
   { name: 'Team', href: '/team' },
   { name: 'Patents', href: '/about/patents' },
   { name: 'Publications', href: '/about/publications' },
@@ -51,6 +58,61 @@ export default function Header() {
     setOpen(false);
   }, [pathname]);
 
+  /** Set when a same-route click needs a scroll-to-top once the mobile panel
+   *  has finished unmounting. See handleNavClick. */
+  const pendingScrollTop = useRef(false);
+
+  /** The mobile panel sits in the DOCUMENT FLOW, not over it — opening it makes
+   *  the page ~680px taller and the browser's scroll anchoring shifts scrollY
+   *  to match, so nothing visually moves. The catch is that closing it reverses
+   *  that mid-flight: a window.scrollTo issued in the same tick as setOpen(false)
+   *  gets fought by the anchoring adjustment and lands at an arbitrary offset
+   *  (measured: asked for 0, got 900). Scrolling from this effect instead runs
+   *  after React has committed the unmount, so the document has already settled. */
+  useEffect(() => {
+    if (open || !pendingScrollTop.current) return;
+    pendingScrollTop.current = false;
+    // One further tick past the commit: scroll anchoring performs its
+    // adjustment during the LAYOUT that follows this effect, so a scroll
+    // issued synchronously here gets undone. Not rAF — it never fires in a
+    // hidden tab, which is how this often gets tested.
+    const id = setTimeout(() => {
+      // 'instant' rather than inheriting globals.css's smooth scrolling. This
+      // is the "you clicked the link for the page you are already on" case,
+      // and a real browser navigation to the same URL jumps to the top rather
+      // than gliding, so instant is the faithful match. It is also the only
+      // deterministic option: a smooth scroll is compositor-driven, so it
+      // silently never advances wherever rAF is starved.
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 0);
+    return () => clearTimeout(id);
+  }, [open]);
+
+  /** Every nav link goes through this.
+   *
+   *  Closing here rather than relying only on the route-change effect above:
+   *  tapping the link for the page you are ALREADY on does not change the
+   *  pathname, so that effect never fires and the panel stayed open — the tap
+   *  appeared to do nothing at all.
+   *
+   *  The scroll is the other half of the same problem. Next deliberately does
+   *  not scroll for a same-URL navigation, so such a tap also left you halfway
+   *  down the page. A browser scrolls to top when you click a link to the page
+   *  you are on, and that is what a reader expects here. Behaviour (smooth vs
+   *  instant) is left to the `scroll-behavior` rule in globals.css, which is
+   *  already reduced-motion aware. */
+  const handleNavClick = (href: string) => {
+    const sameRoute = href === pathname;
+    if (open) {
+      // Defer past the panel unmount (see the effect above).
+      pendingScrollTop.current = sameRoute;
+      setOpen(false);
+    } else if (sameRoute) {
+      // Desktop: no panel in play, so the document is not about to resize.
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  };
+
   // Lock body scroll while the mobile panel is open. Escape closes the
   // panel and returns focus to the toggle so keyboard users aren't left
   // focused on a hidden element.
@@ -66,9 +128,14 @@ export default function Header() {
       }
     };
     document.addEventListener('keydown', onKeyDown);
-    // Move focus to the first link so Tab continues inside the panel
-    // instead of behind the overlay.
-    panelRef.current?.querySelector('a')?.focus();
+    // Move focus to the first link so Tab continues inside the panel instead
+    // of behind the overlay. preventScroll because this focus exists purely for
+    // keyboard order — there is no reason for it to move the viewport, and a
+    // focus() that scrolls is an easy way to introduce a jump later. (Note it
+    // is NOT currently fixing a visible bug: opening the panel does change
+    // scrollY by ~680px, but that is scroll anchoring compensating for the
+    // in-flow panel, and measured viewport positions are identical either way.)
+    panelRef.current?.querySelector('a')?.focus({ preventScroll: true });
 
     return () => {
       document.body.style.overflow = prev;
@@ -78,10 +145,10 @@ export default function Header() {
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
-  // Sub-links use exact matching for Origins (/about) so it doesn't light
-  // up on /about/patents and /about/publications alongside their own links.
-  const isSubActive = (href: string) =>
-    href === '/about' ? pathname === '/about' : isActive(href);
+  // Every sub-link now owns a distinct subtree, so plain prefix matching is
+  // enough. (This used to special-case Origins, whose /about href would
+  // otherwise light up on /about/patents and /about/publications too.)
+  const isSubActive = (href: string) => isActive(href);
 
   // About owns /about/* and /team now that Team moved into its dropdown.
   const isAboutActive = () => isActive('/about') || isActive('/team');
@@ -134,6 +201,7 @@ export default function Header() {
                 <div key={item.href} className="relative group">
                   <Link
                     href={item.href}
+                    onClick={() => handleNavClick(item.href)}
                     aria-current={isAboutActive() ? 'page' : undefined}
                     className={desktopLinkClass(isAboutActive())}
                   >
@@ -156,6 +224,7 @@ export default function Header() {
                         <Link
                           key={sub.href}
                           href={sub.href}
+                          onClick={() => handleNavClick(sub.href)}
                           aria-current={isSubActive(sub.href) ? 'page' : undefined}
                           className={`block px-4 py-2 text-sm transition-colors ${
                             isSubActive(sub.href)
@@ -173,6 +242,7 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={() => handleNavClick(item.href)}
                   aria-current={isActive(item.href) ? 'page' : undefined}
                   className={desktopLinkClass(isActive(item.href))}
                 >
@@ -186,6 +256,7 @@ export default function Header() {
             <Link
               href="/intranet"
               prefetch={false}
+              onClick={() => handleNavClick('/intranet')}
               aria-current={isActive('/intranet') ? 'page' : undefined}
               className={desktopLinkClass(isActive('/intranet'))}
             >
@@ -301,6 +372,7 @@ export default function Header() {
                 <div key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={() => handleNavClick(item.href)}
                     aria-current={active ? 'page' : undefined}
                     className={[
                       'block px-3 py-3 rounded-lg text-base font-medium transition-colors',
@@ -317,6 +389,7 @@ export default function Header() {
                         <Link
                           key={sub.href}
                           href={sub.href}
+                          onClick={() => handleNavClick(sub.href)}
                           aria-current={isSubActive(sub.href) ? 'page' : undefined}
                           className={[
                             'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
@@ -339,6 +412,7 @@ export default function Header() {
             <Link
               href="/intranet"
               prefetch={false}
+              onClick={() => handleNavClick('/intranet')}
               aria-current={isActive('/intranet') ? 'page' : undefined}
               className={[
                 'px-3 py-3 rounded-lg text-base font-medium transition-colors',
