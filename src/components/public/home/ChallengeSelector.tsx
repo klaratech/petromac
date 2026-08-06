@@ -36,7 +36,7 @@ const SOLUTIONS: Solution[] = [
       // Subtitled cuts carry the narration audio track — the plain
       // transcodes were stripped with -an and play silent. Posters are
       // real frames pulled with ffmpeg -ss <t> -frames:v 1.
-      src: '/videos/transcoded/differential-sticking-subtitled.mp4',
+      src: '/videos/transcoded/differential-sticking-subtitled.mp4?v=20260806',
       poster: '/images/posters/differential-sticking-poster.jpg',
       duration: '3:32',
     },
@@ -52,7 +52,7 @@ const SOLUTIONS: Solution[] = [
       'Field-proven across operators worldwide',
     ],
     video: {
-      src: '/videos/transcoded/WirelineExpress-subtitled.mp4',
+      src: '/videos/transcoded/WirelineExpress-subtitled.mp4?v=20260806',
       poster: '/images/posters/wireline-express-poster.jpg',
       duration: '3:33',
     },
@@ -68,7 +68,7 @@ const SOLUTIONS: Solution[] = [
       'Plan ahead with Athena to anticipate every tight zone',
     ],
     video: {
-      src: '/videos/transcoded/pf-subtitled.mp4',
+      src: '/videos/transcoded/pf-subtitled.mp4?v=20260806',
       poster: '/images/posters/pf-poster.jpg',
       duration: '1:41',
     },
@@ -85,7 +85,7 @@ const SOLUTIONS: Solution[] = [
       'Improved data quality through perfect centralisation',
     ],
     video: {
-      src: '/videos/transcoded/helix-subtitled.mp4',
+      src: '/videos/transcoded/helix-subtitled.mp4?v=20260806',
       poster: '/images/posters/helix-poster.jpg',
       duration: '2:00',
     },
