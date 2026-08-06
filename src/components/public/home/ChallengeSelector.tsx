@@ -84,10 +84,14 @@ const SOLUTIONS: Solution[] = [
     product: 'Focus Centralisers',
     summary:
       'CP-series centralisers for open hole; HELIX, Rocker, and CA7 for cased hole — across the full range.',
+    // Two proof points like every other tab — a third made this panel
+    // taller and the tab strip jumped on switch (Rajesh, Aug 2026). The old
+    // bullets 1+3 merged: low drag IS the data-quality story (no
+    // stick-slip), and "perfect centralisation" said nothing a centraliser
+    // doesn't already promise.
     proofPoints: [
-      'Lower drag than conventional centralisers',
+      'Lower drag than conventional centralisers — data devoid of stick-slip',
       'Easily navigates multiple casing sizes and narrow restrictions',
-      'Improved data quality through perfect centralisation',
     ],
     video: {
       src: '/videos/transcoded/helix-subtitled.mp4?v=20260806',
