@@ -46,7 +46,7 @@ numbers shown publicly need to be current.
 The **catalog PDF** (the download/email artifact behind the `/catalog` page's
 Download and Email buttons — the page itself is the HTML catalog, see §2b)
 and the **success stories** collection, which is now published as the case
-studies at `/case-studies` (the public flipbook route was retired Jul 2026 —
+stories at `/success-stories` (renamed from /case-studies Aug 2026; the public flipbook route was retired Jul 2026 —
 see CLAUDE.md; the flipbook page images are still generated, because each case
 study uses its page webp as the story visual).
 Generated bundles live in `public/flipbooks/{catalog,success-stories}/`.
@@ -81,7 +81,7 @@ You can update just one flipbook — drop only a catalog PDF and success stories
 is left untouched, and vice versa. `pnpm run data` does flipbooks and
 operations together.
 
-**Case-study pages (after a success-stories update):** the `/case-studies`
+**Success-story pages (after a success-stories update):** the `/success-stories`
 pages are generated FROM the flipbook — after step 2, run
 `python3 scripts/python/build_case_studies.py` to regenerate
 `src/features/case-studies/content/case-studies.json`. New stories in the
@@ -247,10 +247,17 @@ Team page (`/team`). Data is in `src/data/team.ts`.
 - **GitHub rejects any file over 100 MB.** Raw exports from graphics/
   PowerPoint routinely exceed this — they must be transcoded/compressed
   _before_ committing.
-- Videos: transcode to H.264, 854×480 or 1080p. Strip audio (`-an`) only for
-  clips that play muted (hero/background loops); narrated `*-subtitled` cuts
-  keep their audio track — the homepage lightbox and kiosk lane play them
-  with sound. Reference pattern: `WirelineExpress.mp4` (50 MB → 3.7 MB).
+- Videos: transcode to H.264. The four homepage lightbox `*-subtitled` cuts
+  are 1080p since Aug 2026 (`-crf 22 -maxrate 2500k -bufsize 5000k
+  -movflags +faststart`, audio copied) — 540p at low bitrates read as blur
+  and triggered Edge's "Enhance" (Video Super Resolution) offer. Small
+  muted mechanism/background clips can stay SD. Strip audio (`-an`) only
+  for clips that play muted (hero/background loops); narrated `*-subtitled`
+  cuts keep their audio track — the homepage lightbox and kiosk lane play
+  them with sound. KNOWN GAP: `WirelineExpress-subtitled` has no usable
+  audio in transcoded/ OR kiosk-hd/ (see TODO, "Martin's website review").
+  When replacing same-name videos, bump the `?v=` query on the referencing
+  component (ChallengeSelector) to bust edge caches.
 - Homepage hero background: `public/videos/hero/hero-loop.mp4` (short
   seamless loop, ~13 s / ~1.9 MB) + `hero-loop-poster.jpg` (its first frame).
   Keep BOTH filenames when replacing — `Hero.tsx` references them directly.

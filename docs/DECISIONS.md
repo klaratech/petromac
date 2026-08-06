@@ -5,6 +5,53 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Case Studies renamed to Success Stories, URL INCLUDED
+
+**Decision:** `/case-studies` → `/success-stories` — route folder, nav,
+H1, breadcrumbs, JSON-LD, sitemap, internal CTAs, e2e expectations. The
+old tree 301s across in ONE hop via a `startsWithSegment('/case-studies')`
+rule in `resolveLegacyRequest` (step 5b), and every legacy rule that used
+to land on `/case-studies` now points straight at the new home so no
+chains form. The `'/success-stories'` LEGACY_PATHS entry from the Jul
+flipbook retirement was REMOVED — it is a real route again and the entry
+would have redirected the page to itself. `/case-studies-preview` (orphan
+proposal route) is deliberately not caught: `startsWithSegment` requires
+an exact match or a following slash. Slugs are unchanged and stay frozen.
+
+**Why:** Martin's review ("they are not really Case Studies") + Rajesh's
+call to rename everything including the URL. SEO hedges: the meta title
+keeps the search term alongside the new name ("Success Stories — Wireline
+Logging Case Studies"), sitemap.xml (same address, regenerated contents)
+was resubmitted in Search Console and the new index page put through
+Request Indexing on 6 Aug. Expect old URLs to drift to "Page with
+redirect" in GSC — correct behaviour, not a regression.
+
+**Trap for the future:** the 21 WP-era root-slug redirects now target
+`/success-stories/<slug>` directly. If this page ever renames again,
+update LEGACY_PATHS destinations in the same commit or the no-chains
+unit test will fail (that test is the guard — keep it).
+
+---
+
+## Aug 2026 — Homepage lightbox videos re-transcoded to 1080p
+
+**Decision:** the four `transcoded/*-subtitled.mp4` web cuts are now
+1920×1080 (CRF 22, 2.5 Mbps maxrate, `+faststart`, audio copied),
+re-encoded from the `kiosk-hd/` 1080p files. `?v=20260806` cache-buster
+on the ChallengeSelector sources.
+
+**Why:** the old web cuts were 960×540 at starving bitrates (WirelineExpress
+at 232 kbps) — reviewers saw blur, and Edge kept offering its Video Super
+Resolution "Enhance" button, which only appears on low-res video. Page
+weight is unchanged: the lightbox mounts no `<video>` until the poster is
+clicked, so only the on-demand stream got heavier (~27–47 MB per clip,
+progressive). Known limitation: kiosk-hd is itself a compressed
+generation; if original masters resurface, re-encode from those.
+`WirelineExpress-subtitled` remains SILENT in both trees — audio issue
+tracked in TODO ("Martin's website review").
+
+---
+
 ## Jul 2026 (late) — Redirects moved out of next.config into src/proxy.ts
 
 **Decision:** all URL redirects now live in `src/lib/redirects.ts` (a pure

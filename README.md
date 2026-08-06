@@ -31,7 +31,7 @@ pnpm run dev          # http://localhost:3000
 
 **Public:** `/` · `/about` (+`/patents`, `/publications`) · `/team` ·
 `/catalog` (HTML catalog: family + product pages, Device Finder) ·
-`/track-record` (deployment map) · `/case-studies` (+46 story pages) ·
+`/track-record` (deployment map) · `/success-stories` (+46 story pages) ·
 `/success-stories/flipbook` · `/simulation` · `/contact` · `/privacy` ·
 `/terms`
 

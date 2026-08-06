@@ -10,7 +10,7 @@ How the two documents are built and updated. Rationale: [DECISIONS.md](DECISIONS
 2. `pnpm run data:flipbooks` (or `pnpm run data` for everything)
 3. **If the success-stories PDF or its tags changed, also run
    `python3 scripts/python/build_case_studies.py`.** This is NOT part of
-   `pnpm run data` — the public `/case-studies` pages are generated from
+   `pnpm run data` — the public `/success-stories` pages (URL renamed from /case-studies, Aug 2026) are generated from
    `source.pdf` + `tags.csv`, so skipping it leaves 46 live pages describing the
    previous edition while the flipbook images show the new one. Check the
    regenerated `case-studies.json` diff before committing: slugs are FROZEN

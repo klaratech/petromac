@@ -2,6 +2,84 @@
 
 Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + git log.
 
+## Martin's website review (6 Aug 2026) — remaining items
+
+Martin Leonard's review email (5 Aug) was triaged item-by-item against the
+code on 6 Aug; root causes below were VERIFIED, not guessed. Shipped same
+day: 1080p re-transcodes of the four homepage lightbox videos (`fe15dd1`),
+track-record chip label 'Wireline Express - FT' → 'Formation Testing'
+(`a8043ff`), and the full Case Studies → Success Stories rename including
+the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
+(`d25a073`). Remaining, in suggested order:
+
+- [ ] **Contact drawer silently eats real messages — fix first.** Martin's
+      "top banner email went nowhere": `/api/contact` returns `{ok:true}`
+      while DISCARDING the message when (a) the hidden honeypot input named
+      `company` is filled — browser autofill loves filling hidden
+      organization/company fields even with autocomplete=off — or (b)
+      `_timing` < 3s. Rename the honeypot to something autofill won't
+      recognise (e.g. `_hp_field`), consider relaxing the 3s gate, and log
+      dropped submissions server-side so drops are at least visible.
+      Files: `src/components/public/ContactForm.tsx` (~line 128),
+      `backend/app/main.py` `submit_contact` (~line 459).
+- [ ] Success-stories browser: "Email" button should carry the filtered
+      count like Download does ("Email 16") — `CaseStudiesBrowser.tsx:121`
+      `buttonLabel`.
+- [ ] Success-stories filter counts are static (computed once over all 46);
+      Martin: selecting MENA (16) still shows Challenges (21) / SLB (36).
+      Make them faceted — count each facet's options against the OTHER
+      active filters. `src/features/case-studies/filters.ts`
+      (`buildCaseStudyOptions`) + `filters.test.ts`.
+- [ ] Catalog: prev/next walks the flat print-order list across category
+      boundaries (Pathfinder's "Previous" is TTB-IL6C from tool-taxis).
+      Scope it to the family, or label the family on the link.
+      `src/features/catalog/content/index.ts` (adjacentProducts) +
+      `[slug]/page.tsx` prev/next nav.
+- [ ] Catalog: add a visible "Back to Catalog" link at the BOTTOM of family
+      and model pages — the top breadcrumb is easy to miss (Martin).
+- [ ] Device Finder: the Open hole / Cased hole toggle only relabels the
+      size field — it does NOT filter (catalog data has no open/cased
+      dimension), so an 8-1/2" open-hole search returns CRIL/CRU/CX9/RO17/
+      TWT-28/TWS-30, all cased-hole/intervention tools (Martin's "Purpose
+      listings" complaint). Add an environment field per slug in the
+      CURATION table in `src/features/catalog/content/enrich.ts` (~30
+      one-liners) and make the toggle a real filter. Also discuss with
+      Martin whether the Purpose dropdown itself should stay.
+- [ ] Catalog: merge the TTB-S75U/S85 page into TTB-S75/S85 with an
+      "S75 can be modified to S75U (30 kpsi)" footnote — the two products
+      share their description text verbatim (Martin: repetition; same
+      pattern as the MDT-85 footnote). Enrichment-layer job; catalog.json
+      is generated and must not be hand-edited.
+- [ ] **High Deviations video has NO audio — needs an asset, not code.**
+      `WirelineExpress-subtitled.mp4` carries a literally silent AAC track
+      (peak -inf dB) in transcoded/ and NO audio track in kiosk-hd/; the
+      un-subtitled master has narration but is a different edit (250s vs
+      212.5s), so the audio can't just be muxed across. Need the original
+      subtitled export with sound (SharePoint?), or the narration track +
+      subtitle file to rebuild the burn. Supersedes the old kiosk-review
+      line about the 1080p master — same file, same root cause.
+- [ ] CX7 / CX13 have no catalog pages: they are ABSENT from the 2026 IDML
+      source (verified — zero hits in the IDML stories; CX9 has six), so
+      this is catalog CONTENT, not extraction. Either add them to the
+      InDesign catalog and regenerate, or grow a supplemental-products
+      mechanism in the enrichment layer. The kiosk already has CX7/CX13
+      images + size ranges (`HelixProductScreen.tsx`) to build from.
+      Also fixes Martin's "FOCUS Centralizers missing CX7/CX13".
+- [ ] SWHF guides for Baker Hughes / Halliburton (Martin: their vendor
+      sections look lonely — SLB 11 / HAL 2 / BHI 1 / universal 2).
+      ENGINEERING QUESTION first: do SWHF configurations for BHI/HAL tools
+      exist as buildable products? Ask the team; note "SWHF configuration
+      figures currently filed under AHFC" in the HTML-catalog section below.
+- [ ] Reply to Martin (draft ready to write from this section): thank him —
+      three of his items shipped 6 Aug (videos, Formation Testing label,
+      Success Stories rename); ask which browser he used (confirms the
+      Edge/Enhance and autofill-honeypot theories) and whether SWHF for
+      BHI/HAL actually exists.
+- [ ] Videos: Martin says categorisation is fine; blur fixed via 1080p
+      re-transcode (CRF 22, 2.5 Mbps cap, +faststart) from kiosk-hd
+      masters. If sharper sources ever land in `sources/`/SharePoint,
+      re-encode from those instead of the second-generation kiosk-hd files.
+
 ## Go-live checklist
 
 - [x] Cloudflare: Cache Rule scoped to the petromac hostname with Browser TTL
@@ -811,7 +889,9 @@ scheduled; it is a review backlog to work through as a block.
 - [ ] Case Studies images: `helix-cbl-setup.png`, `rocker-logs-1.png`
 - [ ] OH lane mechanism videos + case-study log images (Formation Testing /
       High Deviation / PathFinder)
-- [ ] `kiosk-hd/WirelineExpress-subtitled.mp4` 1080p master
+- [ ] `kiosk-hd/WirelineExpress-subtitled.mp4` 1080p master — NOTE (6 Aug):
+      the real problem is the missing AUDIO, tracked in "Martin's website
+      review" at the top of this file
 - [ ] Thor product video (card commented out until ready); Rocker GLB model
 - [ ] Rocker mechanism force-section schematic (interim crop in place)
 

@@ -9,7 +9,7 @@ The repository contains:
 1. **Public Website** - Public-facing marketing site at `/`
 2. **Intranet Portal** - Internal portal at `/intranet`
 3. **Kiosk Application** - Internal dashboard app at `/intranet/kiosk`
-4. **Documents** - HTML catalog at `/catalog` (generated from the InDesign source); case studies at `/case-studies` (46 pages generated from the success-stories publication). The interactive image flipbook is KIOSK-ONLY since Jul 2026 — the public `/success-stories` routes 308 to `/case-studies`.
+4. **Documents** - HTML catalog at `/catalog` (generated from the InDesign source); success stories at `/success-stories` (46 pages generated from the success-stories publication; URL renamed from /case-studies Aug 2026, old tree 301s across). The interactive image flipbook is KIOSK-ONLY since Jul 2026.
 5. **Backend Service** - FastAPI service for contact email, PDFs, and data passthrough endpoints
 
 ## Directory Structure
@@ -105,7 +105,7 @@ website/
 │   │   ├── update_catalog.py             # HTML catalog: one-command wrapper (pnpm run data:catalog)
 │   │   ├── catalog_config.json           # Curated product↔spread mapping + text fixes
 │   │   ├── update_flipbooks.py           # Flipbooks: PDF + tags xlsx → pages/manifest/tags.csv
-│   │   ├── build_case_studies.py         # /case-studies content — MANUAL, not part of `pnpm run data`
+│   │   ├── build_case_studies.py         # /success-stories content — MANUAL, not part of `pnpm run data`
 │   │   └── compress_patent_pdfs.py       # Shrinks patent scans (pnpm run data:patents) — MANUAL
 │   └── node/                             # Node.js utilities
 ├── .github/

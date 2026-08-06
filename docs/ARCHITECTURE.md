@@ -17,7 +17,7 @@ Current-state overview. For _why_ it's built this way, see [DECISIONS.md](DECISI
   by design — hover + Top 5/Show-all carry precise values; a verified
   "Records & milestones" strip ends in the Success Stories CTA; the old
   `?stories=1` overlay was retired Jul 2026 and redirects to
-  `/case-studies`, which replaced the public flipbook route Jul 2026) and the
+  `/success-stories`, which replaced the public flipbook route Jul 2026; URL renamed from /case-studies Aug 2026) and the
   HTML catalog below.
 - **SEO layer (Jul 2026)** — `src/lib/seo.ts` `pageMetadata()` gives every
   page a canonical + page-specific OG/Twitter tags; titles are un-branded
