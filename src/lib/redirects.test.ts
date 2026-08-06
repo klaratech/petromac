@@ -38,10 +38,9 @@ test('the P0 mapping table resolves in one 301 hop, slash or no slash', () => {
     '/privacy-policy': '/privacy',
     '/terms-of-use': '/terms',
     '/download': '/catalog',
-    '/category/orientation': '/case-studies',
-    '/author/adm_petromac': '/case-studies',
-    '/success-stories': '/case-studies',
-    '/success-stories/flipbook': '/case-studies',
+    '/category/orientation': '/success-stories',
+    '/author/adm_petromac': '/success-stories',
+    '/success-stories/flipbook': '/success-stories',
   };
 
   for (const [from, to] of Object.entries(expected)) assertSingleHop(from, to);
@@ -57,7 +56,7 @@ test('legacy paths are matched case-insensitively', () => {
 test('no redirect destination is itself redirected (no chains)', () => {
   const destinations = [
     ...Object.values(LEGACY_PATHS),
-    ...LEGACY_CASE_STUDY_SLUGS.map((slug) => `/case-studies/${slug}`),
+    ...LEGACY_CASE_STUDY_SLUGS.map((slug) => `/success-stories/${slug}`),
     ...Object.values(PATENT_PDF_RENAMES).map((file) => `/patent_pdfs/${file}`),
   ];
   for (const destination of destinations) {
@@ -69,10 +68,23 @@ test('no redirect destination is itself redirected (no chains)', () => {
   }
 });
 
-test('WP-era root-level case studies land on their /case-studies page', () => {
+test('WP-era root-level case studies land on their /success-stories page', () => {
   for (const slug of LEGACY_CASE_STUDY_SLUGS) {
-    assertSingleHop(`/${slug}`, `/case-studies/${slug}`);
+    assertSingleHop(`/${slug}`, `/success-stories/${slug}`);
   }
+});
+
+test('the Jul-2026 /case-studies tree 301s to /success-stories, slugs intact', () => {
+  assertSingleHop('/case-studies', '/success-stories');
+  assertSingleHop('/case-studies/stick-slip', '/success-stories/stick-slip');
+  // Query strings survive the hop (e.g. a shared campaign link).
+  assert.deepEqual(resolveLegacyRequest('/case-studies', '?utm_source=linkedin'), {
+    type: 'redirect',
+    location: '/success-stories?utm_source=linkedin',
+    status: 301,
+  });
+  // The orphan preview route is NOT part of the renamed tree.
+  assert.equal(resolveLegacyRequest('/case-studies-preview'), null);
 });
 
 test('every legacy case-study slug still exists in the content set', () => {
@@ -170,7 +182,7 @@ test('legacy query-shaped views still redirect', () => {
   });
   assert.deepEqual(resolveLegacyRequest('/track-record', '?stories=1'), {
     type: 'redirect',
-    location: '/case-studies',
+    location: '/success-stories',
     status: 307,
   });
   assertSingleHop('/catalogtest/tool-taxis', '/catalog/tool-taxis');

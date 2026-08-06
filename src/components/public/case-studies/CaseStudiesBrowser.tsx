@@ -72,8 +72,8 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
       const anchor = document.createElement('a');
       anchor.href = url;
       anchor.download = active
-        ? `petromac-case-studies-${pageNumbers.length}-stories.pdf`
-        : 'petromac-case-studies.pdf';
+        ? `petromac-success-stories-${pageNumbers.length}-stories.pdf`
+        : 'petromac-success-stories.pdf';
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -248,7 +248,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
           {results.map((cs) => (
             <li key={cs.slug}>
               <Link
-                href={`/case-studies/${cs.slug}`}
+                href={`/success-stories/${cs.slug}`}
                 className="group flex h-full flex-col rounded-xl border border-slate-200 p-6 transition-all hover:border-brand/40 hover:shadow-card focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
               >
                 <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">

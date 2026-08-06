@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return pageMetadata({
     title: cs.title,
     description: cs.metaDescription,
-    path: `/case-studies/${slug}`,
+    path: `/success-stories/${slug}`,
     ogImage: {
       url: cs.image.src,
       width: cs.image.width,
@@ -63,7 +63,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
     '@type': 'Article',
     headline: cs.title,
     description: cs.metaDescription,
-    url: absoluteUrl(`/case-studies/${cs.slug}`),
+    url: absoluteUrl(`/success-stories/${cs.slug}`),
     image: [absoluteUrl(cs.image.src)],
     author: { '@type': 'Organization', name: 'Petromac' },
     publisher: { '@type': 'Organization', name: 'Petromac' },
@@ -76,8 +76,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Case Studies',
-        item: absoluteUrl('/case-studies'),
+        name: 'Success Stories',
+        item: absoluteUrl('/success-stories'),
       },
       { '@type': 'ListItem', position: 2, name: cs.title },
     ],
@@ -91,8 +91,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
         <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
-              <Link href="/case-studies" className="hover:text-brand transition-colors">
-                Case Studies
+              <Link href="/success-stories" className="hover:text-brand transition-colors">
+                Success Stories
               </Link>
             </li>
             <li aria-hidden="true">/</li>
@@ -151,7 +151,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
               />
               <figcaption className="mt-3 text-center text-sm text-slate-500">
                 As published in the Petromac success stories collection —{' '}
-                <Link href="/case-studies" className="font-medium text-brand hover:underline">
+                <Link href="/success-stories" className="font-medium text-brand hover:underline">
                   browse the full collection
                 </Link>
               </figcaption>
@@ -169,7 +169,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           aria-label="More case studies"
           className="mt-14 border-t border-slate-100 pt-6 text-sm"
         >
-          <Link href="/case-studies" className="font-semibold text-brand hover:underline">
+          <Link href="/success-stories" className="font-semibold text-brand hover:underline">
             ← All case studies
           </Link>
         </nav>

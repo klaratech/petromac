@@ -65,12 +65,13 @@ export const LEGACY_PATHS: Record<string, string> = {
   '/terms-of-use': '/terms',
   // WP's "download" page was the catalog-PDF landing page.
   '/download': '/catalog',
-  // WP taxonomy archives. Both listed case studies, so both land on the index.
-  '/category/orientation': '/case-studies',
-  '/author/adm_petromac': '/case-studies',
-  // The public success-stories flipbook, retired Jul 2026.
-  '/success-stories': '/case-studies',
-  '/success-stories/flipbook': '/case-studies',
+  // WP taxonomy archives. Both listed success stories, so both land on the index.
+  '/category/orientation': '/success-stories',
+  '/author/adm_petromac': '/success-stories',
+  // The public success-stories flipbook, retired Jul 2026. (Bare
+  // /success-stories needs no entry — it has been the REAL route since the
+  // Aug 2026 rename; an entry here would redirect the page to itself.)
+  '/success-stories/flipbook': '/success-stories',
 };
 
 /**
@@ -217,7 +218,20 @@ export function resolveLegacyRequest(rawPathname: string, search = ''): LegacyRe
   // 5. WP-era root-level case studies.
   const rootSlug = key.slice(1);
   if ((LEGACY_CASE_STUDY_SLUGS as readonly string[]).includes(rootSlug)) {
-    return { type: 'redirect', location: `/case-studies/${rootSlug}`, status: 301 };
+    return { type: 'redirect', location: `/success-stories/${rootSlug}`, status: 301 };
+  }
+
+  // 5b. /case-studies lived from Jul 2026 until the Aug 2026 rename to
+  //     Success Stories — same pages, new home. Slugs are unchanged, so the
+  //     whole tree maps 1:1. (/case-studies-preview is NOT caught here —
+  //     startsWithSegment requires an exact match or a following slash.)
+  if (startsWithSegment(path, '/case-studies')) {
+    const rest = path.slice('/case-studies'.length);
+    return {
+      type: 'redirect',
+      location: withSearch(`/success-stories${rest}`, search),
+      status: 301,
+    };
   }
 
   // 6. Patent PDFs. WordPress served them from /pdf/<file>; the rebuild moved
@@ -262,7 +276,7 @@ export function resolveLegacyRequest(rawPathname: string, search = ''): LegacyRe
   }
   if (key === '/track-record' && params.get('stories') === '1') {
     // Deliberately temporary: Track Record may grow its own stories view again.
-    return { type: 'redirect', location: '/case-studies', status: 307 };
+    return { type: 'redirect', location: '/success-stories', status: 307 };
   }
 
   // 9. Canonicalise the trailing slash for everything else (what Next's

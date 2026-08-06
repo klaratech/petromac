@@ -4,13 +4,13 @@ import CaseStudiesBrowser from '@/components/public/case-studies/CaseStudiesBrow
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({
-  title: 'Wireline Logging Case Studies — 21 Countries',
+  title: 'Success Stories — Wireline Logging Case Studies',
   description:
     'Field-proven results from Petromac wireline conveyance and centralisation: world-record deviations, rig-time savings, and data-quality wins worldwide.',
-  path: '/case-studies',
+  path: '/success-stories',
 });
 
-export default function CaseStudiesPage() {
+export default function SuccessStoriesPage() {
   // Newest stories first — year is null for a handful of undated ones,
   // which sort after the dated ones in original page order.
   const ordered = [...caseStudies].sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
@@ -23,10 +23,10 @@ export default function CaseStudiesPage() {
             bottom margin so the filter box sits higher up the page. */}
         <header className="mb-5">
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-2">
-            Case Studies
+            Success Stories
           </h1>
           <p className="text-slate-600 leading-relaxed">
-            Success stories from the field, worldwide — demanding well programmes and the
+            Field-proven results from demanding well programmes worldwide — and the
             innovations that delivered them.
           </p>
         </header>

@@ -30,7 +30,7 @@ const SITEMAP: { heading: string; links: { href: string; label: string }[] }[] =
   {
     heading: 'Resources',
     links: [
-      { href: '/case-studies', label: 'Success stories' },
+      { href: '/success-stories', label: 'Success stories' },
       { href: '/about/publications', label: 'Publications' },
     ],
   },

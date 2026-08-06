@@ -24,15 +24,15 @@ test('catalog loads with search, and family pages deep-link to products', async 
 test('track record links to the case studies', async ({ page }) => {
   await page.goto('/track-record');
   await page.getByRole('link', { name: /read the success stories/i }).click();
-  await expect(page).toHaveURL(/\/case-studies$/);
-  await expect(page.getByRole('heading', { name: 'Case Studies' })).toBeVisible();
+  await expect(page).toHaveURL(/\/success-stories$/);
+  await expect(page.getByRole('heading', { name: 'Success Stories' })).toBeVisible();
   await expect(page.getByRole('banner')).toBeVisible();
 });
 
 test('case studies index filters down to a subset', async ({ page }) => {
-  await page.goto('/case-studies');
+  await page.goto('/success-stories');
   // All 46 cards are server-rendered, so they exist before hydration.
-  const cards = page.locator('a[href^="/case-studies/"]');
+  const cards = page.locator('a[href^="/success-stories/"]');
   const total = await cards.count();
   expect(total).toBeGreaterThan(1);
 
@@ -49,7 +49,7 @@ test('case studies index filters down to a subset', async ({ page }) => {
 });
 
 test('a case study page renders its own content', async ({ page }) => {
-  await page.goto('/case-studies/stick-slip');
+  await page.goto('/success-stories/stick-slip');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByRole('banner')).toBeVisible();
 });
@@ -64,9 +64,11 @@ test.describe('WordPress-migration URLs', () => {
     ['/contacts/', /\/contact$/],
     ['/contacts', /\/contact$/],
     ['/patents/', /\/about\/patents$/],
-    ['/success-stories/flipbook', /\/case-studies$/],
-    ['/stick-slip/', /\/case-studies\/stick-slip$/],
-    ['/track-record?stories=1', /\/case-studies$/],
+    ['/success-stories/flipbook', /\/success-stories$/],
+    ['/case-studies', /\/success-stories$/],
+    ['/stick-slip/', /\/success-stories\/stick-slip$/],
+    ['/case-studies/stick-slip', /\/success-stories\/stick-slip$/],
+    ['/track-record?stories=1', /\/success-stories$/],
     ['/catalog?category=focus-centralisers', /\/catalog\/focus-centralisers$/],
   ];
 

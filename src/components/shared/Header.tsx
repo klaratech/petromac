@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { name: 'About', href: '/about' },
   { name: 'Catalog', href: '/catalog' },
   { name: 'Track Record', href: '/track-record' },
-  { name: 'Case Studies', href: '/case-studies' },
+  { name: 'Success Stories', href: '/success-stories' },
   { name: 'Simulation', href: '/simulation' },
 ];
 

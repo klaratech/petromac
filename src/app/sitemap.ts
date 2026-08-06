@@ -8,7 +8,7 @@ const BASE_URL = getSiteUrl();
 export default function sitemap(): MetadataRoute.Sitemap {
   // Case studies — long-tail landing pages (tool + country + deviation).
   const caseStudyUrls: MetadataRoute.Sitemap = caseStudies.map((cs) => ({
-    url: `${BASE_URL}/case-studies/${cs.slug}`,
+    url: `${BASE_URL}/success-stories/${cs.slug}`,
     lastModified: new Date(),
     changeFrequency: 'yearly',
     priority: 0.7,
@@ -67,7 +67,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/case-studies`,
+      url: `${BASE_URL}/success-stories`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,

@@ -21,7 +21,7 @@ export interface DrilldownMapCoreProps {
   onClose?: () => void;
   showSuccessStoriesLink?: boolean;
   /** Optional handler for the in-map "Success Stories" button. When provided
-   *  the button calls this instead of navigating to /case-studies,
+   *  the button calls this instead of navigating to /success-stories,
    *  so kiosk experiences can open success stories as an inline sub-view. */
   onSuccessStoriesClick?: () => void;
   /** When true, hides the small in-map deployments pill (e.g. on the
@@ -327,7 +327,7 @@ const DrilldownMapCore = memo(function DrilldownMapCore({
               </button>
             ) : (
               <Link
-                href="/case-studies"
+                href="/success-stories"
                 className="mt-3 block text-center px-3 py-1.5 bg-brand text-white text-xs font-semibold rounded-full hover:bg-brand/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors"
                 aria-label="Success Stories"
               >
