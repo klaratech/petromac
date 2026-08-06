@@ -31,6 +31,17 @@ const SYSTEM_ORDER = [
   'Other',
 ];
 
+// Display names for the chips. Keys are System values from
+// operations_data.json — which stay the filter values untouched, so the
+// data pipeline and map are unaffected. Anything unmapped shows as-is.
+// 'Wireline Express - FT' reads as internal shorthand; reviewers asked
+// for the plain product term (Martin, Aug 2026).
+const SYSTEM_LABELS: Record<string, string> = {
+  'Wireline Express - FT': 'Formation Testing',
+};
+
+const systemLabel = (sys: string): string => SYSTEM_LABELS[sys] ?? sys;
+
 export interface TrackRecordStats {
   deployments: number;
   countries: number;
@@ -148,14 +159,14 @@ export default function TrackRecordExperience({
                       key={sys}
                       onClick={() => toggleSystem(sys)}
                       aria-pressed={isOn}
-                      aria-label={`${isOn ? 'Hide' : 'Show'} ${sys} deployments`}
+                      aria-label={`${isOn ? 'Hide' : 'Show'} ${systemLabel(sys)} deployments`}
                       className={`text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                         isOn
                           ? 'bg-blue-50 text-brand border border-brand/40 hover:border-brand/70'
                           : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300 hover:text-slate-700'
                       }`}
                     >
-                      {sys}
+                      {systemLabel(sys)}
                     </button>
                   );
                 })}
