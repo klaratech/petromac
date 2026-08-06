@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import io
 import json
+import logging
 import base64
 import threading
 import time
@@ -20,6 +21,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr, Field
 from pypdf import PdfReader, PdfWriter
+
+# uvicorn's error logger propagates to container stdout — used for the
+# anti-spam drops below so silently-binned submissions are at least VISIBLE
+# in `docker logs` (they used to vanish without trace; a hidden-field
+# autofill bug ate real enquiries for weeks before anyone noticed).
+logger = logging.getLogger("uvicorn.error")
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 PUBLIC_DIR = ROOT_DIR / "public"
@@ -465,15 +472,37 @@ async def submit_contact(request: Request):
     name = str(form.get("name", "")).strip()
     email = str(form.get("email", "")).strip()
     message = str(form.get("message", "")).strip()
-    company = str(form.get("company", "")).strip()
+    # Honeypot renamed from `company` (Aug 2026): Chrome/Edge autofill treats
+    # a field NAMED company as an address field and fills it even when hidden
+    # and autocomplete=off — so real visitors with autofill were silently
+    # dropped as "bots" while seeing a success message. `_hp_check` matches
+    # no autofill vocabulary; bots that fill every field still trip it.
+    honeypot = str(form.get("_hp_check", "")).strip()
     try:
         timing = float(str(form.get("_timing", "0")))
     except ValueError:
         timing = 0.0
 
-    if company:
+    # Both anti-spam drops keep returning fake success (never teach a bot
+    # what failed) but are now LOGGED — a run of drops with plausible emails
+    # in the log means legitimate mail is being eaten and the rules need
+    # another look.
+    if honeypot:
+        logger.warning(
+            "contact: dropped submission (honeypot filled) email=%r ip=%s",
+            email[:80],
+            get_client_ip(request.headers),
+        )
         return {"ok": True}
-    if timing < 3:
+    # Was 3s; relaxed to 2s (Aug 2026) — autofill users legitimately submit
+    # fast, and Turnstile already does the heavy anti-bot lifting.
+    if timing < 2:
+        logger.warning(
+            "contact: dropped submission (timing %.1fs < 2s) email=%r ip=%s",
+            timing,
+            email[:80],
+            get_client_ip(request.headers),
+        )
         return {"ok": True}
     # Name is optional on the form — only email + message are required.
     if "@" not in email:

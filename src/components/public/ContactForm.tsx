@@ -122,10 +122,16 @@ export default function ContactForm() {
       onInput={warmOnFirstInteraction}
       className="space-y-4"
     >
-      {/* Honeypot field — hidden from users */}
+      {/* Honeypot field — hidden from users. NAME MATTERS: this was
+          `company`, which Chrome/Edge autofill recognises as an address
+          field and fills EVEN THOUGH it is hidden with autocomplete=off —
+          the backend then silently dropped the submission as a bot while
+          showing success (Martin's "email went nowhere", Aug 2026).
+          `_hp_check` matches no autofill vocabulary. Keep the name in sync
+          with backend submit_contact. */}
       <input
         type="text"
-        name="company"
+        name="_hp_check"
         autoComplete="off"
         tabIndex={-1}
         className="absolute opacity-0 pointer-events-none"
