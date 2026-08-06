@@ -25,7 +25,7 @@ export const systemMedia: Record<string, SystemMedia> = {
     logo: '/images/focus.png',
   },
   'Wireline Express': {
-    video: '/videos/transcoded/WirelineExpress.mp4?v=20240519',
+    video: '/videos/transcoded/WirelineExpress.mp4?v=20260806',
     logo: '/images/wirelineexpress.png',
   },
   Thor: {

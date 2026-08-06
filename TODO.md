@@ -50,14 +50,28 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
       share their description text verbatim (Martin: repetition; same
       pattern as the MDT-85 footnote). Enrichment-layer job; catalog.json
       is generated and must not be hand-edited.
-- [ ] **High Deviations video has NO audio — needs an asset, not code.**
-      `WirelineExpress-subtitled.mp4` carries a literally silent AAC track
-      (peak -inf dB) in transcoded/ and NO audio track in kiosk-hd/; the
-      un-subtitled master has narration but is a different edit (250s vs
-      212.5s), so the audio can't just be muxed across. Need the original
-      subtitled export with sound (SharePoint?), or the narration track +
-      subtitle file to rebuild the burn. Supersedes the old kiosk-review
-      line about the 1080p master — same file, same root cause.
+- [x] **High Deviations video audio — RESOLVED 6 Aug** by switching the
+      homepage to the full 250s master cut, which HAS narration: the
+      subtitled 212.5s cut is silent at every generation INCLUDING its
+      original (`originals/WirelineExpress-subtitled.mp4` is itself 540p
+      with a -inf dB track — no fixable source exists). `transcoded/
+      WirelineExpress.mp4` re-encoded 1080p from `originals/` WITH audio;
+      ChallengeSelector now plays it (duration 4:10). Kiosk keeps the
+      subtitled cut — burned subtitles do the narrating on a loud floor.
+      If a subtitled master with sound ever surfaces, re-burn and revert.
+- [ ] **Retire `kiosk-hd/`** — now that `transcoded/` is 1080p, the kiosk's
+      per-filename HD override layer is redundant: helix/pf/differential
+      subtitled cuts and WirelineExpress.mp4 exist at 1080p in BOTH trees
+      (~170 MB duplicated in git and the Docker image). Delete the six
+      kiosk-hd files (kiosk falls back to transcoded/ automatically per
+      docs/ADMIN.md §7), bump `VERSION` in `public/kiosk-sw.js`, re-prime
+      the kiosk tablets, then simplify the `?sd=1` prime logic when
+      convenient. Needs local deletion (bridge can't rm) — do on-computer.
+- [ ] **Back up `public/videos/originals/` to SharePoint.** It is gitignored,
+      so the ONLY copy of the video masters lives on Rajesh's Mac —
+      including the sole audio-bearing WirelineExpress master. One disk
+      failure loses them. (The 325 MB root-level duplicate found 6 Aug was
+      moved to `_to_delete/` — byte-identical to the originals/ copy.)
 - [ ] CX7 / CX13 have no catalog pages: they are ABSENT from the 2026 IDML
       source (verified — zero hits in the IDML stories; CX9 has six), so
       this is catalog CONTENT, not extraction. Either add them to the

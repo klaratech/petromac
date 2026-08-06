@@ -254,8 +254,10 @@ Team page (`/team`). Data is in `src/data/team.ts`.
   muted mechanism/background clips can stay SD. Strip audio (`-an`) only
   for clips that play muted (hero/background loops); narrated `*-subtitled`
   cuts keep their audio track — the homepage lightbox and kiosk lane play
-  them with sound. KNOWN GAP: `WirelineExpress-subtitled` has no usable
-  audio in transcoded/ OR kiosk-hd/ (see TODO, "Martin's website review").
+  them with sound. NOTE: `WirelineExpress-subtitled` has no usable audio at ANY
+  generation (even its original is 540p/silent) — the homepage plays the
+  full `WirelineExpress.mp4` master cut instead, which has narration; the
+  kiosk keeps the subtitled cut.
   When replacing same-name videos, bump the `?v=` query on the referencing
   component (ChallengeSelector) to bust edge caches.
 - Homepage hero background: `public/videos/hero/hero-loop.mp4` (short

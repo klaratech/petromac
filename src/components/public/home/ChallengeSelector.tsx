@@ -33,9 +33,9 @@ const SOLUTIONS: Solution[] = [
       'Tools roll free instead of getting stuck',
     ],
     video: {
-      // Subtitled cuts carry the narration audio track — the plain
-      // transcodes were stripped with -an and play silent. Posters are
-      // real frames pulled with ffmpeg -ss <t> -frames:v 1.
+      // Subtitled cuts carry the narration audio track (EXCEPT Wireline
+      // Express — see the High Deviations entry). Posters are real frames
+      // pulled with ffmpeg -ss <t> -frames:v 1.
       src: '/videos/transcoded/differential-sticking-subtitled.mp4?v=20260806',
       poster: '/images/posters/differential-sticking-poster.jpg',
       duration: '3:32',
@@ -52,9 +52,14 @@ const SOLUTIONS: Solution[] = [
       'Field-proven across operators worldwide',
     ],
     video: {
-      src: '/videos/transcoded/WirelineExpress-subtitled.mp4?v=20260806',
+      // The full master cut, WITH narration audio. The subtitled 212s cut is
+      // silent at every generation including its original (verified Aug 2026,
+      // -inf dB) — no fixable source exists, so High Deviations plays the
+      // 250s master, whose audio track is intact. Kiosk keeps the subtitled
+      // cut, where burned subtitles do the narrating on a loud floor.
+      src: '/videos/transcoded/WirelineExpress.mp4?v=20260806',
       poster: '/images/posters/wireline-express-poster.jpg',
-      duration: '3:33',
+      duration: '4:10',
     },
   },
   {
