@@ -5,6 +5,42 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Nav: About opens a menu, Origins owns /about
+
+**Decision:** About no longer navigates. It is a `<button>` that only reveals
+its dropdown, which now reads **Origins / Team / Patents**. Origins owns
+`/about`. Publications left the menu; its ROUTE is unchanged and it is
+surfaced from `/success-stories` for now. The logo routes through
+`handleNavClick` like every other nav link.
+
+**Why:** Origins was previously removed (Jul 2026) because it duplicated the
+About item's own href — two adjacent entries pointing at `/about`, so whichever
+you tapped second was a dead same-route navigation. Making About a pure
+disclosure removes the duplication at its source instead: there is now exactly
+one entry point to `/about`, named after that page's own H1.
+
+**The trap this re-opened.** `isSubActive` prefix-matches, so restoring Origins
+(`/about`) made it light up on `/about/patents` as well — two menu entries
+reading as current at once. The exact-match special case for `/about` had been
+DELETED when Origins was removed, and has to exist whenever Origins does.
+Verified across every route that at most one sub-link is ever current. If
+Origins is ever removed again, that special case can go with it — not before.
+
+**Why Publications moved but its URL did not:** it is not "about the company"
+the way Origins/Team/Patents are. It stays at `/about/publications`, stays in
+the sitemap, and is still linked from `/about`, `/about/patents`,
+`/track-record` and `/contact`, so nothing is orphaned and no redirect is
+owed. Moving the path would be a URL migration; that decision is still open
+(TODO).
+
+**Logo:** clicking it while already on the homepage was a same-URL navigation
+Next deliberately ignores — measured on production at scrollY 2079 → 2079,
+while the "Home" link beside it correctly returned to 0. Cross-route was
+already correct (/catalog 1289 → home 0), so this was the same-route gap left
+by `a99c756`, not a scroll-restoration bug.
+
+---
+
 ## Aug 2026 — Myanmar is withheld from the published track record
 
 **Decision:** an `EXCLUDED_COUNTRIES` set in
@@ -354,6 +390,13 @@ document and lost the toolbar. Single-column pages wasted desktop width.
 The assets loaded as a serial discovery chain (chunk → worker → PDF).
 
 ## Jul 2026 — Nav: Team merged under About
+
+> **Superseded in part (Aug 2026)** — see "Nav: About opens a menu, Origins
+> owns /about" above. About no longer navigates, the menu is Origins / Team /
+> Patents, and Publications has left it. Team living under About still holds.
+> The sidebar/menu mirroring below no longer holds either, on purpose: the
+> `/about` page sidebar KEEPS Team / Patents / Publications, because with
+> Publications out of the nav that sidebar is one of its entry points.
 
 **Decision:** Team left the top bar; About carries a hover/focus dropdown
 (Team, Patents, Publications) and highlights as active for `/team` too. The
