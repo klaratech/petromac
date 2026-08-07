@@ -23,6 +23,10 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       page, and ultimately only there.** Out of the About dropdown and the
       `/about` sidebar; renders as `PublicationsCard` below the story grid.
       Route and sitemap entry unchanged.
+- [x] **Download/Email counts turned ON (7 Aug)** after reviewing the page
+      with faceted dropdowns live — `SHOW_FILTERED_COUNT_ON_ACTIONS = true`,
+      so both buttons read "Download 16" / "Email 16" when filtered and
+      "Download all" / "Email all" when not. One word to reverse.
 - [ ] **Review the PublicationsCard placement** with the rest of the
       Success Stories page design. It is below the grid on the reasoning
       that the page should read "field record, then formal record", and that
@@ -82,13 +86,13 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
 - [ ] **NEXT UP → the catalog items below.** Rajesh's call (7 Aug): the
       success-stories page is done for now; catalog navigation is what a
       browsing visitor actually hits.
-- [ ] Catalog: prev/next walks the flat print-order list across category
-      boundaries (Pathfinder's "Previous" is TTB-IL6C from tool-taxis).
-      Scope it to the family, or label the family on the link.
-      `src/features/catalog/content/index.ts` (adjacentProducts) +
-      `[slug]/page.tsx` prev/next nav.
-- [ ] Catalog: add a visible "Back to Catalog" link at the BOTTOM of family
-      and model pages — the top breadcrumb is easy to miss (Martin).
+- [x] **Catalog prev/next is family-scoped (7 Aug).** `adjacentProducts` now
+      walks the product's own category instead of the flat print-order list,
+      so it stops at the family edges rather than linking into the next
+      family. Verified against the real catalog: 3 cross-family links before
+      (Pathfinder→TTB-IL6C, CP12→HF-B-WTS, RS7→CX9), 0 after.
+- [x] **"Back to the full catalog" added (7 Aug)** at the bottom of family
+      AND model pages, above-the-fold breadcrumb kept as-is.
 - [ ] Device Finder: the Open hole / Cased hole toggle only relabels the
       size field — it does NOT filter (catalog data has no open/cased
       dimension), so an 8-1/2" open-hole search returns CRIL/CRU/CX9/RO17/

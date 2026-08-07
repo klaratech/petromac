@@ -100,10 +100,10 @@ export function buildCaseStudyOptions(studies: CaseStudy[]) {
 /**
  * Show the filtered story count on the Download and Email action buttons.
  *
- * OFF (Rajesh, Aug 2026). The filter dropdowns now carry faceted counts, so
- * repeating the number on the buttons reads as noise — but it was a close
- * call, so this is a switch rather than a deletion. Flip to `true` and the
- * count returns to BOTH buttons on BOTH surfaces at once.
+ * ON (Rajesh, 7 Aug 2026 — flipped after seeing the faceted dropdowns live).
+ * Set to `false` and the count disappears from BOTH buttons on BOTH surfaces
+ * at once; that is the whole point of the switch, and it was off for a day
+ * while the page was reviewed.
  *
  * It lives here, next to the filtering logic, precisely so it cannot be
  * half-applied: the live browser and the preview route both render the same
@@ -113,7 +113,7 @@ export function buildCaseStudyOptions(studies: CaseStudy[]) {
  * Typed `boolean` rather than inferred as `false` so the on-branch still
  * typechecks and neither branch reads as dead code.
  */
-export const SHOW_FILTERED_COUNT_ON_ACTIONS: boolean = false;
+export const SHOW_FILTERED_COUNT_ON_ACTIONS: boolean = true;
 
 /**
  * Label for a Download/Email action button. `all` always marks the unfiltered

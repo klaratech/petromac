@@ -347,7 +347,34 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
             <span />
           )}
         </nav>
+
+        {/* mt-8 not mt-14: the prev/next nav directly above already carries a
+            top border and its own spacing, so the default would double up. */}
+        <BackToCatalog className="mt-8" />
       </div>
+    </div>
+  );
+}
+
+/**
+ * Bottom-of-page way back up. The breadcrumb at the top does the same job but
+ * sits above the fold you have long since left — after a long spec table the
+ * only visible exit was the browser Back button (Martin, Aug 2026). Full-width
+ * and stated plainly rather than a quiet text link, because this is the end of
+ * the page and there is nothing else competing for the click.
+ */
+function BackToCatalog({ className = 'mt-14' }: { className?: string }) {
+  return (
+    <div className={`${className} border-t border-slate-100 pt-6`}>
+      <Link
+        href="/catalog"
+        className="group inline-flex items-center gap-2 font-heading text-base font-semibold text-brand hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded"
+      >
+        <span aria-hidden="true" className="transition-transform duration-200 group-hover:-translate-x-1">
+          ←
+        </span>
+        Back to the full catalog
+      </Link>
     </div>
   );
 }
