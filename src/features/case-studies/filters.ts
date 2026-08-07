@@ -97,6 +97,72 @@ export function buildCaseStudyOptions(studies: CaseStudy[]) {
   };
 }
 
+/** Which filter a facet owns — used to exclude it from its own counts. */
+type Facet = 'region' | 'category' | 'device' | 'company';
+
+/**
+ * The query as it applies to ONE facet: every other active filter, minus the
+ * facet's own selection. That self-exclusion is what keeps a dropdown usable
+ * once you have chosen from it — count Region against the Region selection and
+ * every region except the chosen one reads 0, so you could never see where
+ * else to go. Free text is always included: it filters the cards, so it must
+ * filter the counts, or the two disagree on screen.
+ */
+function queryExcluding(query: CaseStudyQuery, facet: Facet): CaseStudyQuery {
+  const rest: CaseStudyQuery = { ...query };
+  delete rest[facet];
+  return rest;
+}
+
+/**
+ * Filter options whose COUNTS reflect the current selection, while their
+ * ORDER and MEMBERSHIP stay fixed.
+ *
+ * Reported by Martin (Aug 2026): picking MENA (16) still showed Challenges
+ * (21) and SLB (36) — totals from the whole 46-story set, which cannot be
+ * right inside a 16-story subset.
+ *
+ * Two deliberate choices beyond the arithmetic:
+ *
+ * 1. Options are never dropped. A combination with nothing in it renders as
+ *    `Rocker (0)`, disabled, rather than vanishing — a list that reshuffles
+ *    and loses entries as you filter is harder to use than one that stays put
+ *    and tells you a dead end is a dead end.
+ * 2. Order comes from the UNFILTERED tally (most common first), not the live
+ *    counts, so options hold their position while the numbers move under them.
+ *
+ * Every count is therefore <= the current result count, which is what Martin
+ * asked for.
+ */
+export function buildFacetedCaseStudyOptions(studies: CaseStudy[], query: CaseStudyQuery) {
+  const base = buildCaseStudyOptions(studies);
+
+  /** Re-count `base` options against everything except their own facet. */
+  const recount = <T extends { value: string; count: number }>(
+    options: T[],
+    facet: Facet,
+    countIn: (subset: CaseStudy[], value: string) => number
+  ): T[] => {
+    const subset = filterCaseStudies(studies, queryExcluding(query, facet));
+    return options.map((o) => ({ ...o, count: countIn(subset, o.value) }));
+  };
+
+  return {
+    regions: recount(base.regions, 'region', (subset, value) =>
+      subset.filter((s) => s.region === value).length
+    ),
+    categories: recount(base.categories, 'category', (subset, value) =>
+      subset.filter((s) => caseStudyCategories(s).includes(value)).length
+    ),
+    devices: recount(base.devices, 'device', (subset, value) =>
+      subset.filter((s) => s.device === value).length
+    ),
+    companies: recount(base.companies, 'company', (subset, value) =>
+      subset.filter((s) => matchesCompany(s, value)).length
+    ),
+  };
+}
+
 /** Named majors that actually appear, then "Other" if anything else does. */
 export function buildCompanyOptions(
   studies: CaseStudy[]

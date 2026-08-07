@@ -6,7 +6,7 @@ import { buildClientApiUrl } from '@/lib/api';
 import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
 import type { CaseStudy } from '@/features/case-studies/content';
 import {
-  buildCaseStudyOptions,
+  buildFacetedCaseStudyOptions,
   caseStudyCategories,
   categoryLabel,
   filterCaseStudies,
@@ -34,7 +34,10 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
-  const options = useMemo(() => buildCaseStudyOptions(studies), [studies]);
+  // Counts are faceted: each dropdown's numbers respect the OTHER active
+  // filters but not its own, so they always sit at or below the result count
+  // and you can still see where else to go within the facet you picked.
+  const options = useMemo(() => buildFacetedCaseStudyOptions(studies, query), [studies, query]);
   const results = useMemo(() => filterCaseStudies(studies, query), [studies, query]);
   const active = isQueryActive(query);
   const pageNumbers = useMemo(() => pageNumbersFor(results), [results]);
@@ -152,7 +155,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
             >
               <option value="">All regions</option>
               {options.regions.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} disabled={o.count === 0}>
                   {o.value} ({o.count})
                 </option>
               ))}
@@ -170,7 +173,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
             >
               <option value="">All challenges</option>
               {options.categories.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} disabled={o.count === 0}>
                   {categoryLabel(o.value)} ({o.count})
                 </option>
               ))}
@@ -188,7 +191,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
             >
               <option value="">All products</option>
               {options.devices.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} disabled={o.count === 0}>
                   {o.value} ({o.count})
                 </option>
               ))}
@@ -206,7 +209,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
             >
               <option value="">All companies</option>
               {options.companies.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} disabled={o.count === 0}>
                   {o.label} ({o.count})
                 </option>
               ))}

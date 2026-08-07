@@ -12,7 +12,10 @@ track-record chip label 'Wireline Express - FT' → 'Formation Testing'
 the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
 (`d25a073`). Remaining, in suggested order:
 
-- [ ] **Contact drawer silently eats real messages — fix first.** Martin's
+- [x] **Contact drawer silently eats real messages — FIXED 6 Aug (`f43eac3`),
+      live in prod.** Honeypot renamed `company` -> `_hp_check`, too-fast gate
+      relaxed 3s -> 2s, and both silent drops now log email + IP so they are
+      visible in `docker logs` instead of vanishing. Original diagnosis: Martin's
       "top banner email went nowhere": `/api/contact` returns `{ok:true}`
       while DISCARDING the message when (a) the hidden honeypot input named
       `company` is filled — browser autofill loves filling hidden
@@ -25,11 +28,15 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
 - [ ] Success-stories browser: "Email" button should carry the filtered
       count like Download does ("Email 16") — `CaseStudiesBrowser.tsx:121`
       `buttonLabel`.
-- [ ] Success-stories filter counts are static (computed once over all 46);
-      Martin: selecting MENA (16) still shows Challenges (21) / SLB (36).
-      Make them faceted — count each facet's options against the OTHER
-      active filters. `src/features/case-studies/filters.ts`
-      (`buildCaseStudyOptions`) + `filters.test.ts`.
+- [x] **Success-stories filter counts are now FACETED (7 Aug).**
+      `buildFacetedCaseStudyOptions` counts each facet against the other
+      active filters but NOT its own (so siblings stay reachable — count
+      Region against the Region choice and every other region reads 0).
+      Free text feeds the counts, so dropdowns agree with the cards. Options
+      are never dropped or reordered: an empty combination renders `(0)` and
+      disabled, and order comes from the unfiltered tally so entries hold
+      position while numbers move. Verified with MENA: Challenges 21 -> 9,
+      SLB 36 -> 16, Pathfinder 4 -> 0 (disabled). 22/22 unit tests pass.
 - [ ] Catalog: prev/next walks the flat print-order list across category
       boundaries (Pathfinder's "Previous" is TTB-IL6C from tool-taxis).
       Scope it to the family, or label the family on the link.

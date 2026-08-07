@@ -3,6 +3,7 @@ import test from 'node:test';
 import { caseStudies } from './content';
 import {
   buildCaseStudyOptions,
+  buildFacetedCaseStudyOptions,
   filterCaseStudies,
   isMajorServiceCompany,
   isQueryActive,
@@ -175,4 +176,76 @@ test('pageNumbersFor is ascending, deduped, and covers every story', () => {
   const subset = pageNumbersFor(filterCaseStudies(caseStudies, { region: 'EUR' }));
   assert.ok(subset.length > 0 && subset.length < all.length);
   assert.ok(subset.every((p) => Number.isInteger(p) && p > 0));
+});
+
+// ── faceted option counts (Martin's review, Aug 2026) ──────────────────
+
+test('faceted counts never exceed the current result count', () => {
+  // The complaint: picking MENA (16) still showed Challenges (21) / SLB (36).
+  const query = { region: 'MENA' };
+  const results = filterCaseStudies(caseStudies, query);
+  const opts = buildFacetedCaseStudyOptions(caseStudies, query);
+
+  assert.ok(results.length > 0, 'MENA should match something');
+  for (const facet of [opts.categories, opts.devices, opts.companies]) {
+    for (const o of facet) {
+      assert.ok(
+        o.count <= results.length,
+        `${o.value} counted ${o.count} inside a ${results.length}-story subset`
+      );
+    }
+  }
+});
+
+test('a facet does not count its own selection, so siblings stay reachable', () => {
+  const query = { region: 'MENA' };
+  const opts = buildFacetedCaseStudyOptions(caseStudies, query);
+  const unfiltered = buildCaseStudyOptions(caseStudies);
+
+  // Region counts ignore the region filter: every region keeps its full count,
+  // otherwise the dropdown would read 0 everywhere except MENA and you could
+  // never switch away.
+  assert.deepEqual(
+    opts.regions.map((o) => [o.value, o.count]),
+    unfiltered.regions.map((o) => [o.value, o.count])
+  );
+  assert.ok(opts.regions.filter((o) => o.count > 0).length > 1);
+});
+
+test('option order and membership are stable as filters change', () => {
+  const unfiltered = buildCaseStudyOptions(caseStudies);
+  const narrow = buildFacetedCaseStudyOptions(caseStudies, {
+    region: 'MENA',
+    text: 'ledge',
+  });
+  // Same options, same order — only the numbers move. Zero-count entries are
+  // kept (the UI disables them) so the list never reshuffles under the cursor.
+  assert.deepEqual(
+    narrow.categories.map((o) => o.value),
+    unfiltered.categories.map((o) => o.value)
+  );
+  assert.deepEqual(
+    narrow.devices.map((o) => o.value),
+    unfiltered.devices.map((o) => o.value)
+  );
+});
+
+test('free text feeds the counts, so dropdowns agree with the cards', () => {
+  const query = { text: 'ledge' };
+  const results = filterCaseStudies(caseStudies, query);
+  const opts = buildFacetedCaseStudyOptions(caseStudies, query);
+
+  assert.ok(results.length > 0 && results.length < caseStudies.length);
+  // Region is a facet of its own, but text is not — so region counts DO narrow.
+  const regionTotal = opts.regions.reduce((n, o) => n + o.count, 0);
+  assert.equal(regionTotal, results.length);
+});
+
+test('an empty combination reports 0 rather than disappearing', () => {
+  const opts = buildFacetedCaseStudyOptions(caseStudies, {
+    text: 'zzzzz-no-such-story',
+  });
+  const all = buildCaseStudyOptions(caseStudies);
+  assert.equal(opts.devices.length, all.devices.length);
+  assert.ok(opts.devices.every((o) => o.count === 0));
 });
