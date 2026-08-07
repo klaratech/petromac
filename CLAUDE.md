@@ -47,9 +47,13 @@ Workflow we use: stage with `git add`, commit, push. Don't run `pnpm build` manu
   Success Stories / Simulation. **About does not navigate** — it is a
   `<button>` that only opens its menu (Origins → `/about`, Team, Patents), so
   `/about` has exactly one entry point. Publications LEFT the About cluster
-  entirely — not in the menu, not in the `/about` sidebar — but kept its route
-  (`/about/publications`) and its sitemap entry. It now hangs off exactly four
-  pages: `/success-stories`, `/about/patents`, `/track-record`, `/contact`.
+  entirely — not in the menu, not in the `/about` sidebar. Its HOME is the
+  Success Stories page (`PublicationsCard`, below the story grid); placement
+  there is still being reviewed, so the component takes no props and moves in
+  one line. It keeps its route (`/about/publications`) and sitemap entry —
+  moving the path would be a 301 + re-crawl for no present gain. `/about/
+  patents`, `/track-record` and `/contact` still link it; transitional, and the
+  only other entry points.
   Two traps: `isSubActive` must keep its EXACT-match special case for `/about`
   or Origins also lights up on `/about/patents`; and every nav link (including
   the LOGO) must call `handleNavClick`, because Next ignores same-URL

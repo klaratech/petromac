@@ -19,15 +19,21 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
       through `handleNavClick` like every other nav link. Cross-route
       navigation was already fine (verified: /catalog at 1289 -> home at 0),
       so this was the same-route gap left by `a99c756`, not a scroll bug.
-- [ ] **Decide where Publications belongs.** It left the About menu on
-      7 Aug — it is not "about the company" the way Origins/Team/Patents
-      are — and is surfaced from the Success Stories page for now ("For the
-      peer-reviewed record, see our published papers"). It was dropped from
-      the `/about` sidebar too (7 Aug), so it has left the About cluster
-      completely. The ROUTE is unchanged (`/about/publications`, still in
-      the sitemap) and it is still linked from /success-stories,
-      /about/patents, /track-record and /contact — four pages, so nothing is
-      orphaned, but there is less slack than there was. Rajesh wants to rethink this properly; if it
+- [x] **Where Publications belongs — DECIDED (7 Aug): the Success Stories
+      page, and ultimately only there.** Out of the About dropdown and the
+      `/about` sidebar; renders as `PublicationsCard` below the story grid.
+      Route and sitemap entry unchanged.
+- [ ] **Review the PublicationsCard placement** with the rest of the
+      Success Stories page design. It is below the grid on the reasoning
+      that the page should read "field record, then formal record", and that
+      a card up top would compete with the filter panel — a guess, not a
+      finding. The component takes no props, so above the browser or inside
+      the header is a one-line move.
+- [ ] **Retire the transitional Publications links** on `/about/patents`,
+      `/track-record` and `/contact` once the card has settled. They are the
+      only entry points besides the card, so remove them together with a
+      check — all three gone and the page is reachable from the sitemap
+      alone. Rajesh wants to rethink this properly; if it
       moves under success-stories, that is a URL migration needing a 301 and
       a sitemap update, so decide before touching the path.
 

@@ -28,13 +28,28 @@ Origins is ever removed again, that special case can go with it — not before.
 
 **Why Publications moved but its URL did not:** it is not "about the company"
 the way Origins/Team/Patents are, so it left the About cluster completely —
-the dropdown AND the `/about` sidebar. It stays at `/about/publications` and
-stays in the sitemap, and is still linked from `/success-stories`,
-`/about/patents`, `/track-record` and `/contact`, so nothing is orphaned and
-no redirect is owed. Note the page is now reachable only from those four
-places: prune one of them without checking and it becomes an orphan that only
-the sitemap knows about. Moving the path would be a URL migration; where it
-ultimately belongs is still open (TODO).
+the dropdown AND the `/about` sidebar. Its home is now **Success Stories**,
+where it renders as a `PublicationsCard` below the story grid: an SPE or SPWLA
+paper is the peer-reviewed end of the same evidence those stories tell
+informally, so a reader who wants harder proof is already on the right page.
+
+The ROUTE is deliberately unchanged (`/about/publications`, still in the
+sitemap). Nesting a page under `/about` while presenting it from
+`/success-stories` is a mild smell, but the alternative is a URL migration
+with a 301 and a Search Console re-crawl, and the page's own title is already
+a strong SEO asset ("Technical Papers on Wireline Conveyance"). Not worth
+moving until the presentation has settled.
+
+`/about/patents`, `/track-record` and `/contact` still link it. Those are
+TRANSITIONAL — the intent is that the card is the single home — but they are
+also the only remaining entry points, so prune them only after confirming the
+card carries the traffic, or the page ends up reachable from the sitemap
+alone.
+
+**Placement is under review.** The card sits below the grid ("browse the field
+record, then the formal record"); a card above would compete with the filter
+panel for the first glance. That is a judgement call, not a finding, so
+`PublicationsCard` takes no props and is a one-line move.
 
 **Logo:** clicking it while already on the homepage was a same-URL navigation
 Next deliberately ignores — measured on production at scrollY 2079 → 2079,

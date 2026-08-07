@@ -240,13 +240,19 @@ The Publications page (`/about/publications`) is hand-maintained.
 
 **Navigation note (Aug 2026):** Publications left the About cluster entirely —
 it is in neither the About dropdown (Origins / Team / Patents) nor the `/about`
-sidebar (Team / Patents). The URL is unchanged and still in the sitemap. It is
-now reachable from exactly four pages: `/success-stories` ("see our published
-papers"), `/about/patents`, `/track-record` and `/contact`. Removing a link
-from any of those shrinks that list — check it before you do, or the page ends
-up orphaned with only the sitemap pointing at it. Where it belongs long-term is
-still open, so do not move the route without reading the TODO item first: that
-would be a URL migration needing a 301.
+sidebar (Team / Patents). **Its home is the Success Stories page**, where
+`PublicationsCard` (in `success-stories/page.tsx`) renders it below the story
+grid.
+
+The URL stays `/about/publications` and stays in the sitemap — presenting a
+page from one route while it lives under another is a mild smell, but moving it
+means a 301 plus a Search Console re-crawl, and its title is a strong SEO asset
+already. Revisit only if the nesting causes a real problem.
+
+`/about/patents`, `/track-record` and `/contact` still link it; those are
+transitional and expected to go once the card proves itself. They are also the
+ONLY other entry points, so count them before pruning — drop all of them and
+the page is reachable from the sitemap alone.
 
 **When:** a new paper or conference presentation is published.
 
