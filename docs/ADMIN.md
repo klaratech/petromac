@@ -238,12 +238,15 @@ counsel sends (a Word doc, updated roughly every 12 months).
 
 The Publications page (`/about/publications`) is hand-maintained.
 
-**Navigation note (Aug 2026):** Publications is no longer in the About
-dropdown — that menu is Origins / Team / Patents. The URL is unchanged and
-still in the sitemap; entry points are `/success-stories` ("see our published
-papers"), `/about`, `/about/patents`, `/track-record` and `/contact`. Where it
-belongs long-term is still open, so do not move the route without reading the
-TODO item first — that would be a URL migration needing a 301.
+**Navigation note (Aug 2026):** Publications left the About cluster entirely —
+it is in neither the About dropdown (Origins / Team / Patents) nor the `/about`
+sidebar (Team / Patents). The URL is unchanged and still in the sitemap. It is
+now reachable from exactly four pages: `/success-stories` ("see our published
+papers"), `/about/patents`, `/track-record` and `/contact`. Removing a link
+from any of those shrinks that list — check it before you do, or the page ends
+up orphaned with only the sitemap pointing at it. Where it belongs long-term is
+still open, so do not move the route without reading the TODO item first: that
+would be a URL migration needing a 301.
 
 **When:** a new paper or conference presentation is published.
 

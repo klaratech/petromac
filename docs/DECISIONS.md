@@ -27,11 +27,14 @@ Verified across every route that at most one sub-link is ever current. If
 Origins is ever removed again, that special case can go with it — not before.
 
 **Why Publications moved but its URL did not:** it is not "about the company"
-the way Origins/Team/Patents are. It stays at `/about/publications`, stays in
-the sitemap, and is still linked from `/about`, `/about/patents`,
-`/track-record` and `/contact`, so nothing is orphaned and no redirect is
-owed. Moving the path would be a URL migration; that decision is still open
-(TODO).
+the way Origins/Team/Patents are, so it left the About cluster completely —
+the dropdown AND the `/about` sidebar. It stays at `/about/publications` and
+stays in the sitemap, and is still linked from `/success-stories`,
+`/about/patents`, `/track-record` and `/contact`, so nothing is orphaned and
+no redirect is owed. Note the page is now reachable only from those four
+places: prune one of them without checking and it becomes an orphan that only
+the sitemap knows about. Moving the path would be a URL migration; where it
+ultimately belongs is still open (TODO).
 
 **Logo:** clicking it while already on the homepage was a same-URL navigation
 Next deliberately ignores — measured on production at scrollY 2079 → 2079,
@@ -394,9 +397,9 @@ The assets loaded as a serial discovery chain (chunk → worker → PDF).
 > **Superseded in part (Aug 2026)** — see "Nav: About opens a menu, Origins
 > owns /about" above. About no longer navigates, the menu is Origins / Team /
 > Patents, and Publications has left it. Team living under About still holds.
-> The sidebar/menu mirroring below no longer holds either, on purpose: the
-> `/about` page sidebar KEEPS Team / Patents / Publications, because with
-> Publications out of the nav that sidebar is one of its entry points.
+> The sidebar/menu mirroring below no longer holds either: the `/about` page
+> sidebar is Team / Patents (Origins is omitted — you are already on it), and
+> Publications was dropped from it as well.
 
 **Decision:** Team left the top bar; About carries a hover/focus dropdown
 (Team, Patents, Publications) and highlights as active for `/team` too. The

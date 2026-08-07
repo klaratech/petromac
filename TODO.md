@@ -22,10 +22,12 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 - [ ] **Decide where Publications belongs.** It left the About menu on
       7 Aug — it is not "about the company" the way Origins/Team/Patents
       are — and is surfaced from the Success Stories page for now ("For the
-      peer-reviewed record, see our published papers"). The ROUTE is
-      unchanged (`/about/publications`, still in the sitemap) and it is
-      still linked from /about, /about/patents, /track-record and /contact,
-      so nothing is orphaned. Rajesh wants to rethink this properly; if it
+      peer-reviewed record, see our published papers"). It was dropped from
+      the `/about` sidebar too (7 Aug), so it has left the About cluster
+      completely. The ROUTE is unchanged (`/about/publications`, still in
+      the sitemap) and it is still linked from /success-stories,
+      /about/patents, /track-record and /contact — four pages, so nothing is
+      orphaned, but there is less slack than there was. Rajesh wants to rethink this properly; if it
       moves under success-stories, that is a URL migration needing a 301 and
       a sitemap update, so decide before touching the path.
 
