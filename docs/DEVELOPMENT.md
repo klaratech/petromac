@@ -103,6 +103,65 @@ An empty `sources/` subfolder is simply skipped. See [sources/README.md](../sour
 - Production deploys build in GitHub Actions and run on Hetzner (`klaratech-1`) via Docker Compose — see [DEPLOY.md](../DEPLOY.md)
 - If you are testing Microsoft staff sign-in locally, add the localhost callback URL to the Entra app and populate the Entra env vars in `.env.dev`
 
+## Working on this repo from a Cowork session
+
+A Cowork/Claude session edits the repo through the desktop bridge, which mounts
+your Mac's working copy inside a **Linux** VM. That copy IS the source of truth
+and is what you push — but `node_modules` on your Mac are macOS binaries, so on
+the bridge:
+
+```
+pnpm typecheck / lint / test:unit / build     ← ALL fail (esbuild platform mismatch)
+```
+
+The error names it plainly: *"You installed esbuild for another platform than
+the one you're currently using… @esbuild/darwin-arm64 is present but this
+platform needs @esbuild/linux-arm64"*. Do not try to "fix" it by reinstalling —
+that would break YOUR toolchain.
+
+**Consequence: the pre-push hook is the first real gate.** It runs
+`typecheck && lint && test:unit && build`, none of which the session can run
+itself. Expect to bounce a push occasionally and paste the output back.
+
+### Running unit tests anyway
+
+Pure-logic tests can be run in the Cowork cloud container (a separate Linux
+sandbox with network): copy the module + its data under a scratch dir,
+`npm install tsx`, and `npx tsx --test <file>`.
+
+**Verify the copies match before believing a green run.** `md5sum` the scratch
+files against the repo files. On 7 Aug a test file drifted by two comment lines
+between the two, which meant "25/25 pass" briefly described a file that was
+never committed. Same check applies to the Python pipeline, which is run the
+same way (`pip install polars==1.38.0 fastexcel==0.19.0`, see ADMIN.md §1).
+
+### Committing from the bridge
+
+- The **pre-commit** hook calls `pnpm exec lint-staged` and fails with
+  `pnpm: not found`. Commit with `--no-verify`; the pre-push hook still runs on
+  your Mac and CI still gates the merge, so nothing is actually skipped.
+- Git leaves `.git/HEAD.lock`, `.git/objects/maintenance.lock` and
+  `tmp_obj_*` files behind, because the bridge cannot delete files
+  (`rm` → "Operation not permitted"). A later commit then dies with *"Another
+  git process seems to be running"*. Move them into `_to_delete/` instead and
+  bin that folder yourself.
+
+### Lint/typecheck traps that have actually bitten
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| `Cannot find module '../../../src/app/(public)/<old-route>/page.js'` from `.next/dev/types/validator.ts` | Stale Next type cache after a route folder was renamed | `rm -rf .next` and push again — the source was fine |
+| `no-unused-vars` on parameters you never declared | The BASE rule (not the TS-aware one) reads a function **type** annotation as a real signature, so `cb: (subset: X[], value: string) => number` looks like two unused args | Prefix them: `(_subset: X[], _value: string)`. `/^_/u` is the allowance the rule's own config states |
+| `no-console` at `enrich.ts:368` | Pre-existing, deliberate build-time nudge listing catalog products missing a curation row | Leave it. It is a WARNING; `eslint .` exits 0 on warnings, so it never blocks a push |
+
+### Verify what you cannot run
+
+Nothing above substitutes for the hook, so lean on checks that do not need the
+toolchain: `python3 -m compileall` (or `ast.parse`) for Python, `md5sum` to
+prove the tested file is the committed file, and running the affected pure
+functions against the REAL content set to print before/after numbers rather
+than asserting from memory.
+
 ## Kiosk offline refresh
 
 See [KIOSK.md](KIOSK.md) — bump the SW `VERSION` + re-prime devices.
