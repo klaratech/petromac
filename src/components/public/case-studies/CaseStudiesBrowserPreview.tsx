@@ -8,7 +8,7 @@ import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
 import type { CaseStudy } from '@/features/case-studies/content';
 import {
   actionButtonLabel,
-  buildCaseStudyOptions,
+  buildFacetedCaseStudyOptions,
   caseStudyCategories,
   categoryLabel,
   filterCaseStudies,
@@ -22,7 +22,9 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
-  const options = useMemo(() => buildCaseStudyOptions(studies), [studies]);
+  // Faceted, exactly like the live browser — the two render the same filter
+  // UI and must not drift (see the orphan-route item in TODO.md).
+  const options = useMemo(() => buildFacetedCaseStudyOptions(studies, query), [studies, query]);
   const results = useMemo(() => filterCaseStudies(studies, query), [studies, query]);
   const active = isQueryActive(query);
   const pageNumbers = useMemo(() => pageNumbersFor(results), [results]);
@@ -134,7 +136,7 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
             >
               <option value="">All regions</option>
               {options.regions.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} disabled={o.count === 0}>
                   {o.value} ({o.count})
                 </option>
               ))}
@@ -152,7 +154,7 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
             >
               <option value="">All challenges</option>
               {options.categories.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} disabled={o.count === 0}>
                   {categoryLabel(o.value)} ({o.count})
                 </option>
               ))}
@@ -170,7 +172,7 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
             >
               <option value="">All products</option>
               {options.devices.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} disabled={o.count === 0}>
                   {o.value} ({o.count})
                 </option>
               ))}
@@ -188,7 +190,7 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
             >
               <option value="">All companies</option>
               {options.companies.map((o) => (
-                <option key={o.value} value={o.value}>
+                <option key={o.value} value={o.value} disabled={o.count === 0}>
                   {o.label} ({o.count})
                 </option>
               ))}

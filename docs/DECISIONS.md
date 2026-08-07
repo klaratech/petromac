@@ -5,6 +5,90 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Myanmar is withheld from the published track record
+
+**Decision:** an `EXCLUDED_COUNTRIES` set in
+`scripts/python/normalization_config.py` drops Myanmar's rows immediately after
+country normalisation and before any artifact is written. They reach no map,
+chip, tooltip, Top-5 panel or headline number, and the pipeline logs the drop.
+
+**Why not the first attempt.** This shipped that morning as a
+`COUNTRY_NORMALIZATION` alias, Myanmar → Vietnam, and was reverted the same day.
+The alias did keep Myanmar off the map, but it did so by making the map claim
+104 deployments in Vietnam where 50 happened — a false statement on the page
+whose entire job is proving the track record. Suppression reaches the same
+business goal honestly: every country shown keeps a true count, and the totals
+simply describe a smaller dataset.
+
+**The trade, accepted explicitly:** published figures sit BELOW Jobs History
+Master by exactly the excluded rows — 3,507 of 3,561 records, 3,114 deployments
+against 3,167. A discrepancy of that size is the exclusion list, not a pipeline
+fault; check the config before debugging. The source workbook is never modified.
+
+**Filter placement matters:** the drop runs AFTER normalisation, so an alias
+(`UAE` → `United Arab Emirates`) can never smuggle a row past the list, and
+BEFORE the writes, so the slim JSON, the staff dump and the stats all describe
+the same reality. Do not generalise this into "rename countries to fix the map"
+— that is the France/French-Guiana trap, flagged two lines below it in the same
+file.
+
+---
+
+## Aug 2026 — Trademark marking: prominent use only
+
+**Decision:** Petromac™, Wireline Express™, Focus™, Tool Taxis™, Thor™ and
+Hermes™ are marked at the first or most prominent use on a page and left bare
+everywhere else. The full rule, the do-not-mark table and the location of every
+mark live in `docs/VOCABULARY_MAP.md` §0.
+
+**Why not everywhere:** "Petromac" alone appears ~110 times across ~38 files.
+Marking all of them would put the symbol in `<title>` tags (cluttering SERP
+snippets and eating the 60-character title budget), in `alt`/`aria-label` (screen
+readers announce "trade mark" on every pass), in JSON-LD (structured data wants
+the plain entity name) and on the legal entity in Terms/Privacy (the registered
+company name is not the mark). Consistent marking of prominent uses is what
+protects a mark; blanket marking just reads as amateurish.
+
+**Implementation rule that matters:** symbols live in DISPLAY-LABEL MAPS, never
+in data. `FAMILY_LABELS`/`familyLabel()` overrides the GENERATED `catalog.json`
+family names without hand-editing that file, and `SYSTEM_LABELS` shows Thor™
+while the key stays `Thor` so it still matches the `System` column. Put a ™ in a
+filter value or a data key and filtering silently breaks.
+
+---
+
+## Aug 2026 — Success-stories filters: faceted counts, one label switch
+
+**Decision:** `buildFacetedCaseStudyOptions` recounts each filter's options
+against the active query; `SHOW_FILTERED_COUNT_ON_ACTIONS` +
+`actionButtonLabel()` decide whether the Download/Email buttons show the count
+(currently off).
+
+**Why:** Martin's review — selecting MENA (16) still showed Challenges (21) and
+SLB (36), totals from the whole 46-story set that cannot be right inside a
+16-story subset.
+
+**Three choices worth keeping:**
+
+1. **A facet excludes its OWN selection from its counts.** Count Region against
+   the Region choice and every region but the chosen one reads 0, so you could
+   never switch away. Self-exclusion keeps siblings reachable while the other
+   dropdowns narrow.
+2. **Options are never dropped or reordered.** An empty combination renders
+   `(0)` and disabled; order comes from the unfiltered tally. A list that
+   reshuffles and loses entries as you filter is harder to use than one that
+   stays put and names its dead ends.
+3. **Free text feeds the counts**, or the dropdowns disagree with the cards on
+   screen — the same class of bug being fixed.
+
+**Why the switch lives in `filters.ts`, not the component:** TWO surfaces render
+these buttons — the live browser and `/case-studies-preview`. A component-local
+flag would be half-applied on day one, and half-applied is precisely the bug
+Martin found (Download carried the number, Email did not). Both surfaces now
+import one flag and one label function, so they cannot drift.
+
+---
+
 ## Aug 2026 — Case Studies renamed to Success Stories, URL INCLUDED
 
 **Decision:** `/case-studies` → `/success-stories` — route folder, nav,

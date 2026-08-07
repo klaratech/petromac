@@ -44,6 +44,9 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
       disabled, and order comes from the unfiltered tally so entries hold
       position while numbers move. Verified with MENA: Challenges 21 -> 9,
       SLB 36 -> 16, Pathfinder 4 -> 0 (disabled). 22/22 unit tests pass.
+- [ ] **NEXT UP → the catalog items below.** Rajesh's call (7 Aug): the
+      success-stories page is done for now; catalog navigation is what a
+      browsing visitor actually hits.
 - [ ] Catalog: prev/next walks the flat print-order list across category
       boundaries (Pathfinder's "Previous" is TTB-IL6C from tool-taxis).
       Scope it to the family, or label the family on the link.
@@ -547,9 +550,13 @@ standards are in docs/VOCABULARY_MAP.md.
       it, it is out of the sitemap, and it carries an explicit
       `robots: index:false` because none of that makes a public URL private.
       It duplicates `CaseStudiesBrowser` as `CaseStudiesBrowserPreview` (297
-      lines, dark theme). Decide: promote the design to `/case-studies` and
+      lines, dark theme). Decide: promote the design to `/success-stories` and
       delete the preview, or delete the preview. Do not leave a second copy of
-      the browser drifting — the two will diverge.
+      the browser drifting — the two will diverge. (7 Aug: they briefly did.
+      Faceted counts landed in the live browser only; the preview was brought
+      back in line the same day and both now share `actionButtonLabel` +
+      `buildFacetedCaseStudyOptions`. That is the second time this route has
+      cost real work — it argues for deleting it.)
 
 ## CI, build & repo hygiene (30 Jul)
 
