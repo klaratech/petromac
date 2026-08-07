@@ -39,16 +39,23 @@ numbers shown publicly need to be current.
 
 `pnpm run data` does this as part of a full run (operations + flipbooks).
 
-**Country display rule — Myanmar is published as Vietnam.** A deliberate
-presentation choice (Rajesh, Aug 2026) implemented as a `COUNTRY_NORMALIZATION`
-entry in `scripts/python/normalization_config.py`: Myanmar must never appear on
-the public track record, so its jobs are counted under Vietnam. The source
-workbook stays correct and untouched — only the published JSON is aliased.
-So published Vietnam = Vietnam + Myanmar, and **country counts will not
-reconcile against Jobs History Master**; check the config before treating a
-mismatch as a pipeline bug. Do NOT generalise this into "rename countries to
-fix the map" — that is the France/French-Guiana trap, called out in the same
-file.
+**Withheld countries — Myanmar is suppressed, not relabelled.** Rajesh's call
+(Aug 2026), implemented as `EXCLUDED_COUNTRIES` in
+`scripts/python/normalization_config.py`. Rows for a listed country are dropped
+immediately after country normalisation (so an alias like "UAE" cannot smuggle
+one past the list) and before any artifact is written, so they appear in no
+map, chip, tooltip, Top-5 panel or headline number. The pipeline logs what it
+dropped — `Excluded 54 rows for withheld countries: Myanmar`.
+
+Myanmar was briefly published AS Vietnam instead; that was reverted the same day
+because it made the map claim deployments in a country where they never
+happened. **Consequence to expect:** published totals sit BELOW Jobs History
+Master by exactly the excluded rows (currently 3,507 of 3,561 records and 3,114
+deployments), while every country actually shown keeps a true count. A
+discrepancy of that size is this list, not a pipeline bug — check it first. The
+source workbook is never modified. Do NOT "fix" a map problem by renaming one
+country to another — that is the France/French-Guiana trap, called out in the
+same config file.
 
 **Note on running it from a Cowork session:** `pnpm run data:operations` shells
 out to `scripts/python/generate_json.py`, which needs `polars` + `fastexcel`.

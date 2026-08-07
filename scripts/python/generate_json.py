@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 from typing import Optional, Dict, Any
 import re
-from normalization_config import COUNTRY_NORMALIZATION, REGION_NORMALIZATION, SYSTEM_GROUPS, SYSTEM_SUBSYSTEMS, SUCCESS_VALUES, LOCATION_NORMALIZATION
+from normalization_config import COUNTRY_NORMALIZATION, REGION_NORMALIZATION, SYSTEM_GROUPS, SYSTEM_SUBSYSTEMS, SUCCESS_VALUES, LOCATION_NORMALIZATION, EXCLUDED_COUNTRIES
 
 # === LOGGING SETUP ===
 logging.basicConfig(
@@ -343,6 +343,21 @@ def load_clean_data() -> Optional[pl.DataFrame]:
             df = df.with_columns(
                 pl.col("Country").map_elements(normalize_country, return_dtype=pl.String).alias("Country")
             )
+
+            # Withheld countries leave the dataset here — AFTER normalisation
+            # (so an alias like "UAE" can never smuggle a row past the list)
+            # and BEFORE every artifact is written, so the slim JSON, the
+            # staff datacheck dump and the headline stats all describe the
+            # same, smaller reality. See EXCLUDED_COUNTRIES for the why.
+            if EXCLUDED_COUNTRIES:
+                before = df.height
+                df = df.filter(~pl.col("Country").is_in(list(EXCLUDED_COUNTRIES)))
+                dropped = before - df.height
+                if dropped:
+                    logging.info(
+                        f"Excluded {dropped} rows for withheld countries: "
+                        f"{', '.join(sorted(EXCLUDED_COUNTRIES))}"
+                    )
 
         if "Location" in df.columns:
             logging.info("Normalizing locations...")

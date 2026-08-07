@@ -9,18 +9,30 @@ COUNTRY_NORMALIZATION = {
     "Cote D'Ivoire": "Côte d'Ivoire",
           # D3 uses the French name
     "Sao Tome & Principe": "São Tomé and Principe",
-    # DELIBERATE PRESENTATION CHOICE, not a data fix (Rajesh, Aug 2026):
-    # Myanmar jobs are published as Vietnam so Myanmar never appears on the
-    # public track record. The SOURCE data is correct and unchanged — this
-    # aliases only what the website shows. Anyone auditing country counts
-    # against Jobs History Master must read Vietnam as Vietnam + Myanmar.
-    "Myanmar": "Vietnam",
     # NOTE: do NOT alias France. The France rows really are metropolitan
     # France. French Guiana used to light up alongside it only because
     # world-50m's single France feature included it — that is fixed in the
     # topology (French Guiana is now its own feature with no data), not here.
-    # (The Myanmar line above is the ONE intentional country alias; it is a
-    # business decision, not a precedent for fixing map bugs by renaming.)
+    #
+    # Nothing here should ever alias one real country to a DIFFERENT real
+    # country. Hiding a country is a separate, honest operation — see
+    # EXCLUDED_COUNTRIES below.
+}
+
+# Countries withheld from everything the website publishes: their rows are
+# dropped before any artifact is written, so they appear in no map, chip,
+# tooltip, Top-5 panel or headline number.
+#
+# Myanmar (Rajesh, Aug 2026): Petromac does not want this work shown
+# publicly. It was briefly published as Vietnam instead; that was reverted
+# the same day because it made the map claim deployments in a country where
+# they did not happen. Suppressing is the honest form of the same decision —
+# every country the site DOES show keeps a true count, and the totals simply
+# describe a smaller dataset. Expect the published country count and
+# deployment total to sit BELOW Jobs History Master by exactly the excluded
+# rows; that gap is this list, not a pipeline fault.
+EXCLUDED_COUNTRIES = {
+    "Myanmar",
 }
 
 # Region corrections

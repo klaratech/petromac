@@ -11536,30 +11536,6 @@
     "PathFinder Run (Y/N)": "NO"
   },
   {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 0,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
     "Country": "Indonesia",
     "System": "Wireline Express - FT",
     "Subsystem": "Wireline Express - FT",
@@ -11960,22 +11936,6 @@
     "PathFinder Run (Y/N)": "NO"
   },
   {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
     "Country": "United States of America",
     "System": "Wireline Express - FT",
     "Subsystem": "Wireline Express - FT",
@@ -12158,22 +12118,6 @@
     "Year": "2023",
     "Successful": 1,
     "PathFinder Run (Y/N)": "NO"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
   },
   {
     "Country": "Malaysia",
@@ -12512,62 +12456,6 @@
     "PathFinder Run (Y/N)": "NO"
   },
   {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
     "Country": "Mexico",
     "System": "Focus - CH",
     "Subsystem": "Focus - CH",
@@ -12894,38 +12782,6 @@
     "Year": "2023",
     "Successful": 1,
     "PathFinder Run (Y/N)": "NO"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
   },
   {
     "Country": "Mexico",
@@ -14176,22 +14032,6 @@
     "PathFinder Run (Y/N)": "NO"
   },
   {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2023",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
     "Country": "Mexico",
     "System": "Wireline Express",
     "Subsystem": "Wireline Express",
@@ -14462,54 +14302,6 @@
     "Year": "2024",
     "Successful": 0,
     "PathFinder Run (Y/N)": "NO"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
   },
   {
     "Country": "Mexico",
@@ -15648,54 +15440,6 @@
     "PathFinder Run (Y/N)": "NO"
   },
   {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
     "Country": "Kuwait",
     "System": "Wireline Express",
     "Subsystem": "Wireline Express",
@@ -16184,22 +15928,6 @@
     "PathFinder Run (Y/N)": "NO"
   },
   {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
     "Country": "Mexico",
     "System": "Focus - CH",
     "Subsystem": "Focus - CH",
@@ -16542,54 +16270,6 @@
     "Year": "2024",
     "Successful": 1,
     "PathFinder Run (Y/N)": "NO"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
   },
   {
     "Country": "Mexico",
@@ -18256,14 +17936,6 @@
     "PathFinder Run (Y/N)": "YES"
   },
   {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
     "Country": "Chile",
     "System": "Wireline Express",
     "Subsystem": "Wireline Express",
@@ -18630,54 +18302,6 @@
     "Year": "2024",
     "Successful": 1,
     "PathFinder Run (Y/N)": "NO"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2024",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
   },
   {
     "Country": "Saudi Arabia",
@@ -20072,38 +19696,6 @@
     "PathFinder Run (Y/N)": "NO"
   },
   {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2025",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2025",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2025",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2025",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
     "Country": "Norway",
     "System": "Other",
     "Subsystem": "Other",
@@ -20366,30 +19958,6 @@
     "Year": "2025",
     "Successful": 1,
     "PathFinder Run (Y/N)": "NO"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2025",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2025",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
-  },
-  {
-    "Country": "Vietnam",
-    "System": "PathFinder",
-    "Subsystem": "PathFinder",
-    "Year": "2025",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES"
   },
   {
     "Country": "Kuwait",
