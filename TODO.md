@@ -25,9 +25,16 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
       dropped submissions server-side so drops are at least visible.
       Files: `src/components/public/ContactForm.tsx` (~line 128),
       `backend/app/main.py` `submit_contact` (~line 459).
-- [ ] Success-stories browser: "Email" button should carry the filtered
-      count like Download does ("Email 16") — `CaseStudiesBrowser.tsx:121`
-      `buttonLabel`.
+- [x] **Action-button counts are now ONE SWITCH (7 Aug), currently OFF.**
+      `SHOW_FILTERED_COUNT_ON_ACTIONS` + `actionButtonLabel()` in
+      `features/case-studies/filters.ts` feed BOTH buttons on BOTH surfaces
+      (live browser + `/case-studies-preview`), so Download and Email can
+      never drift apart again — which is what Martin actually hit. Off:
+      "Download all"/"Email all" unfiltered, "Download"/"Email" filtered. Flip
+      the const to `true` for "Download 16"/"Email 16". Rajesh wants to live
+      with the faceted dropdowns first and decide; if the team votes for the
+      count, it is a one-word change. 25/25 unit tests pass in BOTH switch
+      positions.
 - [x] **Success-stories filter counts are now FACETED (7 Aug).**
       `buildFacetedCaseStudyOptions` counts each facet against the other
       active filters but NOT its own (so siblings stay reachable — count

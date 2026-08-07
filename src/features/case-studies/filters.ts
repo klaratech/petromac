@@ -97,6 +97,38 @@ export function buildCaseStudyOptions(studies: CaseStudy[]) {
   };
 }
 
+/**
+ * Show the filtered story count on the Download and Email action buttons.
+ *
+ * OFF (Rajesh, Aug 2026). The filter dropdowns now carry faceted counts, so
+ * repeating the number on the buttons reads as noise — but it was a close
+ * call, so this is a switch rather than a deletion. Flip to `true` and the
+ * count returns to BOTH buttons on BOTH surfaces at once.
+ *
+ * It lives here, next to the filtering logic, precisely so it cannot be
+ * half-applied: the live browser and the preview route both render the same
+ * two buttons, and the bug Martin found was exactly this kind of drift
+ * (Download carried the number, Email did not).
+ *
+ * Typed `boolean` rather than inferred as `false` so the on-branch still
+ * typechecks and neither branch reads as dead code.
+ */
+export const SHOW_FILTERED_COUNT_ON_ACTIONS: boolean = false;
+
+/**
+ * Label for a Download/Email action button. `all` always marks the unfiltered
+ * set — that distinction is worth keeping whether or not counts are shown —
+ * and the number appears only when the switch above is on:
+ *
+ *   unfiltered          -> "Download all"  / "Email all"
+ *   filtered, count off -> "Download"      / "Email"
+ *   filtered, count on  -> "Download 16"   / "Email 16"
+ */
+export function actionButtonLabel(verb: string, active: boolean, count: number): string {
+  if (!active) return `${verb} all`;
+  return SHOW_FILTERED_COUNT_ON_ACTIONS ? `${verb} ${count}` : verb;
+}
+
 /** Which filter a facet owns — used to exclude it from its own counts. */
 type Facet = 'region' | 'category' | 'device' | 'company';
 

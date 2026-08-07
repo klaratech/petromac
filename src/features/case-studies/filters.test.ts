@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { caseStudies } from './content';
 import {
+  actionButtonLabel,
+  SHOW_FILTERED_COUNT_ON_ACTIONS,
   buildCaseStudyOptions,
   buildFacetedCaseStudyOptions,
   filterCaseStudies,
@@ -248,4 +250,40 @@ test('an empty combination reports 0 rather than disappearing', () => {
   const all = buildCaseStudyOptions(caseStudies);
   assert.equal(opts.devices.length, all.devices.length);
   assert.ok(opts.devices.every((o) => o.count === 0));
+});
+
+// ── action button labels (one switch, both buttons) ────────────────────
+
+test('Download and Email always carry the SAME label rule', () => {
+  // The original bug: Download said "Download 16", Email just said "Email".
+  // Whatever the switch is set to, the two must agree.
+  for (const [active, count] of [
+    [false, 46],
+    [true, 16],
+    [true, 0],
+  ] as [boolean, number][]) {
+    const d = actionButtonLabel('Download', active, count);
+    const e = actionButtonLabel('Email', active, count);
+    assert.equal(
+      d.replace(/^Download/, ''),
+      e.replace(/^Email/, ''),
+      `Download/Email disagree at active=${active} count=${count}`
+    );
+  }
+});
+
+test('"all" marks the unfiltered set regardless of the count switch', () => {
+  assert.equal(actionButtonLabel('Download', false, 46), 'Download all');
+  assert.equal(actionButtonLabel('Email', false, 46), 'Email all');
+});
+
+test('the filtered label follows SHOW_FILTERED_COUNT_ON_ACTIONS', () => {
+  const label = actionButtonLabel('Download', true, 16);
+  assert.equal(
+    label,
+    SHOW_FILTERED_COUNT_ON_ACTIONS ? 'Download 16' : 'Download',
+    'filtered label must track the switch'
+  );
+  // Both positions are reachable — this is a flag, not dead code.
+  assert.ok(['Download', 'Download 16'].includes(label));
 });

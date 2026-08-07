@@ -7,6 +7,7 @@ import { buildClientApiUrl } from '@/lib/api';
 import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
 import type { CaseStudy } from '@/features/case-studies/content';
 import {
+  actionButtonLabel,
   buildCaseStudyOptions,
   caseStudyCategories,
   categoryLabel,
@@ -92,14 +93,14 @@ export default function CaseStudiesBrowserPreview({ studies }: { studies: CaseSt
               disabled={isDownloading || pageNumbers.length === 0}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand/90 disabled:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
             >
-              {isDownloading ? 'Building…' : active ? `Download ${results.length}` : 'Download all'}
+              {isDownloading ? 'Building…' : actionButtonLabel('Download', active, results.length)}
             </button>
             <EmailPdfButton
               pdfType="success-stories"
               endpoint={buildClientApiUrl('/api/email/send-pdf')}
               payload={{ pageNumbers: requestPages, filters: pdfFilters }}
               disabled={pageNumbers.length === 0}
-              buttonLabel="Email"
+              buttonLabel={actionButtonLabel('Email', active, results.length)}
             />
           </div>
         </div>
