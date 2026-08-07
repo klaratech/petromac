@@ -39,6 +39,26 @@ numbers shown publicly need to be current.
 
 `pnpm run data` does this as part of a full run (operations + flipbooks).
 
+**Country display rule — Myanmar is published as Vietnam.** A deliberate
+presentation choice (Rajesh, Aug 2026) implemented as a `COUNTRY_NORMALIZATION`
+entry in `scripts/python/normalization_config.py`: Myanmar must never appear on
+the public track record, so its jobs are counted under Vietnam. The source
+workbook stays correct and untouched — only the published JSON is aliased.
+So published Vietnam = Vietnam + Myanmar, and **country counts will not
+reconcile against Jobs History Master**; check the config before treating a
+mismatch as a pipeline bug. Do NOT generalise this into "rename countries to
+fix the map" — that is the France/French-Guiana trap, called out in the same
+file.
+
+**Note on running it from a Cowork session:** `pnpm run data:operations` shells
+out to `scripts/python/generate_json.py`, which needs `polars` + `fastexcel`.
+The desktop-bridge VM has neither and no network, so the pipeline is run either
+on Rajesh's Mac or in the Cowork cloud container (stage the xlsx + the
+`scripts/python` helpers, `pip install polars==1.38.0 fastexcel==0.19.0`, run
+with `EXCEL_PATH=... SKIP_GITHUB_PUSH=true`, then commit the three JSONs back
+and archive the source by hand — the archiving step lives in the tsx wrapper,
+which is skipped on that path).
+
 ---
 
 ## 2. Catalog PDF & Success Stories documents

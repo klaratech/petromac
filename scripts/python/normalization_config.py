@@ -9,10 +9,18 @@ COUNTRY_NORMALIZATION = {
     "Cote D'Ivoire": "Côte d'Ivoire",
           # D3 uses the French name
     "Sao Tome & Principe": "São Tomé and Principe",
+    # DELIBERATE PRESENTATION CHOICE, not a data fix (Rajesh, Aug 2026):
+    # Myanmar jobs are published as Vietnam so Myanmar never appears on the
+    # public track record. The SOURCE data is correct and unchanged — this
+    # aliases only what the website shows. Anyone auditing country counts
+    # against Jobs History Master must read Vietnam as Vietnam + Myanmar.
+    "Myanmar": "Vietnam",
     # NOTE: do NOT alias France. The France rows really are metropolitan
     # France. French Guiana used to light up alongside it only because
     # world-50m's single France feature included it — that is fixed in the
     # topology (French Guiana is now its own feature with no data), not here.
+    # (The Myanmar line above is the ONE intentional country alias; it is a
+    # business decision, not a precedent for fixing map bugs by renaming.)
 }
 
 # Region corrections
