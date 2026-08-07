@@ -2,6 +2,33 @@
 
 Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + git log.
 
+## Nav / About restructure (7 Aug 2026)
+
+- [x] **About is a disclosure, not a destination.** Clicking it opens the
+      menu and navigates nowhere (a `<button>`, not a `<Link>`), so `/about`
+      has exactly one entry point again: **Origins**, back in the dropdown
+      and named after the page's own H1. Menu is now Origins / Team /
+      Patents. `isSubActive` regained its exact-match special case for
+      `/about` — without it Origins prefix-matches `/about/patents` and two
+      entries read as current at once (that special case was deleted when
+      Origins was removed, and had to come back with it).
+- [x] **Logo now returns you to the top.** Clicking it while already on the
+      homepage was a same-URL navigation Next ignores, so nothing happened
+      and you stayed mid-page. Measured on production: scrollY 2079 -> 2079,
+      while the "Home" nav link beside it correctly went to 0. It now routes
+      through `handleNavClick` like every other nav link. Cross-route
+      navigation was already fine (verified: /catalog at 1289 -> home at 0),
+      so this was the same-route gap left by `a99c756`, not a scroll bug.
+- [ ] **Decide where Publications belongs.** It left the About menu on
+      7 Aug — it is not "about the company" the way Origins/Team/Patents
+      are — and is surfaced from the Success Stories page for now ("For the
+      peer-reviewed record, see our published papers"). The ROUTE is
+      unchanged (`/about/publications`, still in the sitemap) and it is
+      still linked from /about, /about/patents, /track-record and /contact,
+      so nothing is orphaned. Rajesh wants to rethink this properly; if it
+      moves under success-stories, that is a URL migration needing a 301 and
+      a sitemap update, so decide before touching the path.
+
 ## Martin's website review (6 Aug 2026) — remaining items
 
 Martin Leonard's review email (5 Aug) was triaged item-by-item against the

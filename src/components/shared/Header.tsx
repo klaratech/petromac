@@ -15,21 +15,28 @@ const NAV_ITEMS = [
   { name: 'Simulation', href: '/simulation' },
 ];
 
-// About's dropdown (desktop hover / focus) and mobile sub-links. Team lives
-// here rather than in the top bar.
+// About's dropdown (desktop hover / focus) and mobile sub-links.
 //
-// There is deliberately NO "Origins" entry. It used to sit here pointing at
-// `/about` — the same href as the "About" item itself — on the reasoning that
-// it made the page discoverable without clicking the About label. In practice
-// the duplicate was the bug: two adjacent menu entries went to the same URL,
-// so whichever one you tapped second was a same-route navigation that did
-// nothing (Aug 2026 report). `/about`'s own H1 is "Origins of Petromac", so
-// the About label already leads there unambiguously. Keep every entry here
-// pointing at a DISTINCT destination.
+// "Origins" is BACK (Rajesh, Aug 2026) and owns `/about`. It was removed
+// earlier because it duplicated the About item's own href: two adjacent
+// entries pointed at the same URL, so whichever you tapped second was a
+// same-route navigation that appeared to do nothing. The duplication is gone
+// for a different reason now — About no longer navigates at all, it only
+// opens this menu (see the <button> in the nav below), so `/about` has
+// exactly one entry point again and it is named after the page's own H1,
+// "Origins of Petromac".
+//
+// Publications LEFT this menu (Aug 2026). It is not "about the company" in
+// the way Origins/Team/Patents are, and it is still reachable from /about,
+// /about/patents, /track-record and /contact, so nothing is orphaned — the
+// route is unchanged and stays in the sitemap. Where it belongs long-term is
+// an open question; see TODO.
+//
+// Rule that still holds: every entry here points at a DISTINCT destination.
 const ABOUT_SUBLINKS = [
+  { name: 'Origins', href: '/about' },
   { name: 'Team', href: '/team' },
   { name: 'Patents', href: '/about/patents' },
-  { name: 'Publications', href: '/about/publications' },
 ];
 
 function LinkedInIcon({ className = 'w-5 h-5' }: { className?: string }) {
@@ -145,10 +152,12 @@ export default function Header() {
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');
 
-  // Every sub-link now owns a distinct subtree, so plain prefix matching is
-  // enough. (This used to special-case Origins, whose /about href would
-  // otherwise light up on /about/patents and /about/publications too.)
-  const isSubActive = (href: string) => isActive(href);
+  // Origins needs EXACT matching, the rest prefix. `isActive` treats a href as
+  // owning its subtree, so prefix-matching Origins (`/about`) would light it up
+  // on `/about/patents` as well and two menu entries would read as current at
+  // once. This special case was deleted when Origins was removed from the menu
+  // and has to come back with it (Aug 2026).
+  const isSubActive = (href: string) => (href === '/about' ? pathname === '/about' : isActive(href));
 
   // About owns /about/* and /team now that Team moved into its dropdown.
   const isAboutActive = () => isActive('/about') || isActive('/team');
@@ -178,8 +187,15 @@ export default function Header() {
       <div className="bg-slate-950/85 backdrop-blur-md">
         <div className="container mx-auto px-4 py-3.5 flex items-center justify-between">
           {/* Logo */}
+          {/* Same-route handling matters here as much as on the nav links:
+              clicking the logo while already on the homepage is a same-URL
+              navigation that Next deliberately ignores, so without this the
+              click did nothing and you stayed halfway down the page.
+              Measured on production before the fix: scrollY 2079 -> 2079,
+              while the "Home" nav link beside it correctly returned to 0. */}
           <Link
             href="/"
+            onClick={() => handleNavClick('/')}
             className="flex items-center transition-transform duration-200 hover:scale-[1.02] hover:brightness-110"
           >
             <Image
@@ -196,12 +212,15 @@ export default function Header() {
           <nav className="hidden lg:flex items-center gap-7">
             {NAV_ITEMS.map((item) =>
               item.href === '/about' ? (
-                // About is a link AND a dropdown: hover (or keyboard focus
-                // within) reveals Team / Patents / Publications.
+                // About is a DISCLOSURE, not a destination: it opens the menu
+                // and never navigates, so Origins can own /about outright.
+                // A <button> rather than a <Link> because there is no URL
+                // behind it — hover or keyboard focus reveals the panel, and
+                // `type="button"` keeps it out of any form submission.
                 <div key={item.href} className="relative group">
-                  <Link
-                    href={item.href}
-                    onClick={() => handleNavClick(item.href)}
+                  <button
+                    type="button"
+                    aria-haspopup="true"
                     aria-current={isAboutActive() ? 'page' : undefined}
                     className={desktopLinkClass(isAboutActive())}
                   >
@@ -217,7 +236,7 @@ export default function Header() {
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
                     </svg>
-                  </Link>
+                  </button>
                   <div className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-opacity duration-150 absolute left-1/2 -translate-x-1/2 top-full pt-3 z-50">
                     <div className="min-w-44 rounded-xl bg-slate-950/95 backdrop-blur-md border border-white/10 shadow-xl py-2">
                       {ABOUT_SUBLINKS.map((sub) => (
@@ -368,21 +387,35 @@ export default function Header() {
           >
             {NAV_ITEMS.map((item) => {
               const active = item.href === '/about' ? isAboutActive() : isActive(item.href);
+              const isAbout = item.href === '/about';
               return (
                 <div key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => handleNavClick(item.href)}
-                    aria-current={active ? 'page' : undefined}
-                    className={[
-                      'block px-3 py-3 rounded-lg text-base font-medium transition-colors',
-                      active
-                        ? 'text-white bg-white/10'
-                        : 'text-slate-300 hover:text-white hover:bg-white/5',
-                    ].join(' ')}
-                  >
-                    {item.name}
-                  </Link>
+                  {isAbout ? (
+                    // Matches desktop: About labels the group, it does not go
+                    // anywhere. Its sub-links (Origins first) are already
+                    // listed below and always visible on mobile, so there is
+                    // nothing to expand and nothing to tap here.
+                    <p
+                      className="px-3 pt-3 pb-1 text-base font-medium text-slate-300"
+                      aria-hidden="true"
+                    >
+                      {item.name}
+                    </p>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      onClick={() => handleNavClick(item.href)}
+                      aria-current={active ? 'page' : undefined}
+                      className={[
+                        'block px-3 py-3 rounded-lg text-base font-medium transition-colors',
+                        active
+                          ? 'text-white bg-white/10'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5',
+                      ].join(' ')}
+                    >
+                      {item.name}
+                    </Link>
+                  )}
                   {item.href === '/about' ? (
                     <div className="ml-4 border-l border-white/10 pl-2 flex flex-col gap-1 mt-1 mb-1">
                       {ABOUT_SUBLINKS.map((sub) => (

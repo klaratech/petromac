@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { caseStudies } from '@/features/case-studies/content';
 import CaseStudiesBrowser from '@/components/public/case-studies/CaseStudiesBrowser';
 import { pageMetadata } from '@/lib/seo';
@@ -28,6 +29,21 @@ export default function SuccessStoriesPage() {
           <p className="text-slate-600 leading-relaxed">
             Field-proven results from demanding well programmes worldwide — and the
             innovations that delivered them.
+          </p>
+          {/* Publications left the About menu (Aug 2026) and is surfaced here
+              instead: an SPE paper is the peer-reviewed end of the same
+              evidence these stories tell informally, so a reader who wants
+              harder proof is already in the right place. Interim — where
+              Publications ultimately belongs is still open (see TODO). */}
+          <p className="mt-2 text-sm text-slate-500">
+            For the peer-reviewed record, see our{' '}
+            <Link
+              href="/about/publications"
+              className="font-medium text-brand hover:underline"
+            >
+              published papers
+            </Link>
+            .
           </p>
         </header>
 
