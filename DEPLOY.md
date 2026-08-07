@@ -106,7 +106,9 @@ web settings only affect the proxied site records:
   `next.config.ts` (without it, Cloudflare's zone default of 4 h
   overrides them).
 - Brotli on; AI crawlers allowed (content-policy decision, Jul 2026);
-  SSL/TLS **Full** (→ Full (strict) once ChemiCloud is retired);
+  SSL/TLS **Full** (→ Full (strict) once ChemiCloud is retired — cleared
+  to cancel as of 7 Aug 2026, pending the office-scanner SMTP check; see
+  TODO.md);
   Always Use HTTPS on; Turnstile widget for the contact form.
 
 The domain cutover from the klaratech.it staging hostname happened

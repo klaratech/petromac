@@ -36,16 +36,31 @@ route through Rajesh.
   managed by the other admin. (Its LE cert renews on that box.)
 - **ChemiCloud box** (172.232.197.9): `mail`, `webmail`, `cpanel`,
   `whm`, `ftp`, `webdisk`, `cpcalendars`, `cpcontacts` — all A records,
-  DNS-only. Legacy mail service lives here. **Do not cancel the
-  ChemiCloud subscription** until it's confirmed nothing sends/reads
-  mail through this box (see TODO).
+  DNS-only. Leftovers of the retired WordPress hosting. **RETIREMENT
+  CLEARED, 7 Aug 2026.** The former "legacy mail service lives here /
+  do not cancel" note was an INFERENCE, never a finding: during the
+  28 Jul incident SMTP 587/465 and IMAP 993 answered on this box, and
+  that got written up as "mailboxes are in use". cPanel answers on
+  those ports on every account, occupied or not. Rajesh confirmed
+  7 Aug 2026 that **no cPanel email account was ever created — company
+  mail has always been Microsoft 365**, which the MX corroborates: it
+  has only ever pointed at `petromac-co-nz.mail.protection.outlook.com`,
+  so no inbound mail has ever reached this box. One dependency left to
+  clear before cancelling — the office scanners (question 1 below).
+  These eight A records get deleted with the subscription.
 - **Microsoft 365 mail**: MX → petromac-co-nz.mail.protection.outlook.com;
   `autodiscover` CNAME; `selector1/2._domainkey` CNAMEs (M365 DKIM);
-  SPF TXT (currently also authorises the ChemiCloud box + mailchannels
-  - two unverified IPs — see TODO before trimming); `_dmarc`
-    (p=quarantine, reports to it@petromac.co.nz); `MS=ms87700327`
-    verification TXT; legacy `default._domainkey` DKIM for the
-    ChemiCloud mail service.
+  SPF TXT (also authorises the ChemiCloud box, the mailchannels relay —
+  cPanel's outbound path, a WordPress-era leftover — and two IPs; trim
+  all of these WITH the ChemiCloud cancellation, see TODO); `_dmarc`
+  (p=quarantine, reports to it@petromac.co.nz); `MS=ms87700327`
+  verification TXT; legacy `default._domainkey` DKIM for the ChemiCloud
+  mail service (delete with the rest).
+
+  Current value, for reference:
+  `v=spf1 +a +mx +ip4:172.232.206.251 include:relay.mailchannels.net +ip4:172.232.197.9 +ip4:161.65.142.140 +include:spf.protection.outlook.com ~all`
+  → target after the trim: `v=spf1 +mx include:spf.protection.outlook.com ~all`
+
 - **SMTP2GO** (in use — e.g. scan-to-email from devices outside the
   office): `em588925` → return.smtp2go.net, `s588925._domainkey` →
   dkim.smtp2go.net, `link` → track.smtp2go.net. Keep as a group.
@@ -61,9 +76,30 @@ delete it. Keep comments current when records change.
 
 ## Open verification questions (before any cleanup)
 
-1. Office scanners: which SMTP server is configured in them?
-2. SPF: what are 172.232.206.251 and 161.65.142.140?
+1. **Office scanners: which SMTP server is configured in them?** This is
+   now the ONLY thing gating the ChemiCloud cancellation (7 Aug 2026).
+   If a device reads `mail.petromac.co.nz`, repoint it at SMTP2GO
+   (already live and proven for scan-to-email) or M365 first. Note that
+   the 28 Jul round-1 restore brought back athena AND the mail records
+   in one go, so "office printers confirmed working after round 1" does
+   not isolate which record they actually needed. Worst case if the
+   subscription is cancelled without checking: scan-to-email stops until
+   the devices are repointed — recoverable, nothing is lost.
+2. SPF: what are 172.232.206.251 and 161.65.142.140? The first sits in
+   the same 172.232.x range as the ChemiCloud box, so it is most likely
+   that platform's outbound IP — verify, then drop both with the rest of
+   the ChemiCloud SPF terms.
 3. Skype/Lync records: safe to delete?
+4. SPF hygiene (noted 7 Aug 2026): the record opens with `+a +mx`. On a
+   Cloudflare-**proxied** apex, `a` resolves to Cloudflare's shared proxy
+   addresses, so that term authorises a range that has nothing to do with
+   Petromac. Low practical risk (those proxies don't originate SMTP) but
+   it is junk — drop `+a` in the same trim.
+
+**SMTP2GO needs no SPF include here** — it sends with its own
+return-path (`em588925` → return.smtp2go.net) and is DKIM-signed, so
+trimming SPF down to the Microsoft include alone does NOT affect
+scan-to-email. That was the fear behind the original "do not trim" note.
 
 ## Related gotchas
 

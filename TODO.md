@@ -111,7 +111,7 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
       subtitled 212.5s cut is silent at every generation INCLUDING its
       original (`originals/WirelineExpress-subtitled.mp4` is itself 540p
       with a -inf dB track — no fixable source exists). `transcoded/
-      WirelineExpress.mp4` re-encoded 1080p from `originals/` WITH audio;
+WirelineExpress.mp4` re-encoded 1080p from `originals/` WITH audio;
       ChallengeSelector now plays it (duration 4:10). Kiosk keeps the
       subtitled cut — burned subtitles do the narrating on a loud floor.
       If a subtitled master with sound ever surfaces, re-burn and revert.
@@ -251,11 +251,17 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
      `/privacy-policy/`, `/terms-of-use/`. The unit test proves the mapping
      table; it does not prove the deployed edge behaves.
   - Days after activation: SPF trim to M365-only include, DMARC watch,
-    then -all; drop default.\_domainkey + link CNAME. CAUTION (28 Jul):
-    the SPF currently ALSO authorises the ChemiCloud server + mailchannels
-    relay — scanners/printers and legacy mailboxes still send through
-    mail.petromac.co.nz. Do NOT trim those from SPF until that mail is
-    migrated to M365.
+    then -all; drop default.\_domainkey + link CNAME. REVISED 7 Aug 2026
+    (supersedes the 28 Jul caution): the SPF also authorises the
+    ChemiCloud server, the mailchannels relay (cPanel's outbound path, a
+    WordPress-era leftover) and two IPs — 172.232.206.251 +
+    161.65.142.140. The old caution said "legacy mailboxes still send
+    through mail.petromac.co.nz"; there were never any mailboxes there
+    (see the cancellation item below). Trim these WITH the ChemiCloud
+    cancellation. Scan-to-email is NOT at risk: SMTP2GO sends with its
+    own return-path (em588925) and DKIM, so it needs no include here.
+    Drop the leading `+a` too — on a proxied apex it authorises
+    Cloudflare's shared proxy range for no reason.
   - SSL Full (strict) once ChemiCloud hosting is retired
   - Revoke the old all-zones Cloudflare user token
   - (Optional hardening) enable DNSSEC: Cloudflare generates the DS,
@@ -275,11 +281,29 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
       existed only in the panel, not the live zone); the other admin's
       DNS changes route through Rajesh (or later: invite with a DNS-only
       scoped role).
-- [ ] DO NOT CANCEL ChemiCloud until legacy mail is migrated: the box at
-      172.232.197.9 still hosts mail./webmail./cpanel mailboxes and the
-      scanner/printer SMTP relay (+ its IPs sit in the SPF). Cancelling
-      kills those. Sequence: migrate legacy mailboxes + device relay to
-      M365 → then cancel → then SPF trim + SSL Full (strict).
+- [ ] CANCEL ChemiCloud — CLEARED 7 Aug 2026, one check first. This item
+      previously read "DO NOT CANCEL until legacy mail is migrated",
+      claiming the box at 172.232.197.9 hosted mail./webmail./cpanel
+      mailboxes. **That was an unverified inference and it was wrong.**
+      It came from the 28 Jul incident note "SMTP 587/465 + IMAP 993
+      open" — but cPanel answers on those ports on every account whether
+      or not a mailbox was ever created, and the same day's own open
+      question ("which SMTP server are the office scanners configured
+      with?") shows nothing was actually traced to the box. Rajesh
+      confirmed 7 Aug 2026: no cPanel email account was ever created,
+      company mail has always been M365, and the WordPress content the
+      box used to host is archived. The MX corroborates it — it has only
+      ever pointed at Microsoft, so no inbound mail ever landed there.
+      REMAINING CHECK: read the SMTP host configured in the office
+      scanners/printers. If it is mail.petromac.co.nz, repoint to SMTP2GO
+      or M365 before cancelling; if not, cancel now. Getting this wrong
+      is recoverable — scan-to-email stops until the devices are
+      repointed, no data is lost. Sequence: scanner check → cancel →
+      delete the 8 A records (mail/webmail/cpanel/whm/ftp/webdisk/
+      cpcalendars/cpcontacts) + default.\_domainkey → SPF trim to the
+      M365 include only → SSL Full (strict). Take a full cPanel account
+      backup before cancelling anyway; it costs nothing and makes the
+      step reversible.
 - [x] DNS incident round 2 (28 Jul): SMTP2GO turned out to be in use for
       scan-to-email (Steve's home scanner) — its em588925 +
       s588925.\_domainkey CNAMEs had also been deleted; restored, scanner
@@ -301,8 +325,9 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
 - [ ] Sanity-check + clean up the Crazy Domains DNS panel against the
       now-canonical Cloudflare zone (with the other admin), so the inert
       panel doesn't mislead anyone again. Open verification questions
-      (also in docs/DNS.md): office scanners' SMTP server; SPF IPs
-      172.232.206.251 + 161.65.142.140; Skype/Lync records still needed?
+      (also in docs/DNS.md): office scanners' SMTP server (now the only
+      gate on the ChemiCloud cancellation); SPF IPs 172.232.206.251 +
+      161.65.142.140; Skype/Lync records still needed?
 - [x] petromac.klaratech.it RETIRED (28 Jul 2026): repo scrubbed
       (docs/.env.example → www.petromac.co.nz; siteUrl.ts default →
       localhost); Entra redirect URI + Turnstile hostname removed
