@@ -173,7 +173,10 @@ export function buildFacetedCaseStudyOptions(studies: CaseStudy[], query: CaseSt
   const recount = <T extends { value: string; count: number }>(
     options: T[],
     facet: Facet,
-    countIn: (subset: CaseStudy[], value: string) => number
+    // Underscored because these name a TYPE's parameters, not bindings: the
+    // base no-unused-vars rule reads a function-type annotation as a real
+    // signature and flags them, and `/^_/u` is the escape hatch it allows.
+    countIn: (_subset: CaseStudy[], _value: string) => number
   ): T[] => {
     const subset = filterCaseStudies(studies, queryExcluding(query, facet));
     return options.map((o) => ({ ...o, count: countIn(subset, o.value) }));
