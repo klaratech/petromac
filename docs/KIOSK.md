@@ -40,7 +40,6 @@ Specifications is a modal: tapping the pill button opens `SpecsModal` on top of 
 ### Video sources
 
 Lane loops and CH experiences resolve their clips through `useKioskVideo` —
-it prefers a 1080p master in `public/videos/kiosk-hd/`
 when one exists (matched by filename) and otherwise falls back to the
 committed `public/videos/transcoded/` clip. See [ADMIN.md](ADMIN.md) §7.
 
@@ -53,7 +52,6 @@ The kiosk reads two opt-in URL flags once at boot and persists them to
 | Flag              | Effect                                                                                                                                                                                                                                                                              |
 | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `?tv=1`           | TV safe-area mode. Scales the kiosk content to 94% so TV overscan (Fire Stick, set-top boxes) can't crop chrome out of the picture. The kiosk shell's `bg-black` fills the ~3% gutter on each side.                                                                                 |
-| `?sd=1`           | Skip the kiosk-hd 1080p upgrade. `useKioskVideo` stays on the 720p `transcoded/` clips. Use on Fire Stick or any device that stutters on 1080p H.264; also helpful when mirroring from a CPU-bound tablet, since the tablet's screen-capture encoder has less work to do per frame. |
 | `?tv=0` / `?sd=0` | Explicit opt-out. Clears the persisted flag without needing to clear sessionStorage manually — useful when swapping a Fire Stick kiosk back to a tablet.                                                                                                                            |
 
 Typical Fire Stick setup: navigate the kiosk browser once to

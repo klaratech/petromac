@@ -41,9 +41,9 @@ export const systemMedia: Record<string, SystemMedia> = {
   // overlay + Rocker corner badge). Helix and Rocker are NOT separate tiles.
   'Focus Centralizers': {
     // Uses the subtitled Helix clip so the kiosk gets narration + on-screen
-    // captions in the Focus Centralizers experience. Routed through
-    // useKioskVideo in HelixExperience so the kiosk-hd 1080p
-    // variant is picked up automatically when present.
+    // captions in the Focus Centralizers experience. This path is played
+    // as-is — transcoded/ is 1080p and the kiosk-hd tier was retired
+    // (Aug 2026).
     video: '/videos/transcoded/helix-subtitled.mp4?v=20240517',
     // Focus Centralizers brandmark — reuses focus.png intentionally; a
     // dedicated brandmark is tracked under "Helix product image" in TODO.md.

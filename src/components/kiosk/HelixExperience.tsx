@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { useAutoHideHud } from '@/hooks/useAutoHideHud';
 import { getKioskPrimeMode } from '@/hooks/useKioskDisplay';
 import { deviceSpecs, systemMedia } from '@/features/catalog/deviceSpecs';
-import { useKioskVideo } from '@/hooks/useKioskVideo';
 import { HELIX_MECHANISM, HELIX_LOGS, ROCKER_MECHANISM, ROCKER_LOGS } from './ch/ch-configs';
 
 type View = 'video' | 'product' | 'mechanism' | 'logs';
@@ -82,9 +81,9 @@ export default function HelixExperience({ onClose }: Props) {
 
   const media = systemMedia['Focus Centralizers'];
   const primeMode = getKioskPrimeMode();
-  // Route the Helix video through useKioskVideo so the CH attractor gets
-  // the same HD upgrade path (videos/kiosk-hd/<file>.mp4) as the lane.
-  const videoSrc = useKioskVideo(media?.video ?? '');
+  // transcoded/ is 1080p since Aug 2026, so there is no HD tier to resolve
+  // — the path in deviceSpecs is already the one to play.
+  const videoSrc = media?.video ?? '';
 
   // Resolve specs once per product so sub-views and the product screen
   // share the same source of truth.

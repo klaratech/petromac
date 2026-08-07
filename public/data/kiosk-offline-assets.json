@@ -1,5 +1,5 @@
 {
-  "version": "2026-07-08-catalog-pdfjs-v5",
+  "version": "2026-08-07-kiosk-hd-retired",
   "profile": "Android tablet + Chromecast SD default (sd=1 launch, 1080p opt-in)",
   "launchUrl": "/intranet/kiosk/?sd=1&tv=0",
   "required": [
@@ -470,36 +470,6 @@
     }
   ],
   "optional": [
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/dice.mp4",
-      "label": "1080p kiosk-hd · dice intro"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/WirelineExpress.mp4",
-      "label": "1080p kiosk-hd · WirelineExpress"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/WirelineExpress-subtitled.mp4",
-      "label": "1080p kiosk-hd · WirelineExpress (subtitled)"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/pf-subtitled.mp4",
-      "label": "1080p kiosk-hd · PathFinder (subtitled)"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/helix-subtitled.mp4",
-      "label": "1080p kiosk-hd · Helix (subtitled)"
-    },
-    {
-      "kind": "video",
-      "url": "/videos/kiosk-hd/differential-sticking-subtitled.mp4",
-      "label": "1080p kiosk-hd · Differential Sticking (subtitled)"
-    },
     {
       "kind": "model",
       "url": "/models/cp12.glb"

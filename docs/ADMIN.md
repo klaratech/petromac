@@ -317,36 +317,28 @@ Team page (`/team`). Data is in `src/data/team.ts`.
 
 ---
 
-## 7. Kiosk HD videos (`public/videos/kiosk-hd/`)
+## 7. Kiosk videos
 
-**When:** you want the trade-show kiosk to play sharper 1080p clips on the
-big 60" screen instead of the default web-optimised ones.
+**Retired Aug 2026:** there is no longer a `public/videos/kiosk-hd/` tier.
+It existed only because `transcoded/` used to be 540p while the kiosk needed
+1080p on a 60" screen; `useKioskVideo` probed for a same-named file in
+`kiosk-hd/` and upgraded when it found one. Once the homepage re-transcode
+made `transcoded/` 1080p the two folders held the same thing, so the tier was
+~170 MB duplicated in git and in every Docker image for no gain.
 
-**How it works:**
+What went with it: the `kiosk-hd/` folder, `src/hooks/useKioskVideo.ts` and
+its probe/HEAD machinery, the `?sd=1` flag (its only job was skipping the
+upgrade), and the 1080p entries in the prime manifest's `optional` bucket —
+the videos are all in `required` now, so every prime gets them and the
+optional tick is just the 3D models. `dice.mp4` was the one file that
+differed; its 1080p copy was promoted into `transcoded/` before deletion.
 
-- The kiosk always works with the committed clips in
-  `public/videos/transcoded/` — that is the safe default and nothing breaks
-  if `kiosk-hd/` is empty.
-- If a file of the **same name** exists in `public/videos/kiosk-hd/`, the
-  kiosk loop and the product experiences automatically prefer it. Resolution
-  is per-file: any clip without an HD counterpart just keeps using its
-  transcoded copy while the others upgrade.
-- The matching is purely by filename — `kiosk-hd/helix-subtitled.mp4`
-  overrides `transcoded/helix-subtitled.mp4`, and so on.
-- Current `kiosk-hd/` inventory: `dice.mp4`, `helix-subtitled.mp4`,
-  `pf-subtitled.mp4`, `differential-sticking-subtitled.mp4`,
-  `WirelineExpress.mp4`.
+**So: put kiosk videos in `public/videos/transcoded/` like everything else.**
+Encode per §6. If a weak device ever needs a lighter set again, that is a new
+encode and a new decision — not a resurrection of this folder.
 
-**Rules:**
-
-- `kiosk-hd/` files **are committed** (unlike `originals/`) — they have to be
-  in git so the Docker build ships them to `www.petromac.co.nz`.
-- Still respect GitHub's 100 MB-per-file limit. Transcode masters to 1080p
-  H.264 (`-crf 20 -preset veryfast` is a good balance) rather than committing
-  raw graphics exports. Current files land in the 50–95 MB range.
-- After adding or replacing files here, bump `VERSION` in
-  `public/kiosk-sw.js` and re-prime the kiosk once online (see
-  [KIOSK.md](KIOSK.md)) so devices pick up the new media.
+After changing any kiosk asset, bump `VERSION` in `public/kiosk-sw.js` and
+re-prime the devices while online (see [KIOSK.md](KIOSK.md)).
 
 ---
 
@@ -360,7 +352,7 @@ big 60" screen instead of the default web-optimised ones.
 | Publications    | new paper                                                         | hand-edit `publications/page.tsx` | that file                               |
 | Team            | —                                                                 | hand-edit `src/data/team.ts`      | that file + `public/images/team/`       |
 | Large media     | graphics delivery                                                 | transcode/compress first          | the asset file                          |
-| Kiosk HD videos | `public/videos/kiosk-hd/` (1080p, same filename as transcoded)    | transcode masters first           | the `.mp4` + bump `kiosk-sw.js` VERSION |
+| Kiosk videos    | `public/videos/transcoded/` (same files the site uses)            | transcode masters first (§6)      | the `.mp4` + bump `kiosk-sw.js` VERSION |
 
 A push to `main` deploys to **TEST only** (https://test.petromac.co.nz).
 `www.petromac.co.nz` changes ONLY when someone runs the "Promote to

@@ -5,6 +5,40 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — kiosk-hd retired: one video folder, not two
+
+**Decision:** `public/videos/kiosk-hd/` is deleted. The kiosk plays the same
+`public/videos/transcoded/` files as the public site. Gone with it:
+`src/hooks/useKioskVideo.ts` (probe cache + HEAD requests + sticky
+resolution), the `?sd=1` flag, and the 1080p entries in the prime manifest's
+`optional` bucket.
+
+**Why it existed and why it stopped making sense:** it was a QUALITY TIER, not
+a caching mechanism — a common misreading, since the kiosk is an offline-primed
+SPA. `transcoded/` used to be 540p (right for the web, soft on a 60" screen),
+so `kiosk-hd/` held 1080p copies under identical filenames and the hook probed
+for them at runtime. The service worker caches whatever URLs are requested; it
+never needed its own folder. Once the Aug 2026 re-transcode made `transcoded/`
+1080p, the two folders held the same thing: ~170 MB duplicated in git and in
+every Docker image, plus a runtime probe, to serve identical bytes.
+
+**The one real difference** was `dice.mp4` — 1080p/1.4 MB in `kiosk-hd`, still
+540p/544 KB in `transcoded`. Its 1080p copy was promoted before deletion. dice
+is kiosk-only, so the public site never pays for it.
+
+**Consequences:** every prime now pulls the full 1080p video set (they are in
+`required`); the optional tick is just the 3D models. Kiosk launch URLs still
+carrying `?sd=1` are inert rather than broken — the flag is simply never read.
+If a weak device ever needs a lighter set, that is a NEW encode and a new
+decision, not a resurrection of this folder.
+
+**Needs a device pass:** `kiosk-sw.js` VERSION went v19 → v20, so the tablets
+must be re-primed while online. None of this was verifiable from a Cowork
+session — the offline prime, the SW cache and the playlist only prove
+themselves on the hardware.
+
+---
+
 ## Aug 2026 — Nav: About opens a menu, Origins owns /about
 
 **Decision:** About no longer navigates. It is a `<button>` that only reveals

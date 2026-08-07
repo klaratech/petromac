@@ -3,7 +3,6 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getKioskPrimeMode } from '@/hooks/useKioskDisplay';
-import { useKioskVideos } from '@/hooks/useKioskVideo';
 import { KIOSK_CH_PATH, KIOSK_DASHBOARD_PATH } from '@/constants/app';
 
 const OVERLAY_AUTOHIDE = 4_000; // hide the controls after this idle gap
@@ -38,9 +37,9 @@ const LANE_PLAYLIST: Record<Lane, string[]> = {
   ],
 };
 
-/** Treat the dice intro as a non-navigable interstitial — basename match
- *  covers both /videos/transcoded/ and /videos/kiosk-hd/ variants once
- *  useKioskVideos picks an HD master. */
+/** Treat the dice intro as a non-navigable interstitial. Basename match
+ *  rather than full path so a cache-busting query or a future folder move
+ *  cannot silently turn the sting into a navigable slide. */
 function isDice(src: string): boolean {
   return src.endsWith('/dice.mp4');
 }
@@ -59,8 +58,7 @@ function LaneLoopContent() {
 
   const lane: Lane = isLane(laneParam) ? laneParam : 'oh';
 
-  // Prefers /videos/kiosk-hd/ clips when present, falls back to transcoded.
-  const playlist = useKioskVideos(LANE_PLAYLIST[lane]);
+  const playlist = LANE_PLAYLIST[lane];
 
   const [videoIdx, setVideoIdx] = useState(0);
   const [overlayVisible, setOverlayVisible] = useState(true);

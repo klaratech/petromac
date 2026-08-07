@@ -90,7 +90,6 @@ website/
 │   ├── videos/                           # Video files
 │   │   ├── hero/                         # Homepage hero loop + poster (committed)
 │   │   ├── transcoded/                   # Web-ready clips (committed)
-│   │   ├── kiosk-hd/                     # Optional 1080p kiosk clips (committed)
 │   │   └── originals/                    # Full-res masters (gitignored)
 │   └── models/                           # 3D models (.glb files)
 ├── sources/                              # 🚫 GITIGNORED content drop zone

@@ -115,19 +115,16 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
       ChallengeSelector now plays it (duration 4:10). Kiosk keeps the
       subtitled cut — burned subtitles do the narrating on a loud floor.
       If a subtitled master with sound ever surfaces, re-burn and revert.
-- [ ] **Retire `kiosk-hd/`** — now that `transcoded/` is 1080p, the kiosk's
-      per-filename HD override layer is redundant: helix/pf/differential
-      subtitled cuts and WirelineExpress.mp4 exist at 1080p in BOTH trees
-      (~170 MB duplicated in git and the Docker image). Delete the six
-      kiosk-hd files (kiosk falls back to transcoded/ automatically per
-      docs/ADMIN.md §7), bump `VERSION` in `public/kiosk-sw.js`, re-prime
-      the kiosk tablets, then simplify the `?sd=1` prime logic when
-      convenient. Needs local deletion (bridge can't rm) — do on-computer.
-- [ ] **Back up `public/videos/originals/` to SharePoint.** It is gitignored,
-      so the ONLY copy of the video masters lives on Rajesh's Mac —
-      including the sole audio-bearing WirelineExpress master. One disk
-      failure loses them. (The 325 MB root-level duplicate found 6 Aug was
-      moved to `_to_delete/` — byte-identical to the originals/ copy.)
+- [x] **`kiosk-hd/` RETIRED (7 Aug).** One video folder now: the kiosk plays
+      the same `transcoded/` 1080p files as the site. Removed the folder,
+      `useKioskVideo`, the `?sd=1` flag and the manifest's 1080p optional
+      entries; promoted the 1080p `dice.mp4` first (the only genuine
+      difference). −170 MB from the repo and every image. **kiosk-sw VERSION
+      v19 → v20, so the tablets need a re-prime while online**, and the kiosk
+      could not be exercised from a Cowork session — verify the lane playlist,
+      the CH Helix video and an offline prime on a real device.
+- [x] ~~Back up `public/videos/originals/` to SharePoint~~ — NOT NEEDED
+      (Rajesh, 7 Aug): copies exist elsewhere.
 - [ ] CX7 / CX13 have no catalog pages: they are ABSENT from the 2026 IDML
       source (verified — zero hits in the IDML stories; CX9 has six), so
       this is catalog CONTENT, not extraction. Either add them to the

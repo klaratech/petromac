@@ -2,7 +2,7 @@
 // Scope: /intranet/kiosk/
 // Purpose: Cache assets for offline kiosk functionality
 
-const VERSION = 'v19';
+const VERSION = 'v20';
 
 const PRECACHE = `kiosk-precache-${VERSION}`;
 const RUNTIME_STATIC = `kiosk-static-${VERSION}`;
@@ -19,7 +19,7 @@ const RUNTIME_DATA = `kiosk-data-${VERSION}`;
 const META_CACHE = `kiosk-meta-${VERSION}`;
 
 const MAX_STATIC_ENTRIES = 80;
-const MAX_VIDEO_ENTRIES = 32; // 540p transcoded default + opt-in 1080p kiosk-hd
+const MAX_VIDEO_ENTRIES = 32; // one 1080p set in transcoded/ (kiosk-hd retired Aug 2026)
 const MAX_MODEL_ENTRIES = 16; // GLB files per product family
 const MAX_FLIPBOOK_ENTRIES = 120; // success-stories (~50 pages) + headroom
 const MAX_IMAGE_ENTRIES = 80; // kiosk-images/, system logos, posters
