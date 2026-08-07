@@ -12,41 +12,117 @@ from pypdf import PdfReader
 
 SUPPORTED_FORMATS = {"jpg", "jpeg", "png", "webp"}
 
-# If an /ebook-quality copy is still heavier than this, re-compress at
-# /screen quality. Applies to the catalog's single shipped PDF and to the
-# success-stories email copy — both need to stay email-attachable.
-EMAIL_PDF_AGGRESSIVE_THRESHOLD = 4 * 1024 * 1024  # 4 MB
+# Compression is an EXPLICIT recipe, not one of Ghostscript's named presets.
+# Two reasons, both found the hard way (Aug 2026):
+#
+#  1. The old code ran /ebook and dropped to /screen "if the result is still
+#     heavy", threshold 4 MB. On the success-stories book /ebook lands around
+#     10.8 MB, so the fallback was not a fallback — EVERY build shipped
+#     /screen, which downsamples raster images to 72 dpi. The source art is
+#     ~290 dpi. Every PDF anyone downloaded or emailed was soft for months,
+#     and nothing in the build output said so.
+#  2. The presets lose to an explicit recipe anyway. /ebook spent ~10.8 MB to
+#     deliver ~158 dpi because its autofilter picks a conservative JPEG
+#     quality; the recipe below delivers a true 200 dpi in ~6.2 MB.
+#
+# The ladder degrades in visible steps and the build PRINTS the rung it
+# landed on. If a future edition cannot make its budget even at the bottom
+# rung, the file ships oversized with a loud warning — never silently blurry.
+IMAGE_DPI_LADDER = (200, 150, 120)
+JPEG_QUALITY = 85
+
+# The catalog ships ONE artifact that is both the download and the email
+# attachment, so it has a real ceiling. Success stories can afford more: it
+# is mostly photography, and its filtered extracts are cut from this file —
+# pages crushed to fit 46 others into a budget the reader never used was the
+# second half of the same bug.
+CATALOG_PDF_BUDGET = 4 * 1024 * 1024  # 4 MB
+SUCCESS_STORIES_PDF_BUDGET = 12 * 1024 * 1024  # 12 MB
 
 
-def compress_pdf(source_pdf: Path, out_path: Path) -> bool:
-    """Compress a PDF to roughly under 4 MB via Ghostscript.
+def compress_pdf(source_pdf: Path, out_path: Path, budget: int) -> bool:
+    """Compress a PDF via Ghostscript, as sharp as the budget allows.
 
-    Tries /ebook quality first, drops to /screen if the result is still heavy.
-    Text and vector graphics stay sharp; only raster images are downsampled.
+    Walks IMAGE_DPI_LADDER from the top and stops at the first rung that fits
+    `budget`. Text and vector graphics are untouched at every rung; only raster
+    images are downsampled. Always prints the rung it used, so a quality drop
+    can never happen quietly again.
+
     Returns False (with a warning) if Ghostscript isn't installed.
     """
 
-    def run_gs(setting: str) -> None:
-        subprocess.check_call([
+    def run_gs(dpi: int) -> None:
+        # stderr is captured, not inherited: this source set emits ~340
+        # harmless "openjpeg warning: unspec CS" lines per pass (its art is
+        # JPEG2000). Letting those through would bury the size/dpi line below
+        # — and a quality drop hiding in log noise is precisely the failure
+        # this function exists to prevent. Real errors still surface: a
+        # non-zero exit raises, and the captured output is printed with it.
+        proc = subprocess.run([
             "gs", "-sDEVICE=pdfwrite", "-dCompatibilityLevel=1.4",
-            f"-dPDFSETTINGS={setting}", "-dNOPAUSE", "-dQUIET", "-dBATCH",
+            "-dNOPAUSE", "-dQUIET", "-dBATCH",
             "-dDetectDuplicateImages=true",
+            # Downsample rasters to `dpi`; threshold 1.0 means "resample as
+            # soon as the image exceeds the target", not gs's default 1.5x
+            # slack, so the output resolution is actually the one asked for.
+            "-dDownsampleColorImages=true",
+            "-dColorImageDownsampleType=/Bicubic",
+            f"-dColorImageResolution={dpi}",
+            "-dColorImageDownsampleThreshold=1.0",
+            "-dDownsampleGrayImages=true",
+            "-dGrayImageDownsampleType=/Bicubic",
+            f"-dGrayImageResolution={dpi}",
+            "-dGrayImageDownsampleThreshold=1.0",
+            # Line art stays high — it is cheap and it is what makes diagrams
+            # and rules look crisp rather than ragged.
+            "-dMonoImageResolution=600",
+            # Pin JPEG quality instead of letting gs's autofilter choose. The
+            # autofilter is what made /ebook expensive AND soft.
+            "-dAutoFilterColorImages=false",
+            "-dColorImageFilter=/DCTEncode",
+            "-dAutoFilterGrayImages=false",
+            "-dGrayImageFilter=/DCTEncode",
+            f"-dJPEGQ={JPEG_QUALITY}",
             f"-sOutputFile={out_path}", str(source_pdf),
-        ])
+        ], capture_output=True, text=True)
+        if proc.returncode != 0:
+            print(proc.stderr.strip()[-2000:])
+            raise subprocess.CalledProcessError(proc.returncode, "gs")
+
+    def mb(value: float) -> str:
+        return f"{value / (1024 * 1024):.1f} MB"
 
     try:
-        run_gs("/ebook")
-        if out_path.stat().st_size > EMAIL_PDF_AGGRESSIVE_THRESHOLD:
-            run_gs("/screen")
+        for index, dpi in enumerate(IMAGE_DPI_LADDER):
+            run_gs(dpi)
+            size = out_path.stat().st_size
+            if size <= budget:
+                print(
+                    f"   {out_path.name}: {mb(size)} "
+                    f"at {dpi} dpi / JPEG q{JPEG_QUALITY}"
+                )
+                return True
+            if index < len(IMAGE_DPI_LADDER) - 1:
+                print(
+                    f"   {out_path.name}: {mb(size)} at {dpi} dpi exceeds "
+                    f"the {mb(budget)} budget — retrying at "
+                    f"{IMAGE_DPI_LADDER[index + 1]} dpi"
+                )
     except FileNotFoundError:
         print(
-            "⚠️  Ghostscript ('gs') not found — skipping email.pdf. "
+            "⚠️  Ghostscript ('gs') not found — skipping compressed PDF. "
             "Install it (e.g. `brew install ghostscript`) and re-run."
         )
         return False
 
-    size_mb = out_path.stat().st_size / (1024 * 1024)
-    print(f"   {out_path.name}: {size_mb:.1f} MB (compressed)")
+    # Bottom of the ladder and still over budget. Ship it oversized and SAY SO
+    # — going quieter and blurrier than 120 dpi is how this broke last time.
+    print(
+        f"⚠️  {out_path.name}: {mb(out_path.stat().st_size)} at "
+        f"{IMAGE_DPI_LADDER[-1]} dpi, still over the {mb(budget)} budget. "
+        "Shipping it anyway rather than degrading further — check whether "
+        "the source has unusually heavy artwork."
+    )
     return True
 
 
@@ -152,7 +228,7 @@ def build_pdf_document(args) -> None:
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
         compressed = Path(tmp.name)
     try:
-        if compress_pdf(source_pdf, compressed):
+        if compress_pdf(source_pdf, compressed, budget=CATALOG_PDF_BUDGET):
             linearize_pdf(compressed, out_dir / pdf_name)
         else:
             linearize_pdf(source_pdf, out_dir / pdf_name)
@@ -209,7 +285,7 @@ def build_flipbook():
 
     # Small, email-friendly copy for the "Email PDF" feature.
     email_pdf_path = out_dir / "email.pdf"
-    has_email_pdf = compress_pdf(source_pdf, email_pdf_path)
+    has_email_pdf = compress_pdf(source_pdf, email_pdf_path, budget=SUCCESS_STORIES_PDF_BUDGET)
 
     pdf_reader = PdfReader(str(source_pdf))
     page_count = len(pdf_reader.pages)

@@ -45,7 +45,26 @@ kiosk offline-asset list, and archives inputs to `sources/_archive/`.
   `sources/success-stories/`, which is gitignored and lives outside the repo)
   and rebuild. `filters.ts`'s `normalizeCategory()` is the safety net for
   whitespace slips that get through anyway.
-- `source.pdf` (full-res master) + `email.pdf` (compressed, for the email feature)
+- `source.pdf` (full-res master) + `email.pdf` — the compressed copy that
+  serves BOTH the download and the email attachment, and that filtered
+  extracts are cut from. ~6 MB at **200 dpi** (budget 12 MB).
+
+## PDF compression (both documents)
+
+`compress_pdf()` in `build_flipbook.py` uses an **explicit** Ghostscript recipe
+— image DPI ladder `200 → 150 → 120` at JPEG q85 — and stops at the first rung
+that fits the document's budget (catalog 4 MB, success stories 12 MB). Text and
+vector art are never downsampled, at any rung.
+
+It does NOT use `/ebook` or `/screen`. Those presets caused a months-long
+silent quality bug (Aug 2026 — see [DECISIONS.md](DECISIONS.md)): `/ebook`
+overshot the old 4 MB threshold on every build, so the `/screen` "fallback"
+was really the only path, and it downsamples to **72 dpi** from ~290 dpi
+source art. The build printed nothing to indicate it.
+
+**The build now prints the rung it landed on.** If you see a step-down line, or
+the over-budget warning, that is the signal — read it before committing. Never
+reintroduce a size check that can silently pick a lower quality.
 
 ## Prerequisites (local build)
 

@@ -5,6 +5,46 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — PDF compression: explicit recipe, not Ghostscript presets
+
+**Decision:** `compress_pdf()` downsamples raster images on a declared ladder
+(`200 → 150 → 120` dpi at JPEG q85), stops at the first rung inside the
+document's budget, and **prints which rung it used**. The Ghostscript named
+presets `/ebook` and `/screen` are gone.
+
+**The bug it fixes.** The old code ran `/ebook`, then re-ran at `/screen` "if
+the result is still heavy" — threshold 4 MB. On the success-stories book
+`/ebook` produces ~10.8 MB. It could never fit. So the fallback was not a
+fallback: **every build since the pipeline was written shipped `/screen`, which
+downsamples images to 72 dpi**, from source art at ~290 dpi. On an A4 page that
+is a 595x843 px image doing the job of 2480x3508. Every success-stories PDF
+anyone downloaded or was emailed was soft, and no build output ever said so.
+
+**Why an explicit recipe beats the presets even ignoring the bug.** `/ebook`
+spent ~10.8 MB to deliver ~158 dpi, because its autofilter picks a conservative
+JPEG quality. Pinning `-dJPEGQ=85` with `-dColorImageResolution=200` and
+`-dColorImageDownsampleThreshold=1.0` delivers a true 200 dpi in ~6.2 MB —
+better resolution at 60% of the size. The threshold matters: gs's default
+allows 1.5x slack before resampling, so "150 dpi" without it is not 150 dpi.
+
+**Second-order win.** The backend cuts filtered extracts out of `email.pdf`
+(`build_success_stories_pdf`). Under the old scheme someone who picked three
+stories got pages crushed to fit 46 others into a budget they never used. The
+recipe change fixes extracts for free — a 5-page extract is now ~0.8 MB at
+200 dpi, still far smaller than the whole-book file used to be.
+
+**Budgets:** catalog 4 MB (it ships ONE artifact serving download + email, so
+the ceiling is real), success stories 12 MB (mostly photography, and it is the
+source for extracts). Landing at ~6 MB leaves headroom under every common mail
+limit.
+
+**The rule this encodes:** a size check may lower quality, but it may never do
+it quietly. The ladder degrades in visible steps; the bottom rung ships
+oversized with a loud warning rather than degrading further. Ghostscript's
+stderr is captured and shown only on failure, because this source set emits
+~340 harmless JPEG2000 warnings per pass and a quality notice buried in log
+noise is the same as no notice at all.
+
 ## Aug 2026 — ChemiCloud cleared for cancellation; zone audited
 
 **Decision:** the "DO NOT CANCEL ChemiCloud" blocker that stood from 28 Jul to
