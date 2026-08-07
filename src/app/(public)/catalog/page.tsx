@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { buildSearchIndex, catalog } from '@/features/catalog/content';
 import {
   buildFinderIndex,
+  familyLabel,
   familySummaries,
   type FamilySummary,
 } from '@/features/catalog/content/enrich';
@@ -235,7 +236,7 @@ function FamilyCard({ family }: { family: FamilySummary }) {
       </div>
       <div className="flex flex-col flex-1 p-5">
         <h3 className="font-heading text-lg font-bold text-slate-900 group-hover:text-brand transition-colors">
-          {family.name}
+          {familyLabel(family.slug, family.name)}
         </h3>
         <p className="mt-1 text-sm text-slate-600 leading-relaxed flex-1">{family.tagline}</p>
         {family.groups.length > 0 && (
@@ -284,7 +285,7 @@ function InterventionRow({ family }: { family: FamilySummary }) {
         )}
         <div className="min-w-0 flex-1">
           <h2 className="font-heading text-lg font-bold text-slate-900 group-hover:text-brand transition-colors">
-            {family.name}
+            {familyLabel(family.slug, family.name)}
           </h2>
           <p className="mt-0.5 text-sm text-slate-600">{family.tagline}</p>
         </div>

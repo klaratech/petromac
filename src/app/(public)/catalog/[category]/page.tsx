@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { categories, getCategory } from '@/features/catalog/content';
 import {
   enrichedInCategory,
+  familyLabel,
   familyTableRows,
   type FamilyTableRow,
   type Vendor,
@@ -136,7 +137,7 @@ export default async function CatalogFamilyPage({ params }: { params: Promise<Pa
             <p className="text-sm font-semibold uppercase tracking-wider text-brand mb-2">{line}</p>
           )}
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900 mb-3">
-            {cat.name}
+            {familyLabel(cat.slug, cat.name)}
           </h1>
           <p className="text-slate-600">{cat.tagline}</p>
           {cat.intro.map((para) => (

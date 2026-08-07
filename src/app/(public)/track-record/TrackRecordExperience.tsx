@@ -38,6 +38,7 @@ const SYSTEM_ORDER = [
 // for the plain product term (Martin, Aug 2026).
 const SYSTEM_LABELS: Record<string, string> = {
   'Wireline Express - FT': 'Formation Testing',
+  Thor: 'Thor™',
 };
 
 const systemLabel = (sys: string): string => SYSTEM_LABELS[sys] ?? sys;

@@ -24,6 +24,21 @@ export type Purpose =
   | 'well-access'
   | 'intervention';
 
+/**
+ * Trademark-marked display names for the generated family names in
+ * catalog.json (which must never be hand-edited). Applied ONLY to visible
+ * headings — never to JSON-LD, breadcrumbs, aria-labels or SEO titles. See
+ * docs/VOCABULARY_MAP.md "Trademark marking" for the rule.
+ */
+const FAMILY_LABELS: Record<string, string> = {
+  'tool-taxis': 'Tool Taxis™',
+};
+
+/** Family name as SHOWN in a heading; falls back to the generated name. */
+export function familyLabel(slug: string, name: string): string {
+  return FAMILY_LABELS[slug] ?? name;
+}
+
 export const PURPOSE_LABELS: Record<Purpose, string> = {
   orient: 'Orient',
   convey: 'Convey',

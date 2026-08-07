@@ -32,7 +32,7 @@ export default function Footer() {
     <footer className="border-t border-slate-800 bg-slate-900 text-slate-300 py-4 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center sm:justify-between sm:text-left">
-          <div className="text-lg font-heading font-semibold text-white">Petromac</div>
+          <div className="text-lg font-heading font-semibold text-white">Petromac™</div>
           <div className="text-sm text-slate-400">
             <p>© 2026 Petromac. All rights reserved.</p>
           </div>

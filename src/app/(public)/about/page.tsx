@@ -16,7 +16,7 @@ export default function AboutPage() {
         {/* Header band */}
         <header className="mb-10 md:mb-12 max-w-3xl">
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4">
-            Origins of Petromac
+            Origins of Petromac™
           </h1>
           <p className="text-base md:text-lg text-slate-600 leading-relaxed">
             Founded out of decades of wireline logging experience and a persistent frustration with

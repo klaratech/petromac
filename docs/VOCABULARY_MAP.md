@@ -4,6 +4,46 @@ Petromac website vocabulary, search mapping, and meta title/description standard
 
 ---
 
+## 0. Trademark marking — read this before touching any copy
+
+**Marked brands:** Petromac™, Wireline Express™, Focus™, Tool Taxis™, Thor™,
+Hermes™. (Athena is deliberately unmarked today — mark it here first if that
+changes.)
+
+**The rule is prominent use, not every use.** Mark the first or most prominent
+appearance on a page and leave the rest bare. Repeating ™ down a page reads as
+amateurish, and over-marking is not what protects a mark — consistent marking
+of prominent uses is. "Petromac" alone appears ~110 times across ~38 files;
+almost all of those stay bare.
+
+**Never mark these** — each one causes a concrete problem:
+
+| Context | Why not |
+| --- | --- |
+| `pageMetadata` titles, `CATEGORY_TITLES`, meta descriptions | Clutters the SERP snippet and eats the 60-char title budget above |
+| `alt=`, `aria-label` | Screen readers announce "trade mark" on every pass |
+| JSON-LD / schema (`name`, breadcrumb `ListItem`) | Structured data should carry the plain entity name |
+| Legal entity names, the footer © line, Terms/Privacy | The registered company name is not the mark |
+| URLs, slugs, filenames, email addresses, code comments | Not display copy |
+| Filter values, chip keys, data columns | Must match the DATA, not the label — mark via a display map instead |
+
+**Where the marks live** (all display-only, data untouched):
+
+- `PRODUCT_LINE_LABELS` — `catalog/[category]/page.tsx` — Wireline Express™, Focus™
+- `FAMILY_LABELS` / `familyLabel()` — `features/catalog/content/enrich.ts` — Tool Taxis™, applied to catalog family headings only. `catalog.json` is GENERATED and must never be hand-edited, so family display names are overridden here.
+- `SYSTEM_LABELS` — `track-record/TrackRecordExperience.tsx` — Thor™ (and "Wireline Express - FT" → "Formation Testing"). Keys must stay byte-identical to the `System` column or filtering breaks.
+- `Footer.tsx` wordmark, `/about` H1 — Petromac™. The footer © line stays bare.
+- `deviceSpecs.ts` — Thor™ Controlled Impulse Jar (kiosk spec sheet).
+
+**Known drift to tidy:** the `/catalog` meta description still contains
+Wireline Express™ and Focus™ (predates this rule). Harmless, but strip the
+symbols next time that description is touched.
+
+Use the `™` character directly — not `<sup>`, not `&trade;`. The character is
+already superscripted by the font, and the existing marks all use it.
+
+---
+
 ## 1. Executive Summary & Strategy
 
 - **Goal**: Transition from brand-only search traffic to category, tool-compatibility, and operational outcome search traffic.

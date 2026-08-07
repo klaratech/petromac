@@ -116,7 +116,7 @@ export const deviceSpecs: Record<string, DeviceSpec> = {
   },
   '/models/thor.glb': {
     specs: {
-      Name: 'Thor Controlled Impulse Jar',
+      Name: 'Thor™ Controlled Impulse Jar',
       Material: 'Titanium Alloy',
       'Make-Up Length (Jar Cocked)': '11.5ft',
       'Make-Up Length (Jar Fired)': '12.0ft',
