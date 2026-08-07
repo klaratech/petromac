@@ -66,13 +66,38 @@ route through Rajesh.
   dkim.smtp2go.net, `link` → track.smtp2go.net. Keep as a group.
 - **Intune/Entra device enrollment**: `enterpriseenrollment`,
   `enterpriseregistration` CNAMEs.
+- **Search Console verification**: apex TXT
+  `google-site-verification=m10EeI5HB9Fett6Js7GL60fuhOhJ4UKx-OXA36Xw2Zg`.
+  **DO NOT DELETE — this record IS the verification** for both Search
+  Console properties; deleting it silently unverifies them and reporting
+  stops. It was missing from this inventory until the 7 Aug 2026 audit
+  found it in the zone, which is precisely how the 27 Jul incident
+  happened: an undocumented live record read as junk by a cleanup.
 - **Skype for Business (legacy)**: `lyncdiscover`, `sip` CNAMEs +
-  `_sip._tls`, `_sipfederationtls._tcp` SRVs — cleanup candidates once
-  confirmed unused.
+  `_sip._tls`, `_sipfederationtls._tcp` SRVs — **DEAD, safe to delete
+  (confirmed 7 Aug 2026)**. `webdir.online.lync.com` and
+  `sipdir.online.lync.com` both return NXDOMAIN, so `lyncdiscover`, `sip`
+  and `_sip._tls` are dangling. `_sipfederationtls._tcp` →
+  `sipfed.online.lync.com` still resolves, but with no Skype/SfB
+  deployment it does nothing. No takeover risk (Microsoft owns lync.com);
+  delete all four as housekeeping.
+- **CAA**: none. Any CA may currently issue for petromac.co.nz. Cheap
+  hardening whenever someone is in the dashboard anyway — see TODO.
 
 Every record in the zone carries a descriptive Cloudflare comment
 (added 28 Jul 2026) — what it is and, for the dangerous ones, why not to
 delete it. Keep comments current when records change.
+
+**Audited 7 Aug 2026** — 156 candidate subdomains swept plus every record
+type on the apex. Result: no strays beyond the two items now listed above
+(the undocumented Search Console TXT, and the dead Lync records); every
+non-Lync CNAME resolves, so there is no subdomain-takeover exposure; and
+`portal` / `autoconfig` / `localhost` do NOT resolve, confirming that the
+WordPress-era drift only ever existed in the inert Crazy Domains panel.
+Caveat on method: this was DNS probing, not a zone dump — Certificate
+Transparency was not reachable from that environment, so a record whose
+name matched none of the 156 probes would not have surfaced. **The
+Cloudflare dashboard is still the authoritative list.**
 
 ## Open verification questions (before any cleanup)
 
@@ -89,7 +114,8 @@ delete it. Keep comments current when records change.
    the same 172.232.x range as the ChemiCloud box, so it is most likely
    that platform's outbound IP — verify, then drop both with the rest of
    the ChemiCloud SPF terms.
-3. Skype/Lync records: safe to delete?
+3. ~~Skype/Lync records: safe to delete?~~ **ANSWERED 7 Aug 2026: yes,
+   all four — their targets are NXDOMAIN.** See the zone list above.
 4. SPF hygiene (noted 7 Aug 2026): the record opens with `+a +mx`. On a
    Cloudflare-**proxied** apex, `a` resolves to Cloudflare's shared proxy
    addresses, so that term authorises a range that has nothing to do with

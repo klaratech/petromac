@@ -304,6 +304,14 @@ WirelineExpress.mp4` re-encoded 1080p from `originals/` WITH audio;
       M365 include only → SSL Full (strict). Take a full cPanel account
       backup before cancelling anyway; it costs nothing and makes the
       step reversible.
+- [ ] Zone housekeeping from the 7 Aug 2026 audit (all low-risk, do them
+      next time you are in the Cloudflare dashboard): 1. Delete the four dead Skype for Business records — `lyncdiscover` + `sip` CNAMEs and the `_sip._tls` + `_sipfederationtls._tcp`
+      SRVs. `webdir.` and `sipdir.online.lync.com` are NXDOMAIN. 2. Add a Cloudflare comment to the apex
+      `google-site-verification=...` TXT saying DO NOT DELETE — it is
+      the Search Console verification for both properties. It is the
+      one live record that had no note and no doc entry. 3. Add a CAA record. There is none today, so any CA may issue for
+      the domain. 4. NOT urgent, but note it: DNSSEC is still off (no DS at the .nz
+      registry).
 - [x] DNS incident round 2 (28 Jul): SMTP2GO turned out to be in use for
       scan-to-email (Steve's home scanner) — its em588925 +
       s588925.\_domainkey CNAMEs had also been deleted; restored, scanner
@@ -327,7 +335,11 @@ WirelineExpress.mp4` re-encoded 1080p from `originals/` WITH audio;
       panel doesn't mislead anyone again. Open verification questions
       (also in docs/DNS.md): office scanners' SMTP server (now the only
       gate on the ChemiCloud cancellation); SPF IPs 172.232.206.251 +
-      161.65.142.140; Skype/Lync records still needed?
+      161.65.142.140. The Skype/Lync question is CLOSED (7 Aug 2026
+      audit: targets are NXDOMAIN, all four records safe to delete), and
+      the audit also confirmed `portal`/`autoconfig`/`localhost` never
+      existed in the live zone — so the Crazy Domains cleanup is lower
+      risk than it looked.
 - [x] petromac.klaratech.it RETIRED (28 Jul 2026): repo scrubbed
       (docs/.env.example → www.petromac.co.nz; siteUrl.ts default →
       localhost); Entra redirect URI + Turnstile hostname removed

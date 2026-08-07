@@ -5,6 +5,70 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — ChemiCloud cleared for cancellation; zone audited
+
+**Decision:** the "DO NOT CANCEL ChemiCloud" blocker that stood from 28 Jul to
+7 Aug 2026 is withdrawn. The subscription can be cancelled once one check
+passes: what SMTP host the office scanners are configured with.
+
+**Why the blocker was wrong.** It claimed the box at 172.232.197.9 "still hosts
+mail./webmail./cpanel mailboxes and the scanner/printer SMTP relay". Nobody ever
+verified that. It was inferred from one line in the 28 Jul incident writeup —
+_"Verified: athena 200, SMTP 587/465 + IMAP 993 open"_ — which proves the ports
+answer, not that anything uses them. **cPanel answers on those ports on every
+account, occupied or not.** Confirmed 7 Aug 2026: no cPanel email account was
+ever created, company mail has always been Microsoft 365, and the WordPress
+content the box hosted is archived. The MX corroborates it — it has only ever
+pointed at Microsoft, so no inbound mail could ever have reached that box.
+
+The tell was sitting in the same document the whole time: the blocker's own
+open question was _"Office scanners: which SMTP server is configured in them?"_
+A do-not-touch note and an admission that nothing had been traced, ten days
+side by side, and the contradiction went unread because the note was written in
+the voice of a finding.
+
+**Rule going forward:** a retirement blocker must name the **falsifiable check**
+that would lift it. "Do not cancel until we're sure" has no exit condition and
+becomes permanent cost. "Do not cancel until a scanner's SMTP host is read" does.
+
+**Consequence for SPF:** the trim to `v=spf1 +mx include:spf.protection.outlook.com ~all`
+is safe. The old caution assumed SMTP2GO needed an include — it does not. It
+sends with its own return-path (`em588925` → return.smtp2go.net) and is
+DKIM-signed, so scan-to-email is unaffected by dropping the ChemiCloud terms.
+
+### Zone audit, 7 Aug 2026
+
+Swept 156 candidate subdomains against the live zone plus every record type on
+the apex. Four findings:
+
+1. **`lyncdiscover` and `sip` are dangling CNAMEs.** Their targets
+   `webdir.online.lync.com` and `sipdir.online.lync.com` both return NXDOMAIN —
+   Skype for Business Online is gone. `_sip._tls` points at the same dead
+   `sipdir` host. Only `_sipfederationtls._tcp` → `sipfed.online.lync.com` still
+   resolves, and with no Skype/SfB deployment it does nothing. **This answers
+   the long-standing open question: yes, safe to delete, all four.** Takeover
+   risk is nil (Microsoft owns lync.com), but they are dead weight that makes
+   the zone read as more load-bearing than it is.
+2. **An undocumented record was in the zone**: the apex TXT
+   `google-site-verification=m10EeI5HB9Fett6Js7GL60fuhOhJ4UKx-OXA36Xw2Zg`. It is
+   legitimate — it is the Search Console DNS verification, and the Tech Standards
+   note on Search Console says explicitly not to delete it because it **is** the
+   verification. It was simply missing from the zone inventory in docs/DNS.md,
+   which is exactly the shape of the 27 Jul incident: a live record nobody
+   documented, deleted by a cleanup that took it for junk. Now recorded.
+3. **No CAA record.** Any CA in the world may currently issue for petromac.co.nz.
+   Cheap hardening, not urgent — see TODO.
+4. **The WordPress-era drift is confirmed absent from the live zone.** `portal`,
+   `autoconfig` and `localhost` do not resolve, which corroborates that they
+   only ever existed in the inert Crazy Domains panel. One less thing to fear
+   during the Crazy Domains cleanup.
+
+Everything else matched docs/DNS.md, and every other CNAME resolves — no
+takeover exposure. Note the sweep was DNS-based; Certificate Transparency was
+not searchable from this environment, so a hostname that exists in the zone but
+matches none of the 156 probed names would not have been caught. The Cloudflare
+dashboard remains the authoritative list.
+
 ## Aug 2026 — kiosk-hd retired: one video folder, not two
 
 **Decision:** `public/videos/kiosk-hd/` is deleted. The kiosk plays the same
