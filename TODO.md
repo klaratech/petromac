@@ -2,6 +2,53 @@
 
 Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + git log.
 
+## SEO — after the 9 Aug 2026 Search Console audit
+
+Done in that pass: internal linking for success stories (related + product +
+contact), real per-page sitemap `lastmod`, `/track-record` back inside `<main>`
+(deleted its `loading.tsx`), extension-less `/pdf/:id` redirect, `rel="nofollow"`
+on the Intranet nav link, 4 meta-description length outliers. Rationale:
+[docs/DECISIONS.md](docs/DECISIONS.md).
+
+In Search Console, no code needed:
+
+- [ ] **Validate Fix** on "Duplicate, Google chose different canonical", and
+      Request Indexing on the two `/success-stories/` URLs. The redirect is
+      correct and permanent — Google is holding the pre-rename `/case-studies/`
+      URL as canonical because it hasn't re-crawled. Nothing to fix in the repo.
+- [ ] **Request Indexing on 5–10 high-value "Discovered – not indexed" pages**
+      once the internal-linking change is live, to test whether it moves the
+      needle before investing in copy.
+
+Editorial, needs Rajesh:
+
+- [ ] **44 success-story titles run over 60 chars** and will truncate in
+      results. They are the story headlines straight from the PDF. NOTE the
+      audit's "49 over-length titles" also swept in product and category
+      titles that are SIGNED OFF in [docs/VOCABULARY_MAP.md](docs/VOCABULARY_MAP.md) —
+      change those there first or not at all. A `SEO_TITLES` override map
+      keyed by slug, like `PRODUCT_TITLES` in `enrich.ts`, would let titles be
+      shortened without touching the visible H1.
+- [ ] **Thin pages.** `/catalog/well-intervention` (84 words),
+      `/contact` (75), `/catalog/focus-centralisers` (148). Sub-200-word pages
+      are what Google parks in "Crawled – currently not indexed".
+- [ ] **Near-duplicate catalog product pages** — `hf9-acrt` vs `hf9j` scored
+      0.71 on 4-gram Jaccard, `ttb-s75u-ttb-s85` vs `ttb-s75-ttb-s85` 0.67.
+      Above ~0.5 Google tends to index one of a pair and drop the other. The
+      spec tables are legitimately similar; a per-model line of application
+      copy is what would separate them.
+
+Low value, only if convenient:
+
+- [ ] **JSON-LD on the 10 bare pages** (`/about`, `/team`, `/catalog`,
+      `/track-record`, `/success-stories`, `/simulation`, `/contact`,
+      `/privacy`, `/terms`, `/about/patents`). Product/Article/Breadcrumb
+      coverage is already broad; these would be `WebPage`/`CollectionPage`.
+- [ ] **`datePublished`/`dateModified` on Article schema** — SKIPPED on
+      purpose. `case-studies.json` carries the JOB year, not a publication
+      date. Do this only if a real date becomes available; do not synthesise
+      one from the year (see the `$0.00 offers` lesson below).
+
 ## Nav / About restructure (7 Aug 2026)
 
 - [x] **About is a disclosure, not a destination.** Clicking it opens the

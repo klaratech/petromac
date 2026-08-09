@@ -5,6 +5,64 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Success stories were a crawl dead end; internal links, not more copy
+
+**Trigger.** A Search Console audit (9 Aug 2026) found 83 of 94 non-indexed
+pages sitting in "Discovered / Crawled – currently not indexed" — Google
+reaching the pages and declining to index them. The canonical warnings Google
+emailed about were a separate, already-fixed thing: the `/case-studies` →
+`/success-stories` rename 301s correctly in one hop, Google just hadn't
+re-crawled the old URLs. No code change was needed for those.
+
+**The measured cause.** Every one of the 46 stories had exactly ONE inbound
+internal link (the hub, which links out to 46 siblings at once) and exactly
+ONE outbound link (back to that same hub). No link to the tool the story is
+about, no link to a similar story, no link to `/contact`. The catalog already
+does this right — its leaves carry 14 inbound links each from family siblings —
+so the fix was to give the stories the same treatment, not to write more words.
+
+**Similarity alone did not fix it.** Taking each story's top 3 neighbours left
+7 stories that were nobody's top 3, still on one inbound link, while popular
+ones collected 10. Widening to 6 made it worse: 4 still orphaned, leaders at 16. Similarity is asymmetric, so ranking alone is rich-get-richer — the exact
+distribution Google reads as "these pages don't matter". `relatedCaseStudyMap`
+therefore enforces coverage globally: a story nobody linked to is placed on its
+own best match's list, taking the weakest slot, and never dropping a story to
+its last inbound link. Result: minimum inbound went 1 → 2, and product line is
+a PRIMARY SORT KEY rather than one weight among several (as a weight it lost —
+a Focus story's top neighbour came out a Tool Taxi story that shared two
+applications and a country).
+
+**Two audit findings were wrong, and worth recording as wrong.** (1) "301
+`/pdf/:id` → `/patent_pdfs/:id.pdf`" — that redirect already existed and
+worked; the only real gap was extension-less IDs, which 301'd to an
+extension-less target that 404'd. (2) "`/track-record` renders client-side
+only, 3 words server-rendered" — the page is fully server-rendered from
+build-time imports. The 3 words were real but the diagnosis was not: it was the
+ONLY route with a `loading.tsx`, and that Suspense boundary made Next flush the
+skeleton inside `<main>` and stream the real content into a hidden template
+after the footer, to be relocated by JS. Deleting `loading.tsx` put 150 words
+back inside `<main>` in document order. The map keeps its own in-component
+placeholder, so nothing was lost. **Verify a crawl claim against the built HTML
+before acting on its stated cause.**
+
+**`lastmod` was actively harmful, not merely useless.** Every sitemap entry was
+`new Date()`, so a deploy touching one page told Google all 94 had changed —
+the re-crawl priority signal pinned permanently to "everything, just now",
+which is the same as no signal. Dates now come from the content: the catalog
+edition date parsed from the IDML filename, the flipbook manifest's `updatedAt`
+for stories, and a hand-maintained map for authored pages. The rule that keeps
+it honest is **never fall back to build time**.
+
+**Not done, deliberately.** Trimming the 44 over-length success-story titles and
+expanding thin copy are editorial calls, not mechanical ones — and the 32
+product titles among the audit's "49 over 60 chars" are signed off in
+docs/VOCABULARY_MAP.md, which is the source of truth for titles. Article
+`datePublished`/`dateModified` was skipped because the data carries the JOB
+year, not a publication date, and inventing one repeats the `$0.00 offers`
+mistake.
+
+---
+
 ## Aug 2026 — PDF compression: explicit recipe, not Ghostscript presets
 
 **Decision:** `compress_pdf()` downsamples raster images on a declared ladder

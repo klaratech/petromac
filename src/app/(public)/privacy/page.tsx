@@ -3,7 +3,8 @@ import PrivacyContent, { PRIVACY_TITLE } from '@/components/shared/legal/Privacy
 
 export const metadata = pageMetadata({
   title: 'Privacy Policy',
-  description: 'Privacy Policy for Petromac website',
+  description:
+    'How Petromac collects, uses and protects personal information submitted through this website, including contact enquiries and cookieless analytics.',
   path: '/privacy',
 });
 

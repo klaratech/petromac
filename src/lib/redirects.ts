@@ -242,9 +242,15 @@ export function resolveLegacyRequest(rawPathname: string, search = ''): LegacyRe
   }
   if (startsWithSegment(path, '/pdf')) {
     const file = path.slice('/pdf/'.length);
+    // Extension-less patent IDs (/pdf/CA3085434) are indexed too, and used to
+    // 301 to an equally extension-less /patent_pdfs/CA3085434 — a redirect
+    // that landed on a 404 (Search Console audit, 9 Aug 2026). Anything with
+    // no extension at all gets .pdf appended; a file that still doesn't exist
+    // 404s as before, so this can only turn dead hops into live ones.
+    const target = PATENT_PDF_RENAMES[file] ?? (file.includes('.') ? file : `${file}.pdf`);
     return {
       type: 'redirect',
-      location: `/patent_pdfs/${encodeURI(PATENT_PDF_RENAMES[file] ?? file)}`,
+      location: `/patent_pdfs/${encodeURI(target)}`,
       status: 301,
     };
   }

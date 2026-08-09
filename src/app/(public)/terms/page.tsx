@@ -3,7 +3,8 @@ import TermsContent, { TERMS_TITLE } from '@/components/shared/legal/TermsConten
 
 export const metadata = pageMetadata({
   title: 'Terms of Use',
-  description: 'Terms of Use for Petromac website',
+  description:
+    'The terms governing use of the Petromac website, including intellectual property, acceptable use and limitations of liability.',
   path: '/terms',
 });
 

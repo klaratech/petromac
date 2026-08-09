@@ -3,7 +3,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { caseStudies, getCaseStudy } from '@/features/case-studies/content';
-import { caseStudyCategories, categoryLabel } from '@/features/case-studies/filters';
+import {
+  caseStudyCategories,
+  categoryLabel,
+  deviceCatalogLink,
+  relatedCaseStudies,
+} from '@/features/case-studies/filters';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 import { pageMetadata } from '@/lib/seo';
 
@@ -57,6 +62,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   const { slug } = await params;
   const cs = getCaseStudy(slug);
   if (!cs) notFound();
+
+  const related = relatedCaseStudies(cs, caseStudies);
+  const product = deviceCatalogLink(cs.device);
 
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -165,13 +173,98 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           </aside>
         </div>
 
+        {/* Where this story leads. Until Aug 2026 the page ended here with a
+            single link back to the hub, so every story was a crawl dead end
+            and a reader who finished one had nowhere to go. Three exits now:
+            the tool it used, similar stories, and a way to ask about it. */}
+        {related.length > 0 && (
+          <section
+            aria-labelledby="related-stories"
+            className="mt-14 border-t border-slate-200 pt-8"
+          >
+            <h2
+              id="related-stories"
+              className="font-heading text-xl md:text-2xl font-bold text-slate-900"
+            >
+              Related success stories
+            </h2>
+            <ul className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
+              {related.map((other) => (
+                <li key={other.slug}>
+                  <Link
+                    href={`/success-stories/${other.slug}`}
+                    className="group flex h-full flex-col rounded-xl bg-white ring-1 ring-slate-200 shadow-card p-5 hover:ring-brand/40 hover:shadow-lg transition-all"
+                  >
+                    <span className="flex flex-wrap items-center gap-1.5 text-xs">
+                      <span className="rounded-full bg-brand/10 px-2.5 py-0.5 font-semibold text-brand">
+                        {other.country}
+                      </span>
+                      {other.device && (
+                        <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
+                          {other.device}
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-3 flex-1 font-semibold text-slate-900 text-sm leading-snug group-hover:text-brand transition-colors">
+                      {other.title}
+                    </span>
+                    <span className="mt-3 text-sm font-semibold text-brand">
+                      Read the story{' '}
+                      <span
+                        aria-hidden="true"
+                        className="inline-block transition-transform group-hover:translate-x-0.5"
+                      >
+                        →
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <nav
-          aria-label="More case studies"
-          className="mt-14 border-t border-slate-100 pt-6 text-sm"
+          aria-label="More success stories"
+          className="mt-12 border-t border-slate-100 pt-6 text-sm text-slate-600"
         >
-          <Link href="/success-stories" className="font-semibold text-brand hover:underline">
-            ← All case studies
-          </Link>
+          <p className="leading-relaxed">
+            {product && (
+              <>
+                This run used Petromac{' '}
+                <Link href={product.href} className="font-semibold text-brand hover:underline">
+                  {product.label}
+                </Link>
+                . See the full range in the{' '}
+                <Link href="/catalog" className="font-semibold text-brand hover:underline">
+                  product catalog
+                </Link>
+                , the worldwide{' '}
+              </>
+            )}
+            {!product && (
+              <>
+                See the full range in the{' '}
+                <Link href="/catalog" className="font-semibold text-brand hover:underline">
+                  product catalog
+                </Link>
+                , the worldwide{' '}
+              </>
+            )}
+            <Link href="/track-record" className="font-semibold text-brand hover:underline">
+              deployment track record
+            </Link>
+            , or{' '}
+            <Link href="/contact" className="font-semibold text-brand hover:underline">
+              talk to us about a well like this one
+            </Link>
+            .
+          </p>
+          <p className="mt-4">
+            <Link href="/success-stories" className="font-semibold text-brand hover:underline">
+              ← All success stories
+            </Link>
+          </p>
         </nav>
       </article>
     </div>

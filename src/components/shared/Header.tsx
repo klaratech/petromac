@@ -157,7 +157,8 @@ export default function Header() {
   // on `/about/patents` as well and two menu entries would read as current at
   // once. This special case was deleted when Origins was removed from the menu
   // and has to come back with it (Aug 2026).
-  const isSubActive = (href: string) => (href === '/about' ? pathname === '/about' : isActive(href));
+  const isSubActive = (href: string) =>
+    href === '/about' ? pathname === '/about' : isActive(href);
 
   // About owns /about/* and /team now that Team moved into its dropdown.
   const isAboutActive = () => isActive('/about') || isActive('/team');
@@ -275,6 +276,9 @@ export default function Header() {
             <Link
               href="/intranet"
               prefetch={false}
+              /* Staff-only and Disallow'd in robots.txt, so there is no crawl
+                 path worth spending on it (Search Console audit, 9 Aug 2026). */
+              rel="nofollow"
               onClick={() => handleNavClick('/intranet')}
               aria-current={isActive('/intranet') ? 'page' : undefined}
               className={desktopLinkClass(isActive('/intranet'))}
@@ -445,6 +449,9 @@ export default function Header() {
             <Link
               href="/intranet"
               prefetch={false}
+              /* Staff-only and Disallow'd in robots.txt, so there is no crawl
+                 path worth spending on it (Search Console audit, 9 Aug 2026). */
+              rel="nofollow"
               onClick={() => handleNavClick('/intranet')}
               aria-current={isActive('/intranet') ? 'page' : undefined}
               className={[

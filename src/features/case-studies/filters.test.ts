@@ -14,6 +14,9 @@ import {
   OTHER_COMPANY,
   pageNumbersFor,
   SERVICE_COMPANIES,
+  deviceCatalogLink,
+  relatedCaseStudies,
+  relatedCaseStudyMap,
 } from './filters';
 
 // ── category normalisation (the tags.csv typo) ──────────────────────────
@@ -286,4 +289,85 @@ test('the filtered label follows SHOW_FILTERED_COUNT_ON_ACTIONS', () => {
   );
   // Both positions are reachable — this is a flag, not dead code.
   assert.ok(['Download', 'Download 16'].includes(label));
+});
+
+// ── internal linking (Search Console audit, 9 Aug 2026) ─────────────────
+
+test('every story with a device resolves to a catalog family', () => {
+  const unmapped = caseStudies.filter((cs) => cs.device && !deviceCatalogLink(cs.device));
+  assert.deepEqual(
+    unmapped.map((cs) => cs.device),
+    [],
+    'a device value with no catalog family leaves that story without a product link'
+  );
+});
+
+test('a device naming two lines resolves to the more specific one', () => {
+  // "Pathfinder + Wireline Express" is a Pathfinder story first.
+  assert.equal(
+    deviceCatalogLink('Pathfinder + Wireline Express')?.href,
+    '/catalog/guides-holefinders'
+  );
+  assert.equal(deviceCatalogLink('Wireline Express - FT')?.href, '/catalog/tool-taxis');
+  assert.equal(deviceCatalogLink('Focus - CH')?.href, '/catalog/focus-centralisers');
+});
+
+test('a device-less story gets no product link rather than a guessed one', () => {
+  assert.equal(deviceCatalogLink(''), null);
+});
+
+test('every story gets related stories, and never itself', () => {
+  for (const cs of caseStudies) {
+    const related = relatedCaseStudies(cs, caseStudies);
+    assert.ok(related.length > 0, `${cs.slug} has no related stories — it stays a dead end`);
+    assert.ok(related.length <= 3, `${cs.slug} returned ${related.length}`);
+    assert.ok(!related.some((r) => r.slug === cs.slug), `${cs.slug} links to itself`);
+    assert.equal(
+      new Set(related.map((r) => r.slug)).size,
+      related.length,
+      'duplicate related story'
+    );
+  }
+});
+
+test('related stories prefer the same product line', () => {
+  const cs = caseStudies.find((c) => c.device === 'Focus - CH');
+  assert.ok(cs);
+  const top = relatedCaseStudies(cs, caseStudies)[0];
+  assert.ok(top);
+  assert.equal(deviceCatalogLink(top.device)?.href, '/catalog/focus-centralisers');
+});
+
+test('related ordering is stable across runs', () => {
+  const cs = caseStudies[0];
+  assert.ok(cs);
+  assert.deepEqual(
+    relatedCaseStudies(cs, caseStudies).map((r) => r.slug),
+    relatedCaseStudies(cs, [...caseStudies].reverse()).map((r) => r.slug),
+    'related stories must not depend on input order — the static build would churn'
+  );
+});
+
+test('no story is left with only the hub linking to it', () => {
+  const lists = relatedCaseStudyMap(caseStudies);
+  const inbound = new Map(caseStudies.map((cs) => [cs.slug, 0]));
+  for (const list of lists.values()) {
+    for (const other of list) inbound.set(other.slug, (inbound.get(other.slug) ?? 0) + 1);
+  }
+  const orphans = [...inbound].filter(([, n]) => n === 0).map(([s]) => s);
+  assert.deepEqual(
+    orphans,
+    [],
+    "these stories are nobody's neighbour — the crawl dead end is back"
+  );
+});
+
+test('the coverage pass keeps every list at the limit and self-free', () => {
+  const lists = relatedCaseStudyMap(caseStudies);
+  assert.equal(lists.size, caseStudies.length);
+  for (const [slug, list] of lists) {
+    assert.equal(list.length, 3, `${slug} has ${list.length} related stories`);
+    assert.ok(!list.some((r) => r.slug === slug), `${slug} links to itself`);
+    assert.equal(new Set(list.map((r) => r.slug)).size, list.length, `${slug} has a duplicate`);
+  }
 });

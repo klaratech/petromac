@@ -183,17 +183,25 @@ export function buildFacetedCaseStudyOptions(studies: CaseStudy[], query: CaseSt
   };
 
   return {
-    regions: recount(base.regions, 'region', (subset, value) =>
-      subset.filter((s) => s.region === value).length
+    regions: recount(
+      base.regions,
+      'region',
+      (subset, value) => subset.filter((s) => s.region === value).length
     ),
-    categories: recount(base.categories, 'category', (subset, value) =>
-      subset.filter((s) => caseStudyCategories(s).includes(value)).length
+    categories: recount(
+      base.categories,
+      'category',
+      (subset, value) => subset.filter((s) => caseStudyCategories(s).includes(value)).length
     ),
-    devices: recount(base.devices, 'device', (subset, value) =>
-      subset.filter((s) => s.device === value).length
+    devices: recount(
+      base.devices,
+      'device',
+      (subset, value) => subset.filter((s) => s.device === value).length
     ),
-    companies: recount(base.companies, 'company', (subset, value) =>
-      subset.filter((s) => matchesCompany(s, value)).length
+    companies: recount(
+      base.companies,
+      'company',
+      (subset, value) => subset.filter((s) => matchesCompany(s, value)).length
     ),
   };
 }
@@ -269,4 +277,141 @@ export function isQueryActive(query: CaseStudyQuery): boolean {
  */
 export function pageNumbersFor(studies: CaseStudy[]): number[] {
   return [...new Set(studies.map((s) => s.page))].sort((a, b) => a - b);
+}
+
+/**
+ * WHERE A STORY POINTS (Search Console audit, 9 Aug 2026)
+ *
+ * All 46 stories had exactly ONE inbound internal link — the hub at
+ * /success-stories, which links out to 46 siblings at once — and exactly one
+ * outbound link, back to that same hub. Every story was a dead end, which is
+ * a large part of why 83 pages sit in "Discovered/Crawled – currently not
+ * indexed". The catalog already does this properly (its leaves carry 14
+ * inbound links each from family siblings); the two helpers below give the
+ * stories the same treatment.
+ */
+
+/**
+ * The catalog family a story's product line belongs to. `device` is a
+ * free-text product-line label from tags.csv ("Wireline Express - FT",
+ * "Focus - CH", "Pathfinder + Wireline Express"), not a catalog slug, so it
+ * is matched by keyword — most specific first, since several values name two
+ * product lines and Pathfinder is the more particular of the pair.
+ *
+ * Returns null for the two stories with no device recorded rather than
+ * guessing a family: a wrong product link is worse than no product link.
+ */
+export function deviceCatalogLink(device: string): { href: string; label: string } | null {
+  const value = device.toLowerCase();
+  if (value.includes('pathfinder')) {
+    return { href: '/catalog/guides-holefinders', label: 'Guides & Holefinders' };
+  }
+  if (value.includes('focus')) {
+    return { href: '/catalog/focus-centralisers', label: 'Focus™ Centralisers' };
+  }
+  if (value.includes('wireline express')) {
+    return { href: '/catalog/tool-taxis', label: 'Tool Taxis™' };
+  }
+  return null;
+}
+
+/**
+ * Stories most like this one, best first. Scored rather than filtered so a
+ * story always gets a full set of neighbours — a hard filter on device would
+ * strand the two device-less stories and the single-story device values.
+ *
+ * The product line is a PRIMARY SORT KEY, not one weight among several. As a
+ * weight it lost: a Focus story's top neighbour came out a Tool Taxi story
+ * that happened to share two applications and a country, which is exactly the
+ * cross-line drift these links exist to avoid. Rank first ("is this the same
+ * kind of tool?"), then score within the rank ("how alike are these two
+ * jobs?"). Ties break on slug so the static build is byte-stable across runs.
+ */
+function productLineRank(a: CaseStudy, b: CaseStudy): number {
+  if (a.device && a.device === b.device) return 2;
+  // Partial overlap: "Pathfinder + Wireline Express" shares a catalog family
+  // with both "Pathfinder" and "Wireline Express".
+  const fa = a.device ? deviceCatalogLink(a.device) : null;
+  const fb = b.device ? deviceCatalogLink(b.device) : null;
+  return fa && fb && fa.href === fb.href ? 1 : 0;
+}
+
+/** Every other story, most similar first. */
+function rankRelated(cs: CaseStudy, studies: CaseStudy[]): CaseStudy[] {
+  const categories = new Set(caseStudyCategories(cs));
+
+  const scored = studies
+    .filter((other) => other.slug !== cs.slug)
+    .map((other) => {
+      let score = 0;
+      for (const c of caseStudyCategories(other)) {
+        if (categories.has(c)) score += 2;
+      }
+      if (other.country === cs.country) score += 2;
+      else if (other.region === cs.region) score += 1;
+      return { other, rank: productLineRank(cs, other), score };
+    })
+    // Something must connect the two — same tool, same application, or same
+    // patch of the world. An unrelated "related" link helps nobody.
+    .filter((s) => s.rank > 0 || s.score > 0);
+
+  scored.sort(
+    (a, b) => b.rank - a.rank || b.score - a.score || a.other.slug.localeCompare(b.other.slug)
+  );
+  return scored.map((s) => s.other);
+}
+
+/**
+ * The corpus-wide related map, because "most similar" ALONE does not fix the
+ * orphan problem it was written for. Similarity is asymmetric: taking each
+ * story's top 3 left 7 stories that were nobody's top 3, still sitting on one
+ * inbound link, while the popular ones collected 10. Widening to 6 made that
+ * worse, not better — 4 still orphaned and the leaders up at 16. Rich get
+ * richer, which is precisely the distribution Google reads as "these pages
+ * don't matter".
+ *
+ * So coverage is enforced globally: any story nobody linked to is placed on
+ * its OWN best match's list (mutual affinity — if X's closest neighbour is Y,
+ * Y's readers are the right readers for X), taking the weakest slot there.
+ * The guard is that a story is never dropped to its last inbound link, so
+ * fixing one orphan can't create another. Deterministic throughout — slug
+ * order drives the pass, so the static build is byte-stable.
+ */
+export function relatedCaseStudyMap(studies: CaseStudy[], limit = 3): Map<string, CaseStudy[]> {
+  const ranked = new Map(studies.map((cs) => [cs.slug, rankRelated(cs, studies)]));
+  const lists = new Map(
+    studies.map((cs) => [cs.slug, (ranked.get(cs.slug) ?? []).slice(0, limit)])
+  );
+
+  const inbound = new Map(studies.map((cs) => [cs.slug, 0]));
+  for (const list of lists.values()) {
+    for (const other of list) inbound.set(other.slug, (inbound.get(other.slug) ?? 0) + 1);
+  }
+
+  const orphans = studies
+    .filter((cs) => inbound.get(cs.slug) === 0)
+    .sort((a, b) => a.slug.localeCompare(b.slug));
+
+  for (const orphan of orphans) {
+    for (const host of ranked.get(orphan.slug) ?? []) {
+      const list = lists.get(host.slug);
+      if (!list || list.length === 0) continue;
+      if (list.some((x) => x.slug === orphan.slug)) break;
+      const dropped = list[list.length - 1] as CaseStudy;
+      // Never rob Peter to pay Paul: skip a host whose weakest slot is some
+      // other story's only inbound link.
+      if ((inbound.get(dropped.slug) ?? 0) <= 1) continue;
+      list[list.length - 1] = orphan;
+      inbound.set(dropped.slug, (inbound.get(dropped.slug) ?? 0) - 1);
+      inbound.set(orphan.slug, (inbound.get(orphan.slug) ?? 0) + 1);
+      break;
+    }
+  }
+
+  return lists;
+}
+
+/** Stories most like this one, best first — see `relatedCaseStudyMap`. */
+export function relatedCaseStudies(cs: CaseStudy, studies: CaseStudy[], limit = 3): CaseStudy[] {
+  return relatedCaseStudyMap(studies, limit).get(cs.slug) ?? [];
 }

@@ -11,7 +11,7 @@ import { pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata({
   title: 'Wireline Conveyance, Centralisers & Hole Finders',
   description:
-    'Wireline logging solutions for differential sticking, incomplete operations, high deviations, data quality, and centralisation — engineered hardware and Athena planning software.',
+    'Wireline conveyance and centralisation hardware that solves differential sticking, high deviation and log quality — plus Athena job-planning software.',
   path: '/',
 });
 
