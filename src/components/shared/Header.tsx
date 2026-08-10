@@ -26,6 +26,17 @@ const NAV_ITEMS = [
 // exactly one entry point again and it is named after the page's own H1,
 // "Origins of Petromac".
 //
+// Patents LEFT this menu too (Aug 2026), for the same reason and by the same
+// route: it is EVIDENCE, not company background, so it now sits with the other
+// three evidence pages behind the "See also" card on /success-stories,
+// /about/publications and /track-record — plus the existing "View patents"
+// link on /catalog. Its ROUTE is unchanged (`/about/patents`) and stays in the
+// sitemap; moving the path would cost a 301 and a re-crawl for nothing.
+//
+// NOTE the `isSubActive` exact-match special case for `/about` below is STILL
+// required. Origins owns `/about`, and `isActive` treats a href as owning its
+// subtree, so without it Origins lights up while you are on `/about/patents`.
+//
 // Publications LEFT this menu (Aug 2026). It is not "about the company" in
 // the way Origins/Team/Patents are, and it is still reachable from /about,
 // /about/patents, /track-record and /contact, so nothing is orphaned — the
@@ -36,7 +47,6 @@ const NAV_ITEMS = [
 const ABOUT_SUBLINKS = [
   { name: 'Origins', href: '/about' },
   { name: 'Team', href: '/team' },
-  { name: 'Patents', href: '/about/patents' },
 ];
 
 function LinkedInIcon({ className = 'w-5 h-5' }: { className?: string }) {

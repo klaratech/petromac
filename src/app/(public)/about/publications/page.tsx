@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import SeeAlso from '@/components/public/SeeAlso';
 import { pageMetadata } from '@/lib/seo';
 import JsonLd from '@/components/shared/JsonLd';
 
@@ -148,17 +148,12 @@ export default function PublicationsPage() {
     <div className="min-h-screen bg-gray-50">
       <JsonLd data={publicationsSchema} />
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
-        {/* Header: title left, cross-link right */}
-        <div className="flex items-end justify-between flex-wrap gap-4 mb-4">
+        {/* Header: title left, evidence cross-links right */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-4">
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
             Peer-Reviewed Publications
           </h1>
-          <Link
-            href="/about/patents"
-            className="text-sm text-brand hover:text-brand/80 hover:underline whitespace-nowrap font-medium"
-          >
-            See also: Patents →
-          </Link>
+          <SeeAlso current="/about/publications" />
         </div>
         <p className="text-base md:text-lg text-slate-600 leading-relaxed mb-8 max-w-3xl">
           Papers and conference presentations covering Petromac&apos;s wireline conveyance,

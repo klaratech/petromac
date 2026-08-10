@@ -45,17 +45,28 @@ Workflow we use: stage with `git add`, commit, push. Don't run `pnpm build` manu
 - **API routes**: `src/app/api/` (email, PDF generation). Operations and country-label data are read from static JSON in `/public/data/` directly, not via `/api/data/*` — CDN-cacheable, and every surface (incl. the offline kiosk) works without the backend. (A legacy Vercel deployment was retired Jul 2026; Hetzner behind Cloudflare is the only deploy target.)
 - **Nav shape (Aug 2026)**: top bar is Home / About / Catalog / Track Record /
   Success Stories / Simulation. **About does not navigate** — it is a
-  `<button>` that only opens its menu (Origins → `/about`, Team, Patents), so
-  `/about` has exactly one entry point. Publications LEFT the About cluster
-  entirely — not in the menu, not in the `/about` sidebar. Its HOME is the
-  Success Stories page (`PublicationsCard`, below the story grid); placement
-  there is still being reviewed, so the component takes no props and moves in
-  one line. It keeps its route (`/about/publications`) and sitemap entry —
-  moving the path would be a 301 + re-crawl for no present gain. `/about/
-patents`, `/track-record` and `/contact` still link it; transitional, and the
-  only other entry points.
+  `<button>` that only opens its menu, now just **Origins → `/about`, Team**.
+  **Publications AND Patents both left the About cluster** — neither is in the
+  menu nor the `/about` sidebar. Both are EVIDENCE, not company background, so
+  they belong with the other evidence pages rather than under "About".
+  **Both keep their routes** (`/about/publications`, `/about/patents`) and
+  sitemap entries — moving the paths would cost a 301 and a re-crawl for
+  nothing.
+  They are reached through **`SeeAlso`** (`src/components/public/SeeAlso.tsx`),
+  a compact card in the page header of `/success-stories`,
+  `/about/publications` and `/about/patents`. It owns the list of the four
+  evidence pages (success stories, track record, publications, patents) and
+  takes the CURRENT page's path, rendering the other three — so a page can
+  never link to itself, the set can't drift per-page, and adding a fifth
+  evidence page wires it everywhere in one edit. Hand-listed "see also" links
+  are exactly how Publications ended up reachable from one place.
+  **`/track-record` is deliberately NOT yet a SeeAlso host** — it has no
+  conventional header (map-as-hero) and already carries a prominent Success
+  Stories CTA plus a publications link in its records strip. It is the one
+  asymmetry in the cluster; see TODO.
   Two traps: `isSubActive` must keep its EXACT-match special case for `/about`
-  or Origins also lights up on `/about/patents`; and every nav link (including
+  or Origins also lights up on `/about/patents` — still required even though
+  Patents left the menu, because the ROUTE is still live; and every nav link (including
   the LOGO) must call `handleNavClick`, because Next ignores same-URL
   navigation and the click otherwise does nothing but leave you mid-page.
 

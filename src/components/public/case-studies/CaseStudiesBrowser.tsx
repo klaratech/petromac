@@ -222,14 +222,10 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
             it dates the page. The only count worth stating is zero, handled by
             the empty state below. The Download label carries the number where
             it's actually actionable. */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-slate-500">
-            For the aggregate picture, see the{' '}
-            <Link href="/track-record" className="font-medium text-brand hover:underline">
-              track record
-            </Link>
-            .
-          </p>
+        {/* The "for the aggregate picture, see the track record" line lived
+            here until Aug 2026; the See also card in the page header carries
+            that link now, alongside publications and patents. */}
+        <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
           {active && (
             <button
               type="button"

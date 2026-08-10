@@ -77,9 +77,11 @@ export default function AboutPage() {
           </article>
 
           {/* Sidebar (1 col) — mirrors the About dropdown, minus Origins
-              (you are already on it). Publications was dropped here too
-              (Aug 2026): it left the About cluster entirely and now lives off
-              /success-stories, /about/patents, /track-record and /contact. */}
+              (you are already on it). Publications was dropped here in
+              Aug 2026, and Patents followed it: both are EVIDENCE rather than
+              company background, so they live with the other evidence pages
+              behind the "See also" card on /success-stories, /track-record and
+              each other. Both routes are unchanged and still in the sitemap. */}
           <aside className="lg:col-span-1">
             <p className="text-[11px] uppercase tracking-[0.3em] text-brand font-semibold mb-3 lg:mb-4 lg:pl-1">
               Explore
@@ -89,11 +91,6 @@ export default function AboutPage() {
                 href="/team"
                 title="Team"
                 description="Regional managers across the major oil & gas basins, plus the HQ engineering team."
-              />
-              <SidebarLink
-                href="/about/patents"
-                title="Patents"
-                description="44 granted patents across 9 device categories."
               />
             </div>
           </aside>

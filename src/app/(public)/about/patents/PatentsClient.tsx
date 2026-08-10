@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import SeeAlso from '@/components/public/SeeAlso';
 import { useMemo, useState } from 'react';
 
 interface Patent {
@@ -387,16 +387,11 @@ export default function PatentsClient() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
         {/* Header: title left, cross-link right */}
-        <div className="flex items-end justify-between flex-wrap gap-4 mb-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-4">
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
             Intellectual Property
           </h1>
-          <Link
-            href="/about/publications"
-            className="text-sm text-brand hover:text-brand/80 hover:underline whitespace-nowrap font-medium"
-          >
-            See also: Publications →
-          </Link>
+          <SeeAlso current="/about/patents" />
         </div>
         {/* The counts are derived from the DEVICES data below, so they can
             never go stale — adding a patent updates this line automatically. */}

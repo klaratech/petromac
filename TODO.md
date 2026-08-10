@@ -189,12 +189,27 @@ Low value, only if convenient:
       with faceted dropdowns live — `SHOW_FILTERED_COUNT_ON_ACTIONS = true`,
       so both buttons read "Download 16" / "Email 16" when filtered and
       "Download all" / "Email all" when not. One word to reverse.
-- [ ] **Review the PublicationsCard placement** with the rest of the
-      Success Stories page design. It is below the grid on the reasoning
-      that the page should read "field record, then formal record", and that
-      a card up top would compete with the filter panel — a guess, not a
-      finding. The component takes no props, so above the browser or inside
-      the header is a one-line move.
+- [x] **PublicationsCard placement DECIDED (Aug 2026)** — it was the wrong
+      SHAPE, not just the wrong position. Replaced by `SeeAlso`
+      (`src/components/public/SeeAlso.tsx`), a compact card in the page HEADER
+      of `/success-stories`, `/about/publications` and `/about/patents`,
+      listing the other three evidence pages. Publications was a signpost
+      rendered as a destination-sized band below 46 stories; a reader deciding
+      they want the formal record shouldn't have to scroll the informal one
+      first. The component owns the list of evidence pages and takes the
+      CURRENT path, so no page can link to itself and the set cannot drift.
+      **Patents left the About menu and the Origins sidebar in the same pass**
+      (Rajesh: "more coherent there") — evidence, not company background.
+      Both routes unchanged; verified Patents still has 4 inbound links
+      (/catalog, /success-stories, /about/publications, /contact).
+      Also dropped: the "For the aggregate picture, see the track record" line
+      in `CaseStudiesBrowser` — the card carries that link now.
+- [ ] **`/track-record` is the one evidence page without a `SeeAlso` card.**
+      It receives links from the other three but sends only to success stories
+      (the CTA) and publications (a records card) — it does not link patents at
+      all. It has no conventional header to hang the card on (map-as-hero), so
+      this is a design call, not a one-liner. Decide whether the cluster should
+      be fully mutual.
 - [ ] **Retire the transitional Publications links** on `/about/patents`,
       `/track-record` and `/contact` once the card has settled. They are the
       only entry points besides the card, so remove them together with a
