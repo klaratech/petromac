@@ -16,9 +16,25 @@ In Search Console, no code needed:
       Request Indexing on the two `/success-stories/` URLs. The redirect is
       correct and permanent — Google is holding the pre-rename `/case-studies/`
       URL as canonical because it hasn't re-crawled. Nothing to fix in the repo.
-- [ ] **Request Indexing on 5–10 high-value "Discovered – not indexed" pages**
-      once the internal-linking change is live, to test whether it moves the
-      needle before investing in copy.
+- [x] **Validate Fix clicked 10 Aug 2026** on the duplicate-canonical report
+      ("Validation started"), and Request Indexing submitted for both
+      `/success-stories/` URLs.
+- [x] **Request Indexing on the 6 catalog URLs** in the "Discovered – not
+      indexed" bucket (10 Aug): `/catalog/tool-taxis`, `pathfinder`,
+      `pathfinder-ht`, `focus-centralisers/cril`, `tool-taxis/ttb-715`,
+      `well-intervention/twt-28`. `/catalog/tool-taxis` is the sharpest test —
+      it went from ~1 inbound link to ~41 with the story-page change.
+- [ ] **Request Indexing on 4 success stories** — the daily quota (~10–12 URLs)
+      was spent on 10 Aug. Pick the biggest link gainers:
+      `27-hours-rig-time-saved-differential-sticking-prevented-in-kuwait` (10
+      inbound), `cement-evaluation-without-gemco-centralizers-to-85-deviation-in-ksa`
+      (8), `18-inch-washout-navigated-in-vertical-well-in-peru` (7),
+      `cbl-descends-2500m-tangent-at-67-degrees-in-mexico` (5).
+- [ ] **Then Validate Fix on the "Not found (404)" report** — but only AFTER the
+      410 change is in production. Its two URLs are `/download/` (already 301s
+      to `/catalog`) and `/wp-includes/js/wp-emoji-release.min.js`, which now
+      returns 410. Validating before the deploy would fail on the second and
+      leave the report stuck in "Validation failed".
 
 Editorial, needs Rajesh:
 

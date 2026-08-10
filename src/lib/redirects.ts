@@ -166,6 +166,26 @@ function isDeadFeed(path: string): boolean {
   return path === '/feed' || path === '/comments/feed' || path.endsWith('/feed');
 }
 
+/**
+ * WordPress internals that no longer exist and never will. These are asset and
+ * admin paths, not content, so there is nothing to redirect them TO — a 404
+ * merely says "not here right now" and Google rechecks it for months.
+ * `/wp-includes/js/wp-emoji-release.min.js` was still in the index and still
+ * being recrawled in Aug 2026, two years after the rebuild (Search Console
+ * audit, 9 Aug 2026). 410 says "gone, stop asking", which retires them faster.
+ *
+ * Deliberately NOT a catch-all for anything WordPress-shaped: the legacy
+ * CONTENT paths above are the site's most valuable inbound links (`/contacts/`
+ * alone was 59 clicks / 1,045 impressions against a site total of ~250 clicks
+ * a quarter). Those redirect and must keep redirecting. Only the dead
+ * machinery is retired here.
+ */
+const DEAD_WP_PREFIXES = ['/wp-includes', '/wp-content', '/wp-admin', '/wp-json'] as const;
+
+function isDeadWordPressAsset(path: string): boolean {
+  return DEAD_WP_PREFIXES.some((prefix) => startsWithSegment(path, prefix));
+}
+
 function startsWithSegment(path: string, prefix: string): boolean {
   return path === prefix || path.startsWith(`${prefix}/`);
 }
@@ -214,6 +234,11 @@ export function resolveLegacyRequest(rawPathname: string, search = ''): LegacyRe
   // 4. The legacy page map.
   const mapped = LEGACY_PATHS[key];
   if (mapped) return { type: 'redirect', location: mapped, status: 301 };
+
+  // 4b. Dead WordPress machinery. AFTER the map on purpose, so that adding an
+  //     explicit mapping for a `/wp-*` path (a migrated upload, say) always
+  //     beats the blanket 410.
+  if (isDeadWordPressAsset(key)) return { type: 'gone' };
 
   // 5. WP-era root-level case studies.
   const rootSlug = key.slice(1);

@@ -5,6 +5,40 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — The WordPress redirects stay; only the dead machinery is retired
+
+**Asked (Rajesh, 10 Aug 2026):** the old WordPress site never had much traffic
+— why not delete all the WP slugs and redirects from the site and from Search
+Console?
+
+**Answer: low traffic is the argument FOR keeping them.** The site earns ~252
+clicks per 90 days. `/contacts/` ALONE was 59 clicks / 1,045 impressions over
+six months. When the whole site earns ~250 clicks a quarter, one legacy URL
+carrying 59 of them is a large share of everything there is, and deleting its
+redirect converts those clicks into 404s. The redirect table is a pure lookup
+in `redirects.ts` — no runtime cost, no crawl-budget cost — so there is no
+upside to trade against that downside.
+
+**And the slugs are not removable in the first place.** 21 of the 46
+success-story slugs ARE the WordPress-era slugs. They are not redirects; they
+are the live canonical URLs, and the ones Google already trusts. Renaming them
+would mean 21 fresh 301s plus a full re-crawl for zero gain — the same reason
+`/about/publications` kept its path when it moved surfaces.
+
+**Nothing to remove in Search Console either.** The Removals tool temporarily
+hides LIVE URLs from results; it is not a history eraser. "Page with redirect"
+(7) and "Not found" (2) are informational buckets that shrink on their own.
+
+**What DID get retired: dead WP machinery, via 410.** `/wp-includes`,
+`/wp-content`, `/wp-admin`, `/wp-json` now return 410 Gone rather than 404.
+These are asset and admin paths with nothing to redirect TO, and a 404 only
+says "not here right now" — `/wp-includes/js/wp-emoji-release.min.js` was still
+indexed and still being recrawled two years after the rebuild. The check sits
+AFTER the legacy map so an explicit mapping for a migrated upload always beats
+the blanket 410, and a unit test asserts the content paths still redirect.
+
+---
+
 ## Aug 2026 — Success stories were a crawl dead end; internal links, not more copy
 
 **Trigger.** A Search Console audit (9 Aug 2026) found 83 of 94 non-indexed

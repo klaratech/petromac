@@ -259,3 +259,32 @@ test('malformed percent-encoding does not throw', () => {
   assert.doesNotThrow(() => resolveLegacyRequest('/%E0%A4%A', '?x=1'));
   assert.doesNotThrow(() => resolveLegacyRequest('/100%'));
 });
+
+test('dead WordPress machinery is 410, not 404', () => {
+  for (const path of [
+    '/wp-includes/js/wp-emoji-release.min.js',
+    '/wp-includes/js/wp-emoji-release.min.js?ver=7.0.2',
+    '/wp-includes',
+    '/wp-content/uploads/2019/07/something.png',
+    '/wp-admin/',
+    '/wp-json/wp/v2/posts',
+  ]) {
+    const [pathname, search] = path.split('?');
+    assert.deepEqual(
+      resolveLegacyRequest(pathname as string, search ? `?${search}` : ''),
+      { type: 'gone' },
+      `${path} should be 410`
+    );
+  }
+});
+
+test('the 410 sweep never swallows a legacy CONTENT path', () => {
+  // These carry the site's most valuable inbound links — /contacts/ alone was
+  // 59 clicks against a site total of ~250 a quarter. They must still redirect.
+  for (const path of ['/contacts', '/contacts/', '/patents/', '/origins/']) {
+    const result = resolveLegacyRequest(path);
+    assert.equal(result?.type, 'redirect', `${path} must redirect, not 410`);
+  }
+  // A path merely CONTAINING "wp" is not WordPress machinery.
+  assert.notDeepEqual(resolveLegacyRequest('/wpsomething'), { type: 'gone' });
+});
