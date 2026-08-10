@@ -17,10 +17,12 @@ and the registrar's dormant 28-record DNS zone emptied.
       `/root/.cloudflare-token` is scoped to the OLD personal account and no
       longer works. Anything that automates DNS/cache/settings is broken until
       this is replaced with a company-account token.
-- [ ] **BIND-export the old zone from the personal account — TIME-CRITICAL.**
-      Cloudflare marks a migrated-away zone "Moved Away" and auto-deletes it
-      after roughly 7 days, so the rollback window runs on Cloudflare's clock,
-      not ours. Export before ~17 Aug 2026 or the rollback is simply gone.
+- [x] **Old zone already exported** — `petromac.co.nzzoneimport.txt`, 27
+      records, verified record-by-record against carol.ns.cloudflare.com on
+      10 Aug 2026. Cloudflare auto-deletes a "Moved Away" zone after ~7 days;
+      that costs us nothing, because the export IS the restore point. It omits
+      the 3 tunnel records by design — those are account-scoped and would have
+      to be recreated in any rollback regardless.
 - [ ] **Delete the 11 dead records from the live Cloudflare zone** (30 → 19):
       `lyncdiscover`, `sip`, `_sip._tls`, `_sipfederationtls._tcp`, the six
       ChemiCloud A records (`cpanel`, `whm`, `ftp`, `webdisk`, `cpcalendars`,
