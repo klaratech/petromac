@@ -175,8 +175,51 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
         {/* Where this story leads. Until Aug 2026 the page ended here with a
             single link back to the hub, so every story was a crawl dead end
-            and a reader who finished one had nowhere to go. Three exits now:
-            the tool it used, similar stories, and a way to ask about it. */}
+            and a reader who finished one had nowhere to go.
+            Order matters: the product/track-record/contact line comes FIRST
+            because it follows straight on from the story you just read, then
+            related stories as the "or read another" step. The old
+            "← All success stories" link was dropped — the figure caption above
+            already says "browse the full collection", and two links to the hub
+            on one page is just noise. */}
+        <nav
+          aria-label="Where to next"
+          className="mt-12 border-t border-slate-200 pt-6 text-sm text-slate-600"
+        >
+          <p className="leading-relaxed">
+            {product && (
+              <>
+                This run used Petromac{' '}
+                <Link href={product.href} className="font-semibold text-brand hover:underline">
+                  {product.label}
+                </Link>
+                . See the full range in the{' '}
+                <Link href="/catalog" className="font-semibold text-brand hover:underline">
+                  product catalog
+                </Link>
+                , the worldwide{' '}
+              </>
+            )}
+            {!product && (
+              <>
+                See the full range in the{' '}
+                <Link href="/catalog" className="font-semibold text-brand hover:underline">
+                  product catalog
+                </Link>
+                , the worldwide{' '}
+              </>
+            )}
+            <Link href="/track-record" className="font-semibold text-brand hover:underline">
+              deployment track record
+            </Link>
+            , or{' '}
+            <Link href="/contact" className="font-semibold text-brand hover:underline">
+              talk to us about a well like this one
+            </Link>
+            .
+          </p>
+        </nav>
+
         {related.length > 0 && (
           <section
             aria-labelledby="related-stories"
@@ -223,49 +266,6 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             </ul>
           </section>
         )}
-
-        <nav
-          aria-label="More success stories"
-          className="mt-12 border-t border-slate-100 pt-6 text-sm text-slate-600"
-        >
-          <p className="leading-relaxed">
-            {product && (
-              <>
-                This run used Petromac{' '}
-                <Link href={product.href} className="font-semibold text-brand hover:underline">
-                  {product.label}
-                </Link>
-                . See the full range in the{' '}
-                <Link href="/catalog" className="font-semibold text-brand hover:underline">
-                  product catalog
-                </Link>
-                , the worldwide{' '}
-              </>
-            )}
-            {!product && (
-              <>
-                See the full range in the{' '}
-                <Link href="/catalog" className="font-semibold text-brand hover:underline">
-                  product catalog
-                </Link>
-                , the worldwide{' '}
-              </>
-            )}
-            <Link href="/track-record" className="font-semibold text-brand hover:underline">
-              deployment track record
-            </Link>
-            , or{' '}
-            <Link href="/contact" className="font-semibold text-brand hover:underline">
-              talk to us about a well like this one
-            </Link>
-            .
-          </p>
-          <p className="mt-4">
-            <Link href="/success-stories" className="font-semibold text-brand hover:underline">
-              ← All success stories
-            </Link>
-          </p>
-        </nav>
       </article>
     </div>
   );
