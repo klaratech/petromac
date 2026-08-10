@@ -90,6 +90,17 @@ In Search Console, no code needed:
       `pathfinder-ht`, `focus-centralisers/cril`, `tool-taxis/ttb-715`,
       `well-intervention/twt-28`. `/catalog/tool-taxis` is the sharpest test —
       it went from ~1 inbound link to ~41 with the story-page change.
+- [ ] **When you next log in: Request Indexing on `/about/patents`** (and
+      `/about/publications` if quota allows). NOT because the sitemap needs
+      re-submitting — it does not. The sitemap URL is unchanged and Google
+      re-fetches it on its own; re-submitting an unchanged sitemap does
+      nothing. The reason is that Patents' CRAWL PATH changed on 10 Aug: it
+      left the About menu, so it is no longer linked from the site-wide nav on
+      all 94 pages. It now has 4 inbound links (/catalog, /success-stories,
+      /about/publications, /contact) instead of 94, which is a large drop in
+      crawl signal even though the page itself is unchanged and the route still
+      works. A manual request skips the wait. `lastmod` for the four edited
+      pages was bumped to 2026-08-10, which is the passive signal.
 - [ ] **Request Indexing on 4 success stories** — the daily quota (~10–12 URLs)
       was spent on 10 Aug. UI trap when you do: **the reason rows in Page
       indexing REORDER once a validation starts** (validated rows sink to the

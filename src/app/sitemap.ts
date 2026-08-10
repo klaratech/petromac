@@ -24,16 +24,23 @@ const BASE_URL = getSiteUrl();
  * Hand-authored routes: date of the last meaningful CONTENT edit, seeded
  * from `git log -1 --format=%cs` per page file on 9 Aug 2026. A styling or
  * refactor commit is not a content change — leave the date alone for those.
+ *
+ * Worked example, 10 Aug 2026: the SeeAlso change edited seven files, but only
+ * FOUR dates moved — /about, /about/patents, /about/publications and
+ * /success-stories, whose own copy changed. `Header.tsx` changed too and
+ * appears on all 94 pages, but site-wide chrome is not a per-page content
+ * change: bumping all 94 for a nav edit would recreate the exact
+ * "everything changed at once" noise this map exists to remove.
  */
 const PAGE_LAST_MODIFIED: Record<string, string> = {
   '/': '2026-07-26',
-  '/about': '2026-08-07',
-  '/about/patents': '2026-07-30',
-  '/about/publications': '2026-07-30',
+  '/about': '2026-08-10',
+  '/about/patents': '2026-08-10',
+  '/about/publications': '2026-08-10',
   '/team': '2026-07-30',
   '/catalog': '2026-08-07',
   '/track-record': '2026-08-06',
-  '/success-stories': '2026-08-07',
+  '/success-stories': '2026-08-10',
   '/simulation': '2026-07-30',
   '/contact': '2026-08-06',
   '/privacy': '2026-07-26',
