@@ -90,6 +90,29 @@ In Search Console, no code needed:
       `pathfinder-ht`, `focus-centralisers/cril`, `tool-taxis/ttb-715`,
       `well-intervention/twt-28`. `/catalog/tool-taxis` is the sharpest test —
       it went from ~1 inbound link to ~41 with the story-page change.
+- [ ] **Re-check the brand-query SITELINKS in ~4 weeks (from 10 Aug 2026).**
+      On 10 Aug a "petromac" search showed only two sitelinks, **Contact** and
+      **Origins**. Two things that were learned and are worth not re-deriving:
+      sitelinks are chosen entirely by Google — the sitemap has no influence and
+      Search Console has no control (the demotion tool was retired years ago) —
+      and the LABELS come from our internal ANCHOR TEXT, not our page titles
+      ("Origins" is the About-dropdown anchor; our `<title>` is "About Petromac
+      — Wireline Conveyance Engineering"). So internal linking is the only
+      lever.
+      Why Catalog and Success Stories were absent is most likely eligibility,
+      not signalling: until 10 Aug most of those pages sat in "Discovered /
+      Crawled – not indexed", and Google will not offer a sitelink for a page it
+      has not confidently indexed. The story cross-linking, the indexing
+      requests and the real `lastmod` dates are exactly the inputs that make
+      them candidates, so this should improve on its own.
+      **Do NOT rename nav anchors to chase this** — that optimises for a display
+      feature we do not control at the cost of navigation that works. Just
+      re-check with data.
+      Also seen on that SERP, both entity issues rather than sitemap issues:
+      `petromac.com` (a different, robots-blocked domain) ranks second on the
+      brand query, and the AI Overview conflates Petromac with "Global
+      Petromac", an Abu Dhabi supply company. The Organization JSON-LD +
+      `sameAs` is the lever there.
 - [ ] **When you next log in: Request Indexing on `/about/patents`** (and
       `/about/publications` if quota allows). NOT because the sitemap needs
       re-submitting — it does not. The sitemap URL is unchanged and Google
