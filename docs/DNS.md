@@ -1,13 +1,27 @@
 # DNS — petromac.co.nz
 
-Single source of truth: the **Cloudflare zone** (Rajesh's account). The
-nameservers at Crazy Domains point to Cloudflare
-(carol/harley.ns.cloudflare.com), so no other DNS list matters: the
-panels at Crazy Domains and in ChemiCloud's cPanel are inert leftovers.
-Changes are made via the dashboard or the scoped API token on
-klaratech-1 (`/root/.cloudflare-token`, see the memory note). The other
-Petromac admin has no Cloudflare access by design — their DNS requests
-route through Rajesh.
+Single source of truth: the **Cloudflare zone in the company account**
+`it@petromac.co.nz` (account id `43946db6e32f3f8ba31aa5bbabbb83d0`),
+migrated there from Rajesh's personal account on **10 Aug 2026**.
+Nameservers at Crazy Domains are `mina.ns.cloudflare.com` +
+`rudy.ns.cloudflare.com` (they were carol/harley before the migration —
+a zone move between accounts reassigns them, which is why the registrar
+had to be touched at all).
+
+The registrar's own "DNS Settings" tab is now **empty** (10 Aug 2026).
+It previously held a 28-record fossil of the WPEngine/HostGator era that
+no resolver ever consulted. It was emptied deliberately: had delegation
+ever returned to the registrar, that zone would have served dead
+HostGator IPs and an old SPF missing the HQ office IP — printers
+quarantined, site on 2019 infrastructure, all silently. An empty zone
+fails loudly instead. **Only the Name Servers tab there matters now, and
+it must keep reading mina + rudy.**
+
+Changes are made via the dashboard or a scoped API token. NOTE the token
+at `/root/.cloudflare-token` on klaratech-1 is scoped to the OLD personal
+account and no longer works — reissue it in the company account (see
+TODO). The other Petromac admin's DNS requests still route through
+Rajesh.
 
 ## History (why it's like this)
 
@@ -17,6 +31,16 @@ route through Rajesh.
   WordPress hosting), so **the hosting side's zone was live** and the
   Crazy Domains panel was already inert (it had drifted: `portal`,
   `autoconfig`, `localhost` existed only in the panel).
+- 10 Aug 2026: **zone migrated to the company Cloudflare account**
+  (it@petromac.co.nz). A move between accounts is a delete-and-re-add, so
+  the nameservers changed (carol/harley → mina/rudy) and the registrar
+  had to be updated. The registrar's dormant DNS zone was emptied the
+  same day. Two traps this surfaced, both now in the record: Cloudflare
+  Tunnel records are **account-scoped**, so a new tunnel had to exist on
+  klaratech-1 before the swap (see DEPLOY.md); and a
+  `*.cfargotunnel.com` CNAME **only routes when PROXIED** — served
+  DNS-only it resolves to nothing at all, because that hostname has no
+  public A record.
 - 27 Jul 2026: nameserver flip to Cloudflare for the website launch.
   The zone-import cleanup deleted non-web records it took for junk —
   athena, the ChemiCloud mail names, and two of the three SMTP2GO
@@ -25,11 +49,23 @@ route through Rajesh.
   **Lesson: non-web records are live infrastructure, never delete
   without verifying what uses them.**
 
-## The zone, by purpose (28 Jul 2026 — 28 records)
+## The zone, by purpose (30 records; audited 28 Jul, re-verified at the
 
-- **Website**: apex + www → CNAME `fcb4d36c-….cfargotunnel.com`,
-  proxied. Cloudflare Tunnel to klaratech-1. Do not touch.
-- **Test site**: `test` → same tunnel CNAME, proxied (added 28 Jul 2026).
+## 10 Aug 2026 account migration)
+
+**Pending cleanup:** 11 of these are queued for deletion (the four dead
+Skype/Lync records, the six ChemiCloud cPanel A records, and the legacy
+`default._domainkey`), taking the zone to 19. `mail` and `webmail` are
+deliberately NOT in that list until someone reads the SMTP host out of an
+office printer — see question 1 below.
+
+- **Website**: apex + www → CNAME `d2265986-….cfargotunnel.com`,
+  **proxied** (tunnel `petromac-prod` in the company account; the
+  pre-migration tunnel was `fcb4d36c-…` in the personal account). Do not
+  touch — and in particular never set these DNS-only, which takes the
+  site down instantly and completely.
+- **Test site**: `test` → same tunnel CNAME, proxied (added 28 Jul 2026;
+  repointed at the new tunnel 10 Aug 2026).
   Serves the staging build (containers :3016/:8013) — public for user
   feedback but noindex by build identity. See DEPLOY.md.
 - **Athena**: `athena` A → 52.64.209.109 (AWS Sydney). Separate app,
@@ -59,7 +95,15 @@ route through Rajesh.
 
   Current value, for reference:
   `v=spf1 +a +mx +ip4:172.232.206.251 include:relay.mailchannels.net +ip4:172.232.197.9 +ip4:161.65.142.140 +include:spf.protection.outlook.com ~all`
-  → target after the trim: `v=spf1 +mx include:spf.protection.outlook.com ~all`
+  → target after the trim (CORRECTED 10 Aug 2026 — keeps the HQ IP):
+  `v=spf1 +mx +ip4:161.65.142.140 include:spf.protection.outlook.com ~all`
+
+  The earlier target dropped `+ip4:161.65.142.140` along with the
+  ChemiCloud terms, on the assumption it was another ChemiCloud address.
+  It is not: reverse DNS puts it on Vocus NZ, and it is the HQ office
+  IP (question 2 below). SMTP2GO covers devices sending from OUTSIDE the
+  office with its own return-path and DKIM; it does nothing for a device
+  sending direct from the office, which is what this term authorises.
 
 - **SMTP2GO** (in use — e.g. scan-to-email from devices outside the
   office): `em588925` → return.smtp2go.net, `s588925._domainkey` →
@@ -101,8 +145,15 @@ Cloudflare dashboard is still the authoritative list.**
 
 ## Open verification questions (before any cleanup)
 
-1. **Office scanners: which SMTP server is configured in them?** This is
-   now the ONLY thing gating the ChemiCloud cancellation (7 Aug 2026).
+1. **Office scanners: which SMTP server is configured in them?** Largely
+   answered 10 Aug 2026: the IT contact says what the HQ printers need is
+   the SPF `ip4` term for the HQ IP (161.65.142.140), i.e. they send
+   direct from the office rather than through `mail.petromac.co.nz`. That
+   unblocks the ChemiCloud cancellation, but does NOT license the SPF trim
+   as originally written — see question 2. Still worth reading the SMTP
+   host out of one printer's config to confirm it is not
+   `mail.petromac.co.nz`, since that is a 30-second check that removes the
+   last doubt. Was the ONLY thing gating the cancellation (7 Aug 2026).
    If a device reads `mail.petromac.co.nz`, repoint it at SMTP2GO
    (already live and proven for scan-to-email) or M365 first. Note that
    the 28 Jul round-1 restore brought back athena AND the mail records
@@ -110,10 +161,20 @@ Cloudflare dashboard is still the authoritative list.**
    not isolate which record they actually needed. Worst case if the
    subscription is cancelled without checking: scan-to-email stops until
    the devices are repointed — recoverable, nothing is lost.
-2. SPF: what are 172.232.206.251 and 161.65.142.140? The first sits in
-   the same 172.232.x range as the ChemiCloud box, so it is most likely
-   that platform's outbound IP — verify, then drop both with the rest of
-   the ChemiCloud SPF terms.
+2. ~~SPF: what are 172.232.206.251 and 161.65.142.140?~~ **ANSWERED
+   10 Aug 2026 by reverse DNS — and the guess in the second half of this
+   question was WRONG, so read the correction:**
+   - `172.232.206.251` → PTR `rs-mil.serverhostgroup.com`. ChemiCloud's
+     own platform (`serverhostgroup.com` is the host behind the
+     WordPress account), a Milan reseller box. This is what made it look
+     "registered in Italy" — it is NOT ours; klaratech-1 is Hetzner.
+     **Drop it with the ChemiCloud trim.**
+   - `161.65.142.140` → PTR `default-rdns.vocus.co.nz`, a New Zealand
+     ISP. **This is the HQ office IP, and it must STAY in SPF.** The IT
+     contact confirmed it 10 Aug 2026 and called it the record that
+     matters for the HQ printers. This question originally said to
+     "drop both with the rest of the ChemiCloud SPF terms", which would
+     have stopped mail from every device sending direct from the office.
 3. ~~Skype/Lync records: safe to delete?~~ **ANSWERED 7 Aug 2026: yes,
    all four — their targets are NXDOMAIN.** See the zone list above.
 4. SPF hygiene (noted 7 Aug 2026): the record opens with `+a +mx`. On a
@@ -126,6 +187,39 @@ Cloudflare dashboard is still the authoritative list.**
 return-path (`em588925` → return.smtp2go.net) and is DKIM-signed, so
 trimming SPF down to the Microsoft include alone does NOT affect
 scan-to-email. That was the fear behind the original "do not trim" note.
+
+## Cloudflare Tunnel — what the DNS records depend on (10 Aug 2026)
+
+The three website records are not ordinary CNAMEs; they are the DNS half
+of a Cloudflare Tunnel, and two properties of tunnels bite hard:
+
+1. **Tunnels are account-scoped.** A `<id>.cfargotunnel.com` hostname
+   only resolves inside the account that owns the tunnel. Moving the zone
+   to another account does NOT bring the tunnel with it, so a new tunnel
+   had to be created in the company account and a second `cloudflared`
+   installed on klaratech-1 before the nameserver swap.
+2. **They only route when PROXIED.** `cfargotunnel.com` hostnames have no
+   public A record, so a DNS-only tunnel record hands the client a name it
+   cannot connect to. This happened on 10 Aug: the three records were
+   observed serving the bare CNAME on an authoritative query and the site
+   was unreachable; with the orange cloud on they return flattened
+   anycast (104.21.x / 172.67.x) and no CNAME at all.
+
+**How to check proxy status properly** — `dig @mina.ns.cloudflare.com <host> A`.
+Flattened anycast + no CNAME = proxied and correct. A bare
+`*.cfargotunnel.com` CNAME = DNS-only and broken. Do NOT diagnose this from
+`curl` alone: during the same migration, a stale local resolver entry and
+Tailscale MagicDNS (`100.100.100.100`) each produced convincing false
+"site is down" readings on a machine where the site was in fact fine. If
+`dig` succeeds and `curl` fails, suspect your own egress first, and check
+the Cloudflare **Audit Log** to see whether a record actually changed.
+
+**On klaratech-1 there are now TWO cloudflared services** (see DEPLOY.md):
+the original `cloudflared.service`, which still fronts n8n.thatha.online,
+antra.group, trailandtide.it and klaratech.it and must keep running; and
+`cloudflared-petromac.service` for the new tunnel. Never run
+`cloudflared service install` on that box — it overwrites the original
+unit and takes all of those domains down together.
 
 ## Related gotchas
 

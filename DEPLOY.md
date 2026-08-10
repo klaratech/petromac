@@ -1,6 +1,8 @@
 # Deployment
 
-Production runs on **klaratech-1** (Hetzner) behind a **Cloudflare Tunnel**, with images published to **GHCR** by GitHub Actions. This matches the org-wide pattern in [Architecture & Standards](https://github.com/klaratech) — see `Architecture & Standards.md` and `Hetzner Server.md` in the Tech Standards vault.
+Production runs on **klaratech-1** (Hetzner, `46.225.75.202`) behind a
+**Cloudflare Tunnel** in the company Cloudflare account `it@petromac.co.nz`,
+with images published to **GHCR** by GitHub Actions. This matches the org-wide pattern in [Architecture & Standards](https://github.com/klaratech) — see `Architecture & Standards.md` and `Hetzner Server.md` in the Tech Standards vault.
 
 ## Topology
 
@@ -91,9 +93,30 @@ On `klaratech-1`:
    the backend answers 404 for the Next.js session route and the intranet
    sign-in card can't detect that auth is configured.
 
-6. `systemctl restart cloudflared`.
+6. `systemctl restart cloudflared-petromac` (NOT `cloudflared` — see below).
 7. Cloudflare DNS (petromac.co.nz zone): CNAME apex + `www` →
-   `<tunnel-id>.cfargotunnel.com`, proxied.
+   `<tunnel-id>.cfargotunnel.com`, **proxied**. Proxied is not cosmetic: a
+   `cfargotunnel.com` hostname has no public A record, so a DNS-only tunnel
+   record takes the site down completely.
+
+## Two cloudflared services on klaratech-1 (10 Aug 2026)
+
+Since the Cloudflare account migration there are **two** cloudflared units on
+that box, and confusing them is the easiest way to cause an outage:
+
+| Unit                             | Tunnel                         | Serves                                                                                                                           | Config                                                          |
+| -------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `cloudflared.service` (original) | `fcb4d36c-…`, personal account | n8n.thatha.online, antra.group, trailandtide.it, klaratech.it (+lynx, klaratax) — **and** stale Petromac routes kept as rollback | `/etc/cloudflared/config.yml`                                   |
+| `cloudflared-petromac.service`   | `d2265986-…`, company account  | petromac.co.nz, www, test                                                                                                        | **none** — remotely managed, all 9 routes live in the dashboard |
+
+- The original unit **must keep running**; four other domains depend on it.
+- **Never run `cloudflared service install` on this box.** It overwrites
+  `/etc/systemd/system/cloudflared.service` and takes those domains down.
+- The new unit takes its token from `/etc/cloudflared/petromac-token.env`
+  (`600 root:root`) via `EnvironmentFile`, deliberately not from `ExecStart` —
+  unit files are world-readable and `--token` would also show in `ps`.
+- It runs `--metrics 127.0.0.1:20242`; the original holds `:20241`. Omit that
+  flag on a second instance and it collides with the first.
 
 ## Cloudflare settings (petromac.co.nz zone)
 
@@ -140,18 +163,25 @@ banner exchange`, which looks like a server fault but is purely local.
   DNS caches have repeatedly resolved petromac.co.nz to the dead
   ChemiCloud server; verify via `curl --resolve` against the edge IP
   before trusting a local repro. Cloudflare zone specifics + DNS incident
-  history: [docs/DNS.md](docs/DNS.md); its API token lives at
-  `/root/.cloudflare-token` on the server (use via SSH).
+  history: [docs/DNS.md](docs/DNS.md). NOTE the API token at
+  `/root/.cloudflare-token` is scoped to the OLD personal account and stopped
+  working at the 10 Aug 2026 migration — reissue it in the company account.
+  Two more false-alarm sources seen during that migration: a stale local DNS
+  cache, and Tailscale MagicDNS (`100.100.100.100`) returning a synthetic
+  IPv6 ULA. Both produced convincing "site is down" readings while the site
+  was fine. Check `dig @mina.ns.cloudflare.com <host> A` before believing a
+  local `curl`.
 
 ## Credentials index
 
-| Secret                                                        | Where it lives                                                                   |
-| ------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Entra client secret (sign-in + Graph mail)                    | 1Password "Petromac Entra Client Secret" + server env files (renew ~Jul 2028)    |
-| `STAFF_SESSION_SECRET`, Turnstile secret                      | server env files (Turnstile secret also retrievable in the Cloudflare dashboard) |
-| Turnstile site key, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_ENV` | GitHub repo Actions **variables**                                                |
-| Deploy SSH key, `DEPLOY_HOST/USER`                            | GitHub Actions **secrets**                                                       |
-| Cloudflare API token (DNS/settings/cache/bots)                | `/root/.cloudflare-token` on klaratech-1                                         |
+| Secret                                                        | Where it lives                                                                                         |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Entra client secret (sign-in + Graph mail)                    | 1Password "Petromac Entra Client Secret" + server env files (renew ~Jul 2028)                          |
+| `STAFF_SESSION_SECRET`, Turnstile secret                      | server env files (Turnstile secret also retrievable in the Cloudflare dashboard)                       |
+| Turnstile site key, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_ENV` | GitHub repo Actions **variables**                                                                      |
+| Deploy SSH key, `DEPLOY_HOST/USER`                            | GitHub Actions **secrets**                                                                             |
+| Cloudflare API token (DNS/settings/cache/bots)                | `/root/.cloudflare-token` on klaratech-1 — **stale since 10 Aug 2026**, reissue in the company account |
+| Cloudflare Tunnel token (Petromac, company account)           | `/etc/cloudflared/petromac-token.env` on klaratech-1 (`600 root:root`)                                 |
 
 ## Rollback
 

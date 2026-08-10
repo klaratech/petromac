@@ -2,6 +2,37 @@
 
 Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + git log.
 
+## Cloudflare account migration (10 Aug 2026)
+
+Zone moved from Rajesh's personal Cloudflare account to the company account
+`it@petromac.co.nz`. Nameservers changed carol/harley → mina/rudy. Details and
+the tunnel traps: [docs/DNS.md](docs/DNS.md), [DEPLOY.md](DEPLOY.md).
+
+DONE: second cloudflared on klaratech-1 (`cloudflared-petromac.service`, new
+tunnel `d2265986-…`), nameserver swap, full post-swap verification, Web
+Analytics re-pointed at the company account (`dbe1ba9f…`, live and verified),
+and the registrar's dormant 28-record DNS zone emptied.
+
+- [ ] **Reissue the Cloudflare API token** on klaratech-1.
+      `/root/.cloudflare-token` is scoped to the OLD personal account and no
+      longer works. Anything that automates DNS/cache/settings is broken until
+      this is replaced with a company-account token.
+- [ ] **BIND-export the old zone from the personal account — TIME-CRITICAL.**
+      Cloudflare marks a migrated-away zone "Moved Away" and auto-deletes it
+      after roughly 7 days, so the rollback window runs on Cloudflare's clock,
+      not ours. Export before ~17 Aug 2026 or the rollback is simply gone.
+- [ ] **Delete the 11 dead records from the live Cloudflare zone** (30 → 19):
+      `lyncdiscover`, `sip`, `_sip._tls`, `_sipfederationtls._tcp`, the six
+      ChemiCloud A records (`cpanel`, `whm`, `ftp`, `webdisk`, `cpcalendars`,
+      `cpcontacts`), and `default._domainkey`. NOT `mail`/`webmail`.
+- [ ] **Remove the 9 Petromac ingress routes** from the ORIGINAL
+      `/etc/cloudflared/config.yml` on klaratech-1 — but only once the old zone
+      is gone. That unit is the rollback path and still fronts four other
+      domains, so it keeps running regardless. Never
+      `cloudflared service install` on that box.
+- [ ] **Read the SMTP host off an office printer.** One minute, and it unblocks
+      both the SPF trim and retiring `mail`/`webmail`.
+
 ## SEO — after the 9 Aug 2026 Search Console audit
 
 Done in that pass: internal linking for success stories (related + product +
@@ -313,6 +344,14 @@ WirelineExpress.mp4` re-encoded 1080p from `originals/` WITH audio;
      `/contacts/`, `/patents/`, `/origins/`, `/publications/`,
      `/privacy-policy/`, `/terms-of-use/`. The unit test proves the mapping
      table; it does not prove the deployed edge behaves.
+  - **SPF trim — CORRECTED 10 Aug 2026, do NOT use the target below as
+    written.** Reverse DNS: `172.232.206.251` is `rs-mil.serverhostgroup.com`
+    (ChemiCloud's own Milan box — drop it), but `161.65.142.140` is
+    `default-rdns.vocus.co.nz`, a NZ ISP — it is the **HQ office IP** and the
+    IT contact confirmed it is what the HQ printers depend on. Keep it.
+    Target: `v=spf1 +mx +ip4:161.65.142.140 include:spf.protection.outlook.com ~all`.
+    The note below lumps 161.65.142.140 in with the ChemiCloud terms; that was
+    a guess from the address range and it was wrong.
   - Days after activation: SPF trim to M365-only include, DMARC watch,
     then -all; drop default.\_domainkey + link CNAME. REVISED 7 Aug 2026
     (supersedes the 28 Jul caution): the SPF also authorises the
