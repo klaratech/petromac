@@ -82,16 +82,17 @@ const SOLUTIONS: Solution[] = [
     id: 'centralisation',
     challenge: 'Centralisation',
     product: 'Focus Centralisers',
+    // Restructured Aug 2026 (Rajesh): the benefit leads and the product
+    // split moved down into the bullets. Previously the summary was the
+    // open/cased breakdown and the bullets were the benefits — which buried
+    // what the range actually does for you under a parts list.
     summary:
-      'CP-series centralisers for open hole; HELIX, Rocker, and CA7 for cased hole — across the full range.',
-    // Two proof points like every other tab — a third made this panel
-    // taller and the tab strip jumped on switch (Rajesh, Aug 2026). The old
-    // bullets 1+3 merged: low drag IS the data-quality story (no
-    // stick-slip), and "perfect centralisation" said nothing a centraliser
-    // doesn't already promise.
+      'Innovative centralizer mechanisms for better data quality, no stick-slip, greater efficiency, and easy navigation through restrictions:',
+    // Still two proof points like every other tab — a third made this panel
+    // taller and the tab strip jumped on switch (Rajesh, Aug 2026).
     proofPoints: [
-      'Lower drag than conventional centralisers — data devoid of stick-slip',
-      'Easily navigates multiple casing sizes and narrow restrictions',
+      'CP-series for open hole',
+      'HELIX, Rocker, and CA7 for cased hole — across the full range',
     ],
     video: {
       src: '/videos/transcoded/helix-subtitled.mp4?v=20260806',
