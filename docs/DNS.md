@@ -17,11 +17,29 @@ quarantined, site on 2019 infrastructure, all silently. An empty zone
 fails loudly instead. **Only the Name Servers tab there matters now, and
 it must keep reading mina + rudy.**
 
-Changes are made via the dashboard or a scoped API token. NOTE the token
-at `/root/.cloudflare-token` on klaratech-1 is scoped to the OLD personal
-account and no longer works — reissue it in the company account (see
-TODO). The other Petromac admin's DNS requests still route through
-Rajesh.
+Changes are made via the dashboard or the scoped API token at
+`/root/.cloudflare-token` on klaratech-1 (reissued in the company account
+10 Aug 2026; the previous one was scoped to the personal account and died
+with the migration). Zone ID `abfdf2f79af48877bb5b2bac2f5f684e`. Three
+things about that token that cost time if you don't know them:
+
+- It is **account-owned**, so it lives under _Manage Account → API
+  Tokens_, NOT _My Profile → API Tokens_. Deliberate: it belongs to
+  Petromac rather than to Rajesh's login.
+- It is **IP-locked to klaratech-1's IPv4 AND IPv6** (46.225.75.202 and
+  2a01:4f8:c2c:335d::1). Anywhere else gets error 9109 "Cannot use the
+  access token from location". Both are listed because the box is
+  dual-stack and prefers IPv6 outbound — with only the IPv4 listed,
+  every call failed.
+- **Test it with a zone query, never `/user/tokens/verify`** — that
+  endpoint is for user tokens and always returns `success:false` for an
+  account-owned one, which reads as a broken token but isn't.
+
+It is scoped to this zone only and deliberately does NOT cover the
+Cloudflare Tunnel or Web Analytics, which are account-level: a leak
+cannot take the website down. The tunnel's own token is a separate
+secret at `/etc/cloudflared/petromac-token.env`. The other Petromac
+admin's DNS requests still route through Rajesh.
 
 ## History (why it's like this)
 

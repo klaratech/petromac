@@ -13,10 +13,12 @@ tunnel `d2265986-…`), nameserver swap, full post-swap verification, Web
 Analytics re-pointed at the company account (`dbe1ba9f…`, live and verified),
 and the registrar's dormant 28-record DNS zone emptied.
 
-- [ ] **Reissue the Cloudflare API token** on klaratech-1.
-      `/root/.cloudflare-token` is scoped to the OLD personal account and no
-      longer works. Anything that automates DNS/cache/settings is broken until
-      this is replaced with a company-account token.
+- [x] **Cloudflare API token reissued (10 Aug 2026)** in the company account,
+      at `/root/.cloudflare-token` + 1Password. Account-owned (Manage Account →
+      API Tokens, not My Profile), zone-scoped, IP-locked to klaratech-1's IPv4
+      AND IPv6 — the IPv6 was needed because the box prefers it outbound and
+      every call failed with error 9109 until it was added. Verified: 30
+      records read, write + delete round-tripped.
 - [x] **Old zone already exported** — `petromac.co.nzzoneimport.txt`, 27
       records, verified record-by-record against carol.ns.cloudflare.com on
       10 Aug 2026. Cloudflare auto-deletes a "Moved Away" zone after ~7 days;

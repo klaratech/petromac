@@ -163,9 +163,10 @@ banner exchange`, which looks like a server fault but is purely local.
   DNS caches have repeatedly resolved petromac.co.nz to the dead
   ChemiCloud server; verify via `curl --resolve` against the edge IP
   before trusting a local repro. Cloudflare zone specifics + DNS incident
-  history: [docs/DNS.md](docs/DNS.md). NOTE the API token at
-  `/root/.cloudflare-token` is scoped to the OLD personal account and stopped
-  working at the 10 Aug 2026 migration — reissue it in the company account.
+  history: [docs/DNS.md](docs/DNS.md). The API token at
+  `/root/.cloudflare-token` was reissued in the company account on 10 Aug 2026
+  and is IP-locked to this box's IPv4 **and** IPv6 — it will not work from a
+  laptop (error 9109).
   Two more false-alarm sources seen during that migration: a stale local DNS
   cache, and Tailscale MagicDNS (`100.100.100.100`) returning a synthetic
   IPv6 ULA. Both produced convincing "site is down" readings while the site
@@ -174,14 +175,14 @@ banner exchange`, which looks like a server fault but is purely local.
 
 ## Credentials index
 
-| Secret                                                        | Where it lives                                                                                         |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Entra client secret (sign-in + Graph mail)                    | 1Password "Petromac Entra Client Secret" + server env files (renew ~Jul 2028)                          |
-| `STAFF_SESSION_SECRET`, Turnstile secret                      | server env files (Turnstile secret also retrievable in the Cloudflare dashboard)                       |
-| Turnstile site key, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_ENV` | GitHub repo Actions **variables**                                                                      |
-| Deploy SSH key, `DEPLOY_HOST/USER`                            | GitHub Actions **secrets**                                                                             |
-| Cloudflare API token (DNS/settings/cache/bots)                | `/root/.cloudflare-token` on klaratech-1 — **stale since 10 Aug 2026**, reissue in the company account |
-| Cloudflare Tunnel token (Petromac, company account)           | `/etc/cloudflared/petromac-token.env` on klaratech-1 (`600 root:root`)                                 |
+| Secret                                                        | Where it lives                                                                                                                                        |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Entra client secret (sign-in + Graph mail)                    | 1Password "Petromac Entra Client Secret" + server env files (renew ~Jul 2028)                                                                         |
+| `STAFF_SESSION_SECRET`, Turnstile secret                      | server env files (Turnstile secret also retrievable in the Cloudflare dashboard)                                                                      |
+| Turnstile site key, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_ENV` | GitHub repo Actions **variables**                                                                                                                     |
+| Deploy SSH key, `DEPLOY_HOST/USER`                            | GitHub Actions **secrets**                                                                                                                            |
+| Cloudflare API token (DNS/settings/cache/bots)                | `/root/.cloudflare-token` on klaratech-1 + 1Password "Petromac Cloudflare API Credentials". Account-owned, zone-scoped, IP-locked to this box (v4+v6) |
+| Cloudflare Tunnel token (Petromac, company account)           | `/etc/cloudflared/petromac-token.env` on klaratech-1 (`600 root:root`)                                                                                |
 
 ## Rollback
 
