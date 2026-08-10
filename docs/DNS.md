@@ -67,15 +67,11 @@ admin's DNS requests still route through Rajesh.
   **Lesson: non-web records are live infrastructure, never delete
   without verifying what uses them.**
 
-## The zone, by purpose (30 records; audited 28 Jul, re-verified at the
+## The zone, by purpose — 17 records (cleanup completed 10 Aug 2026)
 
-## 10 Aug 2026 account migration)
-
-**Pending cleanup:** 11 of these are queued for deletion (the four dead
-Skype/Lync records, the six ChemiCloud cPanel A records, and the legacy
-`default._domainkey`), taking the zone to 19. `mail` and `webmail` are
-deliberately NOT in that list until someone reads the SMTP host out of an
-office printer — see question 1 below.
+Was 30 at the account migration. Removed the same day: six ChemiCloud
+cPanel A records, `mail` + `webmail`, the legacy `default._domainkey`,
+and four dead Skype/Lync records — 13 in all, plus the SPF trim.
 
 - **Website**: apex + www → CNAME `d2265986-….cfargotunnel.com`,
   **proxied** (tunnel `petromac-prod` in the company account; the
@@ -88,44 +84,54 @@ office printer — see question 1 below.
   feedback but noindex by build identity. See DEPLOY.md.
 - **Athena**: `athena` A → 52.64.209.109 (AWS Sydney). Separate app,
   managed by the other admin. (Its LE cert renews on that box.)
-- **ChemiCloud box** (172.232.197.9): `mail`, `webmail`, `cpanel`,
-  `whm`, `ftp`, `webdisk`, `cpcalendars`, `cpcontacts` — all A records,
-  DNS-only. Leftovers of the retired WordPress hosting. **RETIREMENT
-  CLEARED, 7 Aug 2026.** The former "legacy mail service lives here /
-  do not cancel" note was an INFERENCE, never a finding: during the
-  28 Jul incident SMTP 587/465 and IMAP 993 answered on this box, and
-  that got written up as "mailboxes are in use". cPanel answers on
-  those ports on every account, occupied or not. Rajesh confirmed
-  7 Aug 2026 that **no cPanel email account was ever created — company
-  mail has always been Microsoft 365**, which the MX corroborates: it
-  has only ever pointed at `petromac-co-nz.mail.protection.outlook.com`,
-  so no inbound mail has ever reached this box. One dependency left to
-  clear before cancelling — the office scanners (question 1 below).
-  These eight A records get deleted with the subscription.
+- **ChemiCloud box** (172.232.197.9) — **ALL GONE, 10 Aug 2026.** The
+  eight A records (`mail`, `webmail`, `cpanel`, `whm`, `ftp`, `webdisk`,
+  `cpcalendars`, `cpcontacts`) and the legacy `default._domainkey` DKIM
+  were deleted with the subscription cancellation. Kept here only for
+  the lesson: the "legacy mail service lives here / do not cancel" note
+  was an INFERENCE, never a finding. During the 28 Jul incident SMTP
+  587/465 and IMAP 993 answered on that box and got written up as
+  "mailboxes are in use" — but it is SHARED cPanel hosting and answers
+  on those ports for every account, occupied or not. No cPanel mailbox
+  was ever created, and the MX has only ever pointed at
+  `petromac-co-nz.mail.protection.outlook.com`, so no inbound mail ever
+  reached it. **Open ports are not evidence of use.**
 - **Microsoft 365 mail**: MX → petromac-co-nz.mail.protection.outlook.com;
   `autodiscover` CNAME; `selector1/2._domainkey` CNAMEs (M365 DKIM);
-  SPF TXT (also authorises the ChemiCloud box, the mailchannels relay —
-  cPanel's outbound path, a WordPress-era leftover — and two IPs; trim
-  all of these WITH the ChemiCloud cancellation, see TODO); `_dmarc`
-  (p=quarantine, reports to it@petromac.co.nz); `MS=ms87700327`
-  verification TXT; legacy `default._domainkey` DKIM for the ChemiCloud
-  mail service (delete with the rest).
+  SPF TXT; `_dmarc` (p=quarantine, reports to it@petromac.co.nz);
+  `MS=ms87700327` verification TXT.
 
-  Current value, for reference:
-  `v=spf1 +a +mx +ip4:172.232.206.251 include:relay.mailchannels.net +ip4:172.232.197.9 +ip4:161.65.142.140 +include:spf.protection.outlook.com ~all`
-  → target after the trim (CORRECTED 10 Aug 2026 — keeps the HQ IP):
+  **SPF, trimmed 10 Aug 2026** — current value:
   `v=spf1 +mx +ip4:161.65.142.140 include:spf.protection.outlook.com ~all`
 
-  The earlier target dropped `+ip4:161.65.142.140` along with the
-  ChemiCloud terms, on the assumption it was another ChemiCloud address.
-  It is not: reverse DNS puts it on Vocus NZ, and it is the HQ office
-  IP (question 2 below). SMTP2GO covers devices sending from OUTSIDE the
-  office with its own return-path and DKIM; it does nothing for a device
-  sending direct from the office, which is what this term authorises.
+  Was:
+  `v=spf1 +a +mx +ip4:172.232.206.251 include:relay.mailchannels.net +ip4:172.232.197.9 +ip4:161.65.142.140 +include:spf.protection.outlook.com ~all`
 
-- **SMTP2GO** (in use — e.g. scan-to-email from devices outside the
-  office): `em588925` → return.smtp2go.net, `s588925._domainkey` →
-  dkim.smtp2go.net, `link` → track.smtp2go.net. Keep as a group.
+  Dropped `+a` (on a proxied apex it authorises Cloudflare's shared
+  proxy range), both ChemiCloud IPs, and the mailchannels relay.
+  **`ip4:161.65.142.140` is the HQ office IP and must never be removed** —
+  it is what lets the HQ printers, which send direct from the office,
+  pass SPF. Take it out and their mail keeps "sending" while landing in
+  recipients' quarantine, with no bounce and no error.
+
+  The trim was not just tidying. Those three entries were **shared
+  infrastructure**: a shared cPanel box, a shared Milan reseller box and
+  a shared outbound relay. An `ip4:`/`include:` for shared infrastructure
+  authorises every other tenant on it to send as `@petromac.co.nz` and
+  pass SPF — a live spoofing surface on a domain whose DMARC quarantines.
+  That, plus the change being one reversible TXT edit with DMARC already
+  reporting to it@, is why it was done immediately rather than staged.
+
+- **SMTP2GO — Steve's home scanner** (the specific dependency; named
+  here because "devices outside the office" was too vague to act on):
+  `em588925` → return.smtp2go.net, `s588925._domainkey` →
+  dkim.smtp2go.net, `link` → track.smtp2go.net. Keep as a group — the
+  July round-2 incident was exactly these CNAMEs being deleted, which
+  stopped that scanner sending with nothing pointing at DNS as the cause.
+  `em588925` is the load-bearing one: SMTP2GO sends with its own
+  return-path, which is why this scanner needs no SPF entry at all, and
+  the DKIM record can look perfectly healthy while the return-path record
+  is missing and nothing works.
 - **Intune/Entra device enrollment**: `enterpriseenrollment`,
   `enterpriseregistration` CNAMEs.
 - **Search Console verification**: apex TXT
@@ -161,50 +167,46 @@ Transparency was not reachable from that environment, so a record whose
 name matched none of the 156 probes would not have surfaced. **The
 Cloudflare dashboard is still the authoritative list.**
 
-## Open verification questions (before any cleanup)
+## Verification questions — all resolved (10 Aug 2026)
 
-1. **Office scanners: which SMTP server is configured in them?** Largely
-   answered 10 Aug 2026: the IT contact says what the HQ printers need is
-   the SPF `ip4` term for the HQ IP (161.65.142.140), i.e. they send
-   direct from the office rather than through `mail.petromac.co.nz`. That
-   unblocks the ChemiCloud cancellation, but does NOT license the SPF trim
-   as originally written — see question 2. Still worth reading the SMTP
-   host out of one printer's config to confirm it is not
-   `mail.petromac.co.nz`, since that is a 30-second check that removes the
-   last doubt. Was the ONLY thing gating the cancellation (7 Aug 2026).
-   If a device reads `mail.petromac.co.nz`, repoint it at SMTP2GO
-   (already live and proven for scan-to-email) or M365 first. Note that
-   the 28 Jul round-1 restore brought back athena AND the mail records
-   in one go, so "office printers confirmed working after round 1" does
-   not isolate which record they actually needed. Worst case if the
-   subscription is cancelled without checking: scan-to-email stops until
-   the devices are repointed — recoverable, nothing is lost.
-2. ~~SPF: what are 172.232.206.251 and 161.65.142.140?~~ **ANSWERED
-   10 Aug 2026 by reverse DNS — and the guess in the second half of this
-   question was WRONG, so read the correction:**
-   - `172.232.206.251` → PTR `rs-mil.serverhostgroup.com`. ChemiCloud's
-     own platform (`serverhostgroup.com` is the host behind the
-     WordPress account), a Milan reseller box. This is what made it look
-     "registered in Italy" — it is NOT ours; klaratech-1 is Hetzner.
-     **Drop it with the ChemiCloud trim.**
-   - `161.65.142.140` → PTR `default-rdns.vocus.co.nz`, a New Zealand
-     ISP. **This is the HQ office IP, and it must STAY in SPF.** The IT
-     contact confirmed it 10 Aug 2026 and called it the record that
-     matters for the HQ printers. This question originally said to
-     "drop both with the rest of the ChemiCloud SPF terms", which would
-     have stopped mail from every device sending direct from the office.
-3. ~~Skype/Lync records: safe to delete?~~ **ANSWERED 7 Aug 2026: yes,
-   all four — their targets are NXDOMAIN.** See the zone list above.
-4. SPF hygiene (noted 7 Aug 2026): the record opens with `+a +mx`. On a
-   Cloudflare-**proxied** apex, `a` resolves to Cloudflare's shared proxy
-   addresses, so that term authorises a range that has nothing to do with
-   Petromac. Low practical risk (those proxies don't originate SMTP) but
-   it is junk — drop `+a` in the same trim.
+Kept because the reasoning matters more than the answers.
 
-**SMTP2GO needs no SPF include here** — it sends with its own
-return-path (`em588925` → return.smtp2go.net) and is DKIM-signed, so
-trimming SPF down to the Microsoft include alone does NOT affect
-scan-to-email. That was the fear behind the original "do not trim" note.
+1. **Which SMTP server do the office scanners use?** Resolved from two
+   directions without ever opening a printer. There were always TWO
+   scan-to-email paths, which is why this looked ambiguous for so long:
+   **Steve's home scanner** goes via SMTP2GO (own return-path, needs no
+   SPF entry), and the **HQ printers** depend on `ip4:161.65.142.140` —
+   which is only meaningful if they send DIRECT from the office IP. A
+   printer relaying through `mail.petromac.co.nz` would have needed
+   `ip4:172.232.197.9` to matter instead, and the IT contact named the HQ
+   IP as the one that counts. So neither path touched the ChemiCloud box.
+
+   Why it stayed open so long: the 28 Jul round-1 restore brought back
+   `mail`/`webmail` alongside everything else, so "office printers
+   confirmed working after round 1" proved they worked _with_ those
+   records present, not that they needed them. A confirming scan from an
+   HQ printer is still worth doing — as confirmation, not as a gate.
+
+2. ~~What are 172.232.206.251 and 161.65.142.140?~~ **Answered by reverse
+   DNS, and the original guess was WRONG** — worth remembering, because
+   the guess would have broken office mail:
+   - `172.232.206.251` → `rs-mil.serverhostgroup.com`, ChemiCloud's Milan
+     box. Removed.
+   - `161.65.142.140` → `default-rdns.vocus.co.nz`, a NZ ISP. **The HQ
+     office IP.** The earlier plan filed it with the ChemiCloud terms on
+     the assumption that a similar-looking address meant similar
+     ownership. Address ranges are not evidence of ownership; reverse DNS
+     is.
+
+3. ~~Skype/Lync records safe to delete?~~ Yes, all four — targets were
+   NXDOMAIN. Deleted 10 Aug 2026.
+
+4. ~~SPF opens with `+a +mx`~~ — `+a` dropped in the 10 Aug trim.
+
+**SMTP2GO needs no SPF include** — it sends with its own return-path
+(`em588925` → return.smtp2go.net) and is DKIM-signed. That is why
+trimming SPF could not affect Steve's scanner, and it was the fear behind
+the original "do not trim" note.
 
 ## Cloudflare Tunnel — what the DNS records depend on (10 Aug 2026)
 

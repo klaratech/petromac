@@ -25,17 +25,23 @@ and the registrar's dormant 28-record DNS zone emptied.
       that costs us nothing, because the export IS the restore point. It omits
       the 3 tunnel records by design — those are account-scoped and would have
       to be recreated in any rollback regardless.
-- [ ] **Delete the 11 dead records from the live Cloudflare zone** (30 → 19):
-      `lyncdiscover`, `sip`, `_sip._tls`, `_sipfederationtls._tcp`, the six
-      ChemiCloud A records (`cpanel`, `whm`, `ftp`, `webdisk`, `cpcalendars`,
-      `cpcontacts`), and `default._domainkey`. NOT `mail`/`webmail`.
+- [x] **Zone cleaned, 30 → 17 (10 Aug 2026).** Deleted the four dead
+      Skype/Lync records, the six ChemiCloud cPanel A records,
+      `default._domainkey`, and `mail` + `webmail`; and trimmed SPF to
+      `v=spf1 +mx +ip4:161.65.142.140 include:spf.protection.outlook.com ~all`.
+      ChemiCloud is now entirely out of DNS. Snapshots before each step at
+      `/root/dns-backups/` on klaratech-1 (+ local copies).
 - [ ] **Remove the 9 Petromac ingress routes** from the ORIGINAL
       `/etc/cloudflared/config.yml` on klaratech-1 — but only once the old zone
       is gone. That unit is the rollback path and still fronts four other
       domains, so it keeps running regardless. Never
       `cloudflared service install` on that box.
-- [ ] **Read the SMTP host off an office printer.** One minute, and it unblocks
-      both the SPF trim and retiring `mail`/`webmail`.
+- [ ] **Send one test scan from an HQ printer** — now a CONFIRMATION, not a
+      gate. Both scan paths were resolved without it (Steve's home scanner uses
+      SMTP2GO's own return-path; the HQ printers depend on the SPF HQ IP, which
+      only makes sense if they send direct), so the trim already shipped. If a
+      scan does fail, revert SPF from the snapshot — one edit, live in minutes,
+      and DMARC reports to it@ would show it inside a day.
 
 ## SEO — after the 9 Aug 2026 Search Console audit
 

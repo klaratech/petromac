@@ -5,6 +5,57 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — SPF trimmed: the ChemiCloud entries were a spoofing surface, not just dead weight
+
+**Decision:** SPF went from six mechanisms to three —
+`v=spf1 +mx +ip4:161.65.142.140 include:spf.protection.outlook.com ~all` —
+and `mail`/`webmail` were deleted in the same change, 10 Aug 2026.
+
+**Why immediately, rather than the staged plan.** The written plan held
+`mail`/`webmail` pending a printer check, then trimmed SPF a day later. Rajesh
+pushed back on the caution and was right, for a reason the plan had missed:
+`172.232.197.9`, `172.232.206.251` and `relay.mailchannels.net` are all SHARED
+infrastructure — a shared cPanel box, a shared reseller box, a shared outbound
+relay. An `ip4:` or `include:` for shared infrastructure authorises **every
+other tenant on it** to send as `@petromac.co.nz` and pass SPF. So the entries
+were not merely dead; on a domain whose DMARC quarantines, they were vouching
+for hosts we do not control and no longer even have an account on. `+a` was the
+same class of problem: on a proxied apex it authorises Cloudflare's shared
+proxy range.
+
+**Why the caution was disproportionate.** SPF is ONE TXT record, revertable in
+a single edit that propagates in minutes, and DMARC reports already flow to
+it@petromac.co.nz — so a mistake would be both reversible and visible inside a
+day. Reversible plus monitored is where you act rather than stage.
+
+**The staged plan was also internally incoherent**, which the migration agent
+caught: holding `mail`/`webmail` while dropping `ip4:172.232.197.9` protects
+nothing. A printer relaying through that box would still send from an IP no
+longer in SPF, softfail `~all`, and be quarantined silently — exactly the
+failure the hold existed to prevent. Either both go or neither does.
+
+**What actually closed the printer question**, without opening a printer: there
+were always TWO scan-to-email paths, and conflating them is why it looked
+ambiguous for weeks. Steve's home scanner goes via SMTP2GO with its own
+return-path (no SPF entry needed at all); the HQ printers depend on
+`ip4:161.65.142.140`, which is only meaningful if they send DIRECT from the
+office IP. Neither touched ChemiCloud. The 28 Jul restore had brought `mail`
+back alongside everything else, so "printers work" never isolated which record
+they needed.
+
+**The one term that must never be removed** is `ip4:161.65.142.140` — reverse
+DNS `default-rdns.vocus.co.nz`, the HQ office IP. An earlier draft of our own
+plan dropped it with the ChemiCloud terms because the address _looked_ like it
+might be more of the same. Address ranges are not evidence of ownership;
+reverse DNS is.
+
+**Operational note:** Cloudflare caps DNS record comments at 100 characters.
+The first API call failed on that, and the stale comment it replaced still read
+"do NOT trim before mail migration" — worth knowing that record comments carry
+headlines, not reasoning. The reasoning lives here.
+
+---
+
 ## Aug 2026 — The WordPress redirects stay; only the dead machinery is retired
 
 **Asked (Rajesh, 10 Aug 2026):** the old WordPress site never had much traffic
