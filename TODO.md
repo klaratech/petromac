@@ -31,11 +31,40 @@ and the registrar's dormant 28-record DNS zone emptied.
       `v=spf1 +mx +ip4:161.65.142.140 include:spf.protection.outlook.com ~all`.
       ChemiCloud is now entirely out of DNS. Snapshots before each step at
       `/root/dns-backups/` on klaratech-1 (+ local copies).
-- [ ] **Remove the 9 Petromac ingress routes** from the ORIGINAL
-      `/etc/cloudflared/config.yml` on klaratech-1 — but only once the old zone
-      is gone. That unit is the rollback path and still fronts four other
-      domains, so it keeps running regardless. Never
-      `cloudflared service install` on that box.
+
+### Final teardown — 11 AUG 2026 OR LATER, both together
+
+Deliberately deferred from 10 Aug. Reason: the registry NS TTL is 86400, and
+the swap was the morning of 10 Aug, so a resolver that cached the OLD
+delegation can hold carol/harley until roughly 07:00 on 11 Aug. As of 10 Aug
+afternoon 1.1.1.1 / 8.8.8.8 / 9.9.9.9 / OpenDNS had all moved to mina/rudy,
+but a tail of ISP and corporate resolvers may not have.
+
+The asymmetry that decided it: if the old zone is deleted while a resolver
+still asks carol/harley, that resolver gets **REFUSED** — not a stale answer, a
+resolution FAILURE. Site unreachable and **mail bouncing** for anyone behind
+it. Against that, deleting early buys nothing: Cloudflare auto-deletes a
+"Moved Away" zone within ~7 days anyway, and we hold a verified 27-record BIND
+export. (Contrast the SPF trim, which was done immediately because the entries
+were an active spoofing surface — there, doing nothing had its own cost.)
+
+Do them in this order, in one sitting:
+
+- [ ] **1. Confirm the old delegation is dead everywhere**, then delete the old
+      zone from the PERSONAL Cloudflare account. Check first that carol/harley
+      no longer answer for petromac.co.nz, and that several public resolvers
+      return mina/rudy. Or skip entirely and let Cloudflare auto-delete it —
+      that is the zero-risk option and loses nothing.
+- [ ] **2. Remove the 9 Petromac ingress routes** from the ORIGINAL
+      `/etc/cloudflared/config.yml` on klaratech-1. They are inert already
+      (nothing resolves to the old tunnel for petromac), so this is tidying,
+      not a fix. It needs a `cloudflared.service` restart, which briefly
+      interrupts antra.group, trailandtide.it, klaratech.it and
+      n8n.thatha.online — which is why it waits and is done in the SAME pass as
+      step 1 rather than costing two restarts. That unit keeps running
+      afterwards; only the Petromac block goes. **Never run
+      `cloudflared service install` on that box** — it overwrites the unit file
+      those four domains depend on.
 - [ ] **Send one test scan from an HQ printer** — now a CONFIRMATION, not a
       gate. Both scan paths were resolved without it (Steve's home scanner uses
       SMTP2GO's own return-path; the HQ printers depend on the SPF HQ IP, which
@@ -53,10 +82,6 @@ on the Intranet nav link, 4 meta-description length outliers. Rationale:
 
 In Search Console, no code needed:
 
-- [ ] **Validate Fix** on "Duplicate, Google chose different canonical", and
-      Request Indexing on the two `/success-stories/` URLs. The redirect is
-      correct and permanent — Google is holding the pre-rename `/case-studies/`
-      URL as canonical because it hasn't re-crawled. Nothing to fix in the repo.
 - [x] **Validate Fix clicked 10 Aug 2026** on the duplicate-canonical report
       ("Validation started"), and Request Indexing submitted for both
       `/success-stories/` URLs.
@@ -66,13 +91,46 @@ In Search Console, no code needed:
       `well-intervention/twt-28`. `/catalog/tool-taxis` is the sharpest test —
       it went from ~1 inbound link to ~41 with the story-page change.
 - [ ] **Request Indexing on 4 success stories** — the daily quota (~10–12 URLs)
-      was spent on 10 Aug. Pick the biggest link gainers:
+      was spent on 10 Aug. UI trap when you do: **the reason rows in Page
+      indexing REORDER once a validation starts** (validated rows sink to the
+      bottom), so click a row by its label, never by its position — otherwise
+      you can land in the wrong report and, worse, next to the wrong
+      VALIDATE FIX button. Pick the biggest link gainers:
       `27-hours-rig-time-saved-differential-sticking-prevented-in-kuwait` (10
       inbound), `cement-evaluation-without-gemco-centralizers-to-85-deviation-in-ksa`
       (8), `18-inch-washout-navigated-in-vertical-well-in-peru` (7),
       `cbl-descends-2500m-tangent-at-67-degrees-in-mexico` (5).
-- [ ] **Then Validate Fix on the "Not found (404)" report** — but only AFTER the
-      410 change is in production. Its two URLs are `/download/` (already 301s
+- [x] **Validate Fix started on the "Not found (404)" report (10 Aug 2026).**
+      Both URLs verified correct on production first: `/wp-includes/js/
+wp-emoji-release.min.js?ver=7.0.2` → 410, and `/download/` → **301** to
+      `/catalog` (confirmed by header; the agent could only see "one hop, 200"
+      because its sandbox blocked curl and a browser cannot expose the 3xx
+      code).
+- [x] **The six catalog URLs requested on 10 Aug are ALL INDEXED** — confirmed
+      by live URL Inspection, including `/catalog/tool-taxis`, the page that
+      went from ~1 inbound internal link to ~41, crawled 10 Aug 07:02. Caveat
+      on attribution: its inspection shows discovery via `sitemap.xml` with
+      "Referring page: None detected", so this is not clean evidence the
+      internal linking did the work — the Request Indexing submission alone
+      could explain it. The aggregate Page indexing report still shows the
+      9 Aug baseline (115 indexed / 50 Discovered / 33 Crawled / 7 redirect /
+      2 404 / 2 duplicate) because its data is stamped 8/7/26 — the report lags
+      live inspection by days, so trust inspection over the table.
+- [ ] **Product snippets: "1 invalid item" on the product pages — EXPECTED, do
+      not "fix" it.** Appeared 10 Aug on 5 of the 6 newly-indexed catalog URLs
+      (the family page `/catalog/tool-taxis` is clean — it emits only
+      BreadcrumbList, no Product). It is the missing `offers`/`review`/
+      `aggregateRating` warning, now attached to the product pages because they
+      have only just been indexed; nothing regressed. **Re-adding an `offers`
+      block to clear it is the exact mistake made on 30 Jul** — a price turns a
+      Product into a merchant listing and Google then demands shippingDetails
+      and hasMerchantReturnPolicy for equipment with no price and no stock.
+      Permanent unless real prices or reviews exist. Leave it. Reasoning lives
+      in the comment above `productSchema` in
+      `catalog/[category]/[slug]/page.tsx`. Only open question worth revisiting:
+      whether to drop the `Product` node entirely so the report stays clean and
+      a REAL error can't hide behind a known-invalid item.
+- [ ] ~~Then Validate Fix on the "Not found (404)" report~~ — superseded above. Its two URLs are `/download/` (already 301s
       to `/catalog`) and `/wp-includes/js/wp-emoji-release.min.js`, which now
       returns 410. Validating before the deploy would fail on the second and
       leave the report stuck in "Validation failed".

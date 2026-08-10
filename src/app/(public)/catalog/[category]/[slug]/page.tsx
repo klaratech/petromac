@@ -100,6 +100,15 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
   //      for made-to-order equipment that has neither a price nor stock.
   // `offers` is RECOMMENDED, not required, for Product snippets, so its absence
   // is a warning we accept on purpose. See TODO.md and docs/DECISIONS.md.
+  //
+  // UPDATE 10 Aug 2026 — point 1 above is now out of date and that is EXPECTED.
+  // Product snippets reports "1 invalid item" on the product pages themselves
+  // (5 of the 6 newly-indexed catalog URLs; the family page /catalog/tool-taxis
+  // is clean because it emits only BreadcrumbList, no Product). They were not
+  // in the report on 31 Jul simply because they were not indexed yet. Nothing
+  // regressed — this is the same missing-offers warning, now attached to the
+  // pages it always applied to. It is permanent unless real prices or reviews
+  // ever exist, and the answer is STILL not to invent either.
   const productSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -370,7 +379,10 @@ function BackToCatalog({ className = 'mt-14' }: { className?: string }) {
         href="/catalog"
         className="group inline-flex items-center gap-2 font-heading text-base font-semibold text-brand hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded"
       >
-        <span aria-hidden="true" className="transition-transform duration-200 group-hover:-translate-x-1">
+        <span
+          aria-hidden="true"
+          className="transition-transform duration-200 group-hover:-translate-x-1"
+        >
           ←
         </span>
         Back to the full catalog
