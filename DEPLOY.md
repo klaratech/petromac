@@ -104,12 +104,15 @@ On `klaratech-1`:
 Since the Cloudflare account migration there are **two** cloudflared units on
 that box, and confusing them is the easiest way to cause an outage:
 
-| Unit                             | Tunnel                         | Serves                                                                                                                           | Config                                                          |
-| -------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `cloudflared.service` (original) | `fcb4d36c-…`, personal account | n8n.thatha.online, antra.group, trailandtide.it, klaratech.it (+lynx, klaratax) — **and** stale Petromac routes kept as rollback | `/etc/cloudflared/config.yml`                                   |
-| `cloudflared-petromac.service`   | `d2265986-…`, company account  | petromac.co.nz, www, test                                                                                                        | **none** — remotely managed, all 9 routes live in the dashboard |
+| Unit                             | Tunnel                         | Serves                                                       | Config                                                          |
+| -------------------------------- | ------------------------------ | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| `cloudflared.service` (original) | `fcb4d36c-…`, personal account | antra.group, trailandtide.it, klaratech.it (+lynx, klaratax) | `/etc/cloudflared/config.yml`                                   |
+| `cloudflared-petromac.service`   | `d2265986-…`, company account  | petromac.co.nz, www, test                                    | **none** — remotely managed, all 9 routes live in the dashboard |
 
 - The original unit **must keep running**; four other domains depend on it.
+- Its stale Petromac routes and the `n8n.thatha.online` route were removed on
+  11 Aug 2026, once the old zone was deleted — 24 hostnames down to 15. Until
+  then they were kept deliberately as the rollback path.
 - **Never run `cloudflared service install` on this box.** It overwrites
   `/etc/systemd/system/cloudflared.service` and takes those domains down.
 - The new unit takes its token from `/etc/cloudflared/petromac-token.env`

@@ -50,21 +50,32 @@ were an active spoofing surface — there, doing nothing had its own cost.)
 
 Do them in this order, in one sitting:
 
-- [ ] **1. Confirm the old delegation is dead everywhere**, then delete the old
-      zone from the PERSONAL Cloudflare account. Check first that carol/harley
-      no longer answer for petromac.co.nz, and that several public resolvers
-      return mina/rudy. Or skip entirely and let Cloudflare auto-delete it —
-      that is the zero-risk option and loses nothing.
-- [ ] **2. Remove the 9 Petromac ingress routes** from the ORIGINAL
-      `/etc/cloudflared/config.yml` on klaratech-1. They are inert already
-      (nothing resolves to the old tunnel for petromac), so this is tidying,
-      not a fix. It needs a `cloudflared.service` restart, which briefly
-      interrupts antra.group, trailandtide.it, klaratech.it and
-      n8n.thatha.online — which is why it waits and is done in the SAME pass as
-      step 1 rather than costing two restarts. That unit keeps running
-      afterwards; only the Petromac block goes. **Never run
-      `cloudflared service install` on that box** — it overwrites the unit file
-      those four domains depend on.
+- [x] **1. Old zone DELETED from the personal account (11 Aug 2026, ~07:40 UTC).**
+      Gate cleared first: registry read mina/rudy and all 9 reachable public
+      resolvers had moved. Verified after: carol/harley now answer with NO
+      records for petromac.co.nz, while www/apex/test/athena, MX, SPF, the
+      Search Console TXT and M365 DKIM are all unchanged. Worth noting the
+      caution was justified — carol/harley were still serving real A records an
+      hour before deletion, so removing the zone on 10 Aug would have broken
+      any resolver that had not caught up.
+      **The rollback is now the BIND export alone**:
+      `/root/dns-backups/petromac-00-pre-migration-personal-account-20260810.bind`
+      (27 records, verified against carol before the move). It is the only copy
+      of the pre-migration state.
+- [x] **2. DONE 11 Aug 2026 — Petromac + n8n routes stripped from the ORIGINAL
+      tunnel.** `/etc/cloudflared/config.yml` went 24 hostnames → 15; the nine
+      Petromac routes and `n8n.thatha.online` are gone, the five remaining
+      domain groups and the catch-all untouched. Backup at
+      `config.yml.bak-strip-*`. `cloudflared` restarted (4 connections
+      re-registered, no errors); `cloudflared-petromac` NOT touched, so the
+      website never went through it. Verified every hostname against a
+      pre-change baseline — antra 200/200, trailandtide 307/307, klaratech
+      307/307, lynx 200, klaratax 200, all identical — plus Petromac
+      www 200 / apex 301 / test 200 and `/api/staff/*` precedence still 405.
+      Two n8n loose ends left: its DNS record is in the PERSONAL Cloudflare
+      account and now points at a tunnel with no matching ingress (hits the
+      catch-all 404), and the container on :5678 may still be running.
+
 - [ ] **Send one test scan from an HQ printer** — now a CONFIRMATION, not a
       gate. Both scan paths were resolved without it (Steve's home scanner uses
       SMTP2GO's own return-path; the HQ printers depend on the SPF HQ IP, which
@@ -99,6 +110,11 @@ In Search Console, no code needed:
       ("Origins" is the About-dropdown anchor; our `<title>` is "About Petromac
       — Wireline Conveyance Engineering"). So internal linking is the only
       lever.
+      **Eligibility data point (11 Aug):** both `/catalog` and
+      `/success-stories` now inspect as "URL is on Google", so both ARE
+      eligible to be offered as sitelinks. That removes the most likely
+      explanation for their absence and makes this worth re-checking properly
+      once Google's aggregate data catches up.
       Why Catalog and Success Stories were absent is most likely eligibility,
       not signalling: until 10 Aug most of those pages sat in "Discovered /
       Crawled – not indexed", and Google will not offer a sitelink for a page it
@@ -113,6 +129,28 @@ In Search Console, no code needed:
       brand query, and the AI Overview conflates Petromac with "Global
       Petromac", an Abu Dhabi supply company. The Organization JSON-LD +
       `sameAs` is the lever there.
+- [x] **Search Console session, 11 Aug 2026 — 6 URLs submitted, no quota
+      refusal.** `/about/patents`, `/about/publications` and the KSA
+      cement-evaluation story were ALREADY indexed, so those three were
+      refreshes rather than new-index requests — drop them first if quota is
+      ever tight. The Kuwait story is "Discovered – currently not indexed" and,
+      tellingly, its only known referring page is still `/case-studies`, the
+      pre-rename path.
+- [x] **The "unknown to Google" scare was Google-side staleness, not a bug.**
+      Two stories (`18-inch-washout-…-peru`, `cbl-descends-2500m-…-mexico`)
+      inspected as "URL is unknown to Google — no referring sitemaps, no
+      referring page". Verified from our side the same day: both ARE in the
+      live sitemap (94 URLs), both return 200, and both are linked from the
+      hub plus sibling stories. Nothing to fix. Same root cause as the Page
+      indexing table below.
+- [ ] **Do NOT trust the Page indexing table until its "Last update" moves.**
+      On 11 Aug it still read **8/7/26** — four days stale — and reported
+      115 indexed / 50 Discovered / 33 Crawled byte-for-byte identical to the
+      9 Aug baseline. That identity is the tell: it is the same snapshot, not a
+      new one that matches. Meanwhile live URL Inspection shows the six catalog
+      URLs, `/about/patents`, `/about/publications` and a success story all
+      indexed. **Trust URL Inspection over the aggregate table**, and treat the
+      table as carrying no information about anything after 7 Aug.
 - [ ] **When you next log in: Request Indexing on `/about/patents`** (and
       `/about/publications` if quota allows). NOT because the sitemap needs
       re-submitting — it does not. The sitemap URL is unchanged and Google

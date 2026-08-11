@@ -235,11 +235,16 @@ Tailscale MagicDNS (`100.100.100.100`) each produced convincing false
 the Cloudflare **Audit Log** to see whether a record actually changed.
 
 **On klaratech-1 there are now TWO cloudflared services** (see DEPLOY.md):
-the original `cloudflared.service`, which still fronts n8n.thatha.online,
-antra.group, trailandtide.it and klaratech.it and must keep running; and
+the original `cloudflared.service`, which fronts antra.group,
+trailandtide.it and klaratech.it (+lynx, klaratax) and must keep running; and
 `cloudflared-petromac.service` for the new tunnel. Never run
 `cloudflared service install` on that box — it overwrites the original
 unit and takes all of those domains down together.
+
+The original tunnel's stale Petromac routes were removed on 11 Aug 2026, after
+the old zone was deleted; `n8n.thatha.online` went at the same time (a dead
+experiment). Its DNS record still exists in the PERSONAL Cloudflare account and
+now resolves to a tunnel with no matching ingress.
 
 ## Related gotchas
 
