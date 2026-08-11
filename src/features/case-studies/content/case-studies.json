@@ -261,14 +261,14 @@
       },
       {
         "src": "/flipbooks/success-stories/figures/0009-2.webp",
-        "width": 1076,
-        "height": 400,
+        "width": 1200,
+        "height": 524,
         "caption": "Fig.2. Array Sonic tool with high-drag traditional centralizing"
       },
       {
         "src": "/flipbooks/success-stories/figures/0009-3.webp",
-        "width": 972,
-        "height": 636,
+        "width": 1200,
+        "height": 642,
         "caption": null
       }
     ]
@@ -308,14 +308,14 @@
       },
       {
         "src": "/flipbooks/success-stories/figures/0010-2.webp",
-        "width": 1076,
-        "height": 400,
+        "width": 1200,
+        "height": 524,
         "caption": "Fig.2. Array Sonic tool"
       },
       {
         "src": "/flipbooks/success-stories/figures/0010-3.webp",
-        "width": 972,
-        "height": 636,
+        "width": 1200,
+        "height": 642,
         "caption": null
       }
     ]
@@ -963,12 +963,6 @@
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0025-1.webp",
-        "width": 1116,
-        "height": 692,
-        "caption": null
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0025-2.webp",
         "width": 1200,
         "height": 572,
         "caption": null
@@ -1039,14 +1033,14 @@
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0027-1.webp",
-        "width": 1076,
-        "height": 400,
+        "width": 1200,
+        "height": 524,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0027-2.webp",
-        "width": 972,
-        "height": 636,
+        "width": 1200,
+        "height": 642,
         "caption": null
       }
     ]

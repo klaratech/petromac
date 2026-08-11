@@ -50,6 +50,12 @@ OUT = BASE / "figures"
 # properly rather than shipping a screenshot of them.
 REPEAT_PAGES = 3
 
+# Upper bound on a furniture image, in pixels. See find_furniture(): repetition
+# alone is not enough, or reused product renders get thrown away. Icons are
+# ~105k, the reused renders 673k and 1.0M — a wide gap, so the exact value is
+# not delicate.
+FURNITURE_MAX_AREA = 300_000
+
 # The region world-map that sits top-left above the CHALLENGE column. It slips
 # past the repeat filter because each one highlights a DIFFERENT country, so no
 # two are byte-identical.
@@ -95,7 +101,13 @@ def story_pages() -> list[int]:
 
 def pdfimages_list(page: int) -> list[dict]:
     """Rows from `pdfimages -list`. An image and its soft mask SHARE an object
-    id, which is the only reliable way to pair them back up."""
+    id, which is the only reliable way to pair them back up.
+
+    The object number is column 10, not 11: the header reads "object ID" but
+    those are TWO columns, and column 11 is the ID, which is 0 on every row
+    here. Pairing on it still happened to work — a soft mask always directly
+    follows its parent, so "nearest previous image" and "same object" pick the
+    same row — but `color`/`comp` below need the real number."""
     out = subprocess.run(
         ["pdfimages", "-list", "-f", str(page), "-l", str(page), str(PDF)],
         capture_output=True, text=True, check=True,
@@ -105,7 +117,10 @@ def pdfimages_list(page: int) -> list[dict]:
         p = line.split()
         if len(p) < 14:
             continue
-        rows.append({"num": int(p[1]), "type": p[2], "w": int(p[3]), "h": int(p[4]), "obj": p[11]})
+        rows.append({
+            "num": int(p[1]), "type": p[2], "w": int(p[3]), "h": int(p[4]),
+            "color": p[5], "comp": p[6], "obj": p[10],
+        })
     return rows
 
 
@@ -158,12 +173,34 @@ def positions(page: int, tmp: Path) -> list[tuple[int, int]]:
 
 
 def find_furniture(pages: list[int], tmp: Path) -> set[str]:
-    """md5s of images that appear on REPEAT_PAGES or more pages."""
+    """md5s of images that appear on REPEAT_PAGES or more pages AND are small
+    enough to be chrome.
+
+    The size qualifier matters: repetition alone is not evidence of furniture,
+    because a product render is legitimately reused across stories about the
+    same tool. Exactly two images tripped the count without being chrome — the
+    Array Sonic string on Tool Taxis (1373x734) and its companion (1241x542),
+    shared by pages 9, 10 and 27 — and dropping them cost page 27 both its
+    figures and pages 9 and 10 their captioned one.
+
+    The two populations are far apart, so the threshold is not delicate: the
+    category icons are all ~330x320 (~105k px) and the two real renders are
+    673k and 1.0M. Note this is the opposite test from MIN_AREA, which is a
+    floor for slivers — furniture is caught by being repeated AND small, never
+    by size alone (page 16's real log tracks are 74k, smaller than the icons)."""
     seen: dict[str, set[int]] = defaultdict(set)
+    area: dict[str, int] = {}
     for page in pages:
         for f in dump_page(page, tmp).values():
-            seen[hashlib.md5(f.read_bytes()).hexdigest()].add(page)
-    return {h for h, ps in seen.items() if len(ps) >= REPEAT_PAGES}
+            h = hashlib.md5(f.read_bytes()).hexdigest()
+            seen[h].add(page)
+            if h not in area:
+                with Image.open(f) as im:
+                    area[h] = im.width * im.height
+    return {
+        h for h, ps in seen.items()
+        if len(ps) >= REPEAT_PAGES and area[h] < FURNITURE_MAX_AREA
+    }
 
 
 def captions_for(page: int) -> list[str]:
@@ -217,11 +254,27 @@ def extract(page: int, furniture: set[str], tmp: Path) -> list[dict]:
     # came out with 18 "figures" — they were one figure and a lot of repaints.
     # Keyed on placed position + size, so two genuinely different figures that
     # happen to share dimensions still both survive.
+    #
+    # `orphan_mask` drops alpha channels masquerading as pictures. A real photo
+    # here is icc/3-comp with its own smask row; these are gray/1-comp with no
+    # smask of their own, because they ARE the mask for something the page
+    # draws as vector art. pdfimages lists them as type "image", so nothing
+    # upstream distinguishes them, and they extract as a white silhouette on
+    # solid black. Seven of them survived every other filter — including both
+    # figures on page 27, which rendered as two black rectangles and nothing
+    # else, and two that sat under real "Fig.N" captions on pages 9 and 10.
+    smask_objs = {r["obj"] for r in rows if r["type"] == "smask"}
+
+    def orphan_mask(r: dict) -> bool:
+        return r["color"] == "gray" and r["comp"] == "1" and r["obj"] not in smask_objs
+
     keep = []
     drawn: set[tuple[int, int, int, int]] = set()
     for idx, r in enumerate(x for x in rows if x["type"] == "image"):
         src = files.get(r["num"])
         if src is None:
+            continue
+        if orphan_mask(r):
             continue
         if hashlib.md5(src.read_bytes()).hexdigest() in furniture:
             continue

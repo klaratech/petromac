@@ -110,13 +110,13 @@
    },
    {
     "src": "/flipbooks/success-stories/figures/0009-2.webp",
-    "width": 1076,
-    "height": 400
+    "width": 1200,
+    "height": 524
    },
    {
     "src": "/flipbooks/success-stories/figures/0009-3.webp",
-    "width": 972,
-    "height": 636
+    "width": 1200,
+    "height": 642
    }
   ],
   "captions": [
@@ -134,13 +134,13 @@
    },
    {
     "src": "/flipbooks/success-stories/figures/0010-2.webp",
-    "width": 1076,
-    "height": 400
+    "width": 1200,
+    "height": 524
    },
    {
     "src": "/flipbooks/success-stories/figures/0010-3.webp",
-    "width": 972,
-    "height": 636
+    "width": 1200,
+    "height": 642
    }
   ],
   "captions": [
@@ -423,17 +423,11 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0025-1.webp",
-    "width": 1116,
-    "height": 692
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0025-2.webp",
     "width": 1200,
     "height": 572
    }
   ],
   "captions": [
-   null,
    null
   ]
  },
@@ -453,13 +447,13 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0027-1.webp",
-    "width": 1076,
-    "height": 400
+    "width": 1200,
+    "height": 524
    },
    {
     "src": "/flipbooks/success-stories/figures/0027-2.webp",
-    "width": 972,
-    "height": 636
+    "width": 1200,
+    "height": 642
    }
   ],
   "captions": [

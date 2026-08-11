@@ -136,9 +136,21 @@ New stories in the edition need a `NEW_SLUG` entry in `build_case_studies.py`
 
 Two knobs in `extract_story_figures.py` if a new edition extracts badly:
 `CAPTION_OVERRIDE` and `DROP_FIGURE`, both keyed by page number and both
-currently empty — everything is handled by the general rules (repeat-image
-furniture filter, the region-map slot test, reading-order sorting, and
-same-slot dedupe). Prefer fixing a rule over adding a per-page patch.
+currently empty — everything is handled by five general rules (repeated AND
+small = furniture, the region-map slot test, same-slot dedupe, the `MIN_AREA`
+sliver floor, and the orphan-mask test). Prefer fixing a rule over adding a
+per-page patch.
+
+**If a new edition looks wrong, check these two first** — both produced
+plausible-looking output that was actually broken:
+
+- **A figure renders as a white shape on solid black.** That is a transparency
+  mask, not a picture. `pdfimages` lists it as type "image"; what marks it is
+  gray/1-comp with no `smask` row of its own. Handled by `orphan_mask()`.
+- **A page loses figures it obviously has.** Check whether the image is reused
+  on 3+ pages and got binned as furniture. Only images under
+  `FURNITURE_MAX_AREA` (300k px) can be furniture, precisely because product
+  renders are legitimately shared between stories about the same tool.
 
 **Known limitation (Aug 2026):** a few figures on pages 7, 9, 10 and 17 come
 out split into pieces, because the layout composites them from several placed
