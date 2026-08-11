@@ -5,10 +5,12 @@ import { join } from 'node:path';
 import {
   LEGACY_CASE_STUDY_SLUGS,
   LEGACY_PATHS,
+  MERGED_PRODUCT_PATHS,
   PATENT_PDF_RENAMES,
   resolveLegacyRequest,
 } from './redirects';
 import { caseStudies } from '@/features/case-studies/content';
+import { allProducts } from '@/features/catalog/content';
 
 /**
  * The P0 acceptance criterion from the 30 Jul 2026 Search Console audit:
@@ -186,6 +188,27 @@ test('legacy query-shaped views still redirect', () => {
     status: 307,
   });
   assertSingleHop('/catalogtest/tool-taxis', '/catalog/tool-taxis');
+});
+
+test('merged product pages 301 to their survivor, which still exists', () => {
+  const slugs = new Set(allProducts.map((p) => `/catalog/${p.category}/${p.slug}`));
+  for (const [from, to] of Object.entries(MERGED_PRODUCT_PATHS)) {
+    // The retired page must be GONE — a redirect to a page that is still
+    // generated would mean the merge silently did not happen.
+    assert.ok(!slugs.has(from), `${from} still generates a page; the merge did not apply`);
+    // ...and the survivor must exist, or the 301 lands on a 404.
+    assert.ok(slugs.has(to), `${from} redirects to ${to}, which is not a product page`);
+    assertSingleHop(from, to);
+  }
+});
+
+test('a merged product keeps its model names searchable on the survivor', () => {
+  // TTB-S75U lost its page but not its existence: buildSearchIndex puts
+  // `models` in the haystack, so a search for it must still reach the page
+  // that now documents it.
+  const survivor = allProducts.find((p) => p.slug === 'ttb-s75-ttb-s85');
+  assert.ok(survivor, 'ttb-s75-ttb-s85 should exist');
+  assert.deepEqual(survivor.models, ['TTB-S75', 'TTB-S75U', 'TTB-S85']);
 });
 
 test('valueless junk query strings 404 instead of serving a 200 homepage', () => {

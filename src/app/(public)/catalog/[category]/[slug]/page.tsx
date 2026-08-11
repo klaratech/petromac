@@ -8,6 +8,7 @@ import {
   allProducts,
   getCategory,
   getProduct,
+  MERGE_NOTES,
   productHref,
 } from '@/features/catalog/content';
 import type { CatalogImage } from '@/features/catalog/content/types';
@@ -291,6 +292,14 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
                 <SpecTableView key={table.title + i} table={table} />
               ))}
             </div>
+            {/* Merge survivors carry the absorbed model's difference here
+                rather than on a near-duplicate page of their own. See
+                MERGED_INTO in features/catalog/content/index.ts. */}
+            {MERGE_NOTES[slug] && (
+              <p className="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-relaxed text-slate-600">
+                {MERGE_NOTES[slug]}
+              </p>
+            )}
           </section>
         )}
 

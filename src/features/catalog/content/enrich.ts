@@ -65,7 +65,9 @@ const CURATION: Record<string, CurationEntry> = {
   'ttb-715': { purpose: 'convey', role: 'Convey' },
   'ttb-x-515': { purpose: 'centralise', role: 'Centre' },
   'ttb-s75-ttb-s85': { purpose: 'formation-testing', role: 'Formation testing' },
-  'ttb-s75u-ttb-s85': { purpose: 'formation-testing', role: 'Formation testing' },
+  // No entry for 'ttb-s75u-ttb-s85' — merged into the row above (MERGED_INTO
+  // in ./index.ts), so it never reaches this lookup. It is filtered out
+  // before the missing-curation warning runs, not silently defaulted.
   'ttb-ttc-il6o': { purpose: 'orient', role: 'In-line orient' },
   'ttb-il6c': { purpose: 'convey', role: 'In-line convey' },
   // guides & holefinders
@@ -105,7 +107,8 @@ export const PRODUCT_TITLES: Record<string, string> = {
   'ttb-715': 'TTB-715 Tool Taxi — Sticking Prevention',
   'ttb-x-515': 'Centering Tool Taxi — Wellbore Centralisation',
   'ttb-s75-ttb-s85': 'Formation Testing Wheels & Rollers',
-  'ttb-s75u-ttb-s85': 'HPHT Formation Testing Wheels & Rollers',
+  // 'ttb-s75u-ttb-s85' had its own SEO title ("HPHT Formation Testing Wheels
+  // & Rollers") until the merge — the page is gone and its URL 301s here.
   'ttb-ttc-il6o': 'Orienting Inline Wheels for Slim Open Hole — SLB',
   'ttb-il6c': 'Conveyance Inline Wheels for Slim Open Hole — SLB',
   // guides & holefinders

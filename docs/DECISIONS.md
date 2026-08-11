@@ -5,6 +5,49 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Catalog: near-duplicate product pages merge, they don't get rewritten
+
+**Decision:** TTB-S75U/S85 stopped having a page. It is documented on
+TTB-S75/S85 as a note, its models are searchable there, and its URL 301s.
+Products 32 → 31.
+
+**Why:** the two pages had byte-identical `description` and `applications`,
+identical Materials and both Standoff tables, and differed in three spec rows.
+Martin flagged the repetition; it was also the site's second-worst
+near-duplicate on 4-gram Jaccard (0.67). Rewriting one page to be "different
+enough" would have been writing copy to satisfy a crawler — the honest fix is
+that these are one product family with a variant, and should be one page.
+
+**Where the merge is applied, and why it matters.** `MERGED_INTO` lives in
+`features/catalog/content/index.ts`, at the point `allProducts` is built — NOT
+in `enrich.ts`, which is where the TODO originally put it. `buildSearchIndex`
+reads `allProducts` directly, so an enrichment-layer filter would have removed
+the page while leaving the search box offering its URL. Anything that changes
+which products EXIST belongs at the source list; `enrich.ts` is for adding
+fields to products that do.
+
+**The merged product keeps being generated.** `catalog.json` is generated and
+never hand-edited, and the entry stays in `catalog_config.json` on purpose:
+the pipeline keeps producing TTB-S75U/S85 and `applyMerges` keeps absorbing it.
+A new catalog edition therefore cannot silently resurrect the duplicate page,
+and the data is still there if the call is reversed. Deleting the config entry
+would have thrown the specs away to achieve the same page count.
+
+**Models move to the survivor.** A search for "TTB-S75U" still has to find
+something — the model exists, only its page doesn't. `applyMerges` hands the
+absorbed model names to the survivor, which puts them in the search haystack
+and renders them as chips. A unit test pins the resulting list.
+
+**The planned footnote was factually wrong, and checking the data caught it.**
+The TODO called for "S75 can be modified to S75U (30 kpsi)". Both taxis were
+already rated 30,000 psi; the difference is the BORE, 4-¾" vs 5-¼", so the
+S75U accepts the physically larger 30 kpsi tools rather than being a
+higher-rated taxi. The note says that. The "can be modified" half was dropped
+entirely — it is a service claim the catalog does not make, and not ours to
+invent. See TODO.
+
+---
+
 ## Aug 2026 — Story pages render extracted figures, not the published page
 
 **Decision:** a success-story page renders the FIGURES pulled out of its PDF

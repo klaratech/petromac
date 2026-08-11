@@ -395,11 +395,28 @@ the URL, with one-hop 301s and GSC sitemap-resubmit + request-indexing done
       CURATION table in `src/features/catalog/content/enrich.ts` (~30
       one-liners) and make the toggle a real filter. Also discuss with
       Martin whether the Purpose dropdown itself should stay.
-- [ ] Catalog: merge the TTB-S75U/S85 page into TTB-S75/S85 with an
-      "S75 can be modified to S75U (30 kpsi)" footnote — the two products
-      share their description text verbatim (Martin: repetition; same
-      pattern as the MDT-85 footnote). Enrichment-layer job; catalog.json
-      is generated and must not be hand-edited.
+- [x] **Catalog: TTB-S75U/S85 merged into TTB-S75/S85 — DONE Aug 2026.**
+      One page, three model chips, old URL 301s, S75U still searchable.
+      Machinery is `MERGED_INTO` + `MERGE_NOTES` in
+      `features/catalog/content/index.ts` and `MERGED_PRODUCT_PATHS` in
+      `redirects.ts`; two unit tests enforce the pair. Products 32 → 31.
+      **The planned footnote wording was wrong and was not used:** it read
+      "S75 can be modified to S75U (30 kpsi)", but BOTH taxis were already
+      rated 30,000 psi in the catalog. The real difference is the BORE —
+      4-¾" vs 5-¼" — so the S75U fits the physically larger 30 kpsi tools;
+      it is not a higher-rated taxi. The note says that instead.
+- [ ] **Confirm the "can be modified" claim** for the TTB-S75U note. The
+      original TODO said an S75 can be modified to S75U spec; that is a
+      service offering, not something the catalog states, so it was left
+      out. If Petromac does retrofit them, add a sentence to `MERGE_NOTES`
+      in `features/catalog/content/index.ts` — one-line change.
+- [ ] **Catalog data oddity: TTB-S75U wheel diameter reads `4-5/6 ”`** in
+      the generated spec table (S75 is `6”`). 4-5/6 is not a machining
+      fraction — almost certainly 4-5/8" mis-set in the InDesign source.
+      Not user-visible today (the S75U table went with the merged page and
+      the note doesn't quote wheel diameter), so this is a source fix for
+      the next edition, not a website patch. Check the IDML before the next
+      `pnpm run data:catalog`.
 - [x] **High Deviations video audio — RESOLVED 6 Aug** by switching the
       homepage to the full 250s master cut, which HAS narration: the
       subtitled 212.5s cut is silent at every generation INCLUDING its

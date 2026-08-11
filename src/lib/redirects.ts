@@ -56,6 +56,18 @@ const ASSET_PREFIXES = [
  * The click/impression figures are from the 30 Jul 2026 Search Console audit
  * (last 6 months) and are why these are P0: they were live traffic 404ing.
  */
+/**
+ * Catalog product pages folded into another product's page. Kept separate
+ * from LEGACY_PATHS because these are not WordPress-era URLs — they are our
+ * own pages, indexed and live, retired by an editorial merge. Add a line here
+ * whenever a slug is added to MERGED_INTO, or the old URL 404s.
+ */
+export const MERGED_PRODUCT_PATHS: Record<string, string> = {
+  // Near-duplicate of TTB-S75/S85 (0.67 Jaccard): identical description,
+  // applications, materials and standoff tables. Aug 2026.
+  '/catalog/tool-taxis/ttb-s75u-ttb-s85': '/catalog/tool-taxis/ttb-s75-ttb-s85',
+};
+
 export const LEGACY_PATHS: Record<string, string> = {
   '/contacts': '/contact', // 59 clicks / 1,045 impressions
   '/patents': '/about/patents', // 24 clicks / 438 impressions
@@ -292,6 +304,14 @@ export function resolveLegacyRequest(rawPathname: string, search = ''): LegacyRe
   if (startsWithSegment(path, '/catalogtest')) {
     const rest = path.slice('/catalogtest'.length);
     return { type: 'redirect', location: withSearch(`/catalog${rest}`, search), status: 301 };
+  }
+
+  // 7b. Product pages merged into another product (MERGED_INTO in
+  //     features/catalog/content/index.ts). The page stops being generated,
+  //     so without this the old URL 404s — and these were indexed.
+  const mergedProduct = MERGED_PRODUCT_PATHS[key];
+  if (mergedProduct) {
+    return { type: 'redirect', location: mergedProduct, status: 301 };
   }
 
   const params = new URLSearchParams(search);
