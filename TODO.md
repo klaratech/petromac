@@ -72,9 +72,15 @@ Do them in this order, in one sitting:
       pre-change baseline — antra 200/200, trailandtide 307/307, klaratech
       307/307, lynx 200, klaratax 200, all identical — plus Petromac
       www 200 / apex 301 / test 200 and `/api/staff/*` precedence still 405.
-      Two n8n loose ends left: its DNS record is in the PERSONAL Cloudflare
-      account and now points at a tunnel with no matching ingress (hits the
-      catch-all 404), and the container on :5678 may still be running.
+      **n8n was already fully dead** — checked 11 Aug: Cloudflare's own
+      nameservers return NXDOMAIN for `n8n.thatha.online` (no DNS record
+      anywhere), nothing was listening on :5678, and the container had been
+      stopped for 3 months. The tunnel route was pointing at nothing. An
+      earlier note here claimed the DNS record still existed and the container
+      might be running; both were wrong.
+      Optional reclaim on klaratech-1: the `n8nio/n8n:latest` image is 2.28 GB
+      and there is a `n8n-workflows_n8n_data` volume. Check the volume before
+      deleting it — it holds whatever workflows were built.
 
 - [ ] **Send one test scan from an HQ printer** — now a CONFIRMATION, not a
       gate. Both scan paths were resolved without it (Steve's home scanner uses

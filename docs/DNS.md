@@ -242,9 +242,11 @@ trailandtide.it and klaratech.it (+lynx, klaratax) and must keep running; and
 unit and takes all of those domains down together.
 
 The original tunnel's stale Petromac routes were removed on 11 Aug 2026, after
-the old zone was deleted; `n8n.thatha.online` went at the same time (a dead
-experiment). Its DNS record still exists in the PERSONAL Cloudflare account and
-now resolves to a tunnel with no matching ingress.
+the old zone was deleted; `n8n.thatha.online` went at the same time. That route
+was fully orphaned: Cloudflare's own nameservers return NXDOMAIN for the
+hostname (no DNS record at all), nothing was listening on its target port, and
+the container had been stopped for three months. Only the image (2.28 GB) and
+a `n8n-workflows_n8n_data` volume remain on the box.
 
 ## Related gotchas
 
