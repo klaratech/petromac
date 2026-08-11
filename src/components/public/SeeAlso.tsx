@@ -4,7 +4,7 @@ import Link from 'next/link';
  * The four EVIDENCE pages, cross-linked to each other (Aug 2026).
  *
  * These four answer the same question — "prove it" — at different levels of
- * formality: the field record, the aggregate numbers, the peer-reviewed record,
+ * formality: the field record, the aggregate numbers, the published record,
  * and the legal record. A reader who wants one usually wants another, and until
  * now they barely referenced each other: Publications and Patents each had a
  * single "See also" pointing at the other, and neither knew about Success
@@ -19,7 +19,7 @@ import Link from 'next/link';
 const EVIDENCE_PAGES = [
   { href: '/success-stories', label: 'Success stories' },
   { href: '/track-record', label: 'Track record' },
-  { href: '/about/publications', label: 'Peer-reviewed publications' },
+  { href: '/about/publications', label: 'Conference papers' },
   { href: '/about/patents', label: 'Patents' },
 ] as const;
 

@@ -18,14 +18,14 @@ almost all of those stay bare.
 
 **Never mark these** — each one causes a concrete problem:
 
-| Context | Why not |
-| --- | --- |
-| `pageMetadata` titles, `CATEGORY_TITLES`, meta descriptions | Clutters the SERP snippet and eats the 60-char title budget above |
-| `alt=`, `aria-label` | Screen readers announce "trade mark" on every pass |
-| JSON-LD / schema (`name`, breadcrumb `ListItem`) | Structured data should carry the plain entity name |
-| Legal entity names, the footer © line, Terms/Privacy | The registered company name is not the mark |
-| URLs, slugs, filenames, email addresses, code comments | Not display copy |
-| Filter values, chip keys, data columns | Must match the DATA, not the label — mark via a display map instead |
+| Context                                                     | Why not                                                             |
+| ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| `pageMetadata` titles, `CATEGORY_TITLES`, meta descriptions | Clutters the SERP snippet and eats the 60-char title budget above   |
+| `alt=`, `aria-label`                                        | Screen readers announce "trade mark" on every pass                  |
+| JSON-LD / schema (`name`, breadcrumb `ListItem`)            | Structured data should carry the plain entity name                  |
+| Legal entity names, the footer © line, Terms/Privacy        | The registered company name is not the mark                         |
+| URLs, slugs, filenames, email addresses, code comments      | Not display copy                                                    |
+| Filter values, chip keys, data columns                      | Must match the DATA, not the label — mark via a display map instead |
 
 **Where the marks live** (all display-only, data untouched):
 
@@ -70,22 +70,28 @@ already superscripted by the font, and the existing marks all use it.
 
 ## 3. Core & Category Page Titles (14 Routes)
 
-| Route                         | Current Base Title                               | Proposed Base Title                                        | Full SERP Title (`+ \| Petromac`)                                        | SERP Chars |
-| :---------------------------- | :----------------------------------------------- | :--------------------------------------------------------- | :----------------------------------------------------------------------- | :--------: |
-| `/`                           | Wireline Conveyance, Centralisers & Hole Finders | Wireline Conveyance, Centralisers & Hole Finders           | `Wireline Conveyance, Centralisers & Hole Finders \| Petromac`           |   **59**   |
-| `/catalog`                    | Product Catalog                                  | Wireline Conveyance & Centraliser Catalog                  | `Wireline Conveyance & Centraliser Catalog \| Petromac`                  |   **52**   |
-| `/catalog/tool-taxis`         | Tool Taxis                                       | Tool Taxis — Conveyance Accessories for Sticking Reduction | `Tool Taxis — Conveyance Accessories for Sticking Reduction \| Petromac` |   **58**   |
-| `/catalog/guides-holefinders` | Guides & Holefinders                             | Holefinders & Guides for Wireline Logging                  | `Holefinders & Guides for Wireline Logging \| Petromac`                  |   **52**   |
-| `/catalog/focus-centralisers` | Focus™ Centralisers                              | Centralisers for Wireline Logging — Open & Cased Hole      | `Centralisers for Wireline Logging — Open & Cased Hole \| Petromac`      |   **60**   |
-| `/catalog/well-intervention`  | Well Intervention Accessories                    | Rollers for Well Intervention — Over Body & Wireline       | `Rollers for Well Intervention — Over Body & Wireline \| Petromac`       |   **60**   |
-| `/success-stories` (renamed from `/case-studies` Aug 2026) | Success Stories | Success Stories — Wireline Logging Case Studies | `Success Stories — Wireline Logging Case Studies \| Petromac` |   **47**   |
-| `/track-record`               | Track Record                                     | 3,100+ Wireline Deployments in 52 Countries                | `3,100+ Wireline Deployments in 52 Countries \| Petromac`                |   **53**   |
-| `/simulation`                 | Athena — Wireline Planning Partner               | Athena — Wireline Job Planning & Drag Modelling            | `Athena — Wireline Job Planning & Drag Modelling \| Petromac`            |   **58**   |
-| `/about`                      | About                                            | About Petromac — Wireline Conveyance Engineering           | `About Petromac — Wireline Conveyance Engineering \| Petromac`           |   **59**   |
-| `/patents`                    | Patents                                          | Patents — Wireline Conveyance & Centralisation             | `Patents — Wireline Conveyance & Centralisation \| Petromac`             |   **57**   |
-| `/about/publications`         | Publications                                     | Technical Papers on Wireline Conveyance                    | `Technical Papers on Wireline Conveyance \| Petromac`                    |   **50**   |
-| `/team`                       | Our Team                                         | Our Team — Wireline Engineering Specialists                | `Our Team — Wireline Engineering Specialists \| Petromac`                |   **54**   |
-| `/contact`                    | Contact Us                                       | Contact Petromac — Talk to a Wireline Engineer             | `Contact Petromac — Talk to a Wireline Engineer \| Petromac`             |   **57**   |
+| Route                                                      | Current Base Title                               | Proposed Base Title                                        | Full SERP Title (`+ \| Petromac`)                                        | SERP Chars |
+| :--------------------------------------------------------- | :----------------------------------------------- | :--------------------------------------------------------- | :----------------------------------------------------------------------- | :--------: |
+| `/`                                                        | Wireline Conveyance, Centralisers & Hole Finders | Wireline Conveyance, Centralisers & Hole Finders           | `Wireline Conveyance, Centralisers & Hole Finders \| Petromac`           |   **59**   |
+| `/catalog`                                                 | Product Catalog                                  | Wireline Conveyance & Centraliser Catalog                  | `Wireline Conveyance & Centraliser Catalog \| Petromac`                  |   **52**   |
+| `/catalog/tool-taxis`                                      | Tool Taxis                                       | Tool Taxis — Conveyance Accessories for Sticking Reduction | `Tool Taxis — Conveyance Accessories for Sticking Reduction \| Petromac` |   **58**   |
+| `/catalog/guides-holefinders`                              | Guides & Holefinders                             | Holefinders & Guides for Wireline Logging                  | `Holefinders & Guides for Wireline Logging \| Petromac`                  |   **52**   |
+| `/catalog/focus-centralisers`                              | Focus™ Centralisers                              | Centralisers for Wireline Logging — Open & Cased Hole      | `Centralisers for Wireline Logging — Open & Cased Hole \| Petromac`      |   **60**   |
+| `/catalog/well-intervention`                               | Well Intervention Accessories                    | Rollers for Well Intervention — Over Body & Wireline       | `Rollers for Well Intervention — Over Body & Wireline \| Petromac`       |   **60**   |
+| `/success-stories` (renamed from `/case-studies` Aug 2026) | Success Stories                                  | Success Stories — Wireline Logging Case Studies            | `Success Stories — Wireline Logging Case Studies \| Petromac`            |   **47**   |
+| `/track-record`                                            | Track Record                                     | 3,100+ Wireline Deployments in 52 Countries                | `3,100+ Wireline Deployments in 52 Countries \| Petromac`                |   **53**   |
+| `/simulation`                                              | Athena — Wireline Planning Partner               | Athena — Wireline Job Planning & Drag Modelling            | `Athena — Wireline Job Planning & Drag Modelling \| Petromac`            |   **58**   |
+| `/about`                                                   | About                                            | About Petromac — Wireline Conveyance Engineering           | `About Petromac — Wireline Conveyance Engineering \| Petromac`           |   **59**   |
+| `/patents`                                                 | Patents                                          | Patents — Wireline Conveyance & Centralisation             | `Patents — Wireline Conveyance & Centralisation \| Petromac`             |   **57**   |
+| `/about/publications`                                      | Publications                                     | Technical Papers on Wireline Conveyance                    | `Technical Papers on Wireline Conveyance \| Petromac`                    |   **50**   |
+
+<!-- The H1 on that page is "Conference Papers" (renamed from "Peer-Reviewed
+     Publications", Aug 2026) and deliberately does NOT match the SEO title
+     above. The title targets what people search for; the H1 says what the
+     papers actually are. Do not "fix" the mismatch by changing either. -->
+
+| `/team` | Our Team | Our Team — Wireline Engineering Specialists | `Our Team — Wireline Engineering Specialists \| Petromac` | **54** |
+| `/contact` | Contact Us | Contact Petromac — Talk to a Wireline Engineer | `Contact Petromac — Talk to a Wireline Engineer \| Petromac` | **57** |
 
 ---
 

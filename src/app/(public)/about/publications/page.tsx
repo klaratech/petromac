@@ -129,7 +129,7 @@ export default function PublicationsPage() {
   const publicationsSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Petromac peer-reviewed publications',
+    name: 'Petromac conference papers',
     itemListElement: publications.map((p, i) => ({
       '@type': 'ListItem',
       position: i + 1,
@@ -151,7 +151,7 @@ export default function PublicationsPage() {
         {/* Header: title left, evidence cross-links right */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-4">
           <h1 className="font-heading text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
-            Peer-Reviewed Publications
+            Conference Papers
           </h1>
           <SeeAlso current="/about/publications" />
         </div>
