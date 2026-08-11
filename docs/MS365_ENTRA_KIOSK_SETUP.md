@@ -246,6 +246,11 @@ production one long-term.
 An **unlicensed** member account created 10 Aug 2026 so the Athena developers
 can test the sign-in flow end to end.
 
+**Its display name is "Athena Development Team".** Sign-in logs show the
+display name, not the UPN, so a failed Athena sign-in appears as
+`Athena Development Team` rather than `domitila` — it reads like an unknown
+account until you know that.
+
 - **Unlicensed is free.** A licence buys a mailbox and Office apps; the identity
   itself costs nothing. It has no mailbox — set alternate contact info and MFA
   at first sign-in or the account cannot be recovered.
