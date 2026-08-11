@@ -4,6 +4,15 @@ Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + 
 
 ## Success-story figures: redo from the InDesign IDML (Aug 2026)
 
+**NOT PROMOTED — on test only, deliberately.** Rajesh reviewed the extracted
+figures on test (11 Aug 2026) and called the pages not good enough to publish,
+so this waits for the IDML rather than going live and being fixed later.
+
+**Consequence to remember:** the promote workflow ships whatever is on `main`,
+so the next promote of ANY change carries this to production too. If something
+unrelated needs to go live first, add the fallback flag to the story page
+(render `cs.image` as before) rather than trying to promote around it.
+
 Story pages now render figures extracted from the PDF instead of the whole
 published page. The extraction is good but not perfect, and the IDML makes
 nearly all of the remaining work disappear — the catalog pipeline already

@@ -279,11 +279,20 @@ counsel sends (a Word doc, updated roughly every 12 months).
 
 The Publications page (`/about/publications`) is hand-maintained.
 
+**Naming (Aug 2026):** the page's H1 is **"Conference Papers"** — renamed from
+"Peer-Reviewed Publications", because these are SPE/SPWLA conference
+proceedings. The SEO title (`Technical Papers on Wireline Conveyance`) and the
+URL are deliberately unchanged, so the H1 and `<title>` differ on purpose.
+
 **Navigation note (Aug 2026):** Publications left the About cluster entirely —
-it is in neither the About dropdown (Origins / Team / Patents) nor the `/about`
-sidebar (Team / Patents). **Its home is the Success Stories page**, where
-`PublicationsCard` (in `success-stories/page.tsx`) renders it below the story
-grid.
+it is in neither the About dropdown (Origins / Team) nor the `/about` sidebar.
+Patents left the same way. Both are reached through **`SeeAlso`**
+(`src/components/public/SeeAlso.tsx`), which owns the list of the four evidence
+pages — success stories, track record, conference papers, patents — and renders
+on each of them, omitting whichever page it is on. Change the label there, not
+per page. (An earlier `PublicationsCard` on the Success Stories page was
+replaced by this; one hand-placed card is how the page ended up reachable from
+a single place to begin with.)
 
 The URL stays `/about/publications` and stays in the sitemap — presenting a
 page from one route while it lives under another is a mild smell, but moving it

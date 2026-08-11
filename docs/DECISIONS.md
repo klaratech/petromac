@@ -5,6 +5,87 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Story pages render extracted figures, not the published page
+
+**Decision:** a success-story page renders the FIGURES pulled out of its PDF
+page, each with its own caption. The published page itself survives as a
+download and as the og/twitter/JSON-LD share image, but is no longer rendered
+into the page.
+
+**Why:** the page already carried the story's prose, extracted from that same
+PDF page — and then rendered the whole published page below it as one image.
+Every reader got the story twice, the second time as pixels they could not
+select, search or resize, at a size that made the actual logs and plots
+unreadable on a phone. Google got a second copy it could not read at all. The
+figures are the only part of that page the text cannot carry, so they are the
+only part worth rendering.
+
+**Extraction is rules, not patches.** `CAPTION_OVERRIDE` and `DROP_FIGURE`
+exist in `scripts/python/extract_story_figures.py` and are both EMPTY —
+deliberately. Every problem found was fixed as a general rule, and the rules
+each came from a specific wrong output:
+
+1. **Furniture = repeated on 3+ pages AND under 300k px.** Repetition alone is
+   not evidence of chrome: a product render legitimately reused across stories
+   about the same tool trips the count. Dropping the size qualifier cost page
+   27 both its figures and pages 9/10 their captioned one.
+2. **The region world-map is matched by its SLOT** (height exactly 337 at
+   top≈290/left≤60), not its dimensions — it is 605, 611 or 620 wide, and an
+   exact-dims test left it as a spurious Fig.1 on 18 pages, cascading every
+   caption down by one.
+3. **Same-slot repeat draws are deduped.** Page 20 paints one tile 16 times;
+   that was "18 figures".
+4. **`MIN_AREA` 60k is a sliver floor, deliberately low.** Page 16's real log
+   tracks are 74k px — SMALLER than the category icons at ~105k — so area
+   alone can never separate the two populations.
+5. **Gray/1-comp images with no smask row of their own are orphan masks** —
+   alpha channels for vector art that `pdfimages` lists as type "image" and
+   that extract as a white silhouette on solid black. Seven survived every
+   other filter, two of them under real "Fig.N" captions.
+
+**Two traps worth keeping.** `pdfimages -list` prints "object ID" as TWO
+columns — the object number is index 10; index 11 is the ID and is 0 on every
+row. And `pdftohtml` writes extracted images beside its INPUT file, so the
+script reads through a symlink in `/tmp`; without that, every run drops ~250
+stray PNGs into `public/`. `cwd` does not move them and `-i` suppresses the
+`<image>` elements the script exists to read.
+
+**Status: NOT PROMOTED.** Reviewed on test 11 Aug 2026 and judged not good
+enough to publish. The remaining defect is composite figures arriving as their
+separate parts (pages 7, 9, 10, 17), which the InDesign IDML fixes at source —
+it holds the original placed assets, and its caption frames turn caption
+matching into a spatial lookup rather than a guess. Waiting for that rather
+than shipping and patching. See TODO.md.
+
+---
+
+## Aug 2026 — "Peer-Reviewed Publications" renamed to "Conference Papers"
+
+**Decision:** the H1 and every internal link label changed. The URL
+(`/about/publications`) and the SEO title (`Technical Papers on Wireline
+Conveyance`) did NOT.
+
+**Why rename:** these are SPE and SPWLA conference proceedings. "Peer-reviewed"
+overstates what conference-paper review is, and it is the kind of claim an
+engineer who knows the difference would notice. "Conference Papers" is what
+they actually are.
+
+**Why the URL stayed:** moving it costs a 301 and a Search Console re-crawl for
+a name change, and `/publications` already redirects there carrying 123
+impressions.
+
+**Why the title stayed, and the divergence is deliberate:** the `<title>`
+targets what people search for; the H1 says what the papers are. They now
+differ on purpose, which is noted in `docs/VOCABULARY_MAP.md` so it does not
+get "fixed" later by making one match the other.
+
+**Where the label lives:** `SeeAlso` owns it, so the four evidence pages all
+picked it up from one edit. The one hand-placed link — the contact page's
+Resources list — had to be changed separately, which is the argument for
+`SeeAlso` in miniature.
+
+---
+
 ## Aug 2026 — SPF trimmed: the ChemiCloud entries were a spoofing surface, not just dead weight
 
 **Decision:** SPF went from six mechanisms to three —
@@ -289,10 +370,14 @@ themselves on the hardware.
 ## Aug 2026 — Nav: About opens a menu, Origins owns /about
 
 **Decision:** About no longer navigates. It is a `<button>` that only reveals
-its dropdown, which now reads **Origins / Team / Patents**. Origins owns
-`/about`. Publications left the menu; its ROUTE is unchanged and it is
-surfaced from `/success-stories` for now. The logo routes through
-`handleNavClick` like every other nav link.
+its dropdown. Origins owns `/about`. Publications left the menu; its ROUTE is
+unchanged. The logo routes through `handleNavClick` like every other nav link.
+
+**Amended later the same month:** the menu read Origins / Team / Patents when
+this was written; Patents then left too, on the same reasoning as Publications
+(it is evidence, not company background). The menu is now just **Origins /
+Team** — see `ABOUT_SUBLINKS` in `Header.tsx`. Both routes stay live, which is
+why the `isSubActive` trap below still applies.
 
 **Why:** Origins was previously removed (Jul 2026) because it duplicated the
 About item's own href — two adjacent entries pointing at `/about`, so whichever
@@ -308,11 +393,19 @@ Verified across every route that at most one sub-link is ever current. If
 Origins is ever removed again, that special case can go with it — not before.
 
 **Why Publications moved but its URL did not:** it is not "about the company"
-the way Origins/Team/Patents are, so it left the About cluster completely —
-the dropdown AND the `/about` sidebar. Its home is now **Success Stories**,
-where it renders as a `PublicationsCard` below the story grid: an SPE or SPWLA
-paper is the peer-reviewed end of the same evidence those stories tell
-informally, so a reader who wants harder proof is already on the right page.
+the way Origins and Team are, so it left the About cluster completely — the
+dropdown AND the `/about` sidebar. (Patents followed it out for the same
+reason shortly after.) An SPE or SPWLA paper is the formal end
+of the same evidence the stories tell informally, so it belongs with the other
+evidence pages rather than under "About".
+
+SUPERSEDED, same month: this originally put it on Success Stories as a
+`PublicationsCard` below the story grid. That component no longer exists — a
+hand-placed card on one page is how Publications became reachable from exactly
+one place to begin with. It is now reached through `SeeAlso`, which owns the
+list of all four evidence pages and renders on each of them (see the
+Conference Papers entry above). Patents left the About cluster the same way,
+for the same reason.
 
 The ROUTE is deliberately unchanged (`/about/publications`, still in the
 sitemap). Nesting a page under `/about` while presenting it from
@@ -327,10 +420,10 @@ also the only remaining entry points, so prune them only after confirming the
 card carries the traffic, or the page ends up reachable from the sitemap
 alone.
 
-**Placement is under review.** The card sits below the grid ("browse the field
-record, then the formal record"); a card above would compete with the filter
-panel for the first glance. That is a judgement call, not a finding, so
-`PublicationsCard` takes no props and is a one-line move.
+**Placement was under review, and the answer turned out to be "not a card".**
+Superseded within the month by `SeeAlso`, which puts the link in the page
+HEADER of each evidence page instead of a card below one page's grid — see the
+Conference Papers entry at the top of this log.
 
 **Logo:** clicking it while already on the homepage was a same-URL navigation
 Next deliberately ignores — measured on production at scrollY 2079 → 2079,
