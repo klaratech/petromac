@@ -2,6 +2,36 @@
 
 Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + git log.
 
+## Success-story figures: redo from the InDesign IDML (Aug 2026)
+
+Story pages now render figures extracted from the PDF instead of the whole
+published page. The extraction is good but not perfect, and the IDML makes
+nearly all of the remaining work disappear — the catalog pipeline already
+reads IDML, and its `Links/` folder holds the original placed assets.
+
+- [ ] **Re-do extraction from the IDML** once Rajesh supplies it. Fixes at
+      source, with no per-page patching: figures on pages 7, 9, 10 and 17
+      that come out SPLIT (the layout composites them from several placed
+      images and the PDF has no record they belong together); the 47
+      uncaptioned figures (IDML has the caption text frames and their
+      geometry, so caption→figure is a spatial lookup rather than a guess);
+      and any residual furniture. Delete
+      `scripts/python/extract_story_figures.py` at that point, or reduce it
+      to the IDML reader.
+- [ ] **Continent graphics.** The region world-map is deliberately excluded
+      from extraction (it is one furniture image per region, and `region` is
+      already a field on every story). Rajesh is supplying proper continent
+      graphics to render from that field instead of shipping a screenshot of
+      one. Not started.
+- [x] **Captions inlined in the narrative** — DONE (Aug 2026). The page text
+      extraction swept caption lines into the prose mid-sentence, which was
+      invisible while the whole published page rendered as an image but would
+      have printed 45 of the 61 captions twice once figures carried their own.
+      `strip_captions()` in `build_case_studies.py` removes any caption that
+      appears verbatim in the narrative. Genuine in-text cross-references
+      ("…yielded excellent data (see Fig.2).") are untouched — only the swept
+      caption strings match.
+
 ## Cloudflare account migration (10 Aug 2026)
 
 Zone moved from Rajesh's personal Cloudflare account to the company account

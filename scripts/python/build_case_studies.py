@@ -23,6 +23,10 @@ from pypdf import PdfReader
 REPO = Path(__file__).resolve().parents[2]
 BASE = REPO / "public/flipbooks/success-stories"
 JSON_OUT = REPO / "src/features/case-studies/content/case-studies.json"
+# Written by extract_story_figures.py — run that first. Optional: without it
+# stories carry no figures and the page falls back to nothing visual, rather
+# than the build failing.
+FIGURES = BASE / "figures/manifest.json"
 
 WIDE = 42  # chars — sidebar column is ~28-33, narrative 45-95
 
@@ -48,6 +52,31 @@ def clean_join(lines: list[str]) -> str:
 def split_sentences_to_paras(text: str) -> list[str]:
     """The PDF loses paragraph breaks; keep it as one block per section."""
     return [text] if text else []
+
+
+def strip_captions(paras: list[str], captions: list[str]) -> list[str]:
+    """Drop figure captions out of the narrative.
+
+    Captions sit in the same text layer as the story prose, so extracting the
+    page sweeps them into the narrative mid-sentence — page 11 reads
+    "...(see tension log on left). Fig.1. Tension profile due to stick-slip on
+    tool Fig.2. Tension profile with tool on taxis Conveying a CMR string...".
+    That was invisible while the page rendered the whole published page as an
+    image, since the caption only existed there once. Now the site renders the
+    figures with their captions attached, so leaving these in prints 45 of the
+    61 captions twice.
+
+    Longest first, so one caption that starts with another can't be
+    half-removed."""
+    out = []
+    for p in paras:
+        for c in sorted((c for c in captions if c), key=len, reverse=True):
+            p = p.replace(c, " ")
+        p = re.sub(r"\s+", " ", p).strip()
+        p = re.sub(r"\s+([.,;:])", r"\1", p)
+        if p:
+            out.append(p)
+    return out
 
 
 def extract_page(reader: PdfReader, page_no: int) -> dict:
@@ -204,6 +233,9 @@ def meta_description(story: dict, title: str) -> str:
 def main() -> None:
     reader = PdfReader(BASE / "source.pdf")
     rows = list(csv.DictReader(open(BASE / "tags.csv")))
+    figures = json.loads(FIGURES.read_text()) if FIGURES.exists() else {}
+    if not figures:
+        print("WARNING: no figures manifest — run extract_story_figures.py first")
     stories = []
     for row in rows:
         story = extract_page(reader, int(row["Page"]))
@@ -225,6 +257,12 @@ def main() -> None:
             narrative = [P22_NARRATIVE]
         tags = s["tags"]
         country = COUNTRY_FIX.get(tags["country"], tags["country"])
+        fig = figures.get(str(page), {})
+        page_figures = [
+            {**f, "caption": c or None}
+            for f, c in zip(fig.get("figures", []), fig.get("captions", []))
+        ]
+        narrative = strip_captions(narrative, fig.get("captions", []))
         out.append(
             {
                 "slug": slug,
@@ -242,6 +280,7 @@ def main() -> None:
                 "results": [s["results"]] if s["results"] else [],
                 "narrative": narrative,
                 "image": {"src": s["image"], "width": PAGE_W, "height": PAGE_H},
+                "figures": page_figures,
             }
         )
     # sanity: slugs unique, all pages covered

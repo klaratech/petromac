@@ -10,6 +10,7 @@ import {
   relatedCaseStudies,
 } from '@/features/case-studies/filters';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
+import DownloadStoryPage from '@/components/public/case-studies/DownloadStoryPage';
 import { pageMetadata } from '@/lib/seo';
 
 interface Params {
@@ -146,24 +147,71 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
               ))}
             </div>
 
-            {/* The published story page — carries the figures and logs */}
-            <figure className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <Image
-                src={cs.image.src}
-                alt={`${cs.title} — published success story with figures`}
-                width={cs.image.width}
-                height={cs.image.height}
-                className="w-full h-auto object-contain"
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                priority
-              />
-              <figcaption className="mt-3 text-center text-sm text-slate-500">
-                As published in the Petromac success stories collection —{' '}
-                <Link href="/success-stories" className="font-medium text-brand hover:underline">
-                  browse the full collection
-                </Link>
-              </figcaption>
-            </figure>
+            {/* Figures from the story's published page.
+                Until Aug 2026 this rendered the WHOLE published page as one
+                image, directly below the prose extracted from that same page —
+                so every reader got the story twice, the second time as pixels
+                they couldn't select, search or resize, and at a size that made
+                the actual logs and plots unreadable on a phone. The figures are
+                the only part of the page the text can't carry, so they are the
+                only part worth rendering.
+                Portrait figures pair up on a row (page 11's two tension
+                profiles are meant to be read side by side); landscape ones run
+                full width. Captions come from the page's own "Fig.N" lines and
+                are absent where the layout had none. */}
+            {cs.figures.length > 0 && (
+              <div className="grid grid-cols-2 gap-5">
+                {cs.figures.map((fig, i) => {
+                  const wide = fig.width >= fig.height;
+                  return (
+                    <figure
+                      key={fig.src}
+                      className={
+                        wide
+                          ? 'col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4'
+                          : 'col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:col-span-1'
+                      }
+                    >
+                      <Image
+                        src={fig.src}
+                        alt={fig.caption ?? `${cs.title} — figure ${i + 1}`}
+                        width={fig.width}
+                        height={fig.height}
+                        className="mx-auto h-auto w-full object-contain"
+                        /* Wide figures span the whole prose column (~65vw at
+                         desktop), portrait ones share a row so they get half
+                         of it. One combined `sizes` under-served the wide
+                         ones — a 1200px source came down as 512px and looked
+                         soft at 807px on screen. */
+                        sizes={
+                          wide
+                            ? '(max-width: 1024px) 100vw, 65vw'
+                            : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+                        }
+                        priority={i === 0}
+                      />
+                      {fig.caption && (
+                        <figcaption className="mt-3 text-sm leading-snug text-slate-500">
+                          {fig.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* The published page is still available — as a download, not as a
+                second copy of the story rendered into the page. */}
+            <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-6">
+              <DownloadStoryPage page={cs.page} slug={cs.slug} />
+              <Link
+                href="/success-stories"
+                className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-brand hover:underline"
+              >
+                Browse all success stories
+              </Link>
+            </div>
           </div>
 
           <aside className="space-y-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 lg:sticky lg:top-24">
@@ -178,10 +226,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             and a reader who finished one had nowhere to go.
             Order matters: the product/track-record/contact line comes FIRST
             because it follows straight on from the story you just read, then
-            related stories as the "or read another" step. The old
-            "← All success stories" link was dropped — the figure caption above
-            already says "browse the full collection", and two links to the hub
-            on one page is just noise. */}
+            related stories as the "or read another" step. There is deliberately
+            no "← All success stories" link here — the actions row above the
+            figures already carries "Browse all success stories", and two links
+            to the hub on one page is just noise. */}
         <nav
           aria-label="Where to next"
           className="mt-12 border-t border-slate-200 pt-6 text-sm text-slate-600"

@@ -34,6 +34,25 @@ export interface CaseStudy {
   narrative: string[];
   /** The published flipbook page — figures, logs and layout included. */
   image: { src: string; width: number; height: number };
+  /**
+   * Figures extracted from the story's PDF page, in reading order, with the
+   * captions matched from the page text. The page used to render `image`
+   * (the whole published page) below the extracted prose, which repeated
+   * every word of the story back as pixels; these carry the part of the page
+   * the text can't.
+   *
+   * INTERIM: extracted from the PDF by scripts/python/extract_story_figures.py.
+   * A few figures on pages 7, 9, 10 and 17 are split across several images
+   * because the layout composites them; the InDesign IDML has the original
+   * placed assets and supersedes this. Captions are null where the page text
+   * had no "Fig.N" line to match.
+   */
+  figures: {
+    src: string;
+    width: number;
+    height: number;
+    caption: string | null;
+  }[];
 }
 
 export const caseStudies = caseStudiesJson as CaseStudy[];

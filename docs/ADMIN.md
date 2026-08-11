@@ -109,12 +109,41 @@ is left untouched, and vice versa. `pnpm run data` does flipbooks and
 operations together.
 
 **Success-story pages (after a success-stories update):** the `/success-stories`
-pages are generated FROM the flipbook — after step 2, run
-`python3 scripts/python/build_case_studies.py` to regenerate
-`src/features/case-studies/content/case-studies.json`. New stories in the
-edition need a `NEW_SLUG` entry in that script (it fails loudly on an
-unmapped page); existing slugs are frozen (indexed URLs + redirects).
-Skim the regenerated titles for PDF text-order gloms (`TITLE_OVERRIDE`).
+pages are generated FROM the flipbook. After step 2, run **both** scripts, in
+this order:
+
+```bash
+python3 scripts/python/extract_story_figures.py && python3 scripts/python/build_case_studies.py
+```
+
+1. `extract_story_figures.py` pulls the FIGURES out of each story page into
+   `public/flipbooks/success-stories/figures/` with a `manifest.json` and a
+   self-contained `REVIEW.html` — open that in a browser to eyeball all 46
+   pages at once before committing. Story pages render these figures; they no
+   longer render the whole published page (that was the same story twice, the
+   second time as unreadable pixels). It is safe to re-run: output is
+   deterministic.
+2. `build_case_studies.py` regenerates
+   `src/features/case-studies/content/case-studies.json`, folding the figure
+   manifest in. It warns rather than fails if the manifest is missing, so a
+   forgotten step 1 shows up as stories with no figures, not a broken build.
+
+New stories in the edition need a `NEW_SLUG` entry in `build_case_studies.py`
+(it fails loudly on an unmapped page); existing slugs are frozen (indexed URLs
+
+- redirects). Skim the regenerated titles for PDF text-order gloms
+  (`TITLE_OVERRIDE`).
+
+Two knobs in `extract_story_figures.py` if a new edition extracts badly:
+`CAPTION_OVERRIDE` and `DROP_FIGURE`, both keyed by page number and both
+currently empty — everything is handled by the general rules (repeat-image
+furniture filter, the region-map slot test, reading-order sorting, and
+same-slot dedupe). Prefer fixing a rule over adding a per-page patch.
+
+**Known limitation (Aug 2026):** a few figures on pages 7, 9, 10 and 17 come
+out split into pieces, because the layout composites them from several placed
+images and the PDF has no record that they belong together. The InDesign IDML
+carries the original assets and supersedes the whole extraction — see TODO.
 
 ---
 
@@ -292,7 +321,7 @@ Team page (`/team`). Data is in `src/data/team.ts`.
   _before_ committing.
 - Videos: transcode to H.264. The four homepage lightbox `*-subtitled` cuts
   are 1080p since Aug 2026 (`-crf 22 -maxrate 2500k -bufsize 5000k
-  -movflags +faststart`, audio copied) — 540p at low bitrates read as blur
+-movflags +faststart`, audio copied) — 540p at low bitrates read as blur
   and triggered Edge's "Enhance" (Video Super Resolution) offer. Small
   muted mechanism/background clips can stay SD. Strip audio (`-an`) only
   for clips that play muted (hero/background loops); narrated `*-subtitled`
