@@ -5,6 +5,82 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Success stories are built from the InDesign package, not the exported PDF
+
+**Decision:** `extract_story_figures.py` and `build_case_studies.py` both read
+the `.idml` in `sources/success-stories/` instead of parsing `source.pdf`. The
+export PDF is still used, but only as a renderer — figures are cropped out of
+it using geometry the IDML supplies. A shared reader lives in
+`scripts/python/idml.py`, used by the catalog pipeline too.
+
+**Why:** every hard part of the old pipeline was reconstructing something the
+layout already stated, and two of them could not be reconstructed at all.
+
+_Vector figures were invisible._ Five story pages place `.ai` or `.pdf`
+artwork — the Hermes drag plots, the annotated logs, page 34's operating-time
+bar chart. InDesign exports those as vector page content, not as embedded
+images, so `pdfimages` returns nothing for them. Pages 19, 20, 21, 30 and 34
+were live without the graph the story is about. Nothing in the PDF route could
+have found them; this was not a tuning problem.
+
+_Composited figures came apart._ Page 7's "range of holefinders" is three
+placed renders under one Fig.2, and the flattened PDF has no record that they
+belong together. Same on 9, 10 and 17. The IDML gives each placement's frame,
+so the group renders as one image.
+
+_Five heuristics became one filename regex._ Repeat-count-plus-area for the
+category icons, a slot match for the region world-map (605/611/620px wide, so
+exact dimensions failed and left a spurious Fig.1 on 18 pages), same-slot
+repeat dedupe, a `MIN_AREA` floor that could never be raised because page 16's
+real log tracks are smaller than the icons, and an orphan-mask test for alpha
+channels that `pdfimages` reports as images. The layout names all of it:
+`MEA.png`, `Icon-*`, `Background-*`, `Logo-*`.
+
+_The prose was being measured rather than read._ The sidebar was separated
+from the story column by line length (`WIDE = 42` characters); the headline was
+"everything before the word CHALLENGE" minus a hand-written list of tag words;
+captions had to be regexed out of the narrative afterwards. Two pages needed a
+hard-coded `TITLE_OVERRIDE` and page 22 had its entire narrative pasted into
+the script as a constant. All four are gone: `Header Blue1`, `Body TXT`,
+`Header RIGHT-Blue` / `RIGHT-Body txt` and `Pie de Foto` say which is which,
+consistently across all 46 pages. Page 22's headline and its four real
+paragraphs now come straight out of the file.
+
+**What this cost.** The InDesign package is now REQUIRED for a
+success-stories update; a PDF on its own no longer rebuilds the pages. That is
+the same contract the catalog has had since Jul 2026.
+
+**Region-render, not `Links/` copy.** The obvious move once you have the
+package is to publish the original assets, which are higher-resolution in
+several cases. It is the wrong move: it discards InDesign's crop, the
+compositing, drop shadows and vector overlays, and it cannot represent a figure
+built from three overlapping placements. Rendering the region at 400 dpi keeps
+the designer's composition, and the 300 ppi the PDF embeds is already above the
+1200px the site ships.
+
+**Two limits worth knowing, both deliberate.** A figure's bounding box can
+overlap its neighbour's — diagonal renders have large empty corners — and
+squaring them off cuts real artwork, so a neighbour is only trimmed when the
+trim is small; page 48's Fig.1 shows a corner of the log below it. And a text
+frame is often wider than the text drawn in it, so `clip_to_artwork` gives up
+rather than eat the figure: at a 0.45 limit page 28 lost two columns off its
+runs table, so the limit is 0.35 and page 28 keeps a bullet list inside its
+figure. Both are visible in `REVIEW.html` and fixable per-page via
+`CAPTION_OVERRIDE` / `DROP_FIGURE` / `SPLIT_GROUP`, all currently empty.
+
+**Two things the rebuild recovered for free.** The layout's standfirst
+(`header-Gray txt`, on 42 of 46 pages) was being swept into the narrative as a
+duplicate-sounding first sentence; it is now a `subtitle` field rendered under
+the H1. And the narrative keeps its real paragraph breaks — 182 paragraphs,
+where the PDF route collapsed each story into a single block.
+
+**A trap in the drop-folder scan.** `sources/success-stories/` now holds a
+package, so finding "the newest .pdf" recursively picks a logo out of `Links/`
+— which rebuilt the entire flipbook from a one-page logo. The export PDF is
+the one sitting beside the `.idml`; `Links/` is never searched for it.
+
+---
+
 ## Aug 2026 — Catalog: near-duplicate product pages merge, they don't get rewritten
 
 **Decision:** TTB-S75U/S85 stopped having a page. It is documented on

@@ -2,31 +2,35 @@
 
 Open work only. History and rationale: [docs/DECISIONS.md](docs/DECISIONS.md) + git log.
 
-## Success-story figures: redo from the InDesign IDML (Aug 2026)
+## Success-story pages, rebuilt from the InDesign IDML (Aug 2026)
 
-**NOT PROMOTED — on test only, deliberately.** Rajesh reviewed the extracted
-figures on test (11 Aug 2026) and called the pages not good enough to publish,
-so this waits for the IDML rather than going live and being fixed later.
+**STILL NOT PROMOTED — on test only.** Rajesh reviewed the PDF-extracted
+figures on test (11 Aug 2026) and called the pages not good enough to publish.
+The IDML rebuild (13 Aug 2026) addresses that; it needs a fresh review on test
+before it goes to production.
 
 **Consequence to remember:** the promote workflow ships whatever is on `main`,
 so the next promote of ANY change carries this to production too. If something
 unrelated needs to go live first, add the fallback flag to the story page
 (render `cs.image` as before) rather than trying to promote around it.
 
-Story pages now render figures extracted from the PDF instead of the whole
-published page. The extraction is good but not perfect, and the IDML makes
-nearly all of the remaining work disappear — the catalog pipeline already
-reads IDML, and its `Links/` folder holds the original placed assets.
-
-- [ ] **Re-do extraction from the IDML** once Rajesh supplies it. Fixes at
-      source, with no per-page patching: figures on pages 7, 9, 10 and 17
-      that come out SPLIT (the layout composites them from several placed
-      images and the PDF has no record they belong together); the 47
-      uncaptioned figures (IDML has the caption text frames and their
-      geometry, so caption→figure is a spatial lookup rather than a guess);
-      and any residual furniture. Delete
-      `scripts/python/extract_story_figures.py` at that point, or reduce it
-      to the IDML reader.
+- [x] **Re-do extraction from the IDML** — DONE (13 Aug 2026). Both scripts now
+      read the InDesign package instead of the exported PDF. Figures come from
+      the layout's own geometry and are rendered as page regions, so the split
+      composites (pages 7, 9, 10, 17) come out whole and the five pages whose
+      figures are placed `.ai`/`.pdf` artwork (19, 20, 21, 30, 34) get the logs
+      and graphs they were shipping without — `pdfimages` cannot see vector
+      content at all. Story prose comes from paragraph styles, which retired
+      the `WIDE = 42` column heuristic, `TAG_WORDS`, `strip_captions()`, both
+      `TITLE_OVERRIDE`s and the hard-coded `P22_NARRATIVE`. Shared IDML reader
+      in `scripts/python/idml.py`. See docs/DECISIONS.md.
+- [ ] **Review the rebuild on test.** Open
+      `public/flipbooks/success-stories/figures/REVIEW.html` (all 89 figures on
+      one page) and the live story pages. Known rough edges, all fixable
+      through `CAPTION_OVERRIDE` / `DROP_FIGURE` / `SPLIT_GROUP`, all currently
+      empty: a figure whose bounding box overlaps a neighbour's can show a
+      corner of it (page 48), and 28 figures have no caption because the layout
+      gives them none.
 - [ ] **Continent graphics.** The region world-map is deliberately excluded
       from extraction (it is one furniture image per region, and `region` is
       already a field on every story). Rajesh is supplying proper continent

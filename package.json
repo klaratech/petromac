@@ -13,6 +13,7 @@
     "data:operations": "tsx scripts/node/data-pipeline.ts --operations-only",
     "data:flipbooks": "tsx scripts/node/data-pipeline.ts --flipbooks-only",
     "data:catalog": "python3 scripts/python/update_catalog.py",
+    "data:stories": "python3 scripts/python/extract_story_figures.py && python3 scripts/python/build_case_studies.py",
     "data:patents": "python3 scripts/python/compress_patent_pdfs.py",
     "data:check": "pnpm run validate:flipbooks && pnpm run validate:successstories",
     "validate:successstories": "tsx scripts/node/validate-successstories.ts",

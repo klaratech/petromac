@@ -4,13 +4,18 @@
  * Scans the `sources/` drop zone, builds the published artifacts, and archives
  * the inputs it consumed. See `sources/README.md` for the convention.
  *
- *   sources/operations/        newest .xlsx          -> public/data/operations_data.json
- *   sources/catalog/           newest .pdf           -> public/flipbooks/catalog/
- *   sources/success-stories/   newest .pdf + .xlsx   -> public/flipbooks/success-stories/
+ *   sources/operations/        newest .xlsx           -> public/data/operations_data.json
+ *   sources/catalog/           newest .pdf            -> public/flipbooks/catalog/
+ *   sources/success-stories/   InDesign package       -> public/flipbooks/success-stories/
+ *                              (+ optional tags .xlsx)   + the /success-stories pages
  *
  * Drop a file in (any filename), run the pipeline, commit the changes in
  * `public/`. Consumed inputs are moved to `sources/_archive/` with a date
  * stamp. An empty folder is simply skipped — not an error.
+ *
+ * Success stories are dropped as the whole InDesign package (`.idml` +
+ * `Links/` + the export PDF), like the catalog, and the package is NOT
+ * archived — the story text and figures are rebuilt from it.
  *
  * Usage:
  *   tsx scripts/node/data-pipeline.ts                  # everything that's been dropped
@@ -50,6 +55,34 @@ function newestFile(dir: string, exts: string[]): Found | null {
       return { path: filePath, name, mtime: statSync(filePath).mtimeMs };
     })
     .sort((a, b) => b.mtime - a.mtime);
+  return matches.length ? { path: matches[0].path, name: matches[0].name } : null;
+}
+
+/**
+ * The InDesign package dropped into `dir`, if there is one: the folder holding
+ * the newest `.idml`.
+ *
+ * Success stories are delivered as the whole package (`.idml` + `Links/` + the
+ * export PDF) since Aug 2026, the same as the catalog, because the story text
+ * and figures are read from the IDML.
+ */
+function newestPackage(dir: string, depth = 2): Found | null {
+  if (!existsSync(dir)) return null;
+  const matches: (Found & { mtime: number })[] = [];
+  const walk = (current: string, left: number): void => {
+    for (const name of readdirSync(current)) {
+      if (name.startsWith('.')) continue;
+      const filePath = path.join(current, name);
+      const stat = statSync(filePath);
+      if (stat.isDirectory()) {
+        if (left > 0) walk(filePath, left - 1);
+      } else if (path.extname(name).toLowerCase() === '.idml') {
+        matches.push({ path: filePath, name, mtime: stat.mtimeMs });
+      }
+    }
+  };
+  walk(dir, depth);
+  matches.sort((a, b) => b.mtime - a.mtime);
   return matches.length ? { path: matches[0].path, name: matches[0].name } : null;
 }
 
@@ -127,7 +160,14 @@ function processFlipbooks(): void {
   const catalogDir = path.join(SOURCES, 'catalog');
   const successDir = path.join(SOURCES, 'success-stories');
   const catalogPdf = newestFile(catalogDir, ['.pdf']);
-  const successPdf = newestFile(successDir, ['.pdf']);
+  const successPkg = newestPackage(successDir);
+  // The export PDF sits BESIDE the .idml, at the top level of the package.
+  // Scanning the package for the newest .pdf outright does not work: `Links/`
+  // is full of placed .pdf artwork, and picking one of those rebuilt the whole
+  // flipbook from a logo.
+  const successPdf =
+    (successPkg && newestFile(path.dirname(successPkg.path), ['.pdf'])) ||
+    newestFile(successDir, ['.pdf']);
   const successTags = newestFile(successDir, ['.xlsx', '.xls']);
 
   if (!catalogPdf && !successPdf && !successTags) {
@@ -161,8 +201,37 @@ function processFlipbooks(): void {
 
   run('python3', args);
 
+  // The story pages are built from the same drop, and used to be a manual
+  // follow-up that sources/README.md had to warn people not to forget —
+  // skipping it left 46 live pages describing the previous edition while the
+  // flipbook images showed the new one.
+  if (successPdf || successTags) processStories();
+
   if (catalogPdf) archive(allFiles(catalogDir));
+  // allFiles() lists top-level files only, so a dropped package folder is
+  // never archived — only a loose PDF/xlsx alongside it.
   if (successPdf || successTags) archive(allFiles(successDir));
+}
+
+/**
+ * The /success-stories pages: figures out of the InDesign package, then the
+ * story JSON. Order matters — build_case_studies.py folds the figure manifest
+ * into each story.
+ */
+function processStories(): void {
+  const idml = newestPackage(path.join(SOURCES, 'success-stories'));
+  if (!idml) {
+    // eslint-disable-next-line no-console
+    console.log(
+      '📗 stories     — no .idml in sources/success-stories/, skipped ' +
+        '(drop the whole InDesign package to rebuild the story pages)'
+    );
+    return;
+  }
+  // eslint-disable-next-line no-console
+  console.log(`📗 stories     — ${idml.name}`);
+  run('python3', ['scripts/python/extract_story_figures.py']);
+  run('python3', ['scripts/python/build_case_studies.py']);
 }
 
 /**

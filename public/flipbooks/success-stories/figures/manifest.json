@@ -3,44 +3,32 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0004-1.webp",
-    "width": 591,
-    "height": 326
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0004-2.webp",
     "width": 1200,
-    "height": 691
+    "height": 778
    }
   ],
   "captions": [
-   "Fig1. Highside vs Lowside Permeability",
-   null
+   "Fig1. Highside vs Lowside Permeability"
   ]
  },
  "5": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0005-1.webp",
-    "width": 591,
-    "height": 326
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0005-2.webp",
     "width": 1200,
-    "height": 681
+    "height": 658
    }
   ],
   "captions": [
-   "Fig1. Formation Testing Toolstring on Taxis",
-   null
+   "Fig1. Formation Testing Toolstring on Taxis"
   ]
  },
  "6": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0006-1.webp",
-    "width": 1166,
-    "height": 516
+    "width": 1200,
+    "height": 407
    },
    {
     "src": "/flipbooks/success-stories/figures/0006-2.webp",
@@ -49,7 +37,7 @@
    }
   ],
   "captions": [
-   "Fig.1. In deviated wells using Wireline Express, the CMR bowspring can",
+   "Fig.1. In deviated wells using Wireline Express, the CMR bowspring can be removed and ledges are easily navigated with the angled holefinder",
    "Fig2. Success rates with/without Petromac"
   ]
  },
@@ -57,48 +45,36 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0007-1.webp",
-    "width": 380,
-    "height": 796
+    "width": 857,
+    "height": 1773
    },
    {
     "src": "/flipbooks/success-stories/figures/0007-2.webp",
-    "width": 827,
-    "height": 448
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0007-3.webp",
-    "width": 749,
-    "height": 318
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0007-4.webp",
-    "width": 850,
-    "height": 444
+    "width": 1177,
+    "height": 1801
    }
   ],
   "captions": [
    "Fig.1. Petromac Guide \u201cskiing\u201d over a ledge",
-   "Fig.2. Petromac supply a range of holefinders for a wide",
-   null,
-   null
+   "Fig.2. Petromac supply a range of holefinders for a wide variety of tool connections"
   ]
  },
  "8": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0008-1.webp",
-    "width": 789,
-    "height": 332
+    "width": 1200,
+    "height": 509
    },
    {
     "src": "/flipbooks/success-stories/figures/0008-2.webp",
-    "width": 826,
-    "height": 397
+    "width": 1200,
+    "height": 579
    }
   ],
   "captions": [
    "Fig.1. Without a holefinder, wireline toolstrings are easily held up by ledges and washouts.",
-   "Fig.2. Using the Wireline Express holefinder, the toolstring does not lose any momentum as it slides over wellbore"
+   "Fig.2. Using the Wireline Express holefinder, the toolstring does not lose any momentum as it slides over wellbore obstructions."
   ]
  },
  "9": {
@@ -106,65 +82,53 @@
    {
     "src": "/flipbooks/success-stories/figures/0009-1.webp",
     "width": 1200,
-    "height": 470
+    "height": 492
    },
    {
     "src": "/flipbooks/success-stories/figures/0009-2.webp",
     "width": 1200,
-    "height": 524
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0009-3.webp",
-    "width": 1200,
-    "height": 642
+    "height": 510
    }
   ],
   "captions": [
    "Fig.1. Well Trajectory",
-   "Fig.2. Array Sonic tool with high-drag traditional centralizing",
-   null
+   "Fig.2. Array Sonic tool with high-drag traditional centralizing equipment (top) with low-drag Petromac equipment (bottom)"
   ]
  },
  "10": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0010-1.webp",
-    "width": 605,
-    "height": 600
+    "width": 1073,
+    "height": 1026
    },
    {
     "src": "/flipbooks/success-stories/figures/0010-2.webp",
     "width": 1200,
-    "height": 524
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0010-3.webp",
-    "width": 1200,
-    "height": 642
+    "height": 504
    }
   ],
   "captions": [
-   "Fig.1. Centralizing Tool Taxis provide 2.4\u201d of standoff,",
-   "Fig.2. Array Sonic tool",
-   null
+   "Fig.1. Centralizing Tool Taxis provide 2.4\u201d of standoff, which keep the Array Sonic within .1\u201d of the center of the wellbore in 8.5\u201d hole.",
+   "Fig.2. Array Sonic tool with high-drag traditional centralizing equipment (top) with low-drag Petromac equipment (bottom)"
   ]
  },
  "11": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0011-1.webp",
-    "width": 561,
-    "height": 943
+    "width": 1014,
+    "height": 1255
    },
    {
     "src": "/flipbooks/success-stories/figures/0011-2.webp",
-    "width": 561,
-    "height": 943
+    "width": 1014,
+    "height": 1255
    },
    {
     "src": "/flipbooks/success-stories/figures/0011-3.webp",
     "width": 1200,
-    "height": 503
+    "height": 360
    }
   ],
   "captions": [
@@ -177,29 +141,29 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0012-1.webp",
-    "width": 733,
-    "height": 1108
+    "width": 1188,
+    "height": 1860
    }
   ],
   "captions": [
-   "Fig.1. A single pass with dual OBMI in 12.25\u201d hole yielded an"
+   "Fig.1. A single pass with dual OBMI in 12.25\u201d hole yielded\u00a0an excellent log, with no image rotation or stick slip."
   ]
  },
  "13": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0013-1.webp",
-    "width": 612,
-    "height": 534
+    "width": 1200,
+    "height": 1092
    },
    {
     "src": "/flipbooks/success-stories/figures/0013-2.webp",
     "width": 1200,
-    "height": 373
+    "height": 416
    }
   ],
   "captions": [
-   "Fig.1. Cutting at 90deg to the low side of the",
+   "Fig.1. Cutting at 90deg to the low side of the wellbore avoids cuttings and near wellbore damage.",
    "Fig.2. Imaging logs confirmed that all cores were cut between 75-90deg from the low side."
   ]
  },
@@ -207,13 +171,13 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0014-1.webp",
-    "width": 941,
-    "height": 526
+    "width": 1200,
+    "height": 398
    },
    {
     "src": "/flipbooks/success-stories/figures/0014-2.webp",
     "width": 1200,
-    "height": 513
+    "height": 494
    }
   ],
   "captions": [
@@ -225,29 +189,29 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0015-1.webp",
-    "width": 600,
-    "height": 1230
+    "width": 1113,
+    "height": 2005
    }
   ],
   "captions": [
-   "Fig.1. Combined passes of Formation Imager at 0\u00b0"
+   "Fig.1. Combined passes of Formation Imager at 0\u00b0 and 45\u00b0 in 12.25\u201d hole yielded an excellent log, with no image rotation or stick slip."
   ]
  },
  "16": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0016-1.webp",
-    "width": 169,
-    "height": 458
+    "width": 692,
+    "height": 1889
    },
    {
     "src": "/flipbooks/success-stories/figures/0016-2.webp",
-    "width": 163,
-    "height": 458
+    "width": 692,
+    "height": 1889
    }
   ],
   "captions": [
-   "Fig.1. Logging with Tool Taxis produced an excellent log, with no image",
+   "Fig.1. Logging with Tool Taxis produced an excellent log, with no image rotation or stick slip, despite the poor hole conditions.",
    null
   ]
  },
@@ -255,24 +219,18 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0017-1.webp",
-    "width": 845,
-    "height": 1023
+    "width": 1200,
+    "height": 1030
    },
    {
     "src": "/flipbooks/success-stories/figures/0017-2.webp",
-    "width": 1200,
-    "height": 811
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0017-3.webp",
-    "width": 586,
-    "height": 567
+    "width": 990,
+    "height": 937
    }
   ],
   "captions": [
-   "Fig.1. Customized configuration",
-   "Fig.2. Actual tool drag coefficient observed during the job",
-   null
+   "Fig.1. Customized configuration for MRIL-XL",
+   "Fig.2. Actual tool drag coefficient observed during the job"
   ]
  },
  "18": {
@@ -280,16 +238,16 @@
    {
     "src": "/flipbooks/success-stories/figures/0018-1.webp",
     "width": 1200,
-    "height": 520
+    "height": 523
    },
    {
     "src": "/flipbooks/success-stories/figures/0018-2.webp",
-    "width": 707,
-    "height": 688
+    "width": 967,
+    "height": 967
    }
   ],
   "captions": [
-   "Fig.1. CAST-CBL with Petromac Wireline Express installed",
+   "Fig.1. CAST-CBL with Petromac Wireline Express installed on the toolstring",
    "Fig.2. EC centralization observed during the job"
   ]
  },
@@ -298,39 +256,33 @@
    {
     "src": "/flipbooks/success-stories/figures/0019-1.webp",
     "width": 1200,
-    "height": 622
+    "height": 635
    },
    {
     "src": "/flipbooks/success-stories/figures/0019-2.webp",
-    "width": 648,
-    "height": 1051
+    "width": 1003,
+    "height": 1480
    }
   ],
   "captions": [
    "Fig.1. Pre-job simulation",
-   "Fig.2. Actual job data, shows that"
+   "Fig.2. Actual job data, shows that the downhole Head Tension (HTEN) accurately matched the Predicted HTEN as shown on the right (Track 1). In addition, the measured Tool Drag coeffieicnt averaged 0.06 as shown on the left, which matched Hermes\u2019 prediction perfectly."
   ]
  },
  "20": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0020-1.webp",
-    "width": 715,
-    "height": 1014
+    "width": 1023,
+    "height": 1434
    },
    {
     "src": "/flipbooks/success-stories/figures/0020-2.webp",
     "width": 1200,
-    "height": 810
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0020-3.webp",
-    "width": 395,
-    "height": 396
+    "height": 958
    }
   ],
   "captions": [
-   null,
    null,
    null
   ]
@@ -339,18 +291,18 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0021-1.webp",
-    "width": 1141,
-    "height": 697
+    "width": 1200,
+    "height": 639
    },
    {
     "src": "/flipbooks/success-stories/figures/0021-2.webp",
-    "width": 1007,
-    "height": 795
+    "width": 1200,
+    "height": 844
    },
    {
     "src": "/flipbooks/success-stories/figures/0021-3.webp",
     "width": 1200,
-    "height": 778
+    "height": 590
    }
   ],
   "captions": [
@@ -364,59 +316,59 @@
    {
     "src": "/flipbooks/success-stories/figures/0022-1.webp",
     "width": 1200,
-    "height": 931
+    "height": 717
    },
    {
     "src": "/flipbooks/success-stories/figures/0022-2.webp",
-    "width": 619,
-    "height": 602
+    "width": 890,
+    "height": 934
    }
   ],
   "captions": [
-   "Fig.1. IBC-CBL with Petromac Wireline Express installed on",
-   "Fig.2. Histogram showing average eccentricity,"
+   "Fig.1. IBC-CBL with Petromac Wireline Express installed on the tool string",
+   "Fig.2. Histogram showing average eccentricity, ECCE, below 0.2"
   ]
  },
  "23": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0023-1.webp",
-    "width": 688,
-    "height": 712
+    "width": 983,
+    "height": 970
    },
    {
     "src": "/flipbooks/success-stories/figures/0023-2.webp",
-    "width": 688,
-    "height": 712
+    "width": 983,
+    "height": 970
    },
    {
     "src": "/flipbooks/success-stories/figures/0023-3.webp",
     "width": 1200,
-    "height": 501
+    "height": 448
    }
   ],
   "captions": [
+   null,
    "Fig.1. Core-bif orientation with / without Taxis",
-   "Fig.2. Recovery rates with Petromac System",
-   null
+   "Fig.2. Recovery rates with Petromac System"
   ]
  },
  "24": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0024-1.webp",
-    "width": 646,
-    "height": 424
+    "width": 959,
+    "height": 668
    },
    {
     "src": "/flipbooks/success-stories/figures/0024-2.webp",
     "width": 1200,
-    "height": 1203
+    "height": 531
    }
   ],
   "captions": [
    "Fig.1. Drag Forces",
-   "Fig.2. Petromac Wireline Express perfectly positions the MRIL-D tool in the center of the 9 5/8\u201d casing,"
+   "Fig.2. Petromac Wireline Express perfectly positions the MRIL-D tool in the center of the 9 5/8\u201d casing, which maximizes the distance between the magnet and the casing. This reduces the magnetic drag to a minimum, which extends the deviation limit that the tool cab be conveyed to."
   ]
  },
  "25": {
@@ -424,7 +376,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0025-1.webp",
     "width": 1200,
-    "height": 572
+    "height": 740
    }
   ],
   "captions": [
@@ -436,7 +388,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0026-1.webp",
     "width": 1200,
-    "height": 641
+    "height": 643
    }
   ],
   "captions": [
@@ -448,16 +400,10 @@
    {
     "src": "/flipbooks/success-stories/figures/0027-1.webp",
     "width": 1200,
-    "height": 524
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0027-2.webp",
-    "width": 1200,
-    "height": 642
+    "height": 719
    }
   ],
   "captions": [
-   null,
    null
   ]
  },
@@ -465,17 +411,11 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0028-1.webp",
-    "width": 646,
-    "height": 299
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0028-2.webp",
-    "width": 709,
-    "height": 526
+    "width": 1200,
+    "height": 1040
    }
   ],
   "captions": [
-   null,
    null
   ]
  },
@@ -483,24 +423,24 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0029-1.webp",
-    "width": 945,
-    "height": 511
+    "width": 1200,
+    "height": 539
    },
    {
     "src": "/flipbooks/success-stories/figures/0029-2.webp",
-    "width": 1011,
-    "height": 798
+    "width": 1200,
+    "height": 851
    },
    {
     "src": "/flipbooks/success-stories/figures/0029-3.webp",
-    "width": 1012,
-    "height": 798
+    "width": 1200,
+    "height": 714
    }
   ],
   "captions": [
    "Fig.1. Well Trajectory",
-   null,
-   null
+   "Tool Drag coefficient = 0.04",
+   "Tool Drag coefficient = 0.35"
   ]
  },
  "30": {
@@ -508,17 +448,17 @@
    {
     "src": "/flipbooks/success-stories/figures/0030-1.webp",
     "width": 1200,
-    "height": 260
+    "height": 322
    },
    {
     "src": "/flipbooks/success-stories/figures/0030-2.webp",
-    "width": 575,
-    "height": 791
+    "width": 983,
+    "height": 1110
    },
    {
     "src": "/flipbooks/success-stories/figures/0030-3.webp",
-    "width": 554,
-    "height": 815
+    "width": 983,
+    "height": 1105
    }
   ],
   "captions": [
@@ -532,22 +472,22 @@
    {
     "src": "/flipbooks/success-stories/figures/0031-1.webp",
     "width": 1200,
-    "height": 405
+    "height": 407
    },
    {
     "src": "/flipbooks/success-stories/figures/0031-2.webp",
-    "width": 717,
-    "height": 785
+    "width": 1074,
+    "height": 1140
    },
    {
     "src": "/flipbooks/success-stories/figures/0031-3.webp",
-    "width": 759,
-    "height": 573
+    "width": 1011,
+    "height": 774
    }
   ],
   "captions": [
    "Fig.1. Formation testing tool oriented to the highside when running on tool taxis.",
-   "Fig.2. Average tool drag coefficient from the job \u2013",
+   "Fig.2. Average tool drag coefficient from the job \u2013 Possible to descend to 80 deg on gravity",
    null
   ]
  },
@@ -555,24 +495,24 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0032-1.webp",
-    "width": 472,
-    "height": 403
+    "width": 1143,
+    "height": 943
    }
   ],
   "captions": [
-   "Fig.1. Cutting at 90deg to the low side of the wellbore"
+   "Fig.1. Cutting at 90deg to the low side of the wellbore avoids cuttings and near wellbore damage (above)."
   ]
  },
  "33": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0033-1.webp",
-    "width": 768,
-    "height": 1353
+    "width": 1033,
+    "height": 1814
    }
   ],
   "captions": [
-   "Fig1: Pathfinder helped the toolstring to be centered in the hole"
+   "Fig1: Pathfinder helped the toolstring to be centered in the hole and navigate a 42 m long and 18\u201dwide washout."
   ]
  },
  "34": {
@@ -580,46 +520,40 @@
    {
     "src": "/flipbooks/success-stories/figures/0034-1.webp",
     "width": 1200,
-    "height": 849
+    "height": 699
    },
    {
     "src": "/flipbooks/success-stories/figures/0034-2.webp",
-    "width": 448,
-    "height": 480
+    "width": 1200,
+    "height": 623
    }
   ],
   "captions": [
-   "Fig1: With a very low drag coefficient of 0.03, MDT taxis allow minimal tool contact with the borehole and let the toolstring",
-   "Fig2: 27 hours of rig time"
+   "Fig1: With a very low drag coefficient of 0.03, MDT taxis allow minimal tool contact with the borehole and let the toolstring \u201croll\u201d off a point, greatly reducing the force to free a stuck toolstring.",
+   "Fig2: 27 hours of rig time savings with minimal risk achieved by using Petromac conveyance"
   ]
  },
  "35": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0035-1.webp",
-    "width": 786,
-    "height": 341
+    "width": 1200,
+    "height": 528
    },
    {
     "src": "/flipbooks/success-stories/figures/0035-2.webp",
-    "width": 565,
-    "height": 207
+    "width": 1200,
+    "height": 569
    },
    {
     "src": "/flipbooks/success-stories/figures/0035-3.webp",
     "width": 1200,
-    "height": 587
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0035-4.webp",
-    "width": 808,
-    "height": 744
+    "height": 540
    }
   ],
   "captions": [
-   "Fig 1: Rocker centralizer designed to go",
-   "Fig 2: Rocker arm design provides",
-   "Fig 3: Eccentralization results on the first 4 wells",
+   "Fig 1: Rocker centralizer designed to go through restrictions as small as 3.4\u201d",
+   "Fig 2: Rocker arm design provides precise centralization even in horizontal wells",
    "Fig 4: USIT tool deployed using Rocker centralizers delivers near-perfect centralization in small bore completions"
   ]
  },
@@ -627,23 +561,17 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0036-1.webp",
-    "width": 837,
-    "height": 236
+    "width": 1200,
+    "height": 536
    },
    {
     "src": "/flipbooks/success-stories/figures/0036-2.webp",
-    "width": 1063,
-    "height": 204
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0036-3.webp",
     "width": 1200,
-    "height": 561
+    "height": 524
    }
   ],
   "captions": [
    "Fig1: Significant Efficiency is gained from utilizing wireline advanced conveyance solutions vs. Drillpipe conveyance",
-   null,
    null
   ]
  },
@@ -651,24 +579,18 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0037-1.webp",
-    "width": 611,
-    "height": 384
+    "width": 1189,
+    "height": 4678
    },
    {
     "src": "/flipbooks/success-stories/figures/0037-2.webp",
-    "width": 711,
-    "height": 711
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0037-3.webp",
     "width": 1200,
-    "height": 487
+    "height": 409
    }
   ],
   "captions": [
-   "Fig 1: Centralizing Tool Taxi supporting the tool to seamlessly pass Tiebacks.",
    null,
-   null
+   "Fig 1: Centralizing Tool Taxi supporting the tool to seamlessly pass Tiebacks."
   ]
  },
  "38": {
@@ -676,12 +598,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0038-1.webp",
     "width": 1200,
-    "height": 800
+    "height": 803
    },
    {
     "src": "/flipbooks/success-stories/figures/0038-2.webp",
     "width": 1200,
-    "height": 357
+    "height": 359
    }
   ],
   "captions": [
@@ -693,18 +615,18 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0039-1.webp",
-    "width": 763,
-    "height": 330
+    "width": 1200,
+    "height": 543
    },
    {
     "src": "/flipbooks/success-stories/figures/0039-2.webp",
-    "width": 1139,
-    "height": 358
+    "width": 1200,
+    "height": 527
    },
    {
     "src": "/flipbooks/success-stories/figures/0039-3.webp",
-    "width": 611,
-    "height": 544
+    "width": 836,
+    "height": 782
    }
   ],
   "captions": [
@@ -717,27 +639,21 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0040-1.webp",
-    "width": 611,
-    "height": 381
+    "width": 902,
+    "height": 1658
    },
    {
     "src": "/flipbooks/success-stories/figures/0040-2.webp",
-    "width": 495,
-    "height": 945
+    "width": 902,
+    "height": 1658
    },
    {
     "src": "/flipbooks/success-stories/figures/0040-3.webp",
-    "width": 495,
-    "height": 945
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0040-4.webp",
     "width": 1200,
-    "height": 669
+    "height": 597
    }
   ],
   "captions": [
-   null,
    null,
    null,
    null
@@ -747,8 +663,8 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0041-1.webp",
-    "width": 991,
-    "height": 782
+    "width": 1200,
+    "height": 891
    }
   ],
   "captions": [
@@ -759,22 +675,22 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0042-1.webp",
-    "width": 709,
-    "height": 440
+    "width": 1014,
+    "height": 856
    },
    {
     "src": "/flipbooks/success-stories/figures/0042-2.webp",
-    "width": 638,
-    "height": 440
+    "width": 1014,
+    "height": 856
    },
    {
     "src": "/flipbooks/success-stories/figures/0042-3.webp",
-    "width": 555,
-    "height": 811
+    "width": 1125,
+    "height": 1376
    }
   ],
   "captions": [
-   "Fig1: Comparison of other roller devices vs Petromac Tool Taxi. Petromac\u2019s patented orientation system ensures wheels always",
+   "Fig1: Comparison of other roller devices vs Petromac Tool Taxi. Petromac\u2019s patented orientation system ensures wheels always roll over ledges and washouts instead of rollers falling into washouts becoming hung-up points on a toolstring.",
    null,
    null
   ]
@@ -783,23 +699,17 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0043-1.webp",
-    "width": 725,
-    "height": 661
+    "width": 1200,
+    "height": 1408
    },
    {
     "src": "/flipbooks/success-stories/figures/0043-2.webp",
-    "width": 522,
-    "height": 540
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0043-3.webp",
-    "width": 1040,
-    "height": 633
+    "width": 1156,
+    "height": 1188
    }
   ],
   "captions": [
-   "Fig1: A sonic toolstring centralized using",
-   null,
+   "Fig1: A sonic toolstring centralized using CP-8",
    null
   ]
  },
@@ -808,57 +718,45 @@
    {
     "src": "/flipbooks/success-stories/figures/0044-1.webp",
     "width": 1200,
-    "height": 1054
+    "height": 1055
    }
   ],
   "captions": [
-   "Fig 1: Conventional centralisers are designed to centralize in only one casing size at a time. Helix passes through any"
+   "Fig 1: Conventional centralisers are designed to centralize in only one casing size at a time. Helix passes through any restrictions seamlessly and centralizes in multiple casing sizes."
   ]
  },
  "45": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0045-1.webp",
-    "width": 611,
-    "height": 384
+    "width": 1055,
+    "height": 837
    },
    {
     "src": "/flipbooks/success-stories/figures/0045-2.webp",
-    "width": 958,
-    "height": 822
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0045-3.webp",
     "width": 1200,
-    "height": 357
+    "height": 362
    }
   ],
   "captions": [
    "Fig. 1: Slim Inline Tool Taxi",
-   "Fig. 2: Petromac\u2019s Pathfinder",
-   null
+   "Fig. 2: Petromac\u2019s Pathfinder"
   ]
  },
  "46": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0046-1.webp",
-    "width": 611,
-    "height": 384
+    "width": 1148,
+    "height": 1645
    },
    {
     "src": "/flipbooks/success-stories/figures/0046-2.webp",
-    "width": 547,
-    "height": 791
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0046-3.webp",
-    "width": 769,
-    "height": 547
+    "width": 1200,
+    "height": 1297
    }
   ],
   "captions": [
-   null,
    null,
    null
   ]
@@ -868,7 +766,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0047-1.webp",
     "width": 1200,
-    "height": 1106
+    "height": 1099
    }
   ],
   "captions": [
@@ -880,41 +778,35 @@
    {
     "src": "/flipbooks/success-stories/figures/0048-1.webp",
     "width": 1200,
-    "height": 1176
+    "height": 877
    },
    {
     "src": "/flipbooks/success-stories/figures/0048-2.webp",
-    "width": 908,
-    "height": 687
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0048-3.webp",
-    "width": 591,
-    "height": 599
+    "width": 1200,
+    "height": 557
    }
   ],
   "captions": [
    "Fig. 1: CMR-ORA run with Taxis kept stable orientation.",
-   "Fig 2 & 3: Log and Relative bearing Histogram showing tool on wheels",
-   "Fig 2 & 3: Log and Relative bearing Histogram showing tool on wheels"
+   "Fig 2  & 3: Log and Relative bearing Histogram showing tool on wheels"
   ]
  },
  "49": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0049-1.webp",
-    "width": 877,
-    "height": 861
+    "width": 1179,
+    "height": 1027
    },
    {
     "src": "/flipbooks/success-stories/figures/0049-2.webp",
-    "width": 961,
-    "height": 796
+    "width": 1200,
+    "height": 950
    }
   ],
   "captions": [
-   "Fig. 1: RBT tool string on traditional",
-   "Fig 2: Petromac reimagined the toolstring"
+   "Fig. 1: RBT tool string on traditional centralizers needs tractors to be deployed beyond 60 degrees.",
+   "Fig 2: Petromac reimagined the toolstring with CA7 and weight bars to bring down the drag, enabling gravity descents above 71 degrees."
   ]
  }
 }

@@ -82,8 +82,11 @@ Generated bundles live in `public/flipbooks/{catalog,success-stories}/`.
   `petromac-product-catalog.pdf`, compressed to <4 MB on ingest, for
   downloads and emailed attachments. Keep the source PDF's real text + links
   intact (don't flatten to images).
-- **Success stories** — an image flipbook (WebP pages) with the tags-driven
-  filter system; needs its summary `.xlsx` alongside the PDF.
+- **Success stories** — dropped as the whole **InDesign package** (the `.idml`,
+  its `Links/` folder and the export PDF), like the catalog. The package is the
+  source for the story text and figures; the export PDF still makes the WebP
+  flipbook pages and the compressed `email.pdf`. A tags `.xlsx` goes in
+  alongside when the tagging changes.
 
 **When:** the catalog print PDF is revised, or the Success Stories PDF /
 summary changes.
@@ -92,13 +95,17 @@ summary changes.
 
 1. Drop the files into their folders — any filename is fine:
    - catalog PDF → `sources/catalog/`
-   - success-stories PDF **and** its tags `.xlsx` → `sources/success-stories/`
+   - success-stories **InDesign package folder** → `sources/success-stories/`
+     (and its tags `.xlsx` alongside, if the tagging changed)
 2. Run `pnpm run data:flipbooks` (needs Ghostscript for PDF compression:
    `brew install ghostscript`; and qpdf to linearize the catalog:
    `brew install qpdf`). The pipeline builds whichever documents have a new PDF
    (catalog → one compressed+linearized PDF; success stories →
-   WebP pages + a compressed `email.pdf`), re-syncs the kiosk offline-assets list,
-   validates the bundles, and archives the inputs into `sources/_archive/`.
+   WebP pages + a compressed `email.pdf`), rebuilds the `/success-stories`
+   pages from the IDML, re-syncs the kiosk offline-assets list, validates the
+   bundles, and archives the inputs into `sources/_archive/`. The InDesign
+   package is NOT archived — it stays put so the extraction can be re-run,
+   exactly as the catalog package does.
 3. Commit `public/flipbooks/**` and push.
 4. **If the kiosk needs the new content offline:** bump `VERSION` in
    `public/kiosk-sw.js` (see [KIOSK.md](KIOSK.md)) so trade-show devices
@@ -108,54 +115,73 @@ You can update just one flipbook — drop only a catalog PDF and success stories
 is left untouched, and vice versa. `pnpm run data` does flipbooks and
 operations together.
 
-**Success-story pages (after a success-stories update):** the `/success-stories`
-pages are generated FROM the flipbook. After step 2, run **both** scripts, in
-this order:
+**Success-story pages:** the `/success-stories` pages are generated from the
+same InDesign package, and `pnpm run data:flipbooks` now runs that step for you
+(it used to be a manual follow-up that was easy to forget, which left 46 live
+pages describing the previous edition while the flipbook images showed the new
+one). To rebuild just the pages, without touching the flipbook:
 
 ```bash
-python3 scripts/python/extract_story_figures.py && python3 scripts/python/build_case_studies.py
+pnpm run data:stories
 ```
 
-1. `extract_story_figures.py` pulls the FIGURES out of each story page into
+That runs two scripts, in this order:
+
+1. `extract_story_figures.py` reads the IDML for each story page's placed
+   images and caption frames, groups them into figures, and renders each
+   figure's REGION out of the export PDF into
    `public/flipbooks/success-stories/figures/` with a `manifest.json` and a
-   self-contained `REVIEW.html` — open that in a browser to eyeball all 46
-   pages at once before committing. Story pages render these figures; they no
-   longer render the whole published page (that was the same story twice, the
-   second time as unreadable pixels). It is safe to re-run: output is
-   deterministic.
+   self-contained `REVIEW.html` — open that to eyeball all 89 figures at once
+   before committing. Rendering the region rather than pulling the asset out of
+   `Links/` keeps InDesign's crop, its compositing and any vector overlay.
+   Safe to re-run: output is deterministic.
 2. `build_case_studies.py` regenerates
-   `src/features/case-studies/content/case-studies.json`, folding the figure
-   manifest in. It warns rather than fails if the manifest is missing, so a
-   forgotten step 1 shows up as stories with no figures, not a broken build.
+   `src/features/case-studies/content/case-studies.json` from the IDML's
+   paragraph styles, folding the figure manifest in. It warns rather than fails
+   if the manifest is missing, so a forgotten step 1 shows up as stories with
+   no figures, not a broken build.
 
 New stories in the edition need a `NEW_SLUG` entry in `build_case_studies.py`
 (it fails loudly on an unmapped page); existing slugs are frozen (indexed URLs
 
-- redirects). Skim the regenerated titles for PDF text-order gloms
-  (`TITLE_OVERRIDE`).
+- redirects).
 
-Two knobs in `extract_story_figures.py` if a new edition extracts badly:
-`CAPTION_OVERRIDE` and `DROP_FIGURE`, both keyed by page number and both
-currently empty — everything is handled by five general rules (repeated AND
-small = furniture, the region-map slot test, same-slot dedupe, the `MIN_AREA`
-sliver floor, and the orphan-mask test). Prefer fixing a rule over adding a
-per-page patch.
+**Why the IDML and not the PDF (Aug 2026).** Both scripts used to work from the
+exported PDF and had to reconstruct things the layout already states. The
+figure pass needed five heuristics — repeated-and-small for icons, a slot match
+for the region world-map, same-slot dedupe, a `MIN_AREA` sliver floor and an
+orphan-mask test — and still could not see vector artwork at all, so pages 19,
+20, 21, 30 and 34 shipped without their logs and graphs. The text pass split
+the sidebar from the story column by measuring line length (`WIDE = 42`), and
+two pages needed a hard-coded title with a third needing its whole narrative
+pasted into the script. All of that is now a style and geometry lookup.
+Paragraph styles used: `Header Blue1` (headline), `header-Gray txt` (subtitle),
+`Body TXT` (story column), `Header RIGHT-Blue` + `RIGHT-Body txt` (sidebar),
+`Pie de Foto` (captions).
 
-**If a new edition looks wrong, check these two first** — both produced
-plausible-looking output that was actually broken:
+**Three knobs in `extract_story_figures.py`** if a new edition comes out wrong,
+all keyed by page number and all currently empty: `CAPTION_OVERRIDE`,
+`DROP_FIGURE`, and `SPLIT_GROUP` (pull a named link out into its own figure).
+Prefer fixing a rule over adding a per-page patch.
 
-- **A figure renders as a white shape on solid black.** That is a transparency
-  mask, not a picture. `pdfimages` lists it as type "image"; what marks it is
-  gray/1-comp with no `smask` row of its own. Handled by `orphan_mask()`.
-- **A page loses figures it obviously has.** Check whether the image is reused
-  on 3+ pages and got binned as furniture. Only images under
-  `FURNITURE_MAX_AREA` (300k px) can be furniture, precisely because product
-  renders are legitimately shared between stories about the same tool.
+**If a new edition looks wrong, check these first:**
 
-**Known limitation (Aug 2026):** a few figures on pages 7, 9, 10 and 17 come
-out split into pieces, because the layout composites them from several placed
-images and the PDF has no record that they belong together. The InDesign IDML
-carries the original assets and supersedes the whole extraction — see TODO.
+- **A figure shows a corner of its neighbour.** Bounding boxes overlap freely
+  in this layout, and squaring them off cuts real artwork — so a neighbour is
+  only trimmed when the trim is small (`SOFT_TRIM`). Page 48 is the example.
+- **A figure swallowed a slab of the story text.** A placement can run
+  underneath the prose (page 46's log sits behind the sidebar). `clip_to_artwork`
+  pulls the crop back off any text frame, but it gives up rather than eat the
+  figure (`MAX_TRIM`), because a text frame is often wider than the text drawn
+  in it — at 0.45 page 28 lost two columns off its runs table.
+- **A page loses or merges figures.** Merging needs real overlap
+  (`MERGE_OVERLAP`, 45% of the smaller placement) or a flush vertical stack.
+  Side-by-side placements are never merged: `Fig.1 | Fig.2` across the page is
+  the most common layout in this document.
+- **Chart labels turned into story paragraphs, or a paragraph went missing.**
+  Page 18 styles its axis labels `Body TXT`, exactly like the story column, so
+  a frame counts as prose on width OR length — see `PROSE_MIN_WIDTH` /
+  `PROSE_MIN_CHARS` in `build_case_studies.py`.
 
 ---
 

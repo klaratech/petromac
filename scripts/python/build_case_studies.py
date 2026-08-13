@@ -1,143 +1,231 @@
 #!/usr/bin/env python3
 """Build src/features/case-studies/content/case-studies.json from the
-success-stories flipbook (source.pdf + tags.csv).
+success-stories InDesign package + tags.csv.
 
-Run after a new success-stories PDF edition lands (pnpm run data first so
-the flipbook pages + tags.csv are current):
+Run after a new success-stories edition lands (drop the whole InDesign package
+folder into sources/success-stories/, run `pnpm run data` so the flipbook pages
+and tags.csv are current, then extract_story_figures.py for the figures):
 
     python3 scripts/python/build_case_studies.py
 
-NEW STORIES in a new edition: add a slug to NEW_SLUG for each new page
-(the script fails loudly on an unmapped page) and re-run. Existing slugs
-are FROZEN — indexed URLs and next.config.ts redirects depend on them.
-Review titles for parsing gloms (see TITLE_OVERRIDE).
+READS THE IDML, NOT THE PDF (rewritten Aug 2026)
+------------------------------------------------
+The story text used to be recovered from `source.pdf` with pypdf, which meant
+guessing at structure the layout already states. The sidebar was separated from
+the story column by measuring line length (`WIDE = 42` characters); the
+headline was "everything before the word CHALLENGE" minus a hand-written list
+of tag words; figure captions had to be found with a regex and then subtracted
+back out of the narrative, because extraction swept them into it mid-sentence.
+Two pages needed their title hard-coded and one needed its entire narrative
+pasted into the script, because text-order glommed them together.
+
+The IDML carries named paragraph styles, consistently across all 46 pages, so
+all of that is now a lookup:
+
+    Header Blue1        headline
+    header-Gray txt     subtitle (42 of 46 pages — previously lost entirely)
+    Body TXT            the story column
+    Header RIGHT-Blue   CHALLENGE / SOLUTION / RESULTS markers
+    RIGHT-Body txt      the sidebar copy under each marker
+    Pie de Foto         figure captions (extract_story_figures.py's job)
+
+The narrative also keeps its real paragraph breaks now; the PDF route
+collapsed each story into one block.
+
+NEW STORIES in a new edition: add a slug to NEW_SLUG for each new page (the
+script fails loudly on an unmapped page) and re-run. Existing slugs are FROZEN
+— indexed URLs and the redirects in src/lib/redirects.ts depend on them.
 """
+
+from __future__ import annotations
 
 import csv
 import json
 import re
+import sys
+from collections import Counter
 from pathlib import Path
 
-from pypdf import PdfReader
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from idml import Package  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 BASE = REPO / "public/flipbooks/success-stories"
+SOURCES = REPO / "sources/success-stories"
 JSON_OUT = REPO / "src/features/case-studies/content/case-studies.json"
 # Written by extract_story_figures.py — run that first. Optional: without it
-# stories carry no figures and the page falls back to nothing visual, rather
-# than the build failing.
+# stories carry no figures rather than the build failing.
 FIGURES = BASE / "figures/manifest.json"
 
-WIDE = 42  # chars — sidebar column is ~28-33, narrative 45-95
+HEADLINE = "Header Blue1"
+SUBTITLE = "header-Gray txt"
+BODY = "Body TXT"
+DEFAULT = "$ID/NormalParagraphStyle"
+SIDEBAR_HEAD = "Header RIGHT-Blue"
+SIDEBAR_BODY = "RIGHT-Body txt"
+CAPTION_STYLE = "Pie de Foto"
+CAPTION_RE = re.compile(r"^\s*Figs?\.?\s*\.?\s*\d", re.I)
+# Three stories (pages 5, 9, 10) cite the SPE paper they were written up in,
+# set in a 73pt frame in the default style — too small and too short to pass
+# the prose tests, but a published reference is worth keeping, and the PDF-text
+# pipeline carried it. Picked up by its own pattern and appended.
+REFERENCE_RE = re.compile(r"^\s*SPE[-\s]?\d", re.I)
 
-TAG_WORDS = {
-    "sensor orientation", "sticking prevention", "well access: deviation",
-    "well access: ledges", "well access: washouts", "well access",
-    "deviation", "ledges", "washouts", "sensor", "orientation",
-    "sticking", "prevention", "efficiency", "data quality",
+# Page 18 styles its histogram's axis labels and stats row "Body TXT", exactly
+# like the story column, and page 42 labels the parts of a diagram the same
+# way ("Other Roller Device", "Roller getting hung-up on ledge"). So a frame
+# qualifies as prose on EITHER test, and it needs both:
+#
+#   width — the story column runs the full ~371pt measure. Page 11's opening
+#           is one short sentence in such a frame, so a length test alone
+#           dropped it.
+#   length — pages 33 and 42 continue the story in narrow 154-182pt columns
+#           beside the figures. A width test alone dropped those.
+#
+# Nothing that is actually furniture passes either: the widest chart label is
+# 115pt and the longest holds ~100 characters.
+PROSE_MIN_WIDTH = 200.0
+PROSE_MIN_CHARS = 150
+
+# Sidebar markers. Page 30 alone adds a fourth, LEARNINGS, which folds into
+# results rather than earning a schema field for one story — that is also
+# where the previous PDF-text pipeline put it, so the published page is
+# unchanged.
+SECTIONS = {
+    "CHALLENGE": "challenge",
+    "SOLUTION": "solution",
+    "RESULTS": "results",
+    "LEARNINGS": "results",
 }
 
-
-def dehyphen(text: str) -> str:
-    # "permeabil -\nity" / "log -\nging" / "sam-\npling" -> joined
-    text = re.sub(r"([A-Za-z]) ?-\s*\n\s*([a-z])", r"\1\2", text)
-    return text
+PAGE_W, PAGE_H = 1241, 1754
 
 
-def clean_join(lines: list[str]) -> str:
-    text = dehyphen("\n".join(lines))
-    return re.sub(r"\s+", " ", text).strip()
+# --- text repair ------------------------------------------------------------
 
 
-def split_sentences_to_paras(text: str) -> list[str]:
-    """The PDF loses paragraph breaks; keep it as one block per section."""
-    return [text] if text else []
+def join_split_words(blocks: list[str]) -> list[str]:
+    """Rejoin a paragraph that was typed with a hyphen and a hard break.
 
-
-def strip_captions(paras: list[str], captions: list[str]) -> list[str]:
-    """Drop figure captions out of the narrative.
-
-    Captions sit in the same text layer as the story prose, so extracting the
-    page sweeps them into the narrative mid-sentence — page 11 reads
-    "...(see tension log on left). Fig.1. Tension profile due to stick-slip on
-    tool Fig.2. Tension profile with tool on taxis Conveying a CMR string...".
-    That was invisible while the page rendered the whole published page as an
-    image, since the caption only existed there once. Now the site renders the
-    figures with their captions attached, so leaving these in prints 45 of the
-    61 captions twice.
-
-    Longest first, so one caption that starts with another can't be
-    half-removed."""
-    out = []
-    for p in paras:
-        for c in sorted((c for c in captions if c), key=len, reverse=True):
-            p = p.replace(c, " ")
-        p = re.sub(r"\s+", " ", p).strip()
-        p = re.sub(r"\s+([.,;:])", r"\1", p)
-        if p:
-            out.append(p)
+    Page 18's sidebar holds "...the need for the centra-" and "lizers" as two
+    paragraphs. That is in the source copy, not an artifact of extraction.
+    """
+    out: list[str] = []
+    for b in blocks:
+        if out and out[-1].endswith("-"):
+            out[-1] = out[-1][:-1] + b.lstrip()
+        else:
+            out.append(b)
     return out
 
 
-def extract_page(reader: PdfReader, page_no: int) -> dict:
-    raw = reader.pages[page_no - 1].extract_text() or ""
-    lines = [l.strip() for l in raw.split("\n")]
-    lines = [l for l in lines if l and not l.lower().startswith("learn more")]
+def build_vocabulary(texts: list[str]) -> Counter:
+    return Counter(w.lower() for t in texts for w in re.findall(r"[A-Za-z]{2,}", t))
 
-    # locate section markers
-    def find(marker: str) -> int:
-        for i, l in enumerate(lines):
-            if l.strip().upper() == marker:
-                return i
-        return -1
 
-    i_ch, i_so, i_re = find("CHALLENGE"), find("SOLUTION"), find("RESULTS")
+def fix_stray_hyphens(text: str, vocab: Counter, hyphenated: Counter) -> str:
+    """Repair hyphens typed into the middle of a word.
 
-    headline_lines = [
-        l for l in lines[: i_ch if i_ch >= 0 else 0]
-        if l.lower() not in TAG_WORDS
-    ]
-    headline = clean_join(headline_lines)
+    The copy carries a handful of these — "smoo-thly", "devia-ted",
+    "gra-vity", "qua-lity" — sitting alongside a great many legitimate
+    compounds ("stick-slip", "slip-over", "open-hole"), so neither joining
+    everything nor joining nothing is right.
 
-    challenge = clean_join(lines[i_ch + 1 : i_so]) if 0 <= i_ch < i_so else ""
-    solution = clean_join(lines[i_so + 1 : i_re]) if 0 <= i_so < i_re else ""
+    A token is treated as a typo only when the document itself says so: the
+    joined form appears elsewhere as a real word AND the hyphenated form occurs
+    exactly once in the whole document. A genuine compound is used repeatedly
+    and its joined form is not a word anyone wrote.
+    """
 
-    results = ""
+    def repl(m: re.Match) -> str:
+        token = m.group(0)
+        joined = token.replace("-", "")
+        if hyphenated[token.lower()] == 1 and vocab[joined.lower()] > 0:
+            return joined
+        return token
+
+    return re.sub(r"\b[A-Za-z]{2,}-[a-z]{2,}\b", repl, text)
+
+
+def clean(text: str) -> str:
+    return re.sub(r"\s+", " ", text).strip()
+
+
+# --- extraction -------------------------------------------------------------
+
+
+def frame_text(pkg: Package, frame: dict) -> str:
+    return " ".join(b["text"] for b in pkg.blocks(frame) if b.get("text"))
+
+
+def extract_page(pkg: Package, spread) -> dict:
+    """Pull one story out of a spread by paragraph style."""
+    seen_stories: set[str] = set()
+    frames = []
+    for fr in sorted(spread.frames, key=lambda f: (f["bounds"] or [0, 0])[1]):
+        # A threaded story spans several frames but parse_story returns all of
+        # its blocks at once, so only take it at the first frame that holds it.
+        if fr["story"] in seen_stories or not fr["bounds"]:
+            continue
+        blocks = [b for b in pkg.blocks(fr) if b.get("text")]
+        if not blocks:
+            continue
+        seen_stories.add(fr["story"])
+        frames.append((fr, blocks))
+
+    headline = subtitle = ""
     narrative: list[str] = []
-    trailing: list[str] = []
-    if i_re >= 0:
-        rest = lines[i_re + 1 :]
-        # results = leading narrow lines; narrative starts at first wide line
-        j = 0
-        while j < len(rest) and len(rest[j]) <= WIDE:
-            j += 1
-        results = clean_join(rest[:j])
-        # narrative = wide lines; trailing narrow lines at the end are
-        # captions/refs/tag chips
-        k = len(rest)
-        while k > j and (len(rest[k - 1]) <= WIDE or rest[k - 1].lower() in TAG_WORDS):
-            k -= 1
-        narrative_text = clean_join(rest[j:k])
-        narrative = split_sentences_to_paras(narrative_text)
-        trailing = [
-            l for l in rest[k:]
-            if l.lower() not in TAG_WORDS and len(l) > 8
-        ]
+    references: list[str] = []
+    sections: dict[str, list[str]] = {"challenge": [], "solution": [], "results": []}
+
+    for fr, blocks in frames:
+        styles = {b["style"] for b in blocks}
+        width = fr["bounds"][2] - fr["bounds"][0]
+        total = sum(len(b["text"]) for b in blocks)
+
+        if not headline:
+            for b in blocks:
+                if b["style"] == HEADLINE:
+                    headline = b["text"]
+                    break
+        if not subtitle:
+            for b in blocks:
+                if b["style"] == SUBTITLE:
+                    subtitle = b["text"]
+                    break
+
+        for b in blocks:
+            if REFERENCE_RE.match(b["text"]) and b["text"] not in references:
+                references.append(b["text"])
+
+        if SIDEBAR_HEAD in styles:
+            current: str | None = None
+            for b in blocks:
+                if b["style"] == SIDEBAR_HEAD:
+                    current = SECTIONS.get(b["text"].strip().upper())
+                elif b["style"] == SIDEBAR_BODY and current:
+                    sections[current].append(b["text"])
+            continue
+
+        # The story column, including the narrow continuation columns some
+        # pages set beside their figures.
+        if BODY in styles and (width >= PROSE_MIN_WIDTH or total >= PROSE_MIN_CHARS):
+            narrative += [
+                b["text"] for b in blocks
+                if b["style"] in (BODY, DEFAULT)
+                and b["style"] != CAPTION_STYLE
+                and not CAPTION_RE.match(b["text"])
+            ]
 
     return {
-        "page": page_no,
         "headline": headline,
-        "challenge": challenge,
-        "solution": solution,
-        "results": results,
-        "narrative": narrative,
-        "trailing": trailing,  # subtitle / figure captions / SPE refs — review
+        "subtitle": subtitle,
+        "narrative": join_split_words(narrative) + references,
+        **{k: join_split_words(v) for k, v in sections.items()},
     }
 
 
-
-
-PAGE_W, PAGE_H = 1241, 1754
+# --- slugs ------------------------------------------------------------------
 
 # Duplicate pages -> the existing slug they keep (URL equity preserved).
 KEEP_SLUG = {
@@ -193,102 +281,116 @@ NEW_SLUG = {
     49: "ultra-low-drag-centralization-720k-cost-savings-cement-evaluation",
 }
 
-# Title overrides where PDF text-order glommed extra content.
-TITLE_OVERRIDE = {
-    22: "Cement evaluation without centralizers to 85° deviation in KSA",
-    38: "PathFinder ensures cost-effective critical data acquisition in CCS",
-}
-
-# p22's narrative ended up inside the glommed headline — restore it.
-P22_NARRATIVE = (
-    "Operators in the Middle East routinely require cement evaluation in very "
-    "highly deviated wellbores. IBC-CBL in extended reach wells can quickly "
-    "become inefficient and expensive due to difficulties in logging tool "
-    "conveyance. Traditional methods of centralizing the IBC-CBL using in-line "
-    "and slip-over centralizers caused excessive drag. This makes it "
-    "challenging to descend past 60° deviation via gravity. Operators had to "
-    "resort to pipe or tractor conveyed logging for higher deviations. Pipe "
-    "conveyed logging is operationally complex, time consuming and risky, "
-    "whereas tractor conveyance can sometimes be limited by force output in "
-    "long laterals. To overcome this, the centralizers were replaced by "
-    "centralizing Tool Taxis, and tool strings now routinely descend on "
-    "gravity to >85° deviation, with eccentricity, ECCE, well within "
-    "tolerances. Track record includes horizontal logging of IBC-CBL over "
-    "20kft, with an ECCE below 0.2”."
-)
-
 COUNTRY_FIX = {"KSA": "Saudi Arabia", "UAE": "United Arab Emirates"}
 
 
 def meta_description(story: dict, title: str) -> str:
     """~155-char description from the challenge (falls back to narrative)."""
-    src = story["challenge"] or (story["narrative"][0] if story["narrative"] else title)
-    text = re.sub(r"\s+", " ", src).strip()
+    src = (
+        (story["challenge"][0] if story["challenge"] else "")
+        or (story["narrative"][0] if story["narrative"] else title)
+    )
+    text = clean(src)
     if len(text) <= 158:
         return text
     cut = text[:158]
     return cut[: cut.rfind(" ")].rstrip(",.;:") + "…"
 
 
+def find_idml() -> Path:
+    idmls = sorted(SOURCES.rglob("*.idml"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not idmls:
+        raise SystemExit(
+            f"No .idml under {SOURCES.relative_to(REPO)} — drop the InDesign "
+            "package folder there (see sources/README.md)."
+        )
+    return idmls[0]
+
+
 def main() -> None:
-    reader = PdfReader(BASE / "source.pdf")
+    idml = find_idml()
+    print(f"Source: {idml.relative_to(REPO)}")
+    pkg = Package(idml)
+    by_page = pkg.by_page()
+
     rows = list(csv.DictReader(open(BASE / "tags.csv")))
     figures = json.loads(FIGURES.read_text()) if FIGURES.exists() else {}
     if not figures:
         print("WARNING: no figures manifest — run extract_story_figures.py first")
-    stories = []
+
+    raw = {}
     for row in rows:
-        story = extract_page(reader, int(row["Page"]))
-        story["tags"] = {
-            "year": row["Year"], "area": row["Area"], "country": row["Country"],
-            "wlco": row["WL Co"],
-            "categories": [c for c in (row["Category 1"], row["Category 2"]) if c],
-            "device": row["Device"],
-        }
-        story["image"] = f"/flipbooks/success-stories/pages/{int(row['Page']):04d}.webp"
-        stories.append(story)
+        page = int(row["Page"])
+        if page not in by_page:
+            raise SystemExit(f"page {page} in tags.csv but not in the IDML")
+        raw[page] = extract_page(pkg, by_page[page][0])
+
+    # Vocabulary for hyphen repair, built from the whole document so a word
+    # broken on one page can be recognised from its use on another.
+    everything = [
+        t for s in raw.values()
+        for t in ([s["headline"], s["subtitle"]] + s["narrative"]
+                  + s["challenge"] + s["solution"] + s["results"])
+    ]
+    vocab = build_vocabulary(everything)
+    hyphenated = Counter(
+        m.lower() for t in everything for m in re.findall(r"\b[A-Za-z]{2,}-[a-z]{2,}\b", t)
+    )
+
+    def fix(text: str) -> str:
+        return fix_stray_hyphens(clean(text), vocab, hyphenated)
+
     out = []
-    for s in stories:
-        page = s["page"]
+    for row in rows:
+        page = int(row["Page"])
+        s = raw[page]
         slug = KEEP_SLUG.get(page) or NEW_SLUG[page]
-        title = TITLE_OVERRIDE.get(page, s["headline"])
-        narrative = s["narrative"]
-        if page == 22:
-            narrative = [P22_NARRATIVE]
-        tags = s["tags"]
-        country = COUNTRY_FIX.get(tags["country"], tags["country"])
+        country = COUNTRY_FIX.get(row["Country"], row["Country"])
         fig = figures.get(str(page), {})
         page_figures = [
             {**f, "caption": c or None}
             for f, c in zip(fig.get("figures", []), fig.get("captions", []))
         ]
-        narrative = strip_captions(narrative, fig.get("captions", []))
+        story = {k: [fix(p) for p in s[k]] for k in ("narrative", "challenge", "solution", "results")}
+        title = fix(s["headline"])
         out.append(
             {
                 "slug": slug,
                 "page": page,
                 "title": title,
-                "metaDescription": meta_description(s, title),
+                "subtitle": fix(s["subtitle"]) or None,
+                "metaDescription": meta_description(story, title),
                 "country": country,
-                "region": tags["area"],
-                "year": int(tags["year"]) if tags["year"] else None,
-                "wirelineCompany": tags["wlco"],
-                "device": tags["device"],
-                "categories": tags["categories"],
-                "challenge": [s["challenge"]] if s["challenge"] else [],
-                "solution": [s["solution"]] if s["solution"] else [],
-                "results": [s["results"]] if s["results"] else [],
-                "narrative": narrative,
-                "image": {"src": s["image"], "width": PAGE_W, "height": PAGE_H},
+                "region": row["Area"],
+                "year": int(row["Year"]) if row["Year"] else None,
+                "wirelineCompany": row["WL Co"],
+                "device": row["Device"],
+                "categories": [c for c in (row["Category 1"], row["Category 2"]) if c],
+                "challenge": story["challenge"],
+                "solution": story["solution"],
+                "results": story["results"],
+                "narrative": story["narrative"],
+                "image": {
+                    "src": f"/flipbooks/success-stories/pages/{page:04d}.webp",
+                    "width": PAGE_W,
+                    "height": PAGE_H,
+                },
                 "figures": page_figures,
             }
         )
-    # sanity: slugs unique, all pages covered
+
     slugs = [o["slug"] for o in out]
     assert len(slugs) == len(set(slugs)) == 46, "slug collision or missing page"
+    missing = [o["page"] for o in out if not o["title"]]
+    assert not missing, f"pages with no headline: {missing}"
     JSON_OUT.write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n")
-    print(f"wrote {JSON_OUT.relative_to(REPO)}: {len(out)} stories")
-    print("kept slugs:", len([p for p in KEEP_SLUG]), "new slugs:", len(NEW_SLUG))
+
+    no_sub = [o["page"] for o in out if not o["subtitle"]]
+    thin = [o["page"] for o in out if not o["narrative"]]
+    paras = sum(len(o["narrative"]) for o in out)
+    print(f"wrote {JSON_OUT.relative_to(REPO)}: {len(out)} stories, {paras} narrative paragraphs")
+    print(f"  pages with no subtitle:  {no_sub or 'none'}")
+    print(f"  pages with no narrative: {thin or 'none'}")
 
 
 if __name__ == "__main__":

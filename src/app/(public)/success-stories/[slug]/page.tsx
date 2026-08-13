@@ -134,6 +134,15 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             )}
           </div>
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900">{cs.title}</h1>
+          {/* The layout's own standfirst. It was always on the page — the
+              PDF-text pipeline just could not tell it apart from the story, so
+              it arrived as a duplicate-sounding first sentence of the
+              narrative. Reading the IDML's paragraph styles separates it out
+              (Aug 2026), and it earns its place here: it states the outcome in
+              one line, above the fold, before the narrative gets to it. */}
+          {cs.subtitle && (
+            <p className="mt-3 max-w-3xl text-lg leading-relaxed text-slate-600">{cs.subtitle}</p>
+          )}
         </header>
 
         <div className="grid lg:grid-cols-[1fr_320px] gap-10 lg:gap-14 items-start">
