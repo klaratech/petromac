@@ -47,11 +47,12 @@ export default function IntranetClient({ user }: { user: StaffUser | null }) {
               className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
             >
               <Image
-                src="/images/athena_logo.png"
-                alt="Athena Production"
-                width={64}
-                height={64}
-                className="object-contain"
+                src="/images/logos/athena-mark.svg"
+                alt=""
+                width={281}
+                height={281}
+                className="h-16 w-16 object-contain"
+                unoptimized
               />
               <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Prod)</h3>
             </a>
@@ -63,13 +64,19 @@ export default function IntranetClient({ user }: { user: StaffUser | null }) {
               rel="noopener noreferrer"
               className="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-500 transition flex flex-col items-center gap-2 bg-white"
             >
-              <Image
-                src="/images/athena_logo_beta.png"
-                alt="Athena Test"
-                width={64}
-                height={64}
-                className="object-contain"
-              />
+              <span className="relative">
+                <Image
+                  src="/images/logos/athena-mark.svg"
+                  alt=""
+                  width={281}
+                  height={281}
+                  className="h-16 w-16 object-contain"
+                  unoptimized
+                />
+                <span className="absolute -right-3 -top-1 rounded bg-red-500 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                  Test
+                </span>
+              </span>
               <h3 className="text-base font-semibold tracking-wide text-gray-900">Athena (Test)</h3>
             </a>
 

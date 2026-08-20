@@ -86,10 +86,20 @@ Product images display on transparent/white backgrounds. Deliver as PNG with tra
 
 ### 1.6 Athena Logos
 
-| File                           | Current | Deliver As                                        | Display Size    | Used In                                 |
-| ------------------------------ | ------- | ------------------------------------------------- | --------------- | --------------------------------------- |
-| `/images/athena_logo.png`      | 60 KB   | **WebP with alpha, 128 x 128 px** (target <20 KB) | 48-64 px square | Intranet page tile + software highlight |
-| `/images/athena_logo_beta.png` | 60 KB   | **WebP with alpha, 128 x 128 px** (target <20 KB) | 64 px square    | Intranet page tile                      |
+Nothing to optimise here — the v2 logo (Aug 2026) ships as SVG, so every size
+is one 4-6 KB file. See `public/images/logos/` and `sources/brand/README.md`.
+
+| File                                     | Current | Display Size    | Used In                                                        |
+| ---------------------------------------- | ------- | --------------- | -------------------------------------------------------------- |
+| `/images/logos/athena-mark[-white].svg`  | 4.5 KB  | 48-64 px square | Homepage software band (white), intranet tiles (blue)          |
+| `/images/logos/athena-logo[-white].svg`  | 5 KB    | 64-80 px tall   | `/simulation` hero (white)                                     |
+| `/images/logos/athena-logo-tagline*.svg` | 13 KB   | ≥500 px wide    | Large format only — the tagline is illegible below that        |
+| `/images/logos/athena-og.png`            | 66 KB   | 1200 x 630      | `/simulation` share card                                       |
+| `/images/logos/athena-logo*.png`         | ~170 KB | ≤1200 px wide   | Raster fallback for email HTML / OG composition — not the site |
+
+The pre-v2 `athena_logo.png` / `athena_logo_beta.png` (Greek goddess, with a
+BETA badge burnt into the second) were deleted once the last reference went;
+the test tile's badge is markup now.
 
 ---
 

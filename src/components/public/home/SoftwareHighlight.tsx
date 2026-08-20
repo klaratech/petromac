@@ -23,12 +23,13 @@ export default function SoftwareHighlight() {
           <div className="flex items-center gap-4 flex-shrink-0 md:w-[340px]">
             <div className="relative w-12 h-12 flex-shrink-0">
               <Image
-                src="/images/athena_logo.png"
+                src="/images/logos/athena-mark-white.svg"
                 alt=""
                 fill
                 className="object-contain"
                 sizes="48px"
                 aria-hidden="true"
+                unoptimized
               />
             </div>
             <div>
