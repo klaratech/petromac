@@ -110,6 +110,12 @@ PROSE_MIN_CHARS = 150
 # in it, so an aggressive value cuts real artwork: at 0.45 page 28 lost two
 # columns off its runs table to a bullet list whose frame merely reached over
 # them.
+# Interlocked-composition fold: minimum overlap (fraction of the smaller
+# figure's placement union inside the other's crop) at which a caption split
+# is undone and the composition ships as one card. Interlocked pages measure
+# 0.37-0.71; genuinely separate figures ~0.
+FOLD_OVERLAP = 0.30
+
 MAX_TRIM = 0.35
 # Neighbouring figures get a far gentler trim. Their boxes overlap constantly —
 # diagonal renders have big empty corners — so squaring them off cuts into the
@@ -586,6 +592,7 @@ def group_page(
             claimed.add(ci)
             captions[ci]["fate"] = "printed"
             groups[gi]["caption"] = captions[ci]["text"]
+            groups[gi]["cap_ids"] = [ci]
             groups[gi]["order"] = caption_number(captions[ci]["text"])
 
     # A caption nothing claimed still says something the page means. Three
@@ -643,6 +650,7 @@ def group_page(
                 f'{host["caption"]} · {cap["text"]}' if host["caption"] else cap["text"]
             )
             host["swallowed"].append(ci)
+            host.setdefault("cap_ids", []).append(ci)
             cap["fate"] = "printed"
             claimed.add(ci)
             continue
@@ -669,6 +677,7 @@ def group_page(
         groups.append({
             "members": [], "decor": seeds, "bounds": region,
             "caption": cap["text"], "order": caption_number(cap["text"]),
+            "cap_ids": [ci],
             "composite": False, "swallowed": [], "rescued": True,
         })
 
@@ -1157,18 +1166,19 @@ def main() -> None:
             if g["bounds"][3] > foot:
                 g["bounds"][3] = foot
 
-        # Fold a split sibling back in when its actual artwork lies inside
-        # another figure's crop. The caption split works on bounding boxes,
-        # and where the layout interlocks two subjects (page 17's histogram
-        # tucked under the toolstring, page 31's chart beside the welded
-        # pair), the split produced two crops that BOTH contain the smaller
-        # subject — the same pixels shown twice. When ≥67% of B's member
-        # placements sit inside A's bounds, B adds nothing worth a second
-        # card: it folds into A and its caption joins A's. The measured
-        # ratios put page 17 at 0.71 (fold — its histogram tucks under the
-        # toolstring) and page 48 at 0.63 (stay split — the documented
-        # judgment for its two captions holds), which is what the threshold
-        # encodes; page 46 is 0.37 both ways and never came close.
+        # Fold a split sibling back in when its artwork overlaps another
+        # figure's crop. The caption split works on bounding boxes, and where
+        # the layout interlocks two subjects (17's histogram tucked under the
+        # toolstring, 31's chart beside the welded pair, 48's diagonal render
+        # across the log, 46's render over the tension chart), the split
+        # produced crops that share pixels — each card carrying a half-cut
+        # copy of its neighbour (the defect Rajesh flagged on 48, 20 Aug).
+        # Measured overlap of B's member placements with A's bounds: 17 at
+        # 0.71, 48 at 0.63, 46 at 0.37 — while genuinely separate figures
+        # (side-by-side pairs) measure ~0, so 0.30 splits the two populations
+        # cleanly. A folded group is ONE card; its captions are NOT printed
+        # below (see the fate flip after this loop) — they stay typeset in
+        # the pixels beside their sub-figures, exactly as the page designed.
         changed = True
         while changed:
             changed = False
@@ -1179,23 +1189,34 @@ def main() -> None:
                     if b is a or not b["members"] or b.get("table"):
                         continue
                     mb = union([items[i]["bounds"] for i in b["members"]])
-                    if inter_area(mb, a["bounds"]) < 0.67 * area(mb):
+                    if inter_area(mb, a["bounds"]) < FOLD_OVERLAP * area(mb):
                         continue
                     a["members"] += b["members"]
                     a["decor"] += b["decor"]
                     a["swallowed"] += b["swallowed"]
+                    a["cap_ids"] = a.get("cap_ids", []) + b.get("cap_ids", [])
                     a["bounds"] = union([a["bounds"], b["bounds"]])
-                    if b["caption"]:
-                        a["caption"] = (
-                            f'{a["caption"]} · {b["caption"]}' if a["caption"] else b["caption"]
-                        )
-                        a["order"] = a["order"] if a["order"] is not None else b["order"]
+                    a["order"] = a["order"] if a["order"] is not None else b["order"]
                     a["composite"] = a["composite"] or b["composite"]
+                    a["folded"] = True
                     groups.remove(b)
                     changed = True
                     break
                 if changed:
                     break
+
+        # A folded card keeps the print's own caption typesetting: each
+        # caption sits beside the sub-figure it names, which one stacked
+        # text row under the single card cannot express. Flip the claimed
+        # captions back to pixels, grow the crop to cover their frames, and
+        # print nothing below.
+        for g in groups:
+            if not g.get("folded"):
+                continue
+            for ci in g.get("cap_ids", []):
+                captions[ci]["fate"] = "pixels"
+                g["bounds"] = union([g["bounds"], captions[ci]["bounds"]])
+            g["caption"] = None
 
         # A figure's crop must not show its neighbour. Bounding boxes overlap
         # freely in this layout — page 48's diagonal tool render reaches right
@@ -1217,7 +1238,11 @@ def main() -> None:
             if n in DROP_FIGURE.get(page, []):
                 continue
             others = [(b, SOFT_TRIM) for j, b in enumerate(boxes) if j != n - 1]
-            protected = [d["bounds"] for d in g["decor"]]
+            protected = [d["bounds"] for d in g["decor"]] + [
+                captions[ci]["bounds"]
+                for ci in g.get("cap_ids", [])
+                if captions[ci]["fate"] == "pixels"
+            ]
             box = clip_to_artwork(g["bounds"], fixed + others, protected)
             im = render_region(pdf, page, box, origin)
             # Erase only the captions that PRINT under some figure — a copy

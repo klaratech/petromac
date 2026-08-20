@@ -128,6 +128,41 @@ calls listed in SUCCESS_STORY_REVIEW.md for sign-off.
 
 ---
 
+## Aug 2026 — Interlocked figures fold into one card, captions stay typeset in the pixels
+
+**Decision:** when a caption-driven figure split leaves crops that overlap by
+≥30% of the smaller figure's placements (`FOLD_OVERLAP` in
+`extract_story_figures.py`), the split is undone: the composition ships as ONE
+card whose crop covers both figures **and their caption frames**, the claimed
+captions flip to fate "pixels", and nothing prints below the card. Applies to
+pages 17, 31, 46, 48.
+
+**Why:** the one-by-one page review (20 Aug). The old threshold (0.67
+containment) folded 17 and 31 but left 46 and 48 split, on the reasoning that
+48's two captions "say plainly they are separate". Rajesh read page 48 the way
+any visitor would: "Fig 1 seems to have half cut fig 2 and 3 inside it??" —
+the interlocked layout means every rectangular crop of one figure carries
+half-cut copies of its neighbours, and no caption text explains that away.
+Measured overlaps: 17 = 0.71, 48 = 0.63, 46 = 0.37; genuinely separate
+side-by-side figures measure ~0, so 0.30 splits the populations cleanly.
+
+The caption rule is also his: the first fold implementation joined the caption
+texts under the single card ("Fig.1 … · Fig.2 …"), and his verdict was "the
+captions are not next to the relevant image". The print already typesets each
+caption beside its sub-figure — so for folded cards the extractor now keeps
+that typesetting in the rendered pixels (the same fate composites' positional
+labels always had) instead of extracting the text. Alt text falls back to
+"title — figure N", the composite precedent.
+
+**Trap for the future:** this file was patched three times in one session and
+the first patch printed its success message without writing the file — the
+fold then silently produced caption-LESS cards (captions neither below nor in
+pixels, fate never flipped because `cap_ids` was never recorded). If folded
+cards ever lose their captions again, check that every site assigning a
+caption to a group also records its index in `cap_ids`.
+
+---
+
 ## Aug 2026 — Athena logo v2: two colours shipped, tagline is a large-format asset
 
 **Decision:** the new hornbill logo lives in `public/images/logos/` as three

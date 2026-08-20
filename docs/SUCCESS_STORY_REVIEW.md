@@ -74,12 +74,12 @@ Status: ☐ pending · ✅ approved · 🔧 tuned then approved
   horizontal adjacency by design — `Fig.1 | Fig.2` is the document's commonest
   layout. Merging these three would need a per-page hatch or a caption-text
   heuristic. Live pages read fine; print purist would merge.
-- **Interlocked compositions that stay split** (46, 48): print draws one
-  artwork; captions/geometry split them and the two crops overlap (some pixels
-  appear in both cards). 17 and 31 folded cleanly under the ≥67% containment
-  rule; 46 (0.37) and 48 (0.63) sit below it, and 48's split is a documented
-  decision. Fold them too, or accept the print-like overlap?
-  _Status 20 Aug: Rajesh is checking these two and will decide._
+- ~~**Interlocked compositions that stay split** (46, 48)~~ **RESOLVED 20
+  Aug**: Rajesh flagged 48's half-cut duplicates; fold threshold lowered to
+  0.30 so 46 and 48 fold like 17 and 31. His second call — "the captions are
+  not next to the relevant image" — became the rule that folded cards keep
+  the print's own caption typesetting IN the pixels (each caption beside its
+  sub-figure) and print nothing below.
 - **Typography flattening (corpus-wide)**: bold/italic emphasis inside
   paragraphs, bullet glyphs (27, 28, 38) and coloured inline headings are not
   carried — the pipeline reads paragraph STYLES, not character styles. Carrying

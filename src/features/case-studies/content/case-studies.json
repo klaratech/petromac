@@ -784,8 +784,8 @@
       {
         "src": "/flipbooks/success-stories/figures/0017-1.webp",
         "width": 1200,
-        "height": 982,
-        "caption": "Fig.1. Customized configuration for MRIL-XL · Fig.2. Actual tool drag coefficient observed during the job"
+        "height": 1118,
+        "caption": null
       }
     ]
   },
@@ -1567,8 +1567,8 @@
       {
         "src": "/flipbooks/success-stories/figures/0031-1.webp",
         "width": 1200,
-        "height": 1004,
-        "caption": "Fig.1. Formation testing tool oriented to the highside when running on tool taxis. · Fig.2. Average tool drag coefficient from the job – Possible to descend to 80 deg on gravity"
+        "height": 1107,
+        "caption": null
       }
     ]
   },
@@ -2397,14 +2397,8 @@
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0046-1.webp",
-        "width": 1148,
-        "height": 1645,
-        "caption": null
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0046-2.webp",
         "width": 1200,
-        "height": 1217,
+        "height": 1279,
         "caption": null
       }
     ]
@@ -2504,14 +2498,8 @@
       {
         "src": "/flipbooks/success-stories/figures/0048-1.webp",
         "width": 1200,
-        "height": 868,
-        "caption": "Fig. 1: CMR-ORA run with Taxis kept stable orientation."
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0048-2.webp",
-        "width": 1200,
-        "height": 557,
-        "caption": "Fig 2  & 3: Log and Relative bearing Histogram showing tool on wheels"
+        "height": 1302,
+        "caption": null
       }
     ]
   },
