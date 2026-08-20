@@ -273,18 +273,12 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0016-1.webp",
-    "width": 692,
-    "height": 1889
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0016-2.webp",
-    "width": 692,
-    "height": 1889
+    "width": 1200,
+    "height": 1616
    }
   ],
   "captions": [
-   "Fig.1. Logging with Tool Taxis produced an excellent log, with no image rotation or stick slip, despite the poor hole conditions.",
-   null
+   "Fig.1. Logging with Tool Taxis produced an excellent log, with no image rotation or stick slip, despite the poor hole conditions."
   ],
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
@@ -435,22 +429,16 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0023-1.webp",
-    "width": 914,
-    "height": 915
+    "width": 1200,
+    "height": 545
    },
    {
     "src": "/flipbooks/success-stories/figures/0023-2.webp",
-    "width": 914,
-    "height": 915
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0023-3.webp",
     "width": 1200,
     "height": 469
    }
   ],
   "captions": [
-   null,
    "Fig.1. Core-bif orientation with / without Taxis",
    "Fig.2. Recovery rates with Petromac System"
   ],
@@ -590,19 +578,13 @@
    },
    {
     "src": "/flipbooks/success-stories/figures/0030-2.webp",
-    "width": 983,
-    "height": 1093
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0030-3.webp",
-    "width": 983,
-    "height": 1089
+    "width": 1200,
+    "height": 629
    }
   ],
   "captions": [
    "Fig.1. Pathfinder",
-   "Fig.2. Pathfinder guided the toolstring past a 10\u201d ledge smoothly.",
-   null
+   "Fig.2. Pathfinder guided the toolstring past a 10\u201d ledge smoothly."
   ],
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
@@ -867,23 +849,17 @@
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0042-1.webp",
-    "width": 1014,
-    "height": 821
+    "width": 1200,
+    "height": 473
    },
    {
     "src": "/flipbooks/success-stories/figures/0042-2.webp",
-    "width": 1014,
-    "height": 821
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0042-3.webp",
     "width": 1097,
     "height": 1437
    }
   ],
   "captions": [
    "Fig1: Comparison of other roller devices vs Petromac Tool Taxi. Petromac\u2019s patented orientation system ensures wheels always roll over ledges and washouts instead of rollers falling into washouts becoming hung-up points on a toolstring.",
-   null,
    null
   ],
   "map": {

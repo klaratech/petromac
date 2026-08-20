@@ -693,6 +693,50 @@ def group_page(
             "composite": False, "swallowed": [], "table": True,
         })
 
+    # Same-size side-by-side panels sharing ONE caption are a single figure —
+    # the document's comparison idiom: page 16's two log panels under one
+    # Fig.1, 23's with/without core pair, 30's log + washout diagram (whose
+    # single Fig.2 caption also fixes the pair's print order once merged),
+    # 42's roller-device comparison. Size is the discriminator, not caption
+    # geometry: 23's caption sits wholly under one panel yet the pair is one
+    # figure, while 49's trajectory chart beside the runs table (different
+    # shapes) stays two. Adjacency alone NEVER merges — Fig.1 | Fig.2 side by
+    # side is the commonest layout — so this fires only for a pair where
+    # exactly one panel claimed a caption and the panels match within 12%.
+    changed = True
+    while changed:
+        changed = False
+        for a in groups:
+            if a.get("table"):
+                continue
+            for b in groups:
+                if b is a or b.get("table"):
+                    continue
+                ab, bb = a["bounds"], b["bounds"]
+                overlap_y = min(ab[3], bb[3]) - max(ab[1], bb[1])
+                if overlap_y < 0.5 * min(ab[3] - ab[1], bb[3] - bb[1]):
+                    continue
+                if max(ab[0], bb[0]) - min(ab[2], bb[2]) > 60:  # x-gap
+                    continue
+                if bool(a["caption"]) == bool(b["caption"]):
+                    continue
+                wa, ha = ab[2] - ab[0], ab[3] - ab[1]
+                wb, hb = bb[2] - bb[0], bb[3] - bb[1]
+                if abs(wa - wb) > 0.12 * max(wa, wb) or abs(ha - hb) > 0.12 * max(ha, hb):
+                    continue
+                host, other = (a, b) if a["caption"] else (b, a)
+                host["members"] += other["members"]
+                host["decor"] += other["decor"]
+                host["swallowed"] += other["swallowed"]
+                host["cap_ids"] = host.get("cap_ids", []) + other.get("cap_ids", [])
+                host["bounds"] = union([host["bounds"], other["bounds"]])
+                host["composite"] = host["composite"] or other["composite"]
+                groups.remove(other)
+                changed = True
+                break
+            if changed:
+                break
+
     # Reading order: rows of ~20pt, then left to right. Deliberately NOT the
     # caption's Fig number — a page can mix captioned and uncaptioned figures
     # (page 19), which leaves nothing to interleave them by. The layout numbers

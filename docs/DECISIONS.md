@@ -128,6 +128,36 @@ calls listed in SUCCESS_STORY_REVIEW.md for sign-off.
 
 ---
 
+## Aug 2026 — Same-size side-by-side pairs sharing one caption merge into one card
+
+**Decision:** in `extract_story_figures.py`'s grouping, a horizontally
+adjacent pair (y-overlap ≥50%, x-gap ≤60pt) where exactly ONE panel claimed a
+caption and the panels match within 12% on both axes merges into a single
+figure under that caption. Pages 16, 23, 30, 42. Rajesh's call ("merge",
+20 Aug), after seeing the print/live composites.
+
+**Why size and not caption geometry:** the obvious rule — "the caption spans
+both panels" — is false on the very pages it must catch. Page 23's Fig.1
+("Core-bif orientation with / without Taxis") sits wholly under one panel of
+the pair it names, while page 49's "Fig 3: Well 6 trajectory" reaches part-way
+toward the runs table it does NOT name. What actually separates them is shape:
+a comparison pair is typeset as two same-size panels (16: 121×336 twice,
+23: 173×171 twice, 30: 173×203/173×197, 42: 179×157 twice); 49's chart and
+table differ wildly (148×197 vs 371×120). Same-size + one caption is the
+designer's comparison idiom.
+
+**Bonus:** page 30's pair had also been rendering washout-panel-first where
+print reads log-first — merged, the region renders as printed, so the order
+bug disappeared without touching the sort.
+
+**Still true:** adjacency alone NEVER merges (Fig.1 | Fig.2 side by side is
+the document's commonest layout), and both-captioned or zero-captioned pairs
+are untouched. This probe found exactly five one-captioned adjacent pairs in
+the corpus: 16, 23, 30, 42 (merge) and 49 (stays split) — the rule was tested
+against the full population, not just the complaints.
+
+---
+
 ## Aug 2026 — Interlocked figures fold into one card, captions stay typeset in the pixels
 
 **Decision:** when a caption-driven figure split leaves crops that overlap by
