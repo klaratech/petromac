@@ -11,6 +11,12 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Sensor Orientation", "Sticking Prevention"],
+    "references": [
+      {
+        "label": "SPE-184773-MS",
+        "href": "https://doi.org/10.2118/184773-MS"
+      }
+    ],
     "challenge": [
       "The operator expected the reservoir to be low permeability, which was confirmed by the XPT pressure tests. It was not possible to prove hydrocarbon from gradients in many zones. Permeability indicated that sampling would not be possible on the MDT run."
     ],
@@ -20,14 +26,16 @@
     "results": [
       "The operator obtained high quality pretests which proved the formation fluid gradient and was able to take 12 high quality samples."
     ],
+    "learnings": [],
     "narrative": [
       "In an offshore Vietnam well, pressure tests conducted on the low side of the wellbore with XPT were invalid because of low mobility and supercharging.",
       "In deviated wells the weight of the drill pipe is borne on the low side of the wellbore. Suspended cuttings are ground into the pore spaces by the rotating drill-string. Further damage is done as the drill pipe scours the sealing mudcake from the wellbore wall, thereby allowing repeated invasion of drilling fluids on the low side. Sampling from the high side of the wellbore results in faster clean-up due to improved permeability and less filtrate invasion.",
       "On the subsequent run, a 170ft long MDT sampling string was oriented probe-up by Tool Taxis in order to sample from the undamaged high side of the wellbore.",
       "The permeability on the high side of the wellbore was 20x greater than the low side. This allowed the operator to prove hydrocarbon content from pressure gradient alone. On the same run the operator successfully took 12 samples in low permeability reservoirs (~5mD) with an average clean up time of less than an hour.",
-      "Further details of this operation can be found in",
-      "SPE-184773-MS."
+      "Further details of this operation can be found in SPE-184773-MS."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0004.webp",
       "width": 1241,
@@ -36,13 +44,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0004-1.webp",
         "width": 1200,
-        "height": 698,
+        "height": 824,
         "caption": "Fig1. Highside vs Lowside Permeability"
       }
     ]
@@ -59,6 +68,12 @@
     "wirelineCompany": "HAL",
     "device": "Wireline Express - FT",
     "categories": ["Sticking Prevention", "Sensor Orientation"],
+    "references": [
+      {
+        "label": "SPE-201218-MS",
+        "href": "https://doi.org/10.2118/201218-MS"
+      }
+    ],
     "challenge": [
       "A local geological regression produces adjacent zones with, ΔP 5000psi. The first run in hole was stuck and fished across one of these ‘pseudo-depleted’ zones."
     ],
@@ -68,18 +83,19 @@
     "results": [
       "No sticking was encountered on the imaging run (which was previously fished) – data quality was outstanding.",
       "The sampling tool became temporarily stuck after a 12,000 psi ΔP (flowing) station.",
-      "Orientation of the probe to the",
-      "high side caused the tool weight to ‘peel’ the probe off the station, avoiding another costly fishing operation."
+      "Orientation of the probe to the high side caused the tool weight to ‘peel’ the probe off the station, avoiding another costly fishing operation."
     ],
+    "learnings": [],
     "narrative": [
       "The Gulf of Mexico is known for some of the toughest drilling and wireline logging conditions in the world. An operator drilled a challenging 8.5” deviated well to 33,000 ft in a field where virgin pressures in adjacent zones can differ by over 5000psi.",
       "The first wireline run in hole was an oil based mud imaging tool (without Petromac Taxis) which became stuck across one of the problematic low pressure sands and had to be fished. As a consequence the operator insisted on using Petromac for all remaining runs. When the imaging tool was re-run it recorded outstanding data with no sticking, overpulls or spiraling – the smooth tool motion resulted in clear, crisp images.",
       "On the same job, Wireline Express successfully conveyed a 7500lbs reservoir sampling string with the probe oriented to the high side of the wellbore – enabling fast build ups and sample clean ups, with one sampling station setting an industry record of 12,000 psi ΔP (flowing).",
       "After the final reservoir sample was taken from this problematic low pressure sand, the sampling string became temporarily stuck. However because the tool was oriented probe-up the toolstring weight ‘peeled’ the probe from the high side of the wellbore and the tool was immediately able to move up and down freely.",
       "The final run was a sidewall coring tool. An 85% recovery rate was achieved despite the high overbalance (1000-5000 psi) – another industry record.",
-      "Further details of this operation can be found in",
-      "SPE-201218-MS"
+      "Further details of this operation can be found in SPE-201218-MS"
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0005.webp",
       "width": 1241,
@@ -88,13 +104,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/nam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "NAM"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0005-1.webp",
         "width": 1200,
-        "height": 658,
+        "height": 648,
         "caption": "Fig1. Formation Testing Toolstring on Taxis"
       }
     ]
@@ -111,6 +128,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Well Access: Deviation", "Well Access: Ledges"],
+    "references": [],
     "challenge": [
       "Multiple conveyance issues were causing a high rate of NPT and reduced logging programs."
     ],
@@ -120,11 +138,14 @@
     "results": [
       "Logging programs were expanded to include XPT, CMR and LithoScanner. And operations failure rate dropped from 48% to 5%."
     ],
+    "learnings": [],
     "narrative": [
       "Adverse well conditions have compromised logging operations in the “Jurassic” wells in Kuwait. In a single year, 48% of all logging operations involved NPT or were curtailed due to logging difficulties.",
       "Logging tools failed to reach TD on 10 occasions, there were 5 fishing operations and 4 jobs were cancelled due to logging difficulties. Typically the operator would only run essential logging services due to the risk.",
       "In the 18 month period following the introduction of Wireline Express the operator achieved a success rate of 95%. This also included 4 logging runs at 73° deviation – a local record. As a result the logging programs were expanded to XPT, CMR and LithoScanner."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0006.webp",
       "width": 1241,
@@ -133,13 +154,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0006-1.webp",
         "width": 1200,
-        "height": 407,
+        "height": 398,
         "caption": "Fig.1. In deviated wells using Wireline Express, the CMR bowspring can be removed and ledges are easily navigated with the angled holefinder"
       },
       {
@@ -162,6 +184,7 @@
     "wirelineCompany": "BHI",
     "device": "Wireline Express - FT",
     "categories": ["Well Access: Ledges"],
+    "references": [],
     "challenge": [
       "Ledges are the primary cause of toolstring holdup and will persistently holdup toolstrings, even on TLC operations."
     ],
@@ -171,12 +194,15 @@
     "results": [
       "The operator was able to avoid the costly LWD passes and extra rig time by shifting the data acquisition program to wireline."
     ],
+    "learnings": [],
     "narrative": [
       "An operator in Azerbaijan had been unable to complete wireline logging on multiple wells due to toolstring holdup on ledges at shale-sand interfaces.",
       "Consequently the operator had been forced to acquire sub-surface data with LWD after drilling. Each post-drilling LWD pass took 6 days at a cost of $4.0MM per well. This method was used in place of wireline logging on 80% of the wells drilled.",
       "Eager to reduce costs, the operator engaged Petromac to provide a holefinder system in order to navigate over ledges, washouts and borehole breakout.",
       "The operator achieved a 100% success rate on the remaining well campaign, logging 5 wells with multiple toolstrings and avoiding the costly LWD passes."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0007.webp",
       "width": 1241,
@@ -185,7 +211,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -214,6 +241,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Well Access: Ledges"],
+    "references": [],
     "challenge": [
       "In ‘vertical’ wellbores large ledges will persistently holdup toolstrings, even on TLC operations."
     ],
@@ -223,11 +251,14 @@
     "results": [
       "A well which could not be logged on TLC was subsequently logged using the Petromac holefinder system (6 successful runs in hole)."
     ],
+    "learnings": [],
     "narrative": [
       "An operator in Iraq was combating major issues with wellbore ledges in a well with only 6 deg deviation. After two wireline runs which were held up at shallow depth, the operator undertook a wiper trip, only to experience similar problems again on the 3rd attempt. The decision was made to run a TLC operation, however this was also unsuccessful.",
       "In all a total of 5 days of rig time had been lost trying to pass a 20” washout with associated ledge.",
       "Frustrated with the lack of results from conventional wireline and TLC, the operator sought the expertise of Petromac to log this critical well. A total of 6 descents were made with Petromac Wireline Express – all seamlessly conveyed to TD."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0008.webp",
       "width": 1241,
@@ -236,7 +267,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -265,19 +297,27 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Well Access: Deviation"],
+    "references": [
+      {
+        "label": "SPE-192876-MS",
+        "href": null
+      }
+    ],
     "challenge": [
       "Centralizing Array Sonic tools typically involves adding drag inducing centralizers (powered calipers / bowsprings) which limit the maximum deviation the tools can descend to under gravity alone."
     ],
     "solution": [
       "The Array Sonic was run on Tool Taxis, removing the need for PPCs, standoffs, LCMEs etc."
     ],
-    "results": ["The toolstring was able to", "descend freely to 79°"],
+    "results": ["The toolstring was able to descend freely to 79°"],
+    "learnings": [],
     "narrative": [
       "An operator in Abu Dhabi wanted to log an Array Sonic in a 8.5” open hole well which featured an 800ft, 79° tangent section. The preference was to complete the logs on wireline and to avoid pipe conveyance, there by improving data quality and rig efficiency.",
       "Traditional methods of centralizing the Sonic tools using powered calipers, standoffs, bowspring centralizers etc. cause drag and make it impossible for a toolstring to descend to high deviations by gravity. By replacing the traditional centralizing accessories with Tool Taxis, the toolstring was able to descend effortlessly to 79°.",
-      "Further details of this technique can be found in",
-      "SPE-192876-MS."
+      "Further details of this technique can be found in SPE-192876-MS."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0009.webp",
       "width": 1241,
@@ -286,19 +326,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0009-1.webp",
         "width": 1200,
-        "height": 457,
+        "height": 452,
         "caption": "Fig.1. Well Trajectory"
       },
       {
         "src": "/flipbooks/success-stories/figures/0009-2.webp",
         "width": 1200,
-        "height": 510,
+        "height": 500,
         "caption": "Fig.2. Array Sonic tool with high-drag traditional centralizing equipment (top) with low-drag Petromac equipment (bottom)"
       }
     ]
@@ -315,6 +356,12 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Well Access: Deviation", "Sensor Orientation"],
+    "references": [
+      {
+        "label": "SPE-192876-MS",
+        "href": null
+      }
+    ],
     "challenge": [
       "Centralizing Array Sonic tools typically involves adding drag inducing centralizers (powered calipers / bowsprings) which limit the maximum deviation the tools can descend to under gravity alone."
     ],
@@ -322,12 +369,14 @@
     "results": [
       "The Array Sonic was perfectly centralized in the 8.5” wellbore and drag was significantly reduced."
     ],
+    "learnings": [],
     "narrative": [
       "In a world first, an operator in the United Arab Emirates ran a Array Sonic centralized on Petromac Tool Taxis. This eliminated the drag inherent to traditional methods, resulting in excellent data quality.",
       "Further to this, the Tool Taxis provide 2.4” of standoff (in 8.5” hole) on the sonde which perfectly centralizes the tool in the wellbore. Powered Calipers (which are placed at the extremity of the Array Sonic) and bowspring centralizers(which collapse under load) are not able to provide the same quality of centralization.",
-      "Further details of this technique can be found in",
-      "SPE-192876-MS."
+      "Further details of this technique can be found in SPE-192876-MS."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0010.webp",
       "width": 1241,
@@ -336,7 +385,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -348,7 +398,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0010-2.webp",
         "width": 1200,
-        "height": 504,
+        "height": 494,
         "caption": "Fig.2. Array Sonic tool with high-drag traditional centralizing equipment (top) with low-drag Petromac equipment (bottom)"
       }
     ]
@@ -365,6 +415,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Sticking Prevention", "Sensor Orientation"],
+    "references": [],
     "challenge": [
       "CMR data acquired in the previous well in the same field was unusable due to cyclic overpulls, which caused stick slip motion.",
       "Stick slip is common with services which require slow logging speeds such as CMR and MRX."
@@ -375,11 +426,14 @@
     "results": [
       "The log yielded a high quality data set and the stick slip motion was eliminated."
     ],
+    "learnings": [],
     "narrative": [
       "In an offshore well in Abu Dhabi, a CMR log was invalid due to the highly irregular motion of the tool in the wellbore (see tension log on left).",
       "On the subsequent well the CMR was run on Tool Taxis, which oriented the tool pad down and ensured good contact with the wellbore. In a deviated well with Tool Taxis, the weight of CMR sonde provides sufficient contact force without the addition of bowsprings and PPCs. Removing the bowspring and PPC has the added benefit of helping to further reduce stick slip motion.",
       "The data set was devoid of stick slip artifacts on the 2nd well and the log yielded excellent data (see Fig.2)."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0011.webp",
       "width": 1241,
@@ -388,25 +442,26 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0011-1.webp",
         "width": 1014,
-        "height": 1255,
+        "height": 1239,
         "caption": "Fig.1. Tension profile due to stick-slip on tool"
       },
       {
         "src": "/flipbooks/success-stories/figures/0011-2.webp",
-        "width": 724,
-        "height": 1254,
+        "width": 1014,
+        "height": 1239,
         "caption": "Fig.2. Tension profile with tool on taxis"
       },
       {
         "src": "/flipbooks/success-stories/figures/0011-3.webp",
         "width": 1200,
-        "height": 360,
+        "height": 341,
         "caption": "Fig.3.Eccentered Magnetic resonance tool making good pad contact using Tool Taxis"
       }
     ]
@@ -423,6 +478,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Sticking Prevention", "Sensor Orientation"],
+    "references": [],
     "challenge": [
       "Preventing rotation of imaging tools is particularly important in large wellbores where image coverage is lower."
     ],
@@ -430,12 +486,15 @@
     "results": [
       "High quality logs were obtained with no rotation. The logs were also devoid of any stick slip artifacts due to the smooth tool motion caused by the Tool taxis."
     ],
+    "learnings": [],
     "narrative": [
       "Preventing rotation of imaging tools is desirable to prevent image overlap. This is particularly important in large wellbores where borehole coverage is lower.",
       "Traditional methods to prevent/mitigate OBMI rotation include running swivels to release cable torque and performing multiple passes over zones of interest.",
       "By using Tool Taxis the imaging tool becomes ‘locked’ into a fixed orientation, which prevents tool rotation. An operator used this technique to prevent the tool from rotating on a dual OMBI job in Trinidad & Tobago and obtained an excellent log in 12.25” hole.",
       "Micro-resistivity imaging tools such as OBMI, FMI and NGI are also negatively affected by stick slip motion caused by overpulls. Petromac Tool Taxis help to smooth the tool motion, and the result is clear, crisp imaging logs."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0012.webp",
       "width": 1241,
@@ -444,7 +503,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
@@ -467,6 +527,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Sensor Orientation"],
+    "references": [],
     "challenge": [
       "Due to rock mechanics, the operator wanted to avoid coring from the low side of the wellbore.",
       "Coring at 90 deg to the low side was preferred to protect the stress cage."
@@ -477,11 +538,14 @@
     "results": [
       "The operator obtained high quality cores, cut parallel to the bedding planes and achieved 100% recovery."
     ],
+    "learnings": [],
     "narrative": [
       "In an offshore well in the Gulf of Mexico an operator requested to cut cores from the side of the 8.5” wellbore. Rock mechanics analysis indicated that it would be preferable to cut cores from the side of the wellbore in order to protect the stress cage and thereby reduce losses during cementing.",
       "In deviated wells, cores cut horizontally will generally be parallel to the bedding planes. Consequently, lab measurements of core permeability are relevant for modelling the reservoir flow characteristics. Horizontal cores from the side of the wellbore are cut parallel to the bedding planes and have more value for core analysis. There is also less risk of cuttings jamming the kinematics section.",
       "Core recovery on this particular job was 100% with 12/12 cores recovered. Since this first job, Petromac has performed several oriented coring jobs with an average core recovery of 97%."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0013.webp",
       "width": 1241,
@@ -490,13 +554,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/nam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "NAM"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0013-1.webp",
         "width": 1200,
-        "height": 1054,
+        "height": 943,
         "caption": "Fig.1. Cutting at 90deg to the low side of the wellbore avoids cuttings and near wellbore damage."
       },
       {
@@ -519,6 +584,7 @@
     "wirelineCompany": "HAL",
     "device": "Wireline Express - FT",
     "categories": ["Operational Efficiency", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "An operator in Mexico initially planned to log a 69° well using Pipe Conveyance (PCL). They were concerned with the rig time required with PCL and the associated risks with multi-latch operations and tripping in-hole blind."
     ],
@@ -529,12 +595,15 @@
       "The operator was able to save 8 days of rig time, while controlling operational risks such as differential sticking.",
       "Additionally, enhanced data was acquired thanks to smooth tool motion while logging up."
     ],
+    "learnings": [],
     "narrative": [
       "In an offshore well in Mexico, the logging program included 6 runs. The maximum well deviation was 69° and included a 1000-meter-long tangent section. In order to avoid pipe conveyed logging, which included two latches per descent, significantly longer operating time, and multiple associated risks, the operator decided to convey the logging tools with Petromac’s conveyance system – Wireline Express.",
       "A total of 7 runs were conveyed on wireline – by gravity – and in each occasion the maximum deviation and total depth were successfully achieved due to significantly reducing the tool drag.",
       "This job included a world first conveyance for MRIL-XL and Geochain. Tool Taxis permitted the multilevel seismic tool to be run with 4 shuttles rather than 1 shuttle with PCL resulting in additional rig time savings.",
       "By using Wireline Express the operator obtained an exceptional logging dataset while saving 1.25MM$."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0014.webp",
       "width": 1241,
@@ -543,13 +612,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0014-1.webp",
         "width": 1200,
-        "height": 398,
+        "height": 388,
         "caption": "Fig.1. Well Trajectory"
       },
       {
@@ -572,6 +642,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Sensor Orientation", "Sticking Prevention"],
+    "references": [],
     "challenge": [
       "FMI borehole coverage is low in large holes. Multiple passes typically result in the tool tracking in the original path with no new data recorded in the extra passes."
     ],
@@ -583,12 +654,15 @@
       "The dual passes resulted in a borehole coverage increase from 52% to 100% .",
       "The logs were also devoid of any stick slip artifacts due to the smooth tool motion caused by the Tool taxis."
     ],
+    "learnings": [],
     "narrative": [
       "Preventing rotation of imaging tools is desirable to prevent image overlap. This is particularly important in large wellbores where borehole coverage is lower.",
       "In 12.25” hole FMI wellbore coverage is only 52%. Whilst repeat passes can be made to try to cover the remaining area, the tool will typically follow the same path each time, leaving a large portion of the wellbore unlogged.",
       "In Iraq, Tool Taxis were used to perform two sequential runs in a 12.25” wellbore. The first run with the tool oriented at 0°, and the second run with the tool rotated by 45°. The combined images increased the wellbore wall coverage from 52% to 100% – a vital piece of information in a geologically challenging field.",
       "Micro-resistivity imaging tools such as OBMI, FMI and NGI are also negatively affected by stick slip motion caused by overpulls. Petromac Tool Taxis help to smooth the tool motion, and the result is clear, crisp imaging logs."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0015.webp",
       "width": 1241,
@@ -597,7 +671,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -620,6 +695,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Sticking Prevention", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "High deviation combined with poor hole conditions threatened to prevent the acquisition of critical NGI data."
     ],
@@ -628,12 +704,15 @@
       "The tool descended freely to TD without holdup and recorded high quality image logs.",
       "The logs were also devoid of any stick slip artifacts due to the smooth tool motion enabled by the Tool taxis."
     ],
+    "learnings": [],
     "narrative": [
       "An operator in New Zealand drilled a challenging sidetrack well featuring a 2400m, 67deg tangent section. Equipment failures in the BHA resulted in a corkscrew hole in the lower half of the well.",
       "It was critical that the operator logged the NGI in this well as the field contains complex geological structures.",
       "Petromac provided a custom-made Tool Taxi which centered the NGI within 0.3in of the center of the wellbore. In this configuration the NGI can be run without standoffs, which induce drag and cause stick slip motion.",
       "Micro-resistivity imaging tools such as OBMI, FMI and NGI are negatively affected by stick slip motion caused by overpulls. Petromac Tool Taxis help to smooth the tool motion, and the result is clear, crisp imaging logs."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0016.webp",
       "width": 1241,
@@ -642,7 +721,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
@@ -671,6 +751,7 @@
     "wirelineCompany": "HAL",
     "device": "Wireline Express",
     "categories": ["Well Access: Deviation", "Sticking Prevention"],
+    "references": [],
     "challenge": [
       "MRIL-XL measurement is directional and must be run eccentered for optimal data quality. The standard configuration utilizing finned standoffs results in high drag and limits gravity descent at high deviations. Additionally, high drag induces stick-slip motion, further compromising data quality at slow logging speeds."
     ],
@@ -680,11 +761,14 @@
     "results": [
       "MRIL-XL descended by gravity to TD, while controlling operational risks such as differential sticking. Additionally, enhanced data was acquired thanks to smooth tool motion while logging up."
     ],
+    "learnings": [],
     "narrative": [
       "The logging program included an NMR tool (MRIL-XL) to be run in a highly deviated well (69°) in Mexico. With the conventional setup, the drag due to the weight of the magnet on finned standoffs, prevents gravity descent in deviations over 60deg. The normal “solution”, pipe conveyed logging, involves much more logging time, particularly as two latches were needed per descent in this instance. To save time, mitigate risks and improve data quality by eliminating stick-slip, the operator decided to convey the toolstring with Petromac’s conveyance system – Wireline Express.",
       "This was the first time that a MRIL-XL was conveyed fully on wheels. A tailored configuration of Tool Taxis generated the optimum standoff, which allowed removal of the finned standoffs. This resulted in low drag coefficient (0.18), very smooth tool motion and much enhanced data quality.",
       "By using Wireline Express the operator obtained an exceptional logging dataset while saving rig-time and controlling intrinsic operational risks."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0017.webp",
       "width": 1241,
@@ -693,20 +777,15 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0017-1.webp",
         "width": 1200,
-        "height": 1030,
-        "caption": "Fig.1. Customized configuration for MRIL-XL"
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0017-2.webp",
-        "width": 990,
-        "height": 937,
-        "caption": "Fig.2. Actual tool drag coefficient observed during the job"
+        "height": 982,
+        "caption": "Fig.1. Customized configuration for MRIL-XL · Fig.2. Actual tool drag coefficient observed during the job"
       }
     ]
   },
@@ -722,17 +801,21 @@
     "wirelineCompany": "HAL",
     "device": "Wireline Express",
     "categories": ["Well Access: Deviation", "Centralization"],
+    "references": [],
     "challenge": [
       "CAST needs to be centralized within 0.1” in order to ensure quality data. This typically involves using strong slip-over centralizers, which limit the maximum deviation the tools can descend to under gravity alone."
     ],
     "solution": ["The CAST was run on Tool Taxis, removing the need for the centralizers"],
     "results": ["The toolstring was able to descend freely to 82°."],
+    "learnings": [],
     "narrative": [
       "An operator in Norway wanted to log CAST-CBL to the maximum deviation possible, on an upcoming campaign of 4 highly deviated extended reach wells.",
       "Traditional methods of centralizing the CAST-CBL using slip-over centralizers causes excessive drag. This makes it challenging to descend past 50° deviation, which was not deep enough in the well for this operator.",
       "The slip-over centralizers were replaced by Tool Taxis, and the toolstring was able to descend to a maximum of 82° deviation, which was sufficient to acquire the required data.",
       "Equally as important, the eccentralization, was constantly below 0.1” in the deviated section of the borehole, which coupled with the smooth movement of the tool, resulted in excellent data."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0018.webp",
       "width": 1241,
@@ -741,19 +824,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/eur.webp",
       "width": 1200,
-      "height": 644
+      "height": 644,
+      "code": "EUR"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0018-1.webp",
         "width": 1200,
-        "height": 488,
+        "height": 479,
         "caption": "Fig.1. CAST-CBL with Petromac Wireline Express installed on the toolstring"
       },
       {
         "src": "/flipbooks/success-stories/figures/0018-2.webp",
         "width": 1200,
-        "height": 1021,
+        "height": 1089,
         "caption": "Fig.2. EC centralization observed during the job"
       }
     ]
@@ -770,6 +854,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Well Access: Deviation", "Sticking Prevention"],
+    "references": [],
     "challenge": [
       "Operator in Nigeria had very low confidence of running MDT to 70º deviation and avoiding getting differentially stuck, due to past failed attempts."
     ],
@@ -779,11 +864,14 @@
     "results": [
       "The tool descended freely to TD by gravity without any indications of sticking. In addition, the Tool Drag coefficient and Head Tension matched perfectly with the outputs from Hermes Drag Planner."
     ],
+    "learnings": [],
     "narrative": [
       "Petromac’s Hermes Drag Planner calculates the downhole Tool Drag coefficient of any toolstring, and when coupled with the well survey and other downhole conditions, can accurately predict to what depth it can descend to on wireline.",
       "Actual Tool Drag coefficients from the job is fed back into the Planner in order to refine it for future operations.",
       "On this particular job, the MDT was run on ultra-low friction TTB type Taxis and Hermes predicted a Tool Drag coefficient of 0.06, and a healthy head tension of 700lbs whilst descending in the 70º deviated section as shown below:"
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0019.webp",
       "width": 1241,
@@ -792,7 +880,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/afr.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "AFR"
     },
     "figures": [
       {
@@ -803,8 +892,8 @@
       },
       {
         "src": "/flipbooks/success-stories/figures/0019-2.webp",
-        "width": 1003,
-        "height": 1480,
+        "width": 883,
+        "height": 1367,
         "caption": "Fig.2. Actual job data, shows that the downhole Head Tension (HTEN) accurately matched the Predicted HTEN as shown on the right (Track 1). In addition, the measured Tool Drag coeffieicnt averaged 0.06 as shown on the left, which matched Hermes’ prediction perfectly."
       }
     ]
@@ -821,6 +910,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Sensor Orientation", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "Acquire a valid Density dataset in a deviated wellbore, with stress induced borehole breakouts."
     ],
@@ -831,6 +921,7 @@
       "World’s first high-quality density dataset recorded from the side of the wellbore in a highly deviated well.",
       "Comparison between vertical and horizontal density measurements showed a perfect match."
     ],
+    "learnings": [],
     "narrative": [
       "Recorded in an 8.5” deviated wellbore in New Zealand, at up to 52deg deviation.",
       "9 Tool Taxis provided an optimum positioning of all sensors of the Quad-Combo/Dual-Density toolstring. They also reduced the drag to a minimum and oriented the bottom Guide upwards in order to navigate to TD past the multiple borehole breakouts.",
@@ -838,6 +929,8 @@
       "The lower Y-Density tool was oriented to record density on the low side of the wellbore.",
       "Petromac Centering Taxis perfectly centralized the upper X-Density tool in the borehole so that the density skid made perfect contact with the wellbore wall when it was opened."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0020.webp",
       "width": 1241,
@@ -846,19 +939,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0020-1.webp",
-        "width": 1023,
-        "height": 1434,
+        "width": 972,
+        "height": 1352,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0020-2.webp",
         "width": 1200,
-        "height": 958,
+        "height": 933,
         "caption": null
       }
     ]
@@ -875,6 +969,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Operational Efficiency", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "High deviation wireline logging in 6” wellbore, without resorting to Pipe Conveyed Logging (PCL)."
     ],
@@ -884,11 +979,14 @@
     "results": [
       "World record deviation of 72° achieved in Kuwait at the first attempt, with a Triple Combo-Pressure Express toolstring."
     ],
+    "learnings": [],
     "narrative": [
       "KOC needed to acquire petrophysical and reservoir data in a highly deviated 6”wellbore section. Historically, conveying wireline tools via drill-pipe was the only option, when faced with deviations over 60degrees in such wellbore sizes.",
       "However, KOC is laser focused on rig efficiency and tasked the wireline provider and Petromac to provide a solution to deploy wireline tools by gravity. A slim tool taxi was designed, manufactured and deployed in record time.",
       "Slim tool taxis were extensively tested and Petromac simulations showed that the wireline toolstring drag could be reduced to as little as 5%. Armed with this, the slim taxis were deployed for the first time in Kuwait to a record-breaking deviation of 72°. A triple combo plus pressure testing tool were deployed in one run and the tool reached TD effortlessly. Data quality was devoid of stick-slip and no sticking observed during extensive pressure testing."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0021.webp",
       "width": 1241,
@@ -897,19 +995,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0021-1.webp",
         "width": 1200,
-        "height": 639,
+        "height": 741,
         "caption": "Fig.1. Pre-job simulation"
       },
       {
         "src": "/flipbooks/success-stories/figures/0021-2.webp",
         "width": 1200,
-        "height": 370,
+        "height": 474,
         "caption": "Fig.2. Formation Testing tool conveyed on Inline Tool Taxis"
       }
     ]
@@ -926,6 +1025,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Well Access: Deviation", "Centralization"],
+    "references": [],
     "challenge": [
       "Using strong in-line and slip-over centralizers for cement evaluation tools, limits the maximum deviation the tools can descend to under gravity."
     ],
@@ -935,12 +1035,15 @@
     "results": [
       "Tool strings able to descend freely to 85°, whilst keeping eccentricity to within expected tolerances."
     ],
+    "learnings": [],
     "narrative": [
       "Operators in the Middle East routinely require cement evaluation in very highly deviated wellbores. IBC-CBL in extended reach wells can quickly become inefficient and expensive due to difficulties in logging tool conveyance.",
       "Traditional methods of centralizing the IBC-CBL using in-line and slip-over centralizers caused excessive drag. This makes it challenging to descend past 60° deviation via gravity. Operators had to resort to pipe or tractor conveyed logging for higher deviations. Pipe conveyed logging is operationally complex, time consuming and risky, whereas tractor conveyance can sometimes be limited by force output in long laterals.",
       "To overcome this, the centralizers were replaced by centralizing Tool Taxis, and tool strings now routinely descend on gravity to >85° deviation, with eccentricity, ECCE, well within tolerances.",
       "Track record includes horizontal logging of IBC-CBL over 20kft, with an ECCE below 0.2”."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0022.webp",
       "width": 1241,
@@ -949,13 +1052,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0022-1.webp",
         "width": 1200,
-        "height": 717,
+        "height": 698,
         "caption": "Fig.1. IBC-CBL with Petromac Wireline Express installed on the tool string"
       },
       {
@@ -978,6 +1082,7 @@
     "wirelineCompany": "HAL",
     "device": "Wireline Express - FT",
     "categories": ["Sensor Orientation"],
+    "references": [],
     "challenge": [
       "When running HRSCT in 12.5” holes or more, a large hole kit needs to be installed. This causes the tool to lean on its side and creates an oblique contact between the coring bit and the borehole wall, which translates into a very poor core recovery."
     ],
@@ -987,11 +1092,14 @@
     "results": [
       "The operator obtained high quality cores while improving the recovery rate from 35% to over 90%."
     ],
+    "learnings": [],
     "narrative": [
       "The recovery of sidewall-cores has historically been very low in Mexico, specially in large holes, where a large hole kit (LHK) needs to be run. The protuberance created by this LHK causes the tool to lean on its side, which creates an oblique contact between the coring bit and the borehole wall (specially in deviated wells) and has a negative impact on the recovery rate.",
       "In an attempt to improve the recovery rate, one of the operators decided to convey the HRSCT with Tool Taxis so that the coring bit would penetrate the formation perpendicular, while keeping the tool firmly set.",
       "Core recovery on this job was 80.6% with 29/36 cores recovered. In the following eight months, Petromac performed another six jobs, reaching an average core recovery of 91.2%, with a total of 197 recovered cores out of 216 attempts."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0023.webp",
       "width": 1241,
@@ -1000,7 +1108,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
@@ -1035,6 +1144,7 @@
     "wirelineCompany": "HAL",
     "device": "Wireline Express",
     "categories": ["Sticking Prevention", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "Successfully descend MRIL-D in a high-angle cased section well, where the magnetic drag is significant."
     ],
@@ -1044,12 +1154,15 @@
     "results": [
       "The toolstring descended smoothly in casing. Highest well deviation currently recorded is 69 degrees."
     ],
+    "learnings": [],
     "narrative": [
       "Drag is the result of the friction force between the body of a tool travelling downhole and the borehole wall. It is proportional to the friction coefficient of the materials in contact, the area in contact, and the normal force maintaining the contact.",
       "This normal force is generally related to the weight of the tools only, but the MRIL-D tool also features a large permanent magnet. When conveying the tool in the casing, the magnetic force on the casing metal is added to the usual weight force.",
       "This additional magnetic drag drastically reduce the ability of the tool to to travel down, even at relatively low deviation.",
       "The magnetic force between two objects is inversely proportional to the square of the distance between the two objects connected by this magnetic field. The magnetic drag is therefore maximum when the logging tool housing is in contact with the casing.The magnetic drag is minimized when the logging toolcentralized in the casing."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0024.webp",
       "width": 1241,
@@ -1058,19 +1171,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0024-1.webp",
         "width": 959,
-        "height": 583,
+        "height": 566,
         "caption": "Fig.1. Drag Forces"
       },
       {
         "src": "/flipbooks/success-stories/figures/0024-2.webp",
         "width": 1200,
-        "height": 501,
+        "height": 523,
         "caption": "Fig.2. Petromac Wireline Express perfectly positions the MRIL-D tool in the center of the 9 5/8” casing, which maximizes the distance between the magnet and the casing. This reduces the magnetic drag to a minimum, which extends the deviation limit that the tool cab be conveyed to."
       }
     ]
@@ -1087,6 +1201,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Well Access: Deviation", "Centralization"],
+    "references": [],
     "challenge": [
       "Wireline tractors are limited by output power when logging long horizontal sections."
     ],
@@ -1096,11 +1211,14 @@
     "results": [
       "Tool strings are able to descend freely to 85° deviation, at which point tractors can be used to log horizontal sections of over 20kft."
     ],
+    "learnings": [],
     "narrative": [
       "Acquiring cement evaluation logs in extended reach wells, can become very expensive, due to difficulties in logging tool conveyance. Pipe conveyed logging is operationally complex, time consuming and risky, whereas tractor conveyance can sometimes be limited by the force required in long laterals. Wireline tractors expend energy by pushing the toolstring as well as pulling the cable trailing behind. With light production logging tools this is normally not a concern, but with heavier toolstrings using a heptacable, tractor conveyance is limited to depths of ~17k-18kft.",
       "Tool taxis, when appropriately placed, can reduce the toolstring drag coefficient from ~0.3 to ~0.08. Firstly, this enables the toolstring to descend on gravity to >85° deviation, thereby reducing the tractoring distance and rig time. Secondly, this reduced drag ensures that the tractor force spent pushing the tools is negligible. The result is that more power is available to pull the cable to depths that were previously unachievable by tractors, and less drives can be used in order to achieve this.",
       "On a world record job, a 9 5/8” cement evaluation logging toolstring was tractored down to >25kft measured depth and >20kft horizontal. The tool was consistently maintained in the center of the borehole with eccentricity less than 0.15” , ensuring excellent data quality."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0025.webp",
       "width": 1241,
@@ -1109,7 +1227,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -1132,6 +1251,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Operational Efficiency", "Well Access: Deviation"],
+    "references": [],
     "challenge": ["Increase rig efficiency during logging operations in long laterals."],
     "solution": [
       "Deploy open hole tractors, along with Petromac ultra - low friction tool taxis and guides, to minimize tool drag and navigate adverse OH conditions"
@@ -1139,11 +1259,14 @@
     "results": [
       "The toolstring was conveyed to 85° deviation, without activating tractors. Successfully tractored in OH for 4kft in multiple descents, resulting in an overall rig time savings of ~28hours"
     ],
+    "learnings": [],
     "narrative": [
       "Acquiring OH wireline logs in extended reach wells, can become very expensive, due to difficulties in logging tool conveyance. Pipe conveyed logging, PCL, is operationally complex, time consuming and risky, whereas tractor conveyance can sometimes be limited by the force required in long laterals. In addition, navigating adverse OH conditions (changes in hole shape, ledges, washouts etc.), means tractors must be assisted by complementary technologies.",
       "In KSA, unconventional exploration wells regularly reach measured depths of over 20kft with OH sections of up to 5kft. Wireline logging in such wells, has traditionally been done via pipe conveyance, taking over 4 days.",
       "To improve efficiency of such operations, a comprehensive solution to replace PCL was deployed, which was comprised of OH tractors, Petromac tool taxis and angled guides. With the whole toolstring run on ultra-low friction wheels, the toolstring drag coefficient reduced from 0.4 to 0.08, enabling gravity descents to >85° deviation. Ultimately, this enabled the tractor to push the toolstring all the way to TD in these long laterals, whilst effectively navigating ledges and washouts."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0026.webp",
       "width": 1241,
@@ -1152,7 +1275,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -1175,6 +1299,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Operational Efficiency", "Sensor Orientation"],
+    "references": [],
     "challenge": ["Convey ~200 feet of toolstring to extreme deviations in Open hole."],
     "solution": [
       "Reduce drag on the toolstring using Petromac wheels-designed to allow the tool to slide down to the highest angle possible and minimize Tractoring distance."
@@ -1182,6 +1307,7 @@
     "results": [
       "A 230feet toolstring was conveyed to 86° on gravity and no tractoring was required. Resulted in an overall rig time saving of ~20hours"
     ],
+    "learnings": [],
     "narrative": [
       "Highly deviated wells (over 60°) were conventionally logged using pipe conveyed toolstrings (TLC). Operations took over 40 hours. In addition, data quality of dual density was compromised.",
       "Efficiency gain from utilizing wireline open hole tractor established by successfully deploying tractors in 8 OH jobs. However, the tools had to be conveyed in two descents due to length, weight and drag.",
@@ -1193,6 +1319,8 @@
       "Dual density data quality enhanced",
       "Reduced risk of differential sticking"
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0027.webp",
       "width": 1241,
@@ -1201,7 +1329,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -1224,6 +1353,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Operational Efficiency", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "Increase efficiency by reducing logging operation time in acquiring data in deep and long lateral Unconventional Exploration well"
     ],
@@ -1233,6 +1363,7 @@
     "results": [
       "18 successful operations have saved hundreds of in rig time, while setting several world records for Wireline Conveyance"
     ],
+    "learnings": [],
     "narrative": [
       "Highly deviated wells (> 60°) drilled with 8-3/8” and 5-7/8” bit sizes were conventionally logged using pipe conveyed toolstrings (TLC) with operation time ranging between 60 and 90 hours.",
       "In addition, data quality of many services were compromised due to the inherent problems with this type of conveyance.",
@@ -1245,6 +1376,8 @@
       "Conveyance in small holes: 5-7/8”",
       "Average Rig time savings per run ~25hours"
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0028.webp",
       "width": 1241,
@@ -1253,7 +1386,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -1276,6 +1410,7 @@
     "wirelineCompany": "SLB",
     "device": "Focus - CH",
     "categories": ["Operational Efficiency", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "Cement Evaluation toolstrings use drag inducing ‘gemco’ centralizers, which limit the maximum deviation the tool can descend by gravity alone."
     ],
@@ -1285,12 +1420,15 @@
     "results": [
       "Smooth descent to TD. The CBL tool was perfectly centralized in 7” casing, with a tool drag coefficient of only 0.04, proving conventional logging is viable to 80deg."
     ],
+    "learnings": [],
     "narrative": [
       "In a world first, an operator in Mexico ran a Cement Evaluation toolstring on Petromac’s ultra-low drag centralization devices (CA7) in a 7” casing. This eliminated the drag inherent to traditional methods and enabled the CBL tool to descend freely along a 2,500m tangent with 67° deviation.",
       "The tool entered the 7” casing (TOL), at 67° deviation, without any difficulties.",
       "A measured tool drag coefficient of only 0.04 means that descents to >80° is achievable.",
       "The combination of this centralization method with minimal tool drag saved the operator about 2.5 days of rig time (offshore) by eliminating two pipe conveyed runs (TPL) and all the associated risks."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0029.webp",
       "width": 1241,
@@ -1299,7 +1437,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
@@ -1311,7 +1450,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0029-2.webp",
         "width": 1200,
-        "height": 348,
+        "height": 375,
         "caption": null
       }
     ]
@@ -1328,12 +1467,15 @@
     "wirelineCompany": "SLB",
     "device": "Pathfinder",
     "categories": ["Well Access: Ledges"],
+    "references": [],
     "challenge": [
       "Prevent hold-up on ledges in small deviated wellbores that are prone to washouts."
     ],
     "solution": ["Mitigate risk with the Petromac Pathfinder as a contingency solution."],
     "results": [
-      "OBM Imager toolstring was unable to descend past a ledge 350m above TD. The toolstring was POOH, fitted with Pathfinder and immediately ran again. Pathfinder guided the toolstring smoothly to TD without any hold-up.",
+      "OBM Imager toolstring was unable to descend past a ledge 350m above TD. The toolstring was POOH, fitted with Pathfinder and immediately ran again. Pathfinder guided the toolstring smoothly to TD without any hold-up."
+    ],
+    "learnings": [
       "Following this logging run, the Pathfinder was used on all subsequent operations.",
       "Pathfinder eliminates costly Non-Productive Time caused by hold-up in challenging wellbores."
     ],
@@ -1344,6 +1486,8 @@
       "In the third well, the Oil Based Mud Imager toolstring, ran with conventional bottom nose, was held up 350m above TD. The toolstring was pulled out of hole and fitted with the Pathfinder. The toolstring, guided by Pathfinder, ran seamlessly to TD.",
       "Pathfinder was used preventively on all logging runs of the remaining well of the campaign, and all Wireline logging operations ran smoothly."
     ],
+    "narrativeSubheads": [],
+    "callout": "PATHFINDER ELIMINATES THE RISK OF TOOLSTRING HOLDUP. IT IS A STAND-ALONE HOLEFINDER SUITABLE FOR A WIDE RANGE OF WELLBORE SIZES AND DEVIATIONS.",
     "image": {
       "src": "/flipbooks/success-stories/pages/0030.webp",
       "width": 1241,
@@ -1352,25 +1496,26 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0030-1.webp",
         "width": 1200,
-        "height": 322,
+        "height": 325,
         "caption": "Fig.1. Pathfinder"
       },
       {
         "src": "/flipbooks/success-stories/figures/0030-2.webp",
         "width": 983,
-        "height": 1110,
+        "height": 1093,
         "caption": "Fig.2. Pathfinder guided the toolstring past a 10” ledge smoothly."
       },
       {
         "src": "/flipbooks/success-stories/figures/0030-3.webp",
         "width": 983,
-        "height": 1105,
+        "height": 1089,
         "caption": null
       }
     ]
@@ -1387,6 +1532,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Sticking Prevention", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "Operator in Angola had very low confidence of running an MDT on a highly deviated well, due to historical issues with high-drag and differential sticking"
     ],
@@ -1396,6 +1542,7 @@
     "results": [
       "The tool descended smoothly to TD by gravity, without any holdup or sticking. With an average drag coefficient of only 0.05, the toolstring is capable of free descent to +80° deviation."
     ],
+    "learnings": [],
     "narrative": [
       "Petromac’s B-Type Tool Taxi, engineered and manufactured in New Zealand, is proven best-in-class.",
       "The design incorporates bespoke double row, angular contact ball-bearings rated to withstand the harsh downhole conditions.",
@@ -1403,6 +1550,8 @@
       "In addition to reducing drag and eliminating differential sticking, the Taxis orient the toolstring. This unique feature allows the Probe to sample from the undamaged, high side of the wellbore.",
       "In addition, the upturned nose of the holefinder enables the toolstring to simply “ski” over ledges without slowing down."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0031.webp",
       "width": 1241,
@@ -1411,20 +1560,15 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/afr.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "AFR"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0031-1.webp",
         "width": 1200,
-        "height": 664,
-        "caption": "Fig.1. Formation testing tool oriented to the highside when running on tool taxis."
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0031-2.webp",
-        "width": 917,
-        "height": 1070,
-        "caption": "Fig.2. Average tool drag coefficient from the job – Possible to descend to 80 deg on gravity"
+        "height": 1004,
+        "caption": "Fig.1. Formation testing tool oriented to the highside when running on tool taxis. · Fig.2. Average tool drag coefficient from the job – Possible to descend to 80 deg on gravity"
       }
     ]
   },
@@ -1440,6 +1584,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Sensor Orientation", "Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "WL coring tool operations in deviated tend to take cores on the low side of the well. This detrimentally affects the core recovery and quality due to the cuttings and debris accumulated on the low side of the hole"
     ],
@@ -1449,11 +1594,14 @@
     "results": [
       "The operator obtained high quality cores, cut parallel to the bedding planes and achieved 100% recovery."
     ],
+    "learnings": [],
     "narrative": [
       "In Oman, an operator requested to cut cores from the side of the 8.5” wellbore. Oxy-Oman requested to convey the wireline tools through a highly deviated trajectory (70 degrees) using Petromac Tool Taxis and were able to successfully carry out the coring tools to the bottom depth of the hole without any sticking issues. The main idea of the Petromac tool taxis is to utilize their ultra-low friction carriers to aid the wireline tools in deviated wells. Oxy-Oman utilized Petromac tool taxis due to their excellent track record outside the region, in addition to their reputable improvement in the core quality worldwide.",
       "In deviated wells, cores cut horizontally will generally be parallel to the bedding planes. Consequently, lab measurements of core permeability are relevant for modelling the reservoir flow characteristics. Horizontal cores from the side of the wellbore are cut parallel to the bedding planes and have more value for core analysis. There is also less risk of cuttings jamming the kinematics section.",
       "Core recovery on this job was 100% with 41/41 cores recovered."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0032.webp",
       "width": 1241,
@@ -1462,7 +1610,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -1485,6 +1634,7 @@
     "wirelineCompany": "SLB",
     "device": "Pathfinder",
     "categories": ["Well Access: Ledges"],
+    "references": [],
     "challenge": [
       "Prevent hold-up on vertical wells that are prone to huge washouts beneath the casing shoe."
     ],
@@ -1494,11 +1644,14 @@
     "results": [
       "Pathfinder guided the toolstring smoothly to TD in the first attempt, thus eliminating costly Non-Productive Time caused by hold-ups in challenging wellbores."
     ],
+    "learnings": [],
     "narrative": [
       "Petromac Pathfinder is a hole finder device that can be attached to the bottom of any wireline logging toolstring.",
       "The Pathfinder mandrel is made from strong, ultra-light carbon fiber composite. The integral bow-spring centralizer ensures the Pathfinder nose is at the center of the wellbore regardless of the hole size, thereby avoiding ledges. The Pathfinder is suitable for wellbores from 6 to 26in, regardless of deviation.",
       "The Pathfinder was mobilized for a vertical well in a remote location in Peru, where, historically, it had not been possible to navigate the enormous washouts formed below the casing shoe."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0033.webp",
       "width": 1241,
@@ -1507,7 +1660,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
@@ -1530,6 +1684,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Sticking Prevention", "Operational Efficiency"],
+    "references": [],
     "challenge": [
       "In wells with high-overbalance, formation sampling tools are conveyed on drill-pipe, in order to mitigate sticking risks. However, these kind of operations are very inefficient and add significant operational risks"
     ],
@@ -1539,11 +1694,14 @@
     "results": [
       "The formation sampling program was completed with no sticking incidents in a well with overbalance of 3700 psi; average stationary time was over 14 hours per station!"
     ],
+    "learnings": [],
     "narrative": [
       "Kuwait Oil Company (KOC) faces significant risk of the wireline tools getting stuck whilst achieving their formation testing objectives in their deep gas fields, where overbalance can regularly exceed 3500psi. To mitigate this risk, KOC, like many other operators, prefer to run the wireline tools on drill-pipe. However, drill-pipe conveyance operations are very time-consuming and add significant operational and HSE risks.",
       "Petromac’s Tool Taxis were proposed as a safer and more efficient solution. Taxis orient both themselves and the tools, which ensures the contact area with the borehole wall is limited to only the edges of the wheel. A contact area of only 1sq.in per Taxi, coupled with a very low drag coefficient of 0.03, means that the force required to dislodge a stuck sampling toolstring is greatly reduced, when compared to using conventional rollers or standoffs.",
       "A recent operation in this field, in a near vertical well, was planned to take 66 hours using drill-pipe conveyance. Petromac completed the operation in 39 hours."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0034.webp",
       "width": 1241,
@@ -1552,19 +1710,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0034-1.webp",
         "width": 1200,
-        "height": 699,
+        "height": 799,
         "caption": "Fig1: With a very low drag coefficient of 0.03, MDT taxis allow minimal tool contact with the borehole and let the toolstring “roll” off a point, greatly reducing the force to free a stuck toolstring."
       },
       {
         "src": "/flipbooks/success-stories/figures/0034-2.webp",
         "width": 1200,
-        "height": 623,
+        "height": 551,
         "caption": "Fig2: 27 hours of rig time savings with minimal risk achieved by using Petromac conveyance"
       }
     ]
@@ -1581,6 +1740,7 @@
     "wirelineCompany": "SLB",
     "device": "Focus - CH",
     "categories": ["Well Access", "Centralization"],
+    "references": [],
     "challenge": [
       "Due to the minimum restriction in the 4.5” liner, it was previously not possible to acquire the cement map from the USIT; only CBL data was used to evaluate the integrity of the cement across the perforation interval."
     ],
@@ -1590,11 +1750,14 @@
     "results": [
       "The Rocker Centralizer guided the tool smoothly inside the top of liner and passed through the 3.625” landing collar with no problems. Data quality in the 4.5” liner was excellent."
     ],
+    "learnings": [],
     "narrative": [
       "Saudi Aramco regularly completes wells with 4.5” liners in which minimum restrictions can be as small as 3.4”. Standard cement evaluation tools, such as the Ultrasonic Imaging Tool, USIT, require precise centralization; in order achieve this, the mechanics of the existing centralizer do not allow it to pass through these small restrictions.",
       "Due to this, Petromac was entrusted with engineering a centralizer solution for the USIT. Petromac designed an ultra-low drag Rocker Centralizer, that can be deployed on gravity to 80° deviation, go through restrictions as small as 3.4” while maintaining precise tool centralization.",
       "Saudi Aramco deployed the Rocker Centralizer system in Q2-2023. The tool navigated the liner restrictions and delivered near perfect centralization, enabling Aramco to gather critical well integrity data prior to well testing."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0035.webp",
       "width": 1241,
@@ -1603,19 +1766,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0035-1.webp",
         "width": 1200,
-        "height": 582,
+        "height": 501,
         "caption": "Fig 1: Rocker centralizer designed to go through restrictions as small as 3.4”"
       },
       {
         "src": "/flipbooks/success-stories/figures/0035-2.webp",
         "width": 1200,
-        "height": 569,
+        "height": 674,
         "caption": "Fig 2: Rocker arm design provides precise centralization even in horizontal wells"
       },
       {
@@ -1638,6 +1802,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Operational Efficiency", "Sticking Prevention"],
+    "references": [],
     "challenge": [
       "Multi-Latch Pipe Conveyed logging is a time-consuming and high-risk operation, compromising data quality in horizontal sections due to tool positioning challenges."
     ],
@@ -1647,11 +1812,14 @@
     "results": [
       "The Petromac WL Express system conveyed the string to ~80° on gravity, without activating tractors. The remaining 400 ft were then successfully tractored, completing the operation in 22 hours. The Petromac WL Express™ System allowed for easy climbing over ledges and washouts, reducing the chances of held-up situations. Furthermore, the ultra-low friction taxis reduced drag and minimized the contact area which reduced the chances of stuck situations."
     ],
+    "learnings": [],
     "narrative": [
       "Multi-Latch Pipe Conveyed logging is time-consuming, with higher HSE risk than wireline operations due to intensive pipe and cable handling required. In addition, data quality of density and sonic is compromised due to challenges in positioning these tools in the horizontal section. The Petromac tool taxis conveyed the string to ~80° on gravity with perfect tool positioning. The SLB UltraTrac™ , designed for tractoring in adverse open hole conditions, successfully navigated through the horizontal section for the remaining 400 ft.",
       "Petromac’s Ultra Low-Friction Tool Taxis provided critical benefits by minimizing tool drag and reducing tractoring distance, further increasing efficiency and reducing operational time. The unique angled bottom nose of the Tool Taxis allowed for easy climbing over ledges and washouts, further reducing the chances of held-up situations. In addition, the Tool Taxis also minimized tool contact, significantly reducing the chances of stuck situations, thus improving operational safety.",
       "Overall, the successful deployment of these advanced conveyance solutions resulted in significant cost savings, improved efficiency, and enhanced HSE standards, making them an ideal choice for logging in highly deviated wells."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0036.webp",
       "width": 1241,
@@ -1660,7 +1828,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/mea.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "MEA"
     },
     "figures": [
       {
@@ -1689,6 +1858,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Centralization", "Well Access"],
+    "references": [],
     "challenge": [
       "Navigating diameter changes with large OD packers on wireline presents significant operational difficulties."
     ],
@@ -1696,11 +1866,14 @@
     "results": [
       "Operations proceeded seamlessly. Every operator who has used the system continues to do so with confidence."
     ],
+    "learnings": [],
     "narrative": [
       "Operators in the Gulf of Mexico have long faced challenges setting plugs and packers in 9 7/8” casing, where the clearance between toolstring and casing wall is minimal. Small changes in diameter—caused by tiebacks, collars, or debris—can prevent conventional conveyance methods from reaching depth. When this occurs, operators are often forced to switch to drill pipe conveyance, significantly increasing rig time and operational costs.",
       "To mitigate this risk, Petromac developed a bespoke centering system: the TTB-X-515 taxi. Designed specifically for 9 7/8” casing, this tool accurately centers the packer within 0.1”, reducing drag and helping the assembly transition smoothly through restrictions. The lightweight, high-strength design ensures the packer stays aligned and balanced throughout the run-in-hole, even in the presence of slight ovalities or internal hardware.",
       "The TTB-X-515 system has now been successfully deployed in over 15 operations across the Gulf, including challenging wells with known tieback restrictions. In every case, it enabled plug and packer placement on wireline—avoiding the cost, complexity, and delay of switching to pipe. The result: faster deployment, reduced NPT, and lower overall cost per well."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0037.webp",
       "width": 1241,
@@ -1709,13 +1882,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/nam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "NAM"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0037-1.webp",
         "width": 1200,
-        "height": 758,
+        "height": 739,
         "caption": "Fig 1: Centralizing Tool Taxi supporting the tool to seamlessly pass Tiebacks."
       }
     ]
@@ -1732,6 +1906,7 @@
     "wirelineCompany": "SLB",
     "device": "Pathfinder",
     "categories": ["Well Access: Ledges", "Sticking Prevention"],
+    "references": [],
     "challenge": [
       "Severe washouts—up to 40”—in a CCS well prevented conventional wireline tools from reaching total depth. Logging was essential to meet regulatory and reservoir evaluation requirements."
     ],
@@ -1741,6 +1916,7 @@
     "results": [
       "Wireline tools reached total depth without issue. Full log data was acquired on the first run—successfully meeting all operational and regulatory objectives."
     ],
+    "learnings": [],
     "narrative": [
       "As carbon capture operations expand, operators are encountering several challenges that complicate data acquisition:",
       "Wells are being drilled in geologically unknown, greenfield locations, increasing uncertainty and steepening the learning curve.",
@@ -1748,6 +1924,8 @@
       "Stricter regulatory and reservoir characterization requirements demand more comprehensive data, resulting in longer and more complex logging programs.",
       "In one case, an operator encountered severe washouts—up to 40”—preventing conventional wireline tools from reaching total depth. To overcome this, the Petromac Pathfinder was deployed to enable wireline logging. Its successful run was critical to the operation’s success, allowing complete data acquisition to satisfy both regulatory and reservoir evaluation requirements."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0038.webp",
       "width": 1241,
@@ -1756,7 +1934,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/nam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "NAM"
     },
     "figures": [
       {
@@ -1768,7 +1947,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0038-2.webp",
         "width": 1200,
-        "height": 313,
+        "height": 346,
         "caption": null
       }
     ]
@@ -1785,6 +1964,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express - FT",
     "categories": ["Sticking Prevention"],
+    "references": [],
     "challenge": [
       "Operator in North America Land was having difficulty with Sampling / Mini-Frac strings sticking in Carbon Capture wells"
     ],
@@ -1792,12 +1972,20 @@
     "results": [
       "Two successful Sampling / Mini-Frac jobs were performed in difficult Carbon Capture wells."
     ],
+    "learnings": [],
     "narrative": [
       "A logging operator encountered issues with sampling/mini-frac strings getting stuck on point. Since the data was required by the EPA for project approval, the client was willing to try the Petromac solution. The result was two successful logging jobs in the same formation without the need for fishing. With an ultra-low friction coefficient of 0.03, MDT taxis enable the tool to “roll” off point rather than “drag” off point. This can be likened to pulling a loaded trailer with no wheels on the dirt, as opposed to pulling a loaded trailer with wheels, and can result in a reduction of thousands of pounds of tension.",
       "Moreover, if the toolstring is run with Jars, the taxis can help decrease the force required to free the toolstring. This translates into less damage and a lower chance of having to fish.",
       "Reduced tool drag also means lower cable tension, decreasing the likelihood of cable key seating.",
       "In Carbon Capture, formations are generally unknown, and drilling is not refined. The Petromac system serves as an excellent insurance policy for most wells and has been proven around the world in the most challenging conditions. Now, Carbon Capture wells can be added to the list."
     ],
+    "narrativeSubheads": [
+      {
+        "before": 0,
+        "text": "Sampling in Sticky Boreholes"
+      }
+    ],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0039.webp",
       "width": 1241,
@@ -1806,19 +1994,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/nam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "NAM"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0039-1.webp",
         "width": 1200,
-        "height": 423,
+        "height": 398,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0039-2.webp",
         "width": 1200,
-        "height": 668,
+        "height": 658,
         "caption": null
       },
       {
@@ -1841,6 +2030,7 @@
     "wirelineCompany": "HAL",
     "device": "Focus - OH",
     "categories": ["Sticking Prevention", "Centralization"],
+    "references": [],
     "challenge": [
       "Halliburton’s StrataXaminer borehole imaging tool, weighing nearly 1,000 lbs, presents a major challenge: maintaining centralization in open hole while preventing sticking and stick-slip"
     ],
@@ -1850,10 +2040,13 @@
     "results": [
       "CP-12: The world’s first open-hole roller centralizer purpose-built to carry the heavy logging tools while maintaining centralization and eliminating drag-related issues. It has been field-proven in the Gulf of Mexico, delivering high-quality images with no stick-slip"
     ],
+    "learnings": [],
     "narrative": [
       "Halliburton’s StrataXaminer tool pushes the limits of borehole imaging technology — but as with many wireline imaging tools, it is vulnerable to poor centralization and stick-slip in open hole. Working closely with Halliburton’s engineering team, Petromac designed a roller-based centralizer system — the first of its kind for open-hole deployments. The system from its very first deployment, successfully delivered high-resolution images with no stick-slip in the high stakes environment of deepwater Gulf of Mexico.",
       "Following this success, the technology has been adapted and deployed with other high-resolution tools, including sonic imagers in the Asia-Pacific region."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0040.webp",
       "width": 1241,
@@ -1862,25 +2055,26 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/nam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "NAM"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0040-1.webp",
         "width": 902,
-        "height": 1658,
+        "height": 1641,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0040-2.webp",
         "width": 902,
-        "height": 1658,
+        "height": 1641,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0040-3.webp",
         "width": 1200,
-        "height": 668,
+        "height": 666,
         "caption": null
       }
     ]
@@ -1897,6 +2091,7 @@
     "wirelineCompany": "SLB",
     "device": "Wireline Express",
     "categories": ["Well Access: Deviation", "Operational Efficiency"],
+    "references": [],
     "challenge": [
       "Acquire full wireline logs in a 57° deviated geothermal well with bottomhole temperatures exceeding 200°C, where conventional methods such as TLC or tractors were deemed unreliable, high-risk, and expensive."
     ],
@@ -1906,12 +2101,15 @@
     "results": [
       "Deployment with Tool Taxis proved to be highly successful and cost-effective. All runs with Petromac reached total depth without overpull, sticking, or image degradation. Hermes tension modeling was validated in the field."
     ],
+    "learnings": [],
     "narrative": [
       "Wireline logging in a geothermal well had to be performed in sections with deviations over 57° and bottomhole temperatures exceeding 200°C. Traditional conveyance methods such as pipe conveyed or tractors were deemed unsuitable due to both risk and cost, prompting the operator to engage Petromac for a safer deployment solution.",
       "Using Petromac’s proprietary Hermes tension model, the team conducted a detailed analysis of the well trajectory and geometry to assess conveyance risks and optimize deployment planning. All runs in the 12.25” section were completed with zero incidents — no stick-slip, no image rotation, and no overpull.",
       "During the 8.5” section, following a mechanical sticking event, the operator opted to bypass Petromac for a run — against Hermes model recommendations. As predicted, the unassisted run failed to reach total depth. The operator reinstated Petromac for all subsequent runs that were completed smoothly through rugose hole conditions. Petromac’s model-driven conveyance restored full operational confidence and ensured uninterrupted data acquisition.",
       "This operation is a strong demonstration of how predictive modeling, fit-for-purpose conveyance tools, and field-proven reliability can safeguard data quality and reduce risk in the harshest well environments."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0041.webp",
       "width": 1241,
@@ -1920,13 +2118,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0041-1.webp",
         "width": 1200,
-        "height": 952,
+        "height": 1075,
         "caption": null
       }
     ]
@@ -1943,6 +2142,7 @@
     "wirelineCompany": "BHI",
     "device": "Pathfinder + Wireline Express",
     "categories": ["Well Access: Ledges"],
+    "references": [],
     "challenge": [
       "Prevent toolstring hold-up in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acquisition."
     ],
@@ -1952,11 +2152,14 @@
     "results": [
       "All toolstring runs reached TD on first attempts and Tool Taxis reduced sticking risk, thus successfully acquire formation evaluation data and well fluid samples."
     ],
+    "learnings": [],
     "narrative": [
       "An onshore operator in Western Australia had a history of wells where Wireline toolstrings have had difficulty reaching TD often getting hung-up while RIH as well as getting overpulls requiring firing of Wireline Jars to free tools. This often resulted in cancelled Wireline runs thus missing critical data and fluid samples in exploration wells. Subsequently, the operator requested the use of Petromac conveyance systems. Tool Taxis with Pathfinder was deployed on Baker Wireline toolstrings (GrandSLAM dual density, STAR-HD, RCX Sampling and MAXCOR) enabling successful acquisition of critical formation evaluation data and wellbore fluid samples.",
       "Petromac’s oriented Tool Taxis ensured toolstrings rolled over ledges and washouts without getting hung up. The low drag wheels ensured good wellbore images without stick slip and reduced risk of differential sticking during RCX fluid sampling. Toolstrings with Tool Taxis also experienced less jar firing events.",
       "In one low deviation well, Pathfinder successfully navigated a GrandSLAM dual density toolstring thru an extremely washed-out wellbore to TD in the first attempt."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0042.webp",
       "width": 1241,
@@ -1965,7 +2168,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
@@ -2000,6 +2204,7 @@
     "wirelineCompany": "SLB",
     "device": "Focus - OH",
     "categories": ["Centralization"],
+    "references": [],
     "challenge": [
       "Powered Positioning Calipers (PPCs) when used as centralizers add length, weight, and drag but offer limited centralization near the sensors."
     ],
@@ -2009,12 +2214,15 @@
     "results": [
       "The CP8 system enabled smooth imaging runs with no sticking or drag-related issues, eliminating the need for PPCs entirely. The compact design also reduced rig-up time and toolstring complexity, improving operational efficiency without compromising data quality."
     ],
+    "learnings": [],
     "narrative": [
       "Centralizing heavy imaging tools in deviated wells presents both mechanical and logistical challenges. In this case, an offshore operator in Asia needed to log a deep section where conventional Powered Positioning Centralizers (PPCs) have previously been used.",
       "While PPCs offer active control, their effectiveness in deviated wells is limited— primarily because they are fixed at the ends of the toolstring and do not provide direct centralization where it’s most needed, near the sensors. Additional trade-offs include increased toolstring length, higher drag if not precisely managed, and added rig-up complexity.",
       "Seeking a more efficient and robust solution, SLB collaborated with Petromac to adapt its roller-based centralization technology for the 8.5” borehole environment. This compact, slip-over design replaced both PPCs and traditional fixed centralizers with passive mechanical rollers—enabling smoother tool travel and consistent centralization closer to the sensors.",
       "The result was a shorter, lighter toolstring, simplified rig-up, and clean, high-quality imaging data free from drag-related artifacts. The success of this deployment highlights the advantage of passive, mechanically simple conveyance systems in complex, high-deviation logging environments."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0043.webp",
       "width": 1241,
@@ -2023,13 +2231,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0043-1.webp",
         "width": 1200,
-        "height": 964,
+        "height": 1003,
         "caption": "Fig1: A sonic toolstring centralized using CP-8"
       }
     ]
@@ -2046,6 +2255,7 @@
     "wirelineCompany": "SLB",
     "device": "Focus - CH",
     "categories": ["Centralization"],
+    "references": [],
     "challenge": [
       "Enable centralization of wireline logging tools in highly deviated 9-5/8” casing while ensuring passage through a restricted surface riser ID."
     ],
@@ -2055,12 +2265,15 @@
     "results": [
       "Six successful wireline runs completed with smooth passage through the restricted riser and excellent cement and casing integrity logs—enabled by consistent, precise centralization."
     ],
+    "learnings": [],
     "narrative": [
       "Exxon (Esso) Australia planned the permanent P&A of two offshore exploration wells, requiring verification of well barrier integrity behind the 9-5/8” casing in accordance with regulatory standards. To do this cost-effectively, an intervention semi-submersible was contracted, and SLB was engaged to deploy its advanced Epilogue technology—enabling simultaneous dual casing/annulus evaluation in a single run.",
       "However, the vessel’s 6-1/8” riser ID was too narrow for conventional fixed OD centralizers typically required for cement bond tools in the 8.535” ID of the 9-5/8” casing.",
       "To address the restriction, Petromac’s Helix CX9 slip-over centralizers were deployed on SLB’s IBC and CBL tools. The helical arms collapse to 5.625”, allowing smooth passage through the 6-1/8” riser, while still delivering over 200 lbs of centering force in 9-5/8” casing—even at 90° deviation—ensuring reliable centralization.",
       "A total of Six Epilogue runs were completed successfully across both wells, with smooth riser passage, optimal centralization, and high-quality data acquisition."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0044.webp",
       "width": 1241,
@@ -2069,7 +2282,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/apac.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "APAC"
     },
     "figures": [
       {
@@ -2092,6 +2306,7 @@
     "wirelineCompany": "SLB",
     "device": "Pathfinder + Wireline Express (In-Line)",
     "categories": ["Well Access: Ledges", "Sticking Prevention"],
+    "references": [],
     "challenge": [
       "Complex wireline logging (4 runs, including petrophysical data acquisition, pressure testing and sampling) in deviated 6.5” wellbore of research well (with suspected ovality), avoiding pipe conveyed logging operations (TLC). The client was desperate for a solution on their first research well."
     ],
@@ -2102,12 +2317,15 @@
       "The operator was able to acquire all data using wireline: BHAs with Taxis and the Pathfinder reached TD, navigating through maximum deviation of 37 deg., as planned. Tool Sensors and Probe were oriented for effective sealing and best data quality. No fishing / no differential sticking instances in",
       "6.5” oval deviated OH bore."
     ],
+    "learnings": [],
     "narrative": [
       "An operator in Norway drilled research wells for a deeper understanding of the geology. As such high quality data acquisition was the primary objective. Deviation, expected potential issues with well access due to small hole size, and borehole ovality made it challenging. As such, the customer tasked SLB and Petromac to provide a solution. With data quality and operational efficiency as the main goals, Petromac proposed to deploy wireline tools by gravity.",
       "Petromac simulations showed that the wireline toolstring drag could be reduced to as little as 5% by using Slim Tool Taxis. Armed with this, the slim taxis were deployed for the first time in Norway.",
       "In addition, Petromac Pathfinder was deployed to alleviate well access issues. The Petromac Pathfinder uses novel design and construction to achieve a neutrally buoyant centering device. This is mainly due to its high strength, low weight carbon fiber construction. The integrated flex along with the weak centralizer, allows the tool to articulate over ledges with low drag.",
       "The wireline tool sailed to TD with success. Data quality was devoid of stick-slip and no sticking observed during pressure testing and NMR data logging."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0045.webp",
       "width": 1241,
@@ -2116,13 +2334,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/eur.webp",
       "width": 1200,
-      "height": 644
+      "height": 644,
+      "code": "EUR"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0045-1.webp",
-        "width": 1055,
-        "height": 837,
+        "width": 1038,
+        "height": 820,
         "caption": "Fig. 1: Slim Inline Tool Taxi"
       },
       {
@@ -2145,6 +2364,7 @@
     "wirelineCompany": "SLB",
     "device": "Pathfinder + Wireline Express",
     "categories": ["Well Access: Deviation"],
+    "references": [],
     "challenge": [
       "Highly deviated wells (60–70°) in Guyana with severe washouts made TLC conveyance risky and led to tool hang-ups, even when using Tool Taxis."
     ],
@@ -2154,12 +2374,15 @@
     "results": [
       "The operator reached TD through a 1,500 ft tangent at 66°, saving rig time and minimizing operational risks in deepwater conditions."
     ],
+    "learnings": [],
     "narrative": [
       "In Guyana’s deepwater wells, deviations of 60–70° had traditionally required TLC conveyance, adding risk and costly rig time. Petromac Tool Taxis improved efficiency by reducing drag and enabling gravity descent, but severe washouts still caused tool hang-ups.",
       "The solution was the addition of the Pathfinder centralized hole-finder, which guided the toolstring smoothly through ledges and washouts.",
       "On its first run with a CMR–MDT combination, Pathfinder enabled full gravity descent to TD through a 1,500 ft tangent at 66°. In addition, taxis ensured zero sticking even on an 8.5-hour MDT station.",
       "Overall, by avoiding pipe-conveyed logging, the operator saved ~2 days of rig time, translating into substantial cost savings while ensuring safe, reliable data acquisition."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0046.webp",
       "width": 1241,
@@ -2168,7 +2391,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
@@ -2180,7 +2404,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0046-2.webp",
         "width": 1200,
-        "height": 1297,
+        "height": 1217,
         "caption": null
       }
     ]
@@ -2197,6 +2421,7 @@
     "wirelineCompany": "SLB",
     "device": "Pathfinder",
     "categories": ["Well Access: Ledges", "Operational Efficiency"],
+    "references": [],
     "challenge": [
       "Prevent toolstring hold-up at a severe rathole ledge where the borehole reduces abruptly from 28” to 17.5”."
     ],
@@ -2206,11 +2431,14 @@
     "results": [
       "PathFinder proves to be an essential enabler for logging vertical wells with challenging borehole geometries. It eliminates costly non-productive time and ensures successful passage through abrupt rathole reductions."
     ],
+    "learnings": [],
     "narrative": [
       "A Mexican independent operator in northern Mexico had been experiencing repeated failures to log their wells due to a large ledge inside the rathole section, where the borehole shrank from 28” to 17.5”. On multiple wells, it was impossible to pass this restriction, and logs could not be acquired despite several attempts made.",
       "To overcome this persistent issue, it was proposed to run the toolstring with the PathFinder. The operator approved the trial on the next well in the sequence.",
       "PathFinder enabled two flawless descents, even across a 10” step-ledge. The toolstring passed so smoothly that the head tension showed no significant drop, confirming that PathFinder maintained optimal centralization and avoided direct contact with the ledge."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0047.webp",
       "width": 1241,
@@ -2219,7 +2447,8 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
@@ -2242,6 +2471,7 @@
     "wirelineCompany": "SLB",
     "device": "",
     "categories": ["Operational Efficiency", "Sticking Prevention"],
+    "references": [],
     "challenge": [
       "Convey ORA-CMR in a 68° deviated wellbore with heavy cuttings and washouts, while maintaining correct ORA probe and CMR pad orientation without risky surface pipe rotation."
     ],
@@ -2251,11 +2481,14 @@
     "results": [
       "Tool Taxi and Pathfinder enabled safe conveyance to TD, maintained probe and pad orientation, reduced cable-damage risk, and supported successful fluid sampling and high-quality NMR measurements."
     ],
+    "learnings": [],
     "narrative": [
       "The standard method for positioning the NMR pad and sampling probes on TLC is to rotate the drill pipe from surface. In highly deviated wells, however, torque transfer can be unpredictable, particularly across high-dogleg sections and poor borehole conditions. This can result in unreliable probe orientation, inefficient sampling, and increased risk of cable damage.",
       "To mitigate this risk, Petromac Tool Taxis were deployed to reduce reliance on surface pipe rotation and maintain continuous low-side orientation of both the ORA probes and the CMR pad. Pathfinder ensured tool moved seamlessly through ledges, washouts and heavy cuttings.",
       "This approach enabled accurate probe positioning, reliable CMR orientation, and safer conveyance in a high-risk environment. The result was successful fluid sampling and high-quality NMR measurements without exposing the cable to unnecessary rotation-related risk."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0048.webp",
       "width": 1241,
@@ -2264,13 +2497,14 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/lam.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "LAM"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0048-1.webp",
         "width": 1200,
-        "height": 877,
+        "height": 868,
         "caption": "Fig. 1: CMR-ORA run with Taxis kept stable orientation."
       },
       {
@@ -2293,6 +2527,7 @@
     "wirelineCompany": "Geoplex",
     "device": "",
     "categories": ["Well Access: Deviation", "Operational Efficiency"],
+    "references": [],
     "challenge": [
       "Cement Evaluation toolstrings use drag inducing centralizers which limit the maximum deviation the tool can descend by gravity alone. As such expensive tractors are required for conveyance to desired depths."
     ],
@@ -2302,11 +2537,14 @@
     "results": [
       "Smooth descent to high deviations by gravity alone, reaching depths that met the evaluation objectives. The CBL tool was perfectly centralized in 7” casing, providing high quality data."
     ],
+    "learnings": [],
     "narrative": [
       "An operator in Nigeria had previously done a multi-well Cement Evaluation campaign in very high deviations using tractors for conveyance and in-line centralizers. Due to cost and operational challenges, they were looking for an alternative for the new campaign.",
       "Following Petromac’s presentation of its ultra-low drag centralization devices (CA7) used in 7” casing, they approved its use for a test run on the first well. In combination with specially built weight bars, the CA7s conveyed the toolstring to 78° deviation by gravity alone, meeting the job depth objectives, while at the same time, providing perfect centralization and excellent data quality.",
       "The success of the test run convinced the client to continue the campaign with Petromac’s C7s only, replacing the use of tractors and in-line centralizers."
     ],
+    "narrativeSubheads": [],
+    "callout": null,
     "image": {
       "src": "/flipbooks/success-stories/pages/0049.webp",
       "width": 1241,
@@ -2315,19 +2553,20 @@
     "regionMap": {
       "src": "/flipbooks/success-stories/figures/maps/afr.webp",
       "width": 1200,
-      "height": 625
+      "height": 625,
+      "code": "AFR"
     },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0049-1.webp",
         "width": 1200,
-        "height": 561,
+        "height": 671,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0049-2.webp",
-        "width": 844,
-        "height": 1051,
+        "width": 838,
+        "height": 1110,
         "caption": "Fig 3: Well 6 trajectory"
       },
       {

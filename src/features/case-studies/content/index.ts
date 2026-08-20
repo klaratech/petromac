@@ -36,11 +36,30 @@ export interface CaseStudy {
   /** Product line, e.g. "Wireline Express - FT", "Focus - CH". */
   device: string;
   categories: string[];
+  /**
+   * SPE papers the story cites ("SPE-184773-MS"), with the paper's DOI when
+   * the printed page links it (the IDML hyperlink table carries the URL) —
+   * `href` is null for a citation the document leaves unlinked.
+   */
+  references: { label: string; href: string | null }[];
   challenge: string[];
   solution: string[];
   results: string[];
+  /** Page 30's fourth sidebar section — empty for the other 45 stories. */
+  learnings: string[];
   /** Long-form narrative paragraphs from the story page. */
   narrative: string[];
+  /**
+   * Mid-story subheads ("Sampling in Sticky Boreholes", page 39), as
+   * insertion points: render `text` as a heading before `narrative[before]`.
+   */
+  narrativeSubheads: { before: number; text: string }[];
+  /**
+   * The page's closing banner statement, when it sets one (page 30's
+   * "PATHFINDER ELIMINATES THE RISK…") — an all-caps default-styled frame
+   * the narrative harvest cannot carry.
+   */
+  callout: string | null;
   /** The published flipbook page — figures, logs and layout included. */
   image: { src: string; width: number; height: number };
   /**
@@ -49,7 +68,9 @@ export interface CaseStudy {
    * with the story's region highlighted and labelled. Shown at the top of the
    * story sidebar; `region` carries the matching tags.csv area code.
    */
-  regionMap: { src: string; width: number; height: number } | null;
+  /** `code` is the map artwork's own region (MEA/APAC/…), which page 7
+   *  proves can disagree with the tags.csv `region` the filters use. */
+  regionMap: { src: string; width: number; height: number; code: string } | null;
   /**
    * The story's figures, in reading order, with the caption the layout gives
    * each one. The page used to render `image` (the whole published page) below

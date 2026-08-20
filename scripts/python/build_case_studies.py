@@ -87,16 +87,25 @@ REFERENCE_RE = re.compile(r"^\s*SPE[-\s]?\d", re.I)
 PROSE_MIN_WIDTH = 200.0
 PROSE_MIN_CHARS = 150
 
-# Sidebar markers. Page 30 alone adds a fourth, LEARNINGS, which folds into
-# results rather than earning a schema field for one story — that is also
-# where the previous PDF-text pipeline put it, so the published page is
-# unchanged.
+# Sidebar markers. Page 30 alone adds a fourth, LEARNINGS. It used to fold
+# into results (mirroring the PDF-text pipeline), which silently dropped the
+# printed page's own section header — the 20 Aug 2026 print-vs-live review
+# caught it, so it is a real field now and the template renders the panel.
 SECTIONS = {
     "CHALLENGE": "challenge",
     "SOLUTION": "solution",
     "RESULTS": "results",
-    "LEARNINGS": "results",
+    "LEARNINGS": "learnings",
 }
+
+# Pull-quote banner: page 30 closes with "PATHFINDER ELIMINATES THE RISK OF
+# TOOLSTRING HOLDUP…" set in its own default-styled frame. Default style is
+# otherwise decor (the World Records panel reaches the site through its
+# figure), but an all-caps statement of this length is copy, and it reached
+# the site through nothing at all. ≥10 words and ≥60% capital letters — the
+# "Learn more" footer and the Fig-prefixed default captions both fail it.
+CALLOUT_MIN_WORDS = 10
+CALLOUT_CAPS_RATIO = 0.6
 
 PAGE_W, PAGE_H = 1241, 1754
 
@@ -114,6 +123,27 @@ def join_split_words(blocks: list[str]) -> list[str]:
     for b in blocks:
         if out and out[-1].endswith("-"):
             out[-1] = out[-1][:-1] + b.lstrip()
+        else:
+            out.append(b)
+    return out
+
+
+def merge_soft_breaks(blocks: list[str]) -> list[str]:
+    """Rejoin a sentence split across two paragraphs by a stray break.
+
+    Page 5's RESULTS holds "Orientation of the probe to the" and "high side
+    caused the tool weight to 'peel'…" as two paragraphs — a return typed
+    mid-sentence in the source copy. A paragraph that starts lowercase while
+    the previous one carries no sentence-final punctuation is a continuation,
+    not a paragraph."""
+    out: list[str] = []
+    for b in blocks:
+        if (
+            out
+            and b[:1].islower()
+            and not out[-1].rstrip().endswith((".", "!", "?", ":", ";"))
+        ):
+            out[-1] = out[-1].rstrip() + " " + b
         else:
             out.append(b)
     return out
@@ -222,9 +252,16 @@ def extract_page(pkg: Package, spread) -> dict:
         frames.append((fr, blocks))
 
     headline = subtitle = ""
-    narrative: list[str] = []
+    callout = ""
+    # The story column in order, headings included: ("p", text) paragraphs
+    # interleaved with ("h", text) mid-story subheads (page 39's "Sampling in
+    # Sticky Boreholes" is a Header Blue1 paragraph INSIDE the body story —
+    # skipping non-body styles dropped it).
+    tokens: list[tuple[str, str]] = []
     references: list[str] = []
-    sections: dict[str, list[str]] = {"challenge": [], "solution": [], "results": []}
+    sections: dict[str, list[str]] = {
+        "challenge": [], "solution": [], "results": [], "learnings": []
+    }
 
     for fr, blocks in frames:
         styles = {b["style"] for b in blocks}
@@ -258,18 +295,64 @@ def extract_page(pkg: Package, spread) -> dict:
         # The story column, including the narrow continuation columns some
         # pages set beside their figures.
         if BODY in styles and (width >= PROSE_MIN_WIDTH or total >= PROSE_MIN_CHARS):
-            narrative += [
-                b["text"] for b in blocks
-                if b["style"] in (BODY, DEFAULT)
-                and b["style"] != CAPTION_STYLE
-                and not CAPTION_RE.match(b["text"])
-            ]
+            for b in blocks:
+                if b["style"] == CAPTION_STYLE or CAPTION_RE.match(b["text"]):
+                    continue
+                if b["style"] == HEADLINE and b["text"].strip() != headline.strip():
+                    tokens.append(("h", b["text"]))
+                elif b["style"] in (BODY, DEFAULT):
+                    tokens.append(("p", b["text"]))
+            continue
+
+        # An all-caps statement in a default-styled frame of its own is a
+        # closing banner, not decor (page 30).
+        if not callout and styles == {DEFAULT}:
+            text = " ".join(b["text"] for b in blocks).strip()
+            letters = [c for c in text if c.isalpha()]
+            if (
+                len(text.split()) >= CALLOUT_MIN_WORDS
+                and letters
+                and sum(c.isupper() for c in letters) / len(letters) >= CALLOUT_CAPS_RATIO
+                and not REFERENCE_RE.match(text)
+            ):
+                callout = text
+
+    # Word/sentence repairs run over each unbroken paragraph run so heading
+    # positions survive them, then headings become index markers.
+    narrative: list[str] = []
+    subheads: list[dict] = []
+    run: list[str] = []
+
+    def flush() -> None:
+        nonlocal run
+        narrative.extend(merge_soft_breaks(join_split_words(run)))
+        run = []
+
+    for kind, text in tokens:
+        if kind == "h":
+            flush()
+            subheads.append({"before": None, "text": text})
+            subheads[-1]["before"] = len(narrative)
+        else:
+            run.append(text)
+    flush()
+    # A heading that landed at the same index as a later one, or past the
+    # end, still renders fine — "before" clamps in the template.
+    # The reference lives in its own tiny frame, but the story reads straight
+    # into it: "Further details of this operation can be found in" +
+    # "SPE-184773-MS." are one sentence on the printed page (4, 5, 9, 10).
+    # A last paragraph that dangles on "in" takes the first reference.
+    if narrative and references and re.search(r"\bin\s*$", narrative[-1]):
+        narrative[-1] = narrative[-1].rstrip() + " " + references.pop(0)
 
     return {
         "headline": headline,
         "subtitle": subtitle,
-        "narrative": join_split_words(narrative) + references,
-        **{k: join_split_words(v) for k, v in sections.items()},
+        "callout": callout,
+        "narrative": narrative + references,
+        "subheads": subheads,
+        "references": list(dict.fromkeys(re.findall(r"SPE-\d+-MS", " ".join(narrative + references)))),
+        **{k: merge_soft_breaks(join_split_words(v)) for k, v in sections.items()},
     }
 
 
@@ -391,6 +474,16 @@ def main() -> None:
         text = fix_broken_words(clean(text), vocab, words)
         return fix_quote_jam(fix_stray_hyphens(text, vocab, hyphenated, words))
 
+    # SPE papers link to their DOI when the document itself carries the link —
+    # the IDML's hyperlink table has https://doi.org/10.2118/<number>-MS for
+    # the papers the printed page links. Matched by paper number; a reference
+    # with no matching link stays plain text.
+    doi_by_number = {}
+    for h in pkg.hyperlinks:
+        m = re.search(r"doi\.org/10\.2118/(\d+)-MS", h["url"])
+        if m:
+            doi_by_number[m.group(1)] = h["url"].strip()
+
     out = []
     for row in rows:
         page = int(row["Page"])
@@ -402,7 +495,10 @@ def main() -> None:
             {**f, "caption": c or None}
             for f, c in zip(fig.get("figures", []), fig.get("captions", []))
         ]
-        story = {k: [fix(p) for p in s[k]] for k in ("narrative", "challenge", "solution", "results")}
+        story = {
+            k: [fix(p) for p in s[k]]
+            for k in ("narrative", "challenge", "solution", "results", "learnings")
+        }
         title = fix(s["headline"])
         out.append(
             {
@@ -417,10 +513,22 @@ def main() -> None:
                 "wirelineCompany": row["WL Co"],
                 "device": row["Device"],
                 "categories": [c for c in (row["Category 1"], row["Category 2"]) if c],
+                "references": [
+                    {
+                        "label": label,
+                        "href": doi_by_number.get(label.split("-")[1]),
+                    }
+                    for label in s["references"]
+                ],
                 "challenge": story["challenge"],
                 "solution": story["solution"],
                 "results": story["results"],
+                "learnings": story["learnings"],
                 "narrative": story["narrative"],
+                "narrativeSubheads": [
+                    {"before": h["before"], "text": fix(h["text"])} for h in s["subheads"]
+                ],
+                "callout": fix(s["callout"]) or None,
                 "image": {
                     "src": f"/flipbooks/success-stories/pages/{page:04d}.webp",
                     "width": PAGE_W,
@@ -428,6 +536,9 @@ def main() -> None:
                 },
                 # The region world-map the printed page opens with (shared
                 # asset, one of six, exported by extract_story_figures.py).
+                # Carries the map's own region CODE: page 7 is tagged
+                # Area=EUR in tags.csv while the layout places the MEA map,
+                # and the sidebar caption must not contradict the image.
                 "regionMap": fig.get("map"),
                 "figures": page_figures,
             }

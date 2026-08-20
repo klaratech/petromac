@@ -4,7 +4,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0004-1.webp",
     "width": 1200,
-    "height": 698
+    "height": 824
    }
   ],
   "captions": [
@@ -13,7 +13,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "5": {
@@ -21,7 +22,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0005-1.webp",
     "width": 1200,
-    "height": 658
+    "height": 648
    }
   ],
   "captions": [
@@ -30,7 +31,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/nam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "NAM"
   }
  },
  "6": {
@@ -38,7 +40,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0006-1.webp",
     "width": 1200,
-    "height": 407
+    "height": 398
    },
    {
     "src": "/flipbooks/success-stories/figures/0006-2.webp",
@@ -53,7 +55,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "7": {
@@ -76,7 +79,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "8": {
@@ -99,7 +103,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "9": {
@@ -107,12 +112,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0009-1.webp",
     "width": 1200,
-    "height": 457
+    "height": 452
    },
    {
     "src": "/flipbooks/success-stories/figures/0009-2.webp",
     "width": 1200,
-    "height": 510
+    "height": 500
    }
   ],
   "captions": [
@@ -122,7 +127,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "10": {
@@ -135,7 +141,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0010-2.webp",
     "width": 1200,
-    "height": 504
+    "height": 494
    }
   ],
   "captions": [
@@ -145,7 +151,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "11": {
@@ -153,17 +160,17 @@
    {
     "src": "/flipbooks/success-stories/figures/0011-1.webp",
     "width": 1014,
-    "height": 1255
+    "height": 1239
    },
    {
     "src": "/flipbooks/success-stories/figures/0011-2.webp",
-    "width": 724,
-    "height": 1254
+    "width": 1014,
+    "height": 1239
    },
    {
     "src": "/flipbooks/success-stories/figures/0011-3.webp",
     "width": 1200,
-    "height": 360
+    "height": 341
    }
   ],
   "captions": [
@@ -174,7 +181,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "12": {
@@ -191,7 +199,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "13": {
@@ -199,7 +208,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0013-1.webp",
     "width": 1200,
-    "height": 1054
+    "height": 943
    },
    {
     "src": "/flipbooks/success-stories/figures/0013-2.webp",
@@ -214,7 +223,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/nam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "NAM"
   }
  },
  "14": {
@@ -222,7 +232,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0014-1.webp",
     "width": 1200,
-    "height": 398
+    "height": 388
    },
    {
     "src": "/flipbooks/success-stories/figures/0014-2.webp",
@@ -237,7 +247,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "15": {
@@ -254,7 +265,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "16": {
@@ -277,7 +289,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "17": {
@@ -285,22 +298,17 @@
    {
     "src": "/flipbooks/success-stories/figures/0017-1.webp",
     "width": 1200,
-    "height": 1030
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0017-2.webp",
-    "width": 990,
-    "height": 937
+    "height": 982
    }
   ],
   "captions": [
-   "Fig.1. Customized configuration for MRIL-XL",
-   "Fig.2. Actual tool drag coefficient observed during the job"
+   "Fig.1. Customized configuration for MRIL-XL \u00b7 Fig.2. Actual tool drag coefficient observed during the job"
   ],
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "18": {
@@ -308,12 +316,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0018-1.webp",
     "width": 1200,
-    "height": 488
+    "height": 479
    },
    {
     "src": "/flipbooks/success-stories/figures/0018-2.webp",
     "width": 1200,
-    "height": 1021
+    "height": 1089
    }
   ],
   "captions": [
@@ -323,7 +331,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/eur.webp",
    "width": 1200,
-   "height": 644
+   "height": 644,
+   "code": "EUR"
   }
  },
  "19": {
@@ -335,8 +344,8 @@
    },
    {
     "src": "/flipbooks/success-stories/figures/0019-2.webp",
-    "width": 1003,
-    "height": 1480
+    "width": 883,
+    "height": 1367
    }
   ],
   "captions": [
@@ -346,20 +355,21 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/afr.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "AFR"
   }
  },
  "20": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0020-1.webp",
-    "width": 1023,
-    "height": 1434
+    "width": 972,
+    "height": 1352
    },
    {
     "src": "/flipbooks/success-stories/figures/0020-2.webp",
     "width": 1200,
-    "height": 958
+    "height": 933
    }
   ],
   "captions": [
@@ -369,7 +379,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "21": {
@@ -377,12 +388,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0021-1.webp",
     "width": 1200,
-    "height": 639
+    "height": 741
    },
    {
     "src": "/flipbooks/success-stories/figures/0021-2.webp",
     "width": 1200,
-    "height": 370
+    "height": 474
    }
   ],
   "captions": [
@@ -392,7 +403,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "22": {
@@ -400,7 +412,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0022-1.webp",
     "width": 1200,
-    "height": 717
+    "height": 698
    },
    {
     "src": "/flipbooks/success-stories/figures/0022-2.webp",
@@ -415,7 +427,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "23": {
@@ -444,7 +457,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "24": {
@@ -452,12 +466,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0024-1.webp",
     "width": 959,
-    "height": 583
+    "height": 566
    },
    {
     "src": "/flipbooks/success-stories/figures/0024-2.webp",
     "width": 1200,
-    "height": 501
+    "height": 523
    }
   ],
   "captions": [
@@ -467,7 +481,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "25": {
@@ -484,7 +499,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "26": {
@@ -501,7 +517,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "27": {
@@ -518,7 +535,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "28": {
@@ -535,7 +553,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "29": {
@@ -548,7 +567,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0029-2.webp",
     "width": 1200,
-    "height": 348
+    "height": 375
    }
   ],
   "captions": [
@@ -558,7 +577,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "30": {
@@ -566,17 +586,17 @@
    {
     "src": "/flipbooks/success-stories/figures/0030-1.webp",
     "width": 1200,
-    "height": 322
+    "height": 325
    },
    {
     "src": "/flipbooks/success-stories/figures/0030-2.webp",
     "width": 983,
-    "height": 1110
+    "height": 1093
    },
    {
     "src": "/flipbooks/success-stories/figures/0030-3.webp",
     "width": 983,
-    "height": 1105
+    "height": 1089
    }
   ],
   "captions": [
@@ -587,7 +607,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "31": {
@@ -595,22 +616,17 @@
    {
     "src": "/flipbooks/success-stories/figures/0031-1.webp",
     "width": 1200,
-    "height": 664
-   },
-   {
-    "src": "/flipbooks/success-stories/figures/0031-2.webp",
-    "width": 917,
-    "height": 1070
+    "height": 1004
    }
   ],
   "captions": [
-   "Fig.1. Formation testing tool oriented to the highside when running on tool taxis.",
-   "Fig.2. Average tool drag coefficient from the job \u2013 Possible to descend to 80 deg on gravity"
+   "Fig.1. Formation testing tool oriented to the highside when running on tool taxis. \u00b7 Fig.2. Average tool drag coefficient from the job \u2013 Possible to descend to 80 deg on gravity"
   ],
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/afr.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "AFR"
   }
  },
  "32": {
@@ -627,7 +643,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "33": {
@@ -644,7 +661,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "34": {
@@ -652,12 +670,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0034-1.webp",
     "width": 1200,
-    "height": 699
+    "height": 799
    },
    {
     "src": "/flipbooks/success-stories/figures/0034-2.webp",
     "width": 1200,
-    "height": 623
+    "height": 551
    }
   ],
   "captions": [
@@ -667,7 +685,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "35": {
@@ -675,12 +694,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0035-1.webp",
     "width": 1200,
-    "height": 582
+    "height": 501
    },
    {
     "src": "/flipbooks/success-stories/figures/0035-2.webp",
     "width": 1200,
-    "height": 569
+    "height": 674
    },
    {
     "src": "/flipbooks/success-stories/figures/0035-3.webp",
@@ -696,7 +715,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "36": {
@@ -719,7 +739,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/mea.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "MEA"
   }
  },
  "37": {
@@ -727,7 +748,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0037-1.webp",
     "width": 1200,
-    "height": 758
+    "height": 739
    }
   ],
   "captions": [
@@ -736,7 +757,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/nam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "NAM"
   }
  },
  "38": {
@@ -749,7 +771,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0038-2.webp",
     "width": 1200,
-    "height": 313
+    "height": 346
    }
   ],
   "captions": [
@@ -759,7 +781,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/nam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "NAM"
   }
  },
  "39": {
@@ -767,12 +790,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0039-1.webp",
     "width": 1200,
-    "height": 423
+    "height": 398
    },
    {
     "src": "/flipbooks/success-stories/figures/0039-2.webp",
     "width": 1200,
-    "height": 668
+    "height": 658
    },
    {
     "src": "/flipbooks/success-stories/figures/0039-3.webp",
@@ -788,7 +811,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/nam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "NAM"
   }
  },
  "40": {
@@ -796,17 +820,17 @@
    {
     "src": "/flipbooks/success-stories/figures/0040-1.webp",
     "width": 902,
-    "height": 1658
+    "height": 1641
    },
    {
     "src": "/flipbooks/success-stories/figures/0040-2.webp",
     "width": 902,
-    "height": 1658
+    "height": 1641
    },
    {
     "src": "/flipbooks/success-stories/figures/0040-3.webp",
     "width": 1200,
-    "height": 668
+    "height": 666
    }
   ],
   "captions": [
@@ -817,7 +841,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/nam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "NAM"
   }
  },
  "41": {
@@ -825,7 +850,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0041-1.webp",
     "width": 1200,
-    "height": 952
+    "height": 1075
    }
   ],
   "captions": [
@@ -834,7 +859,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "42": {
@@ -863,7 +889,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "43": {
@@ -871,7 +898,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0043-1.webp",
     "width": 1200,
-    "height": 964
+    "height": 1003
    }
   ],
   "captions": [
@@ -880,7 +907,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "44": {
@@ -897,15 +925,16 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/apac.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "APAC"
   }
  },
  "45": {
   "figures": [
    {
     "src": "/flipbooks/success-stories/figures/0045-1.webp",
-    "width": 1055,
-    "height": 837
+    "width": 1038,
+    "height": 820
    },
    {
     "src": "/flipbooks/success-stories/figures/0045-2.webp",
@@ -920,7 +949,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/eur.webp",
    "width": 1200,
-   "height": 644
+   "height": 644,
+   "code": "EUR"
   }
  },
  "46": {
@@ -933,7 +963,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0046-2.webp",
     "width": 1200,
-    "height": 1297
+    "height": 1217
    }
   ],
   "captions": [
@@ -943,7 +973,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "47": {
@@ -960,7 +991,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "48": {
@@ -968,7 +1000,7 @@
    {
     "src": "/flipbooks/success-stories/figures/0048-1.webp",
     "width": 1200,
-    "height": 877
+    "height": 868
    },
    {
     "src": "/flipbooks/success-stories/figures/0048-2.webp",
@@ -983,7 +1015,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/lam.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "LAM"
   }
  },
  "49": {
@@ -991,12 +1024,12 @@
    {
     "src": "/flipbooks/success-stories/figures/0049-1.webp",
     "width": 1200,
-    "height": 561
+    "height": 671
    },
    {
     "src": "/flipbooks/success-stories/figures/0049-2.webp",
-    "width": 844,
-    "height": 1051
+    "width": 838,
+    "height": 1110
    },
    {
     "src": "/flipbooks/success-stories/figures/0049-3.webp",
@@ -1012,7 +1045,8 @@
   "map": {
    "src": "/flipbooks/success-stories/figures/maps/afr.webp",
    "width": 1200,
-   "height": 625
+   "height": 625,
+   "code": "AFR"
   }
  }
 }

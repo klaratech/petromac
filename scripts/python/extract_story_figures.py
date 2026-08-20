@@ -167,6 +167,12 @@ DECOR_MAX_W_FRAC = 0.85
 DECOR_MAX_H_FRAC = 0.65
 FOOT_MARGIN = 50.0  # pt
 ATTACH_PAD = 6.0  # pt — flush labels count as touching
+# Text sits a little off its subject more often than shapes do: page 41's
+# "Simulated / Real Tension" legend hangs 9pt below its chart, which a 6pt
+# pad never reaches, and the legend was simply lost. Text cannot weld, so a
+# wider reach is safe — the worst case is a label joining the wrong single
+# figure, and 12pt is still under any real column gap.
+TEXT_ATTACH_PAD = 12.0
 BODY_STYLE = "Body TXT"
 HEADLINE_STYLE = "Header Blue1"
 SUBTITLE_STYLE = "header-Gray txt"
@@ -178,6 +184,11 @@ REFERENCE_RE = re.compile(r"^\s*SPE[-\s]?\d", re.I)
 # real detail. Figures are never upscaled past what this yields.
 DPI = 400
 PAD = 2.0  # pt of breathing room around a figure
+# Trim margin when pulling a crop edge off text: render_region pads PAD back
+# outward, so trimming to exactly ±PAD lands the edge ON the frame line and
+# italic overhang ghosts in (page 19's caption openers, page 34). 3pt covers
+# the overhang.
+CLIP_MARGIN = PAD + 3.0
 
 # Figures are shown at most ~900px wide on the page; 1200 keeps a retina
 # margin without shipping larger originals.
@@ -377,9 +388,10 @@ def attach_decor(groups: list[dict], decor: list[dict]) -> list[dict]:
     while changed:
         changed = False
         for d in list(pending):
+            pad = ATTACH_PAD if d["kind"] == "shape" else TEXT_ATTACH_PAD
             hits = [
                 g for g in groups
-                if inter_area(grow(g["ext"], ATTACH_PAD), d["bounds"]) > 0
+                if inter_area(grow(g["ext"], pad), d["bounds"]) > 0
             ]
             if not hits:
                 continue
@@ -391,7 +403,14 @@ def attach_decor(groups: list[dict], decor: list[dict]) -> list[dict]:
                     keep["ext"] = union([keep["ext"], g["ext"]])
                     groups.remove(g)
             else:
-                keep = max(hits, key=lambda g: inter_area(grow(g["ext"], ATTACH_PAD), d["bounds"]))
+                # A text frame sitting at the HEAD of a figure (a chart
+                # title) belongs to the figure that starts beneath it, not to
+                # whichever neighbour's box overlaps it most — page 18's
+                # title reaches over the toolstring above, whose huge box
+                # won max-overlap and doubled the title into both crops.
+                heads = [g for g in hits if g["ext"][1] >= d["bounds"][1] - ATTACH_PAD]
+                pool = heads or hits
+                keep = max(pool, key=lambda g: inter_area(grow(g["ext"], pad), d["bounds"]))
             keep["decor"].append(d)
             keep["ext"] = union([keep["ext"], d["bounds"]])
             pending.remove(d)
@@ -476,12 +495,45 @@ def group_page(
             )
             if bridged:
                 buckets = {None: cl["members"]}
-        for mem in buckets.values():
-            dec = [
-                d for d in cl["decor"]
-                if inter_area(grow(union([items[i]["bounds"] for i in mem]), ATTACH_PAD), d["bounds"]) > 0
+        # Re-home the cluster's decor onto the split buckets. Two rules the
+        # plain overlap test got wrong: the per-kind reach must match
+        # attach_decor (the 6pt shape pad dropped page 41's legend, which
+        # hangs 9pt under its chart), and TEXT goes to exactly ONE bucket —
+        # page 18's chart title overlaps the toolstring bucket above it too,
+        # and a shared assignment printed the title into both crops. Same
+        # tie-break as attach_decor: the bucket the text is a heading OF
+        # (its box starts at or below the text) wins over raw overlap.
+        bucket_list = [
+            {"mem": mem, "box": union([items[i]["bounds"] for i in mem])}
+            for mem in buckets.values()
+        ]
+        bucket_decor: list[list[dict]] = [[] for _ in bucket_list]
+        for d in cl["decor"]:
+            pad = ATTACH_PAD if d["kind"] == "shape" else TEXT_ATTACH_PAD
+            cand = [
+                bi for bi, b in enumerate(bucket_list)
+                if inter_area(grow(b["box"], pad), d["bounds"]) > 0
             ]
-            groups.append({"members": mem, "decor": dec, "caption": None, "order": None})
+            if not cand:
+                continue
+            if d["kind"] == "shape":
+                for bi in cand:
+                    bucket_decor[bi].append(d)
+                continue
+            heads = [
+                bi for bi in cand
+                if bucket_list[bi]["box"][1] >= d["bounds"][1] - ATTACH_PAD
+            ]
+            pool = heads or cand
+            best = max(
+                pool,
+                key=lambda bi: inter_area(grow(bucket_list[bi]["box"], pad), d["bounds"]),
+            )
+            bucket_decor[best].append(d)
+        for bi, b in enumerate(bucket_list):
+            groups.append(
+                {"members": b["mem"], "decor": bucket_decor[bi], "caption": None, "order": None}
+            )
 
     # Honour SPLIT_GROUP: pull named links out into figures of their own.
     forced = set(SPLIT_GROUP.get(page, []))
@@ -547,6 +599,30 @@ def group_page(
     #             (page 49's Fig 3 trajectory chart is a pasted vector
     #             drawing): grow a region out of the loose decor around the
     #             caption and render that.
+    # Positional labels first: an unclaimed caption ADJACENT to a composite,
+    # or two-plus of them flanking one figure, are the printed page's paired
+    # sub-labels (page 29's "Tool Drag coefficient = 0.35 / = 0.04", page 49's
+    # Fig 1 / Fig 2 under one interlocked artwork). Printing them below the
+    # card in a row would lose which tool each one sits under, so the crop
+    # GROWS to keep them in the pixels — the same treatment the composite's
+    # in-artwork labels already get. A single unclaimed caption beside an
+    # ordinary figure keeps the existing text-join path below (page 35).
+    ADJ = 25.0
+    for g in groups:
+        near = [
+            ci for ci, cap in enumerate(captions)
+            if ci not in claimed
+            and inter_area(grow(g["bounds"], ADJ), cap["bounds"]) > 0.5 * area(cap["bounds"])
+        ]
+        if not near or not (g["composite"] or len(near) >= 2):
+            continue
+        for ci in near:
+            g["bounds"] = union([g["bounds"], captions[ci]["bounds"]])
+            g["swallowed"].append(ci)
+            captions[ci]["fate"] = "pixels"
+            claimed.add(ci)
+        g["composite"] = True
+
     for ci, cap in enumerate(captions):
         if ci in claimed:
             continue
@@ -692,7 +768,9 @@ def erase_captions(im: Image.Image, box: list[float], captions: list[dict]) -> N
         y1 = round((min(cb[3], box[3]) - box[1] + PAD) * scale)
         if x1 - x0 < 2 or y1 - y0 < 2:
             continue
-        pad = 3
+        # 8px: italic ascenders and descenders overhang the caption frame,
+        # and a 3px pad left readable ghosts (page 21's "Fig 1 Pre-job…").
+        pad = 8
         x0, y0 = max(0, x0 - pad), max(0, y0 - pad)
         x1, y1 = min(im.width, x1 + pad), min(im.height, y1 + pad)
         # Sample a ring just outside the box; if it is not flat, leave the
@@ -708,6 +786,64 @@ def erase_captions(im: Image.Image, box: list[float], captions: list[dict]) -> N
         if spread > 24:
             continue
         im.paste(avg, (x0, y0, x1, y1))
+
+
+def scrub_text_slivers(im: Image.Image, box: list[float], text_rects: list[list[float]]) -> None:
+    """Erase ragged line-ends of NEIGHBOUR text riding a crop's edge.
+
+    Where the story column wraps AROUND a figure (pages 13, 20, 24), the prose
+    frame encloses the figure region entirely, so the trim in clip_to_artwork
+    rightly gives up — cutting to the frame edge would eat the whole figure.
+    The cost is the wrap's ragged edge: the last letters of each line ghost
+    down the crop's margin.
+
+    Pixels give what geometry cannot: the slivers hang at the very edge,
+    separated from the artwork by a clean white gutter. Scan each edge inward
+    (up to 6% of the dimension) for the first fully-white column/row; if the
+    strip outside it holds ink, and that ink sits inside a PROSE or
+    printed-caption frame in page coordinates, it is text that already
+    appears on the page as text — paint it out. The frame test is what
+    protects real artwork labels (page 40's "Older / Newer Acquisition" sit
+    at an edge behind a gutter too, but in no text frame).
+    """
+    scale = DPI / 72.0
+    inv = im.convert("L").point(lambda v: 0 if v >= 246 else 255)
+    W, H = im.size
+
+    def page_rect(x0: int, y0: int, x1: int, y1: int) -> list[float]:
+        return [
+            box[0] - PAD + x0 / scale, box[1] - PAD + y0 / scale,
+            box[0] - PAD + x1 / scale, box[1] - PAD + y1 / scale,
+        ]
+
+    def in_text(bb: tuple[int, int, int, int], off: tuple[int, int]) -> bool:
+        pr = page_rect(bb[0] + off[0], bb[1] + off[1], bb[2] + off[0], bb[3] + off[1])
+        return any(
+            inter_area(pr, grow(r, 3.0)) >= 0.99 * area(pr) for r in text_rects
+        )
+
+    def white_col(x: int) -> bool:
+        return inv.crop((x, 0, x + 1, H)).getbbox() is None
+
+    def white_row(y: int) -> bool:
+        return inv.crop((0, y, W, y + 1)).getbbox() is None
+
+    reach_x, reach_y = max(3, int(W * 0.06)), max(3, int(H * 0.06))
+    jobs = [
+        (range(1, min(reach_x, W - 1)), white_col, lambda g: (0, 0, g, H), (0, 0)),
+        (range(W - 2, max(W - reach_x, 0), -1), white_col, lambda g: (g + 1, 0, W, H), None),
+        (range(1, min(reach_y, H - 1)), white_row, lambda g: (0, 0, W, g), (0, 0)),
+        (range(H - 2, max(H - reach_y, 0), -1), white_row, lambda g: (0, g + 1, W, H), None),
+    ]
+    for scan, is_white, strip_of, _ in jobs:
+        for pos in scan:
+            if not is_white(pos):
+                continue
+            x0, y0, x1, y1 = strip_of(pos)
+            bb = inv.crop((x0, y0, x1, y1)).getbbox()
+            if bb and in_text(bb, (x0, y0)):
+                im.paste((255, 255, 255), (x0, y0, x1, y1))
+            break
 
 
 # --- inputs -----------------------------------------------------------------
@@ -837,7 +973,11 @@ def page_tables(pkg: Package, spread) -> list[dict]:
     return out
 
 
-def clip_to_artwork(box: list[float], keep_out: list[list[float]]) -> list[float]:
+def clip_to_artwork(
+    box: list[float],
+    keep_out: list[list[float]],
+    protected: list[list[float]] | None = None,
+) -> list[float]:
     """Pull a figure's bounds back off any text it overlaps.
 
     Two things end up inside a figure's bounding box without belonging to it:
@@ -855,22 +995,32 @@ def clip_to_artwork(box: list[float], keep_out: list[list[float]]) -> list[float
     that lives *inside* the artwork from cutting it in half.
     """
     box = list(box)
+    protected = protected or []
     for pb, limit in sorted(keep_out, key=lambda kv: -inter_area(kv[0], box)):
         if inter_area(pb, box) <= 0:
             continue
         base = area(box)
         if base <= 0:
             break
-        # Cut back by PAD as well, since render_region pads outward again —
-        # without it every trim leaves a two-point sliver of the thing it was
-        # supposed to remove, which is enough to show the top of a caption.
+        # Cut back by CLIP_MARGIN, not PAD: render_region pads PAD outward
+        # again, and a margin that exactly cancels it lands the crop edge ON
+        # the text frame — whose italic glyphs overhang it (pages 19/34).
         options = [
-            [max(box[0], pb[2] + PAD), box[1], box[2], box[3]],  # cut from the left
-            [box[0], box[1], min(box[2], pb[0] - PAD), box[3]],  # cut from the right
-            [box[0], max(box[1], pb[3] + PAD), box[2], box[3]],  # cut from the top
-            [box[0], box[1], box[2], min(box[3], pb[1] - PAD)],  # cut from the bottom
+            [max(box[0], pb[2] + CLIP_MARGIN), box[1], box[2], box[3]],  # from the left
+            [box[0], box[1], min(box[2], pb[0] - CLIP_MARGIN), box[3]],  # from the right
+            [box[0], max(box[1], pb[3] + CLIP_MARGIN), box[2], box[3]],  # from the top
+            [box[0], box[1], box[2], min(box[3], pb[1] - CLIP_MARGIN)],  # from the bottom
         ]
         options = [o for o in options if o[2] - o[0] > 1 and o[3] - o[1] > 1]
+        # A trim must not cut the figure's own attached labels: page 18's
+        # neighbour-trim beheaded the chart title the decor pass had just
+        # attached, and page 38's prose pullback took "Carbon Fiber" and the
+        # Pathfinder title with it. An option that loses any currently
+        # included part of a protected box is off the table.
+        options = [
+            o for o in options
+            if all(inter_area(pr, box) - inter_area(pr, o) <= 1 for pr in protected)
+        ]
         if not options:
             continue
         best = max(options, key=area)
@@ -997,20 +1147,78 @@ def main() -> None:
         tables = page_tables(pkg, spread)
         groups = group_page(items, captions, decor, tables, page)
 
+        # Story figures never reach the page's footer band — the layout
+        # reserves it for the "Learn more" strip and the colour slashes — but
+        # a diagonal render's FRAME does (page 46 reaches the bottom corner),
+        # and the crop then ships the footer as if it were artwork (20, 38,
+        # 46). Hard-cap every region above the band.
+        foot = page_el["bounds"][3] - FOOT_MARGIN
+        for g in groups:
+            if g["bounds"][3] > foot:
+                g["bounds"][3] = foot
+
+        # Fold a split sibling back in when its actual artwork lies inside
+        # another figure's crop. The caption split works on bounding boxes,
+        # and where the layout interlocks two subjects (page 17's histogram
+        # tucked under the toolstring, page 31's chart beside the welded
+        # pair), the split produced two crops that BOTH contain the smaller
+        # subject — the same pixels shown twice. When ≥67% of B's member
+        # placements sit inside A's bounds, B adds nothing worth a second
+        # card: it folds into A and its caption joins A's. The measured
+        # ratios put page 17 at 0.71 (fold — its histogram tucks under the
+        # toolstring) and page 48 at 0.63 (stay split — the documented
+        # judgment for its two captions holds), which is what the threshold
+        # encodes; page 46 is 0.37 both ways and never came close.
+        changed = True
+        while changed:
+            changed = False
+            for a in groups:
+                if not a["members"]:
+                    continue
+                for b in groups:
+                    if b is a or not b["members"] or b.get("table"):
+                        continue
+                    mb = union([items[i]["bounds"] for i in b["members"]])
+                    if inter_area(mb, a["bounds"]) < 0.67 * area(mb):
+                        continue
+                    a["members"] += b["members"]
+                    a["decor"] += b["decor"]
+                    a["swallowed"] += b["swallowed"]
+                    a["bounds"] = union([a["bounds"], b["bounds"]])
+                    if b["caption"]:
+                        a["caption"] = (
+                            f'{a["caption"]} · {b["caption"]}' if a["caption"] else b["caption"]
+                        )
+                        a["order"] = a["order"] if a["order"] is not None else b["order"]
+                    a["composite"] = a["composite"] or b["composite"]
+                    groups.remove(b)
+                    changed = True
+                    break
+                if changed:
+                    break
+
         # A figure's crop must not show its neighbour. Bounding boxes overlap
         # freely in this layout — page 48's diagonal tool render reaches right
         # across the log below it — so rendering each group's raw box printed
         # the log inside Fig.1 as well as Fig.2. Every other group is a
         # keep-out region, on the same least-area trim as prose and captions.
         boxes = [g["bounds"] for g in groups]
-        fixed = [(c["bounds"], MAX_TRIM) for c in captions] + [(p, MAX_TRIM) for p in prose]
+        # Keep-outs by caption FATE: a caption that prints under a card (or
+        # is wanted by nobody) is pulled out of the crop — but one whose fate
+        # is "pixels" was just deliberately swallowed IN (page 29's paired
+        # drag-coefficient labels, page 49's Fig 1/Fig 2), and treating it as
+        # a keep-out here undid exactly that growth.
+        fixed = [
+            (c["bounds"], MAX_TRIM) for c in captions if c["fate"] != "pixels"
+        ] + [(p, MAX_TRIM) for p in prose]
 
         figures = []
         for n, g in enumerate(groups, start=1):
             if n in DROP_FIGURE.get(page, []):
                 continue
             others = [(b, SOFT_TRIM) for j, b in enumerate(boxes) if j != n - 1]
-            box = clip_to_artwork(g["bounds"], fixed + others)
+            protected = [d["bounds"] for d in g["decor"]]
+            box = clip_to_artwork(g["bounds"], fixed + others, protected)
             im = render_region(pdf, page, box, origin)
             # Erase only the captions that PRINT under some figure — a copy
             # in the pixels would say the same thing twice. A caption whose
@@ -1019,6 +1227,10 @@ def main() -> None:
             # Composites skip erasing entirely — their labels are positional.
             if not g["composite"]:
                 erase_captions(im, box, [c for c in captions if c["fate"] == "printed"])
+            scrub_text_slivers(
+                im, box,
+                prose + [c["bounds"] for c in captions if c["fate"] == "printed"],
+            )
             im = autocrop_white(im)
             if im.width > MAX_W:
                 im = im.resize((MAX_W, round(im.height * MAX_W / im.width)), Image.LANCZOS)
@@ -1049,7 +1261,9 @@ def main() -> None:
                 {k: f[k] for k in ("src", "width", "height")} for f in d["figures"]
             ],
             "captions": [f["caption"] for f in d["figures"]],
-            "map": maps.get(d["region"]),
+            "map": (
+                {**maps[d["region"]], "code": d["region"]} if d["region"] in maps else None
+            ),
         }
         for p, d in data.items()
     }

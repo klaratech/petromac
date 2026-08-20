@@ -50,6 +50,28 @@ const REGION_LABELS: Record<string, string> = {
   AFR: 'Africa',
 };
 
+/** The map artwork's own region code, as a tags.csv area code. */
+const MAP_CODE_TO_AREA: Record<string, string> = {
+  MEA: 'MENA',
+  APAC: 'APAC',
+  NAM: 'NAM',
+  LAM: 'LAM',
+  EUR: 'EUR',
+  AFR: 'AFR',
+};
+
+/**
+ * Caption for the region-map card. Normally "country · region", but when the
+ * layout's placed map disagrees with the tags.csv area (page 7: Azerbaijan is
+ * tagged EUR while the printed page places the MEA map), naming either region
+ * would contradict the image or the filters — so the caption stays with just
+ * the country. The filters keep using the tags value either way.
+ */
+function mapCaption(country: string, region: string, mapCode: string): string {
+  if (MAP_CODE_TO_AREA[mapCode] !== region) return country;
+  return `${country} · ${REGION_LABELS[region] ?? region}`;
+}
+
 /**
  * "Fig.1." / "Fig 2:" / "Fig 2 & 3:" — the caption's own numbering prefix.
  * The number becomes the card's label chip and the prefix is stripped from
@@ -58,6 +80,33 @@ const REGION_LABELS: Record<string, string> = {
  * web figure "Fig 4" because Fig 3 is a table set into that figure's pixels.
  */
 const FIG_PREFIX = /^\s*Figs?\.?\s*\.?\s*(\d+(?:\s*&\s*\d+)?)\s*[.:]?\s*/i;
+
+/**
+ * Render a narrative paragraph with its SPE citations linked to their DOI —
+ * the printed page links them, and the IDML's hyperlink table carries the
+ * URL. A reference without a href renders as plain text.
+ */
+function withReferenceLinks(text: string, refs: { label: string; href: string | null }[]) {
+  const linked = refs.filter((r) => r.href && text.includes(r.label));
+  if (linked.length === 0) return text;
+  const pattern = new RegExp(`(${linked.map((r) => r.label).join('|')})`, 'g');
+  const hrefs = new Map(linked.map((r) => [r.label, r.href!]));
+  return text.split(pattern).map((part, i) =>
+    hrefs.has(part) ? (
+      <a
+        key={i}
+        href={hrefs.get(part)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-medium text-brand hover:underline"
+      >
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  );
+}
 
 /** CHALLENGE / SOLUTION / RESULTS side panel. */
 function SidePanel({ title, paras }: { title: string; paras: string[] }) {
@@ -166,14 +215,32 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
         <div className="grid lg:grid-cols-[1fr_320px] gap-10 lg:gap-14 items-start">
           <div>
-            {/* Narrative */}
+            {/* Narrative, with the layout's own mid-story subheads restored
+                at their printed positions (page 39). */}
             <div className="space-y-5 mb-10">
-              {cs.narrative.map((p) => (
-                <p key={p.slice(0, 48)} className="text-slate-600 leading-relaxed">
-                  {p}
-                </p>
+              {cs.narrative.map((p, i) => (
+                <div key={p.slice(0, 48)} className="space-y-5">
+                  {cs.narrativeSubheads
+                    .filter((h) => Math.min(h.before, cs.narrative.length - 1) === i)
+                    .map((h) => (
+                      <h2 key={h.text} className="font-heading text-xl font-bold text-brand pt-2">
+                        {h.text}
+                      </h2>
+                    ))}
+                  <p className="text-slate-600 leading-relaxed">
+                    {withReferenceLinks(p, cs.references)}
+                  </p>
+                </div>
               ))}
             </div>
+
+            {/* Closing banner — the printed page's own bottom statement
+                (page 30), set as display copy rather than a paragraph. */}
+            {cs.callout && (
+              <p className="mb-10 border-l-4 border-brand bg-brand/[0.04] px-5 py-4 font-heading text-lg font-bold leading-snug text-brand">
+                {cs.callout}
+              </p>
+            )}
 
             {/* Figures from the story's published page.
                 Until Aug 2026 this rendered the WHOLE published page as one
@@ -264,7 +331,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                 <div className="rounded-lg bg-white ring-1 ring-slate-200 p-2">
                   <Image
                     src={cs.regionMap.src}
-                    alt={`World map highlighting ${REGION_LABELS[cs.region] ?? cs.region}, where this operation ran`}
+                    alt={`World map highlighting the region where this operation ran`}
                     width={cs.regionMap.width}
                     height={cs.regionMap.height}
                     className="h-auto w-full"
@@ -272,13 +339,14 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                   />
                 </div>
                 <figcaption className="mt-2 text-xs font-medium text-slate-500">
-                  {cs.country} · {REGION_LABELS[cs.region] ?? cs.region}
+                  {mapCaption(cs.country, cs.region, cs.regionMap.code)}
                 </figcaption>
               </figure>
             )}
             <SidePanel title="Challenge" paras={cs.challenge} />
             <SidePanel title="Solution" paras={cs.solution} />
             <SidePanel title="Results" paras={cs.results} />
+            <SidePanel title="Learnings" paras={cs.learnings} />
           </aside>
         </div>
 

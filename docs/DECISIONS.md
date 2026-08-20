@@ -67,6 +67,67 @@ order, which page 35 breaks (its third web figure is the layout's Fig 4).
 
 ---
 
+## Aug 2026 (20th) — Story-page review: nine figure-rule fixes, three text-harvest gaps closed
+
+**Context:** the one-by-one print-vs-live review (docs/SUCCESS_STORY_REVIEW.md)
+of all 46 story pages. Every defect it found was fixed as a RULE in the
+pipeline, not a per-page hatch — the hatches remain empty. 20 pages matched
+print outright; 18 more do after these fixes; 4 carry judgment calls listed in
+the tracker.
+
+**Figure rules (extract_story_figures.py):**
+
+- _Fold-back_: when ≥67% of a split sibling's placements sit inside another
+  figure's crop, it folds back in and the captions print joined (" · ").
+  Pages 17/31 were shipping the SAME pixels twice — the interlocked histogram
+  appeared in both cards. The threshold is measured, not aesthetic: 17 = 0.71
+  (fold), 48 = 0.63 (stays split — its two-caption split is the documented
+  judgment), 46 = 0.37.
+- _Footer cap_: no crop may extend into the page's bottom 50pt. Diagonal
+  renders' FRAMES reach the page corner, and 20/38/46 shipped the "Learn
+  more" banner or its colour slashes as artwork.
+- _Adjacent-caption swallow_: an unclaimed caption flanking a composite (29's
+  paired "Tool Drag coefficient = 0.35 / 0.04"), or two-plus flanking one
+  figure (49's Fig 1/Fig 2), extends the crop and stays in the pixels —
+  printing them below would lose which tool each sits under. Consequently
+  caption-fate now drives the clip keep-outs: only NON-pixel captions are
+  pulled off a crop, otherwise the clip undid the swallow.
+- _Decor protection in the clip_: a trim may not cut the figure's own attached
+  labels (18's chart title was beheaded by the neighbour-trim; 38 lost
+  "Carbon Fiber" and its title to the prose pullback).
+- _Text attach reach 12pt_ (shapes stay 6pt): 41's legend hangs 9pt under its
+  chart and was simply lost. The bucket re-filter after a caption split now
+  uses the same per-kind reach — it silently dropped what attach had caught.
+- _Text decor is exclusive to ONE figure_, preferring the figure it heads:
+  18's chart title overlaps the toolstring above, whose bigger box won the
+  overlap contest — the title printed into BOTH crops.
+- _Edge scrub_: ragged line-ends of WRAPPED prose ride a crop's margin
+  (13/20/24) because the prose frame encloses the figure and the geometric
+  trim rightly surrenders. Pixels finish the job: a strip at the crop edge,
+  behind a clean white gutter, whose ink lies inside a prose/printed-caption
+  frame, is erased. The frame test is what protects real edge labels (40's
+  "Older/Newer Acquisition").
+- _Trim margin > render pad_: trims used to land the crop edge exactly ON the
+  text frame (cut PAD, pad PAD back), so italic overhang ghosted in (19/34).
+- _Caption paint-out pad 8px_ (was 3): ascenders/descenders overhang the
+  caption frame (21's ghost).
+
+**Text harvest (build_case_studies.py):** LEARNINGS is a real 4th sidebar
+section (page 30) with its own field + panel — folding it into RESULTS
+dropped the printed header. An all-caps default-styled frame ≥10 words is a
+`callout` (30's "PATHFINDER ELIMINATES…" banner reached the site through
+nothing at all). A mid-story `Header Blue1` paragraph is a narrative subhead
+(`narrativeSubheads`, 39's "Sampling in Sticky Boreholes"). Also: SPE
+references merge into the sentence that dangles on "…found in" and link to
+the DOI the IDML's own hyperlink table carries; a paragraph starting
+lowercase after an unterminated one is a soft-break continuation, rejoined.
+
+**Deliberately NOT fixed:** horizontal pair-splits (16/23/42), the 46/48
+interlock overlap, and character-style emphasis (bold/bullets) — judgment
+calls listed in SUCCESS_STORY_REVIEW.md for sign-off.
+
+---
+
 ## Aug 2026 — Athena logo v2: two colours shipped, tagline is a large-format asset
 
 **Decision:** the new hornbill logo lives in `public/images/logos/` as three
