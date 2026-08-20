@@ -16,10 +16,22 @@ the caption frames with theirs, both tagged by the paragraph style the
 designer applied. So:
 
   1. drop furniture by LINK FILENAME (region maps, category icons, page
-     backgrounds, logos) — no guessing
+     backgrounds, logos) — no guessing. The region maps are re-exported
+     separately as shared assets (figures/maps/) with the manifest recording
+     which one each page places — the site's sidebar shows the location map
+     the printed page opens with.
   2. group the remaining placements into figures, led by the page's own
-     "Fig.N" captions where it has them
-  3. render each figure's REGION out of the export PDF
+     "Fig.N" captions where it has them — and by the page's DECOR: the bare
+     vector shapes and short text frames the layout composes infographics
+     with (page 29's "87% drag reduction" arrow between two tool renders).
+     Decor extends a figure's crop so nothing gets sliced mid-word; a shape
+     that spans two placements welds them into one artwork.
+  3. render each figure's REGION out of the export PDF, then trim uniform
+     white margins (diagonal renders used to ship mostly empty box).
+  4. rescue what the item pass cannot see: native InDesign TABLES and
+     pasted vector charts render off their caption/frame geometry (page 49's
+     Fig 3 trajectory and its Well 1-6 results table reached the site as
+     nothing at all before).
 
 Rendering the region rather than pulling the asset out of `Links/` is
 deliberate: it keeps InDesign's crop, the compositing of figures built from
@@ -111,8 +123,9 @@ SOFT_TRIM = 0.15
 # the repeat-count, slot-match, MIN_AREA and orphan-mask heuristics at once,
 # because the layout names these assets:
 #   AFR/APAC/EUR/LAM/MEA/NAM.png  the region world-map above the challenge
-#                                 column (the site renders `region` itself)
-#   Icon-* / icon-*               the category badges (ditto `categories`)
+#                                 column (exported separately — see REGION_RE)
+#   Icon-* / icon-*               the category badges (the site renders
+#                                 `categories` itself)
 #   Background-* / Logo-*         page furniture
 # Note there is deliberately NO rule for `*-MASK.png`. Those are alpha mattes
 # for vector art, and under the old pdfimages route they extracted as a white
@@ -126,6 +139,39 @@ FURNITURE = re.compile(
     r"|^Logo-",
     re.I,
 )
+
+# The region world-map is furniture as a FIGURE but content as a LOCATION: the
+# printed page opens with it, and the website sidebar shows it again (Aug 2026
+# — it was simply dropped before, which read as "the map is missing"). Each
+# page places exactly one of six shared assets, so they are exported once from
+# Links/ into figures/maps/ and the manifest records which one each page uses.
+REGION_RE = re.compile(r"^(AFR|APAC|EUR|LAM|MEA|NAM)\.png$", re.I)
+MAP_MAX_W = 1200
+
+# --- decor: the page elements a figure is composed WITH ----------------------
+# The layout builds infographics out of more than placed images: page 29 sets
+# a "87% drag reduction" arrow (a bare Polygon) plus two text frames BETWEEN
+# two tool renders; page 36 places its photos on a black panel with "60 hrs /
+# 22 hrs" labels; page 39 sets two ~110-char explainers under its pair. None
+# of those are placed images, so a crop computed from images alone slices
+# straight through them — that is exactly the "…duction" / "87…" clipping this
+# rework removed. Short text frames and bare shapes that touch a figure are
+# pulled INTO its bounds; one that touches TWO figures is a bridge, and the
+# figures it bridges are one composite artwork.
+#
+# Sanity limits keep page furniture out: anything nearly page-wide is a band,
+# anything nearly page-tall is a column rule, the page foot holds the "Learn
+# more" strip. Prose, captions, headline/subtitle and the sidebar are excluded
+# by style/length — they have their own roles.
+DECOR_MAX_W_FRAC = 0.85
+DECOR_MAX_H_FRAC = 0.65
+FOOT_MARGIN = 50.0  # pt
+ATTACH_PAD = 6.0  # pt — flush labels count as touching
+BODY_STYLE = "Body TXT"
+HEADLINE_STYLE = "Header Blue1"
+SUBTITLE_STYLE = "header-Gray txt"
+SIDEBAR_STYLES = {"Header RIGHT-Blue", "RIGHT-Body txt"}
+REFERENCE_RE = re.compile(r"^\s*SPE[-\s]?\d", re.I)
 
 # Render resolution. 400 dpi sits above the PDF's 300 ppi embedded rasters
 # (so they survive the downscale to MAX_W crisply) and gives vector artwork
@@ -260,11 +306,107 @@ def nearest_caption(box: list[float], captions: list[dict]) -> int | None:
     return best
 
 
-def group_page(items: list[dict], captions: list[dict], page: int) -> list[dict]:
+def page_decor(pkg: Package, spread, captions: list[dict], page_bounds: list[float]) -> list[dict]:
+    """Bare shapes and short text frames that may be part of a figure's
+    artwork. See the DECOR block up top for why these exist at all."""
+    W = page_bounds[2] - page_bounds[0]
+    H = page_bounds[3] - page_bounds[1]
+    cap_bounds = [c["bounds"] for c in captions]
+
+    def sane(b: list[float]) -> bool:
+        w, h = b[2] - b[0], b[3] - b[1]
+        if w < 3 or h < 3:  # hairlines and zero-width rules
+            return False
+        if w > DECOR_MAX_W_FRAC * W or h > DECOR_MAX_H_FRAC * H:
+            return False
+        if w * h > 0.5 * W * H:
+            return False
+        if b[1] > page_bounds[3] - FOOT_MARGIN:  # the "Learn more" foot strip
+            return False
+        return True
+
+    out: list[dict] = []
+    for fr in spread.frames:
+        b = fr["bounds"]
+        if not b or b in cap_bounds or not sane(b):
+            continue
+        blocks = [bl for bl in pkg.blocks(fr) if bl.get("text")]
+        if not blocks:
+            continue
+        text = " ".join(bl["text"] for bl in blocks)
+        styles = {bl["style"] for bl in blocks}
+        # Story prose is a keep-out, never decor — but only the styles the
+        # build carries. A long default-style frame (page 28's "World
+        # Records") reaches the site through its figure or not at all.
+        if BODY_STYLE in styles and len(text) >= PROSE_MIN_CHARS:
+            continue
+        if styles & ({HEADLINE_STYLE, SUBTITLE_STYLE} | SIDEBAR_STYLES):
+            continue
+        if any(CAPTION_RE.match(bl["text"]) or bl["style"] == CAPTION_STYLE for bl in blocks):
+            continue
+        if any(REFERENCE_RE.match(bl["text"]) for bl in blocks):
+            continue
+        out.append({"bounds": b, "kind": "text", "what": f"text {text[:28]!r}"})
+    for sh in spread.shapes:
+        b = sh["bounds"]
+        if b and sane(b):
+            out.append(
+                {"bounds": b, "kind": "shape", "what": f'{sh["kind"]} fill={sh["fill"] or "none"}'}
+            )
+    return out
+
+
+def grow(box: list[float], pad: float) -> list[float]:
+    return [box[0] - pad, box[1] - pad, box[2] + pad, box[3] + pad]
+
+
+def attach_decor(groups: list[dict], decor: list[dict]) -> list[dict]:
+    """Fold decor into the figure groups it touches. Runs to a fixpoint:
+    attaching the page-29 arrow is what brings its "87%" and "drag reduction"
+    text frames into range on the next pass.
+
+    Only SHAPES weld the groups they span into one: the page-29 arrow and the
+    page-36 black panel are structural — the composition does not survive
+    cutting them. TEXT only ever extends the one figure it belongs to most: a
+    chart's title frame routinely reaches over the figure next door (pages 18
+    and 31), and letting it weld collapsed three separate figures into one."""
+    for g in groups:
+        g.setdefault("decor", [])
+    pending = list(decor)
+    changed = True
+    while changed:
+        changed = False
+        for d in list(pending):
+            hits = [
+                g for g in groups
+                if inter_area(grow(g["ext"], ATTACH_PAD), d["bounds"]) > 0
+            ]
+            if not hits:
+                continue
+            if d["kind"] == "shape":
+                keep, rest = hits[0], hits[1:]
+                for g in rest:  # a bridge — the figures it spans are one artwork
+                    keep["members"] += g["members"]
+                    keep["decor"] += g["decor"]
+                    keep["ext"] = union([keep["ext"], g["ext"]])
+                    groups.remove(g)
+            else:
+                keep = max(hits, key=lambda g: inter_area(grow(g["ext"], ATTACH_PAD), d["bounds"]))
+            keep["decor"].append(d)
+            keep["ext"] = union([keep["ext"], d["bounds"]])
+            pending.remove(d)
+            changed = True
+    return groups, pending
+
+
+def group_page(
+    items: list[dict], captions: list[dict], decor: list[dict], tables: list[dict], page: int
+) -> list[dict]:
     """Figure groups for one page, in reading order, each with its caption.
 
-    Geometry decides how many figures there are; captions only ever SPLIT a
-    group, never merge two. That asymmetry is the whole design:
+    Geometry decides how many figures there are; decor that bridges placements
+    welds them into one; captions only ever SPLIT a group, never merge two.
+    That asymmetry is the whole design:
 
       * geometry alone over-merges when one placement is a big diagonal render
         whose bounding box has empty corners — page 48's tool swallows 60% of
@@ -273,30 +415,73 @@ def group_page(items: list[dict], captions: list[dict], page: int) -> list[dict]
       * captions alone under-count, because the layout does not caption
         everything. Page 19 carries two figures and one "Fig.2" line; letting
         the caption count decide collapsed them into one.
-    """
-    groups: list[dict] = []
-    for members in cluster(items):
-        # Split a merged cluster when its members answer to different captions.
-        buckets: dict[int | None, list[int]] = {}
-        for i in members:
-            key = nearest_caption(items[i]["bounds"], captions) if len(captions) > 1 else None
-            buckets.setdefault(key, []).append(i)
-        for mem in buckets.values():
-            groups.append({"members": mem, "caption": None, "order": None})
+      * a caption split is VETOED when a shape straddles the would-be halves:
+        page 29 captions its two tool renders separately, but the "87% drag
+        reduction" arrow between them can only be cut in half by honouring
+        that split — the page means them as one infographic.
 
-    # Each group takes the nearest caption that no closer group has claimed.
-    claimed: set[int] = set()
-    ranked = []
-    for gi, g in enumerate(groups):
-        box = union([items[i]["bounds"] for i in g["members"]])
-        ci = nearest_caption(box, captions) if captions else None
-        d = box_distance(box, captions[ci]["bounds"]) if ci is not None else 0.0
-        ranked.append((d, gi, ci))
-    for _d, gi, ci in sorted(ranked):
-        if ci is not None and ci not in claimed:
-            claimed.add(ci)
-            groups[gi]["caption"] = captions[ci]["text"]
-            groups[gi]["order"] = caption_number(captions[ci]["text"])
+    The split works on WELD UNITS, not raw placements. A shape that touches
+    two placements ties them together — page 31's leader line runs from the
+    circled section of the tool render down to its exploded-view inset — and
+    caption distances are then judged for the tied pair as a whole. Judged
+    one placement at a time, the inset sat closer to the chart caption below
+    it than to its own figure's, and the veto then had no split it could
+    honour without cutting the leader line.
+    """
+    clusters = [
+        {"members": m, "ext": union([items[i]["bounds"] for i in m]), "decor": []}
+        for m in cluster(items)
+    ]
+    clusters, loose = attach_decor(clusters, decor)
+
+    groups: list[dict] = []
+    for cl in clusters:
+        # Weld members a shape physically connects.
+        parent = {i: i for i in cl["members"]}
+
+        def find(i: int) -> int:
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+
+        for d in cl["decor"]:
+            if d["kind"] != "shape":
+                continue
+            touched = [
+                i for i in cl["members"]
+                if inter_area(grow(items[i]["bounds"], ATTACH_PAD), d["bounds"]) > 0
+            ]
+            for i in touched[1:]:
+                parent[find(i)] = find(touched[0])
+        units: dict[int, list[int]] = {}
+        for i in cl["members"]:
+            units.setdefault(find(i), []).append(i)
+
+        # Split the cluster when its units answer to different captions…
+        buckets: dict[int | None, list[int]] = {}
+        for mem in units.values():
+            box = union([items[i]["bounds"] for i in mem])
+            key = nearest_caption(box, captions) if len(captions) > 1 else None
+            buckets.setdefault(key, []).extend(mem)
+        # …unless a shape still straddles the split.
+        if len(buckets) > 1 and cl["decor"]:
+            boxes = {
+                k: union([items[i]["bounds"] for i in mem]) for k, mem in buckets.items()
+            }
+            bridged = any(
+                sum(1 for bb in boxes.values() if inter_area(grow(bb, ATTACH_PAD), d["bounds"]) > 0) > 1
+                for d in cl["decor"]
+                if d["kind"] == "shape"
+            )
+            if bridged:
+                buckets = {None: cl["members"]}
+        for mem in buckets.values():
+            dec = [
+                d for d in cl["decor"]
+                if inter_area(grow(union([items[i]["bounds"] for i in mem]), ATTACH_PAD), d["bounds"]) > 0
+            ]
+            groups.append({"members": mem, "decor": dec, "caption": None, "order": None})
 
     # Honour SPLIT_GROUP: pull named links out into figures of their own.
     forced = set(SPLIT_GROUP.get(page, []))
@@ -306,13 +491,122 @@ def group_page(items: list[dict], captions: list[dict], page: int) -> list[dict]
             keep = [i for i in g["members"] if items[i]["file"] not in forced]
             for i in g["members"]:
                 if items[i]["file"] in forced:
-                    extra.append({"members": [i], "caption": None, "order": g["order"]})
+                    extra.append({"members": [i], "decor": [], "caption": None, "order": None})
             g["members"] = keep
         groups += extra
 
     groups = [g for g in groups if g["members"]]
     for g in groups:
-        g["bounds"] = union([items[i]["bounds"] for i in g["members"]])
+        g["bounds"] = union(
+            [items[i]["bounds"] for i in g["members"]] + [d["bounds"] for d in g["decor"]]
+        )
+
+    # A group whose crop holds TWO OR MORE caption frames is a composite
+    # infographic (page 29 after the bridge weld): its labels are positional —
+    # "0.35" under the left tool, "0.04" under the right — so they stay in the
+    # pixels and no single caption is printed underneath. Erasing them and
+    # printing one would lose the pairing; printing both would say the same
+    # thing twice.
+    for c in captions:
+        c["fate"] = "lost"  # upgraded below as figures claim, swallow or join
+    for g in groups:
+        inside = [
+            ci for ci, c in enumerate(captions) if inter_area(c["bounds"], g["bounds"]) > 0.5 * area(c["bounds"])
+        ]
+        g["composite"] = len(inside) >= 2
+        g["swallowed"] = inside if g["composite"] else []
+        for ci in g["swallowed"]:
+            captions[ci]["fate"] = "pixels"
+
+    # Each non-composite group takes the nearest caption that no closer group
+    # has claimed; captions living inside a composite are off the market.
+    taken = {ci for g in groups for ci in g["swallowed"]}
+    claimed: set[int] = set(taken)
+    ranked = []
+    for gi, g in enumerate(groups):
+        if g["composite"]:
+            continue
+        ci = nearest_caption(g["bounds"], captions) if captions else None
+        d = box_distance(g["bounds"], captions[ci]["bounds"]) if ci is not None else 0.0
+        ranked.append((d, gi, ci))
+    for _d, gi, ci in sorted(ranked):
+        if ci is not None and ci not in claimed:
+            claimed.add(ci)
+            captions[ci]["fate"] = "printed"
+            groups[gi]["caption"] = captions[ci]["text"]
+            groups[gi]["order"] = caption_number(captions[ci]["text"])
+
+    # A caption nothing claimed still says something the page means. Three
+    # cases, in order of how much of its subject already made it out:
+    #   swallow — its frame sits inside a figure's crop (its subject does
+    #             too): keep the pixels, like a composite's labels.
+    #   join    — it abuts a figure whose crop holds its subject (page 35's
+    #             Fig 3 names the eccentricity table set beside the Fig 4
+    #             toolstring): append its text to that figure's caption.
+    #   rescue  — its subject is NATIVE page art the item pass cannot see
+    #             (page 49's Fig 3 trajectory chart is a pasted vector
+    #             drawing): grow a region out of the loose decor around the
+    #             caption and render that.
+    for ci, cap in enumerate(captions):
+        if ci in claimed:
+            continue
+        cb = cap["bounds"]
+        host = next(
+            (g for g in groups if inter_area(cb, g["bounds"]) > 0.5 * area(cb)), None
+        )
+        if host is not None:
+            host["swallowed"].append(ci)
+            cap["fate"] = "pixels"
+            claimed.add(ci)
+            continue
+        host = next(
+            (g for g in groups if inter_area(grow(g["bounds"], 15.0), cb) > 0), None
+        )
+        if host is not None and not host["composite"]:
+            host["caption"] = (
+                f'{host["caption"]} · {cap["text"]}' if host["caption"] else cap["text"]
+            )
+            host["swallowed"].append(ci)
+            cap["fate"] = "printed"
+            claimed.add(ci)
+            continue
+        seeds = [
+            d for d in loose
+            if inter_area(grow(d["bounds"], 40.0), cb) > 0 and d["bounds"][1] < cb[3]
+        ]
+        if not seeds:
+            continue
+        region = union([d["bounds"] for d in seeds])
+        grown = True
+        while grown:
+            grown = False
+            for d in loose:
+                if d in seeds or inter_area(grow(region, ATTACH_PAD), d["bounds"]) <= 0:
+                    continue
+                seeds.append(d)
+                region = union([region, d["bounds"]])
+                grown = True
+        if area(region) < 4000:  # a stray label is not a figure
+            continue
+        claimed.add(ci)
+        cap["fate"] = "printed"
+        groups.append({
+            "members": [], "decor": seeds, "bounds": region,
+            "caption": cap["text"], "order": caption_number(cap["text"]),
+            "composite": False, "swallowed": [], "rescued": True,
+        })
+
+    # Native InDesign tables are content with no placed image behind them —
+    # render any that no figure already covers as figures of their own.
+    for tb in tables:
+        b = tb["bounds"]
+        if any(inter_area(b, g["bounds"]) > 0.3 * area(b) for g in groups):
+            continue
+        groups.append({
+            "members": [], "decor": [], "bounds": list(b),
+            "caption": None, "order": None,
+            "composite": False, "swallowed": [], "table": True,
+        })
 
     # Reading order: rows of ~20pt, then left to right. Deliberately NOT the
     # caption's Fig number — a page can mix captioned and uncaptioned figures
@@ -343,6 +637,37 @@ def render_region(pdf: Path, page: int, box: list[float], origin: tuple[float, f
         )
         with Image.open(stem.with_suffix(".png")) as im:
             return im.convert("RGB")
+
+
+def autocrop_white(im: Image.Image, pad: int = 12) -> Image.Image:
+    """Trim uniform near-white margins off a rendered figure.
+
+    A figure's frame is routinely far larger than its ink — the diagonal
+    toolstring renders occupy a corner-to-corner sliver of an otherwise empty
+    box — and shipping that emptiness makes the web page's figure cards read
+    as sparse and misaligned. Only borders that are actually white are
+    touched: a photo or a full-bleed texture keeps its edges, checked by
+    sampling the outer ring before trusting a threshold bbox.
+    """
+    g = im.convert("L")
+    ring = (
+        list(g.crop((0, 0, im.width, 2)).getdata())
+        + list(g.crop((0, im.height - 2, im.width, im.height)).getdata())
+        + list(g.crop((0, 0, 2, im.height)).getdata())
+        + list(g.crop((im.width - 2, 0, im.width, im.height)).getdata())
+    )
+    if not ring or sum(ring) / len(ring) < 250 or min(ring) < 235:
+        return im
+    bbox = g.point(lambda v: 0 if v >= 246 else 255).getbbox()
+    if not bbox:
+        return im
+    x0 = max(0, bbox[0] - pad)
+    y0 = max(0, bbox[1] - pad)
+    x1 = min(im.width, bbox[2] + pad)
+    y1 = min(im.height, bbox[3] + pad)
+    if x0 <= 2 and y0 <= 2 and x1 >= im.width - 2 and y1 >= im.height - 2:
+        return im
+    return im.crop((x0, y0, x1, y1))
 
 
 def erase_captions(im: Image.Image, box: list[float], captions: list[dict]) -> None:
@@ -410,6 +735,46 @@ def story_pages() -> list[int]:
         return [int(r["Page"]) for r in csv.DictReader(fh)]
 
 
+def export_region_maps(idml: Path, used: set[str]) -> dict[str, dict]:
+    """Publish the region world-maps a page can reference.
+
+    One shared asset per region, straight from the package's Links/ folder
+    (they are plain PNGs there — no compositing to preserve, unlike figures).
+    Trimmed of their empty margins and downscaled; returns code -> manifest
+    entry."""
+    links = idml.parent / "Links"
+    (OUT / "maps").mkdir(exist_ok=True)
+    out: dict[str, dict] = {}
+    for code in sorted(used):
+        src = links / f"{code}.png"
+        if not src.exists():
+            print(f"WARNING: region map {src.name} not in Links/ — skipped")
+            continue
+        im = Image.open(src).convert("RGBA")
+        white = Image.new("RGBA", im.size, (255, 255, 255, 255))
+        white.alpha_composite(im)
+        flat = white.convert("RGB")
+        bbox = flat.convert("L").point(lambda v: 0 if v >= 250 else 255).getbbox()
+        if bbox:
+            pad = round(0.02 * im.width)
+            flat = flat.crop((
+                max(0, bbox[0] - pad), max(0, bbox[1] - pad),
+                min(im.width, bbox[2] + pad), min(im.height, bbox[3] + pad),
+            ))
+        if flat.width > MAP_MAX_W:
+            flat = flat.resize(
+                (MAP_MAX_W, round(flat.height * MAP_MAX_W / flat.width)), Image.LANCZOS
+            )
+        name = f"maps/{code.lower()}.webp"
+        flat.save(OUT / name, "WEBP", quality=80, method=6)
+        out[code] = {
+            "src": f"/flipbooks/success-stories/figures/{name}",
+            "width": flat.width,
+            "height": flat.height,
+        }
+    return out
+
+
 def page_captions(pkg: Package, spread) -> list[dict]:
     """Caption frames on a spread, each joined into one string.
 
@@ -433,16 +798,42 @@ def page_captions(pkg: Package, spread) -> list[dict]:
 
 
 def prose_boxes(pkg: Package, spread, captions: list[dict]) -> list[list[float]]:
-    """Frames a figure must not swallow — the story column, the sidebar, and
-    pull-out lists."""
+    """Frames a figure must not swallow: the text the WEBSITE already carries.
+
+    That is the story column ("Body TXT", when long enough to be story rather
+    than a chart label), the challenge/solution/results sidebar, and the
+    headline/subtitle — exactly build_case_studies.py's harvest. A long frame
+    in the DEFAULT style is the opposite case: the build never carries those
+    (page 28's "World Records" panel is the document's only one), so its only
+    way onto the site is inside its figure's pixels — keeping it out just
+    slices it mid-word."""
     cap_bounds = [c["bounds"] for c in captions]
     out = []
     for fr in spread.frames:
         if not fr["bounds"] or fr["bounds"] in cap_bounds:
             continue
-        text = " ".join(b["text"] for b in pkg.blocks(fr) if b.get("text"))
-        if len(text) >= PROSE_MIN_CHARS:
+        blocks = [b for b in pkg.blocks(fr) if b.get("text")]
+        if not blocks:
+            continue
+        text = " ".join(b["text"] for b in blocks)
+        styles = {b["style"] for b in blocks}
+        carried = (BODY_STYLE in styles and len(text) >= PROSE_MIN_CHARS) or (
+            styles & ({HEADLINE_STYLE, SUBTITLE_STYLE} | SIDEBAR_STYLES)
+        )
+        if carried:
             out.append(fr["bounds"])
+    return out
+
+
+def page_tables(pkg: Package, spread) -> list[dict]:
+    """Frames holding a native InDesign TABLE. The build's narrative harvest
+    has no representation for tables, and they are not placed images either —
+    page 49's Well 1–6 results table reached the site as nothing at all. They
+    render as (usually uncaptioned) figures instead."""
+    out = []
+    for fr in spread.frames:
+        if fr["bounds"] and any("table" in bl for bl in pkg.blocks(fr)):
+            out.append({"bounds": fr["bounds"]})
     return out
 
 
@@ -508,21 +899,34 @@ def write_review(data: dict[int, dict], source: str) -> None:
         d = data[page]
         figs = "".join(
             f'<figure><img src="{thumb(OUT / Path(f["src"]).name)}" loading="lazy">'
-            f'<figcaption>{i + 1}. {f["caption"] or "<em>no caption in the layout</em>"}'
-            f'<span>{f["width"]}&times;{f["height"]} &middot; {", ".join(f["links"])}</span>'
-            f"</figcaption></figure>"
+            f'<figcaption>{i + 1}. '
+            + (
+                "<em>composite — its labels stay in the artwork</em>"
+                if f["composite"]
+                else (f["caption"] or "<em>no caption in the layout</em>")
+            )
+            + f'<span>{f["width"]}&times;{f["height"]} &middot; {", ".join(f["links"])}'
+            + (f' &middot; +{len(f["decor"])} decor' if f["decor"] else "")
+            + "</span></figcaption></figure>"
             for i, f in enumerate(d["figures"])
         )
         flags = []
         if not d["figures"]:
             flags.append("NO FIGURES")
-        if any(f["caption"] is None for f in d["figures"]) and d["n_captions"]:
+        if not d["region"]:
+            flags.append("no region map on the page")
+        if (
+            any(f["caption"] is None and not f["composite"] for f in d["figures"])
+            and d["n_captions"]
+        ):
             flags.append("figure(s) without a caption on a captioned page")
-        if d["n_captions"] > len(d["figures"]):
+        n_free = d["n_captions"] - sum(f["swallowed"] for f in d["figures"])
+        if n_free > len(d["figures"]):
             flags.append(f'{d["n_captions"]} captions but {len(d["figures"])} figures')
         flag = f'<p class="flag">{" &middot; ".join(flags)}</p>' if flags else ""
+        region = f' &middot; map: {d["region"]}' if d["region"] else ""
         rows.append(
-            f'<section><h2>page {page} <span>{d["slug"]}</span></h2>{flag}'
+            f'<section><h2>page {page} <span>{d["slug"]}{region}</span></h2>{flag}'
             f'<div class="figs">{figs}</div></section>'
         )
     html = f"""<meta charset="utf-8"><title>Story figures — review</title>
@@ -582,9 +986,16 @@ def main() -> None:
             im for im in spread.images
             if im["bounds"] and not FURNITURE.search(im["file"])
         ]
+        region = next(
+            (m.group(1).upper() for im in spread.images
+             if im["bounds"] and (m := REGION_RE.match(im["file"]))),
+            None,
+        )
         captions = page_captions(pkg, spread)
         prose = prose_boxes(pkg, spread, captions)
-        groups = group_page(items, captions, page)
+        decor = page_decor(pkg, spread, captions, page_el["bounds"])
+        tables = page_tables(pkg, spread)
+        groups = group_page(items, captions, decor, tables, page)
 
         # A figure's crop must not show its neighbour. Bounding boxes overlap
         # freely in this layout — page 48's diagonal tool render reaches right
@@ -601,7 +1012,14 @@ def main() -> None:
             others = [(b, SOFT_TRIM) for j, b in enumerate(boxes) if j != n - 1]
             box = clip_to_artwork(g["bounds"], fixed + others)
             im = render_region(pdf, page, box, origin)
-            erase_captions(im, box, captions)
+            # Erase only the captions that PRINT under some figure — a copy
+            # in the pixels would say the same thing twice. A caption whose
+            # fate is "pixels" (composite labels, an unclaimed caption inside
+            # its figure) survives: those pixels are its only appearance.
+            # Composites skip erasing entirely — their labels are positional.
+            if not g["composite"]:
+                erase_captions(im, box, [c for c in captions if c["fate"] == "printed"])
+            im = autocrop_white(im)
             if im.width > MAX_W:
                 im = im.resize((MAX_W, round(im.height * MAX_W / im.width)), Image.LANCZOS)
             name = f"{page:04d}-{len(figures) + 1}.webp"
@@ -611,31 +1029,45 @@ def main() -> None:
                 "src": f"/flipbooks/success-stories/figures/{name}",
                 "width": im.width, "height": im.height,
                 "caption": caption,
+                "composite": g["composite"],
+                "swallowed": len(g["swallowed"]),
                 "links": [items[i]["file"] for i in g["members"]],
+                "decor": [d["what"] for d in g["decor"]],
             })
         data[page] = {
             "slug": slugs.get(page, f"page-{page}"),
             "figures": figures,
+            "region": region,
             "n_captions": len(captions),
         }
         total += len(figures)
 
+    maps = export_region_maps(idml, {d["region"] for d in data.values() if d["region"]})
     manifest = {
         str(p): {
             "figures": [
                 {k: f[k] for k in ("src", "width", "height")} for f in d["figures"]
             ],
             "captions": [f["caption"] for f in d["figures"]],
+            "map": maps.get(d["region"]),
         }
         for p, d in data.items()
     }
     (OUT / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n")
     write_review(data, idml.name)
 
-    nocap = sum(1 for d in data.values() for f in d["figures"] if f["caption"] is None)
+    nocap = sum(
+        1 for d in data.values() for f in d["figures"]
+        if f["caption"] is None and not f["composite"]
+    )
     nofig = [p for p, d in data.items() if not d["figures"]]
-    mismatch = [p for p, d in data.items() if d["n_captions"] > len(d["figures"])]
+    nomap = [p for p, d in data.items() if not d["region"]]
+    mismatch = [
+        p for p, d in data.items()
+        if d["n_captions"] - sum(f["swallowed"] for f in d["figures"]) > len(d["figures"])
+    ]
     print(f"wrote {total} figures across {len(pages)} pages -> {OUT.relative_to(REPO)}")
+    print(f"  region maps: {len(maps)} exported; pages without one: {nomap or 'none'}")
     print(f"  figures with no caption in the layout: {nocap}")
     print(f"  pages with no figures at all:          {nofig or 'none'}")
     print(f"  pages with more captions than figures: {mismatch or 'none'}")

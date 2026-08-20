@@ -40,6 +40,25 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   });
 }
 
+/** Human names for the tags.csv area codes, for the region-map caption. */
+const REGION_LABELS: Record<string, string> = {
+  MENA: 'Middle East & North Africa',
+  APAC: 'Asia-Pacific',
+  NAM: 'North America',
+  LAM: 'Latin America',
+  EUR: 'Europe',
+  AFR: 'Africa',
+};
+
+/**
+ * "Fig.1." / "Fig 2:" / "Fig 2 & 3:" — the caption's own numbering prefix.
+ * The number becomes the card's label chip and the prefix is stripped from
+ * the caption text, so the pair never reads "Fig. 2 Fig.2. …". Numbering
+ * comes from the caption, NOT the render order: page 35 numbers its third
+ * web figure "Fig 4" because Fig 3 is a table set into that figure's pixels.
+ */
+const FIG_PREFIX = /^\s*Figs?\.?\s*\.?\s*(\d+(?:\s*&\s*\d+)?)\s*[.:]?\s*/i;
+
 /** CHALLENGE / SOLUTION / RESULTS side panel. */
 function SidePanel({ title, paras }: { title: string; paras: string[] }) {
   if (paras.length === 0) return null;
@@ -172,6 +191,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
               <div className="grid grid-cols-2 gap-5">
                 {cs.figures.map((fig, i) => {
                   const wide = fig.width >= fig.height;
+                  const prefix = fig.caption?.match(FIG_PREFIX);
+                  const label = prefix ? `Fig. ${prefix[1].replace(/\s*&\s*/, ' & ')}` : null;
+                  const text = prefix ? fig.caption!.slice(prefix[0].length) : fig.caption;
                   return (
                     <figure
                       key={fig.src}
@@ -187,6 +209,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                         width={fig.width}
                         height={fig.height}
                         className="mx-auto h-auto w-full object-contain"
+                        /* Renders are 400 dpi crops; capping display at 3/4 of
+                         the source pixels keeps a small diagram from being
+                         blown up soft across the whole column now that
+                         autocrop has removed the white margins that used to
+                         pad figures out to column width. */
+                        style={{ maxWidth: `min(100%, ${Math.round(fig.width * 0.75)}px)` }}
                         /* Wide figures span the whole prose column (~65vw at
                          desktop), portrait ones share a row so they get half
                          of it. One combined `sizes` under-served the wide
@@ -199,9 +227,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                         }
                         priority={i === 0}
                       />
-                      {fig.caption && (
+                      {(label || text) && (
                         <figcaption className="mt-3 text-sm leading-snug text-slate-500">
-                          {fig.caption}
+                          {label && (
+                            <span className="mr-1.5 font-semibold text-slate-700">{label}</span>
+                          )}
+                          {text}
                         </figcaption>
                       )}
                     </figure>
@@ -224,6 +255,27 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           </div>
 
           <aside className="space-y-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 lg:sticky lg:top-24">
+            {/* The region world-map the printed page opens with — restored
+                Aug 2026; the first figure-extraction pass filtered it out as
+                page furniture and the location ended up as nothing but a
+                country badge. */}
+            {cs.regionMap && (
+              <figure>
+                <div className="rounded-lg bg-white ring-1 ring-slate-200 p-2">
+                  <Image
+                    src={cs.regionMap.src}
+                    alt={`World map highlighting ${REGION_LABELS[cs.region] ?? cs.region}, where this operation ran`}
+                    width={cs.regionMap.width}
+                    height={cs.regionMap.height}
+                    className="h-auto w-full"
+                    sizes="(max-width: 1024px) 100vw, 288px"
+                  />
+                </div>
+                <figcaption className="mt-2 text-xs font-medium text-slate-500">
+                  {cs.country} · {REGION_LABELS[cs.region] ?? cs.region}
+                </figcaption>
+              </figure>
+            )}
             <SidePanel title="Challenge" paras={cs.challenge} />
             <SidePanel title="Solution" paras={cs.solution} />
             <SidePanel title="Results" paras={cs.results} />

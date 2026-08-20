@@ -123,28 +123,76 @@ def build_vocabulary(texts: list[str]) -> Counter:
     return Counter(w.lower() for t in texts for w in re.findall(r"[A-Za-z]{2,}", t))
 
 
-def fix_stray_hyphens(text: str, vocab: Counter, hyphenated: Counter) -> str:
+def load_dictionary() -> frozenset[str]:
+    """The system word list, for recognising a broken word by its halves.
+
+    The document's own vocabulary can only vouch for a joined form that some
+    OTHER page spells correctly. "gra-vity" is copy-pasted across four sibling
+    pages and whole "gravity" appears nowhere, so a document-internal test
+    can never catch it — a dictionary says immediately that "gravity" is a
+    word and "vity" is not."""
+    try:
+        with open("/usr/share/dict/words") as fh:
+            return frozenset(w.strip().lower() for w in fh)
+    except OSError:
+        return frozenset()
+
+
+def fix_stray_hyphens(text: str, vocab: Counter, hyphenated: Counter, words: frozenset[str]) -> str:
     """Repair hyphens typed into the middle of a word.
 
-    The copy carries a handful of these — "smoo-thly", "devia-ted",
+    The copy carries a number of these — "smoo-thly", "devia-ted",
     "gra-vity", "qua-lity" — sitting alongside a great many legitimate
     compounds ("stick-slip", "slip-over", "open-hole"), so neither joining
-    everything nor joining nothing is right.
+    everything nor joining nothing is right. Two tests, either joins:
 
-    A token is treated as a typo only when the document itself says so: the
-    joined form appears elsewhere as a real word AND the hyphenated form occurs
-    exactly once in the whole document. A genuine compound is used repeatedly
-    and its joined form is not a word anyone wrote.
+      * the document's own evidence: the hyphenated form occurs exactly once
+        and the joined form appears elsewhere in the document. Catches
+        document-specific vocabulary ("over-balance" beside "overbalance").
+      * the dictionary's evidence: the joined form is a word and the halves
+        are NOT both words themselves. Catches systematic typos the document
+        repeats ("gra-vity" four times over) while leaving every real
+        compound alone — "stick-slip", "re-run" and "slip-over" all split
+        into two words, "stickslip" is not a word at all.
     """
 
     def repl(m: re.Match) -> str:
         token = m.group(0)
         joined = token.replace("-", "")
+        a, b = token.split("-", 1)
         if hyphenated[token.lower()] == 1 and vocab[joined.lower()] > 0:
+            return joined
+        if (joined.lower() in words or vocab[joined.lower()] > 0) and not (
+            a.lower() in words and b.lower() in words
+        ):
             return joined
         return token
 
     return re.sub(r"\b[A-Za-z]{2,}-[a-z]{2,}\b", repl, text)
+
+
+def fix_broken_words(text: str, vocab: Counter, words: frozenset[str]) -> str:
+    """Repair "recove- ry": a line-end hyphenation whose break survived as a
+    space inside the paragraph (join_split_words only sees breaks that fall on
+    a paragraph boundary). When the two halves spell a word, join them; when
+    they don't — "Litho- Scanner" is a tool name, hyphen intended — keep the
+    hyphen and drop the stray space."""
+
+    def repl(m: re.Match) -> str:
+        a, b = m.group(1), m.group(2)
+        joined = a + b
+        if joined.lower() in words or vocab[joined.lower()] > 0:
+            return joined
+        return f"{a}-{b}"
+
+    return re.sub(r"\b(\w+)- (\w+)\b", repl, text)
+
+
+def fix_quote_jam(text: str) -> str:
+    """"‘gemco’centralizers" — a quoted word typed with no space after the
+    closing quote. The pattern requires BOTH quotes so possessives
+    ("Petromac’s") are untouched."""
+    return re.sub(r"([‘'])([^‘’']+)([’'])(\w)", r"\1\2\3 \4", text)
 
 
 def clean(text: str) -> str:
@@ -337,8 +385,11 @@ def main() -> None:
         m.lower() for t in everything for m in re.findall(r"\b[A-Za-z]{2,}-[a-z]{2,}\b", t)
     )
 
+    words = load_dictionary()
+
     def fix(text: str) -> str:
-        return fix_stray_hyphens(clean(text), vocab, hyphenated)
+        text = fix_broken_words(clean(text), vocab, words)
+        return fix_quote_jam(fix_stray_hyphens(text, vocab, hyphenated, words))
 
     out = []
     for row in rows:
@@ -375,6 +426,9 @@ def main() -> None:
                     "width": PAGE_W,
                     "height": PAGE_H,
                 },
+                # The region world-map the printed page opens with (shared
+                # asset, one of six, exported by extract_story_figures.py).
+                "regionMap": fig.get("map"),
                 "figures": page_figures,
             }
         )

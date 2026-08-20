@@ -5,6 +5,68 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Story figures: the layout's decor is part of the figure
+
+**Decision:** `extract_story_figures.py` now reads three more things out of the
+IDML — bare vector shapes, short text frames, and native tables — and treats
+the first two as part of the figures they touch ("decor"). A shape that
+physically spans two placements welds them into one composite; a caption split
+that would cut such a shape in half is vetoed. Renders are auto-trimmed of
+uniform white margins. The six region world-maps are exported once into
+`figures/maps/`, the manifest records which one each page places, and the
+story sidebar shows it above CHALLENGE — where the printed page puts it.
+
+**Why:** the first IDML rework grouped only PLACED IMAGES, and the layout
+composes its infographics out of more than placed images. Page 29 sets a "87%
+drag reduction" arrow (a bare Polygon) and two text frames BETWEEN two tool
+renders; a crop computed from the renders alone sliced all three — the live
+page showed "…duction" on half an arrow. Page 36's photos sit on a panel with
+"60 hrs / 22 hrs" labels outside any image frame; page 39's pair carries
+~110-char explainers that are too short to be prose and were clipped
+mid-sentence. Text decor only ever extends the one figure it most overlaps —
+letting it weld collapsed page 18's toolstring and histogram into one figure,
+because a chart title reached over both. Shapes weld at MEMBER level, not
+bucket level: page 31's leader line ties the tool render to its exploded inset,
+and judging captions per-placement had assigned the inset to the chart below.
+
+**Two rescue classes existed on top of that.** Native InDesign tables and
+pasted vector charts have no placed image at all, so page 49's Well 1–6
+results table and its Fig 3 trajectory chart reached the site as NOTHING — not
+text (the build's narrative harvest has no representation for either), not
+pixels. Tables render off their frame bounds; an unclaimed "Fig.N" caption
+grows a render region out of the loose decor above it. And page 28's "World
+Records" panel is the document's only long DEFAULT-styled frame — the build
+carries only `Body TXT` prose, so treating every long frame as a figure
+keep-out sliced a panel that text extraction was never going to carry.
+
+**The nested-transform bounds bug:** `frame_bounds` used to sweep
+`.//PathPointType`, which includes a placed `<Image>`'s own path points
+WITHOUT composing the image's private transform. Page 37 crops a TIF into an
+oval whose transform carries ty ≈ −36758; its figure came out bounded
+y −36326..513 — most of the page, prose and all. Own-geometry-only fixed it;
+the catalog extractor (same helper) was verified byte-identical before/after.
+
+**Composites keep their labels in the pixels.** A crop holding two-plus
+caption frames (29, 49) prints NO caption below: "0.35" belongs under the left
+tool and "0.04" under the right — erasing them for one printed line loses the
+pairing, printing both says it twice. Same for an unclaimed caption sitting
+inside its figure (35's Fig 3 names a table set into the Fig 4 render).
+The erase rule is now fate-based: only captions that PRINT under some figure
+are painted out of the pixels.
+
+**Also in this pass:** `gra-vity` (×4, copy-pasted across sibling pages) is
+now caught by a dictionary-assisted hyphen repair — the old rule required the
+joined form to appear elsewhere in the document, which a systematic typo
+never satisfies; real compounds survive because both halves being words vetoes
+the join ("stick-slip", "re-run"). Intra-paragraph "recove- ry" breaks and
+the "'gemco'centralizers" quote-jam are repaired too. The story page caps a
+figure's display width at 3/4 of its source pixels (autocrop removed the
+margins that used to pad small diagrams out to column width) and labels
+captions with a "Fig. N" chip parsed from the caption itself — NOT the render
+order, which page 35 breaks (its third web figure is the layout's Fig 4).
+
+---
+
 ## Aug 2026 — Athena logo v2: two colours shipped, tagline is a large-format asset
 
 **Decision:** the new hornbill logo lives in `public/images/logos/` as three
@@ -43,9 +105,15 @@ gone, replaced by the logo. That line was double drift against
 docs/VOCABULARY_MAP.md §0 — Athena is deliberately unmarked, and the rule says
 use the `™` character, not the entity. Both are resolved by deletion.
 
-**Still on the old Greek-goddess `athena_logo.png`:** the homepage
-`SoftwareHighlight` band and `/intranet`. Out of scope for the /simulation
-change, but the two logos are now visibly different brands on the same site.
+**Rolled out site-wide in the same pass:** the homepage `SoftwareHighlight`
+band (white mark, in the same 48px square slot its Hardware twin mirrors) and
+both `/intranet` tiles (blue mark, on white cards). The old Greek-goddess
+`athena_logo.png` / `athena_logo_beta.png` are deleted. The test tile's BETA
+badge used to be burnt into a second copy of the artwork; it is markup now, so
+one logo file serves both tiles and the label tracks the card title instead of
+needing a re-export. The `Athena&trade;` in the homepage band's copy is left
+alone — it is the same VOCABULARY_MAP §0 drift, but changing it is a copy
+decision, not a logo swap.
 
 ---
 

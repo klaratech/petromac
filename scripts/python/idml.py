@@ -67,11 +67,18 @@ def apply(m: Matrix, x: float, y: float) -> tuple[float, float]:
 
 
 def frame_bounds(elem, m: Matrix) -> Bounds | None:
-    """Bounds of a page item's PathGeometry, in the coordinate space `m` maps
-    into. For a placed image this is the FRAME — InDesign's crop — which is
-    what the reader actually sees, not the asset's natural extent."""
+    """Bounds of a page item's OWN PathGeometry, in the coordinate space `m`
+    maps into. For a placed image this is the FRAME — InDesign's crop — which
+    is what the reader actually sees, not the asset's natural extent.
+
+    Own geometry only, NOT `.//PathPointType`: a placed image nests an <Image>
+    child carrying its own PathGeometry in the image's private space, and its
+    ItemTransform is not composed here. Sweeping descendants mixed those raw
+    anchors into the frame's box — page 37 of the success stories crops a TIF
+    into an oval whose transform carries ty ≈ −36758, and its figure came out
+    bounded y −36326..513, i.e. most of the page."""
     xs, ys = [], []
-    for pt in elem.findall(".//PathPointType"):
+    for pt in elem.findall("Properties/PathGeometry//PathPointType"):
         anchor = pt.get("Anchor")
         if anchor:
             x, y = (float(v) for v in anchor.split())
@@ -199,6 +206,11 @@ class Spread:
     pages: list[dict] = field(default_factory=list)  # {name, bounds}
     frames: list[dict] = field(default_factory=list)  # {story, bounds, blocks}
     images: list[dict] = field(default_factory=list)  # {file, bounds}
+    # Bare vector page items — no placed image, no text. The success-stories
+    # layout composes infographics from these (page 29's "87% drag reduction"
+    # arrow is a Polygon between two tool renders), so a figure extractor that
+    # only sees images slices straight through them.
+    shapes: list[dict] = field(default_factory=list)  # {kind, bounds, fill}
 
 
 def _decode_uri(uri: str) -> str:
@@ -216,24 +228,35 @@ def _decode_uri(uri: str) -> str:
         return raw
 
 
-def walk_items(elem, m: Matrix, frames: list[dict], images: list[dict]) -> None:
-    """Recursively collect TextFrames and image-bearing shapes under `elem`."""
+def walk_items(
+    elem, m: Matrix, frames: list[dict], images: list[dict], shapes: list[dict] | None = None
+) -> None:
+    """Recursively collect TextFrames, image-bearing shapes, and (when a list
+    is given) bare vector shapes under `elem`."""
     for child in elem:
         tag = child.tag
-        if tag not in ("TextFrame", "Rectangle", "Group", "Polygon", "Oval"):
+        if tag not in ("TextFrame", "Rectangle", "Group", "Polygon", "Oval", "GraphicLine"):
             continue
         cm = compose(m, parse_transform(child.get("ItemTransform")))
         if tag == "TextFrame":
             frames.append({"story": child.get("ParentStory"), "bounds": frame_bounds(child, cm)})
         elif tag == "Group":
-            walk_items(child, cm, frames, images)
-        else:  # Rectangle / Polygon / Oval — may hold a placed image
+            walk_items(child, cm, frames, images, shapes)
+        else:  # Rectangle / Polygon / Oval / GraphicLine — may hold a placed image
             link = child.find(".//Link")
             if link is not None:
                 images.append(
                     {
                         "file": _decode_uri(link.get("LinkResourceURI", "")),
                         "bounds": frame_bounds(child, cm),
+                    }
+                )
+            elif shapes is not None:
+                shapes.append(
+                    {
+                        "kind": tag,
+                        "bounds": frame_bounds(child, cm),
+                        "fill": (child.get("FillColor") or "").split("/")[-1],
                     }
                 )
 
@@ -272,7 +295,7 @@ class Package:
                 x0, y0 = apply(pm, gb[1], gb[0])  # GeometricBounds is "y1 x1 y2 x2"
                 x1, y1 = apply(pm, gb[3], gb[2])
                 sp.pages.append({"name": page.get("Name", ""), "bounds": [x0, y0, x1, y1]})
-            walk_items(spread_el, (1.0, 0.0, 0.0, 1.0, 0.0, 0.0), sp.frames, sp.images)
+            walk_items(spread_el, (1.0, 0.0, 0.0, 1.0, 0.0, 0.0), sp.frames, sp.images, sp.shapes)
             self.spreads.append(sp)
 
     def blocks(self, frame: dict) -> list[dict]:

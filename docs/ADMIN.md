@@ -128,13 +128,21 @@ pnpm run data:stories
 That runs two scripts, in this order:
 
 1. `extract_story_figures.py` reads the IDML for each story page's placed
-   images and caption frames, groups them into figures, and renders each
-   figure's REGION out of the export PDF into
+   images, caption frames AND decor — the bare vector shapes and short text
+   frames the layout composes infographics with — groups them into figures,
+   and renders each figure's REGION out of the export PDF into
    `public/flipbooks/success-stories/figures/` with a `manifest.json` and a
-   self-contained `REVIEW.html` — open that to eyeball all 89 figures at once
+   self-contained `REVIEW.html` — open that to eyeball every figure at once
    before committing. Rendering the region rather than pulling the asset out of
    `Links/` keeps InDesign's crop, its compositing and any vector overlay.
-   Safe to re-run: output is deterministic.
+   It also (Aug 2026, second pass): exports the six region world-maps into
+   `figures/maps/` with the manifest recording which one each page places
+   (the story sidebar shows it); auto-trims white margins off the renders;
+   renders native InDesign tables and pasted vector charts that have no
+   placed image behind them (page 49's results table and Fig 3 trajectory);
+   and welds placements that a shape physically bridges into one composite
+   whose in-artwork labels stay in the pixels (page 29's "87% drag
+   reduction" arrow). Safe to re-run: output is deterministic.
 2. `build_case_studies.py` regenerates
    `src/features/case-studies/content/case-studies.json` from the IDML's
    paragraph styles, folding the figure manifest in. It warns rather than fails

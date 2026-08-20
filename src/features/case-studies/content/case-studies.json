@@ -33,11 +33,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0004-1.webp",
         "width": 1200,
-        "height": 778,
+        "height": 698,
         "caption": "Fig1. Highside vs Lowside Permeability"
       }
     ]
@@ -80,6 +85,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/nam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0005-1.webp",
@@ -108,7 +118,7 @@
       "Petromac’s ‘Wireline Express’ package was introduced to Kuwait–Tool Taxis + angled holefinders."
     ],
     "results": [
-      "Logging programs were expanded to include XPT, CMR and Litho- Scanner. And operations failure rate dropped from 48% to 5%."
+      "Logging programs were expanded to include XPT, CMR and LithoScanner. And operations failure rate dropped from 48% to 5%."
     ],
     "narrative": [
       "Adverse well conditions have compromised logging operations in the “Jurassic” wells in Kuwait. In a single year, 48% of all logging operations involved NPT or were curtailed due to logging difficulties.",
@@ -120,6 +130,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0006-1.webp",
@@ -130,7 +145,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0006-2.webp",
         "width": 1200,
-        "height": 575,
+        "height": 548,
         "caption": "Fig2. Success rates with/without Petromac"
       }
     ]
@@ -167,6 +182,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0007-1.webp",
@@ -176,8 +196,8 @@
       },
       {
         "src": "/flipbooks/success-stories/figures/0007-2.webp",
-        "width": 1177,
-        "height": 1801,
+        "width": 1078,
+        "height": 1450,
         "caption": "Fig.2. Petromac supply a range of holefinders for a wide variety of tool connections"
       }
     ]
@@ -212,6 +232,11 @@
       "src": "/flipbooks/success-stories/pages/0008.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -258,11 +283,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0009-1.webp",
         "width": 1200,
-        "height": 492,
+        "height": 457,
         "caption": "Fig.1. Well Trajectory"
       },
       {
@@ -303,11 +333,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0010-1.webp",
-        "width": 1073,
-        "height": 1026,
+        "width": 966,
+        "height": 971,
         "caption": "Fig.1. Centralizing Tool Taxis provide 2.4” of standoff, which keep the Array Sonic within .1” of the center of the wellbore in 8.5” hole."
       },
       {
@@ -350,6 +385,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0011-1.webp",
@@ -359,8 +399,8 @@
       },
       {
         "src": "/flipbooks/success-stories/figures/0011-2.webp",
-        "width": 1014,
-        "height": 1255,
+        "width": 724,
+        "height": 1254,
         "caption": "Fig.2. Tension profile with tool on taxis"
       },
       {
@@ -401,11 +441,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0012-1.webp",
-        "width": 1188,
-        "height": 1860,
+        "width": 1180,
+        "height": 1798,
         "caption": "Fig.1. A single pass with dual OBMI in 12.25” hole yielded an excellent log, with no image rotation or stick slip."
       }
     ]
@@ -442,17 +487,22 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/nam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0013-1.webp",
         "width": 1200,
-        "height": 1092,
+        "height": 1054,
         "caption": "Fig.1. Cutting at 90deg to the low side of the wellbore avoids cuttings and near wellbore damage."
       },
       {
         "src": "/flipbooks/success-stories/figures/0013-2.webp",
         "width": 1200,
-        "height": 416,
+        "height": 379,
         "caption": "Fig.2. Imaging logs confirmed that all cores were cut between 75-90deg from the low side."
       }
     ]
@@ -490,6 +540,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0014-1.webp",
@@ -500,7 +555,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0014-2.webp",
         "width": 1200,
-        "height": 494,
+        "height": 491,
         "caption": "Fig.2. Rig time savings with Tool Taxis"
       }
     ]
@@ -539,11 +594,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0015-1.webp",
-        "width": 1113,
-        "height": 2005,
+        "width": 929,
+        "height": 1892,
         "caption": "Fig.1. Combined passes of Formation Imager at 0° and 45° in 12.25” hole yielded an excellent log, with no image rotation or stick slip."
       }
     ]
@@ -578,6 +638,11 @@
       "src": "/flipbooks/success-stories/pages/0016.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -625,6 +690,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0017-1.webp",
@@ -668,17 +738,22 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/eur.webp",
+      "width": 1200,
+      "height": 644
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0018-1.webp",
         "width": 1200,
-        "height": 523,
+        "height": 488,
         "caption": "Fig.1. CAST-CBL with Petromac Wireline Express installed on the toolstring"
       },
       {
         "src": "/flipbooks/success-stories/figures/0018-2.webp",
-        "width": 967,
-        "height": 967,
+        "width": 1200,
+        "height": 1021,
         "caption": "Fig.2. EC centralization observed during the job"
       }
     ]
@@ -699,7 +774,7 @@
       "Operator in Nigeria had very low confidence of running MDT to 70º deviation and avoiding getting differentially stuck, due to past failed attempts."
     ],
     "solution": [
-      "Petromac Hermes Drag Planner was used to convince the client that the MDT would be successfully deployed on wireline by gra-vity alone."
+      "Petromac Hermes Drag Planner was used to convince the client that the MDT would be successfully deployed on wireline by gravity alone."
     ],
     "results": [
       "The tool descended freely to TD by gravity without any indications of sticking. In addition, the Tool Drag coefficient and Head Tension matched perfectly with the outputs from Hermes Drag Planner."
@@ -714,11 +789,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/afr.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0019-1.webp",
         "width": 1200,
-        "height": 635,
+        "height": 630,
         "caption": "Fig.1. Pre-job simulation"
       },
       {
@@ -763,6 +843,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0020-1.webp",
@@ -797,7 +882,7 @@
       "Petromac’s slim tool taxis and conveyance expertise, enable the design of toolstrings with ultra low friction."
     ],
     "results": [
-      "World record deviation of 72° achieved in Kuwait at the first attempt, with a Triple Combo- Pressure Express toolstring."
+      "World record deviation of 72° achieved in Kuwait at the first attempt, with a Triple Combo-Pressure Express toolstring."
     ],
     "narrative": [
       "KOC needed to acquire petrophysical and reservoir data in a highly deviated 6”wellbore section. Historically, conveying wireline tools via drill-pipe was the only option, when faced with deviations over 60degrees in such wellbore sizes.",
@@ -809,6 +894,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0021-1.webp",
@@ -819,14 +909,8 @@
       {
         "src": "/flipbooks/success-stories/figures/0021-2.webp",
         "width": 1200,
-        "height": 844,
+        "height": 370,
         "caption": "Fig.2. Formation Testing tool conveyed on Inline Tool Taxis"
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0021-3.webp",
-        "width": 1200,
-        "height": 590,
-        "caption": null
       }
     ]
   },
@@ -853,7 +937,7 @@
     ],
     "narrative": [
       "Operators in the Middle East routinely require cement evaluation in very highly deviated wellbores. IBC-CBL in extended reach wells can quickly become inefficient and expensive due to difficulties in logging tool conveyance.",
-      "Traditional methods of centralizing the IBC-CBL using in-line and slip-over centralizers caused excessive drag. This makes it challenging to descend past 60° deviation via gra-vity. Operators had to resort to pipe or tractor conveyed logging for higher deviations. Pipe conveyed logging is operationally complex, time consuming and risky, whereas tractor conveyance can sometimes be limited by force output in long laterals.",
+      "Traditional methods of centralizing the IBC-CBL using in-line and slip-over centralizers caused excessive drag. This makes it challenging to descend past 60° deviation via gravity. Operators had to resort to pipe or tractor conveyed logging for higher deviations. Pipe conveyed logging is operationally complex, time consuming and risky, whereas tractor conveyance can sometimes be limited by force output in long laterals.",
       "To overcome this, the centralizers were replaced by centralizing Tool Taxis, and tool strings now routinely descend on gravity to >85° deviation, with eccentricity, ECCE, well within tolerances.",
       "Track record includes horizontal logging of IBC-CBL over 20kft, with an ECCE below 0.2”."
     ],
@@ -861,6 +945,11 @@
       "src": "/flipbooks/success-stories/pages/0022.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -871,8 +960,8 @@
       },
       {
         "src": "/flipbooks/success-stories/figures/0022-2.webp",
-        "width": 890,
-        "height": 934,
+        "width": 840,
+        "height": 819,
         "caption": "Fig.2. Histogram showing average eccentricity, ECCE, below 0.2"
       }
     ]
@@ -896,7 +985,7 @@
       "Petromac Tool Taxis were installed on the HRSCT, to orient the coring bit perpendicular to borehole wall."
     ],
     "results": [
-      "The operator obtained high quality cores while improving the recove- ry rate from 35% to over 90%."
+      "The operator obtained high quality cores while improving the recovery rate from 35% to over 90%."
     ],
     "narrative": [
       "The recovery of sidewall-cores has historically been very low in Mexico, specially in large holes, where a large hole kit (LHK) needs to be run. The protuberance created by this LHK causes the tool to lean on its side, which creates an oblique contact between the coring bit and the borehole wall (specially in deviated wells) and has a negative impact on the recovery rate.",
@@ -908,23 +997,28 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0023-1.webp",
-        "width": 983,
-        "height": 970,
+        "width": 914,
+        "height": 915,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0023-2.webp",
-        "width": 983,
-        "height": 970,
+        "width": 914,
+        "height": 915,
         "caption": "Fig.1. Core-bif orientation with / without Taxis"
       },
       {
         "src": "/flipbooks/success-stories/figures/0023-3.webp",
         "width": 1200,
-        "height": 448,
+        "height": 469,
         "caption": "Fig.2. Recovery rates with Petromac System"
       }
     ]
@@ -961,17 +1055,22 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0024-1.webp",
         "width": 959,
-        "height": 668,
+        "height": 583,
         "caption": "Fig.1. Drag Forces"
       },
       {
         "src": "/flipbooks/success-stories/figures/0024-2.webp",
         "width": 1200,
-        "height": 531,
+        "height": 501,
         "caption": "Fig.2. Petromac Wireline Express perfectly positions the MRIL-D tool in the center of the 9 5/8” casing, which maximizes the distance between the magnet and the casing. This reduces the magnetic drag to a minimum, which extends the deviation limit that the tool cab be conveyed to."
       }
     ]
@@ -992,7 +1091,7 @@
       "Wireline tractors are limited by output power when logging long horizontal sections."
     ],
     "solution": [
-      "Reduce tool drag, and thereby re- duce the number of tractor drives and power required, to push the heavy tools in the horizontal sections."
+      "Reduce tool drag, and thereby reduce the number of tractor drives and power required, to push the heavy tools in the horizontal sections."
     ],
     "results": [
       "Tool strings are able to descend freely to 85° deviation, at which point tractors can be used to log horizontal sections of over 20kft."
@@ -1006,6 +1105,11 @@
       "src": "/flipbooks/success-stories/pages/0025.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -1044,6 +1148,11 @@
       "src": "/flipbooks/success-stories/pages/0026.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -1089,11 +1198,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0027-1.webp",
         "width": 1200,
-        "height": 719,
+        "height": 606,
         "caption": null
       }
     ]
@@ -1136,11 +1250,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0028-1.webp",
         "width": 1200,
-        "height": 1040,
+        "height": 892,
         "caption": null
       }
     ]
@@ -1150,7 +1269,7 @@
     "page": 29,
     "title": "CBL successfully descended a 2,500 m long tangent at 67° in Mexico",
     "subtitle": "The ultra-low drag centralization device deployed the toolstring in a 7” casing",
-    "metaDescription": "Cement Evaluation toolstrings use drag inducing ‘gemco’centralizers, which limit the maximum deviation the tool can descend by gra-vity alone.",
+    "metaDescription": "Cement Evaluation toolstrings use drag inducing ‘gemco’ centralizers, which limit the maximum deviation the tool can descend by gravity alone.",
     "country": "Mexico",
     "region": "LAM",
     "year": 2024,
@@ -1158,7 +1277,7 @@
     "device": "Focus - CH",
     "categories": ["Operational Efficiency", "Well Access: Deviation"],
     "challenge": [
-      "Cement Evaluation toolstrings use drag inducing ‘gemco’centralizers, which limit the maximum deviation the tool can descend by gra-vity alone."
+      "Cement Evaluation toolstrings use drag inducing ‘gemco’ centralizers, which limit the maximum deviation the tool can descend by gravity alone."
     ],
     "solution": [
       "Petromac slip-over centralization devices (CA7) were used to center the CBL tool and significantly reduce frictional drag."
@@ -1177,24 +1296,23 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0029-1.webp",
         "width": 1200,
-        "height": 539,
+        "height": 605,
         "caption": "Fig.1. Well Trajectory"
       },
       {
         "src": "/flipbooks/success-stories/figures/0029-2.webp",
         "width": 1200,
-        "height": 851,
-        "caption": "Tool Drag coefficient = 0.04"
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0029-3.webp",
-        "width": 1200,
-        "height": 714,
-        "caption": "Tool Drag coefficient = 0.35"
+        "height": 348,
+        "caption": null
       }
     ]
   },
@@ -1230,6 +1348,11 @@
       "src": "/flipbooks/success-stories/pages/0030.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -1285,24 +1408,23 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/afr.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0031-1.webp",
         "width": 1200,
-        "height": 407,
+        "height": 664,
         "caption": "Fig.1. Formation testing tool oriented to the highside when running on tool taxis."
       },
       {
         "src": "/flipbooks/success-stories/figures/0031-2.webp",
-        "width": 1074,
-        "height": 1140,
+        "width": 917,
+        "height": 1070,
         "caption": "Fig.2. Average tool drag coefficient from the job – Possible to descend to 80 deg on gravity"
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0031-3.webp",
-        "width": 1011,
-        "height": 774,
-        "caption": null
       }
     ]
   },
@@ -1337,11 +1459,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0032-1.webp",
-        "width": 1143,
-        "height": 943,
+        "width": 1062,
+        "height": 853,
         "caption": "Fig.1. Cutting at 90deg to the low side of the wellbore avoids cuttings and near wellbore damage (above)."
       }
     ]
@@ -1376,6 +1503,11 @@
       "src": "/flipbooks/success-stories/pages/0033.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -1416,6 +1548,11 @@
       "src": "/flipbooks/success-stories/pages/0034.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -1463,11 +1600,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0035-1.webp",
         "width": 1200,
-        "height": 528,
+        "height": 582,
         "caption": "Fig 1: Rocker centralizer designed to go through restrictions as small as 3.4”"
       },
       {
@@ -1479,7 +1621,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0035-3.webp",
         "width": 1200,
-        "height": 540,
+        "height": 554,
         "caption": "Fig 4: USIT tool deployed using Rocker centralizers delivers near-perfect centralization in small bore completions"
       }
     ]
@@ -1515,17 +1657,22 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/mea.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0036-1.webp",
         "width": 1200,
-        "height": 536,
+        "height": 511,
         "caption": "Fig1: Significant Efficiency is gained from utilizing wireline advanced conveyance solutions vs. Drillpipe conveyance"
       },
       {
         "src": "/flipbooks/success-stories/figures/0036-2.webp",
         "width": 1200,
-        "height": 524,
+        "height": 540,
         "caption": null
       }
     ]
@@ -1559,17 +1706,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/nam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0037-1.webp",
-        "width": 1189,
-        "height": 4678,
-        "caption": null
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0037-2.webp",
         "width": 1200,
-        "height": 409,
+        "height": 758,
         "caption": "Fig 1: Centralizing Tool Taxi supporting the tool to seamlessly pass Tiebacks."
       }
     ]
@@ -1607,17 +1753,22 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/nam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0038-1.webp",
         "width": 1200,
-        "height": 803,
+        "height": 813,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0038-2.webp",
         "width": 1200,
-        "height": 359,
+        "height": 313,
         "caption": null
       }
     ]
@@ -1627,7 +1778,7 @@
     "page": 39,
     "title": "Petromac Proven in Carbon Capture",
     "subtitle": null,
-    "metaDescription": "Operator in North America Land was having difficulty with Sam- pling / Mini-Frac strings sticking in Carbon Capture wells",
+    "metaDescription": "Operator in North America Land was having difficulty with Sampling / Mini-Frac strings sticking in Carbon Capture wells",
     "country": "USA",
     "region": "NAM",
     "year": 2024,
@@ -1635,7 +1786,7 @@
     "device": "Wireline Express - FT",
     "categories": ["Sticking Prevention"],
     "challenge": [
-      "Operator in North America Land was having difficulty with Sam- pling / Mini-Frac strings sticking in Carbon Capture wells"
+      "Operator in North America Land was having difficulty with Sampling / Mini-Frac strings sticking in Carbon Capture wells"
     ],
     "solution": ["Petromac taxis"],
     "results": [
@@ -1652,23 +1803,28 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/nam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0039-1.webp",
         "width": 1200,
-        "height": 543,
+        "height": 423,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0039-2.webp",
         "width": 1200,
-        "height": 527,
+        "height": 668,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0039-3.webp",
-        "width": 836,
-        "height": 782,
+        "width": 776,
+        "height": 712,
         "caption": null
       }
     ]
@@ -1703,6 +1859,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/nam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0040-1.webp",
@@ -1719,7 +1880,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0040-3.webp",
         "width": 1200,
-        "height": 597,
+        "height": 668,
         "caption": null
       }
     ]
@@ -1756,11 +1917,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0041-1.webp",
         "width": 1200,
-        "height": 891,
+        "height": 952,
         "caption": null
       }
     ]
@@ -1770,7 +1936,7 @@
     "page": 42,
     "title": "Enabling critical data and sample acquisition in fractured and washed out wells",
     "subtitle": "Tool Taxis with Pathfinder successfully navigated toolstrings to TD where previous runs hung up due to ledges and washouts.",
-    "metaDescription": "Prevent toolstring hold-up in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acqui- sition.",
+    "metaDescription": "Prevent toolstring hold-up in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acquisition.",
     "country": "Australia",
     "region": "APAC",
     "year": 2024,
@@ -1778,7 +1944,7 @@
     "device": "Pathfinder + Wireline Express",
     "categories": ["Well Access: Ledges"],
     "challenge": [
-      "Prevent toolstring hold-up in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acqui- sition."
+      "Prevent toolstring hold-up in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acquisition."
     ],
     "solution": [
       "Run Tool Taxis with Pathfinder to enable toolstring to navigate over ledges and washouts. Low drag of Tool Taxis enables good image data quality and reduced differential sticking risk."
@@ -1796,23 +1962,28 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0042-1.webp",
         "width": 1014,
-        "height": 856,
+        "height": 821,
         "caption": "Fig1: Comparison of other roller devices vs Petromac Tool Taxi. Petromac’s patented orientation system ensures wheels always roll over ledges and washouts instead of rollers falling into washouts becoming hung-up points on a toolstring."
       },
       {
         "src": "/flipbooks/success-stories/figures/0042-2.webp",
         "width": 1014,
-        "height": 856,
+        "height": 821,
         "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0042-3.webp",
-        "width": 1125,
-        "height": 1376,
+        "width": 1097,
+        "height": 1437,
         "caption": null
       }
     ]
@@ -1840,7 +2011,7 @@
     ],
     "narrative": [
       "Centralizing heavy imaging tools in deviated wells presents both mechanical and logistical challenges. In this case, an offshore operator in Asia needed to log a deep section where conventional Powered Positioning Centralizers (PPCs) have previously been used.",
-      "While PPCs offer active control, their effectiveness in deviated wells is limited— primarily because they are fixed at the ends of the toolstring and do not provide direct centralization where it’s most needed, near the sensors. Additional trade- offs include increased toolstring length, higher drag if not precisely managed, and added rig-up complexity.",
+      "While PPCs offer active control, their effectiveness in deviated wells is limited— primarily because they are fixed at the ends of the toolstring and do not provide direct centralization where it’s most needed, near the sensors. Additional trade-offs include increased toolstring length, higher drag if not precisely managed, and added rig-up complexity.",
       "Seeking a more efficient and robust solution, SLB collaborated with Petromac to adapt its roller-based centralization technology for the 8.5” borehole environment. This compact, slip-over design replaced both PPCs and traditional fixed centralizers with passive mechanical rollers—enabling smoother tool travel and consistent centralization closer to the sensors.",
       "The result was a shorter, lighter toolstring, simplified rig-up, and clean, high-quality imaging data free from drag-related artifacts. The success of this deployment highlights the advantage of passive, mechanically simple conveyance systems in complex, high-deviation logging environments."
     ],
@@ -1849,18 +2020,17 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0043-1.webp",
         "width": 1200,
-        "height": 1408,
+        "height": 964,
         "caption": "Fig1: A sonic toolstring centralized using CP-8"
-      },
-      {
-        "src": "/flipbooks/success-stories/figures/0043-2.webp",
-        "width": 1156,
-        "height": 1188,
-        "caption": null
       }
     ]
   },
@@ -1869,7 +2039,7 @@
     "page": 44,
     "title": "Helix Centraliser Enables Reliable Cement Evaluation Through Tight Restrictions",
     "subtitle": "Innovative centralizer overcomes ID constraints during offshore P&A operations",
-    "metaDescription": "Enable centralization of wireline logging tools in highly deviated 9-5/8” casing while ensuring pas- sage through a restricted surface riser ID.",
+    "metaDescription": "Enable centralization of wireline logging tools in highly deviated 9-5/8” casing while ensuring passage through a restricted surface riser ID.",
     "country": "Australia",
     "region": "APAC",
     "year": 2024,
@@ -1877,16 +2047,16 @@
     "device": "Focus - CH",
     "categories": ["Centralization"],
     "challenge": [
-      "Enable centralization of wireline logging tools in highly deviated 9-5/8” casing while ensuring pas- sage through a restricted surface riser ID."
+      "Enable centralization of wireline logging tools in highly deviated 9-5/8” casing while ensuring passage through a restricted surface riser ID."
     ],
     "solution": [
-      "Petromac’s Helix slip-over cen- tralizers deliver strong central- ization in high deviations and reliably collapse to pass through tight restrictions."
+      "Petromac’s Helix slip-over centralizers deliver strong centralization in high deviations and reliably collapse to pass through tight restrictions."
     ],
     "results": [
       "Six successful wireline runs completed with smooth passage through the restricted riser and excellent cement and casing integrity logs—enabled by consistent, precise centralization."
     ],
     "narrative": [
-      "Exxon (Esso) Australia planned the permanent P&A of two offshore exploration wells, requiring verification of well barrier integrity behind the 9-5/8” casing in accordance with regulatory standards. To do this cost-effectively, an intervention semi- submersible was contracted, and SLB was engaged to deploy its advanced Epilogue technology—enabling simultaneous dual casing/annulus evaluation in a single run.",
+      "Exxon (Esso) Australia planned the permanent P&A of two offshore exploration wells, requiring verification of well barrier integrity behind the 9-5/8” casing in accordance with regulatory standards. To do this cost-effectively, an intervention semi-submersible was contracted, and SLB was engaged to deploy its advanced Epilogue technology—enabling simultaneous dual casing/annulus evaluation in a single run.",
       "However, the vessel’s 6-1/8” riser ID was too narrow for conventional fixed OD centralizers typically required for cement bond tools in the 8.535” ID of the 9-5/8” casing.",
       "To address the restriction, Petromac’s Helix CX9 slip-over centralizers were deployed on SLB’s IBC and CBL tools. The helical arms collapse to 5.625”, allowing smooth passage through the 6-1/8” riser, while still delivering over 200 lbs of centering force in 9-5/8” casing—even at 90° deviation—ensuring reliable centralization.",
       "A total of Six Epilogue runs were completed successfully across both wells, with smooth riser passage, optimal centralization, and high-quality data acquisition."
@@ -1896,11 +2066,16 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/apac.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0044-1.webp",
         "width": 1200,
-        "height": 1055,
+        "height": 1762,
         "caption": "Fig 1: Conventional centralisers are designed to centralize in only one casing size at a time. Helix passes through any restrictions seamlessly and centralizes in multiple casing sizes."
       }
     ]
@@ -1938,6 +2113,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/eur.webp",
+      "width": 1200,
+      "height": 644
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0045-1.webp",
@@ -1948,7 +2128,7 @@
       {
         "src": "/flipbooks/success-stories/figures/0045-2.webp",
         "width": 1200,
-        "height": 362,
+        "height": 345,
         "caption": "Fig. 2: Petromac’s Pathfinder"
       }
     ]
@@ -1984,6 +2164,11 @@
       "src": "/flipbooks/success-stories/pages/0046.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -2031,6 +2216,11 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0047-1.webp",
@@ -2070,6 +2260,11 @@
       "src": "/flipbooks/success-stories/pages/0048.webp",
       "width": 1241,
       "height": 1754
+    },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/lam.webp",
+      "width": 1200,
+      "height": 625
     },
     "figures": [
       {
@@ -2117,18 +2312,29 @@
       "width": 1241,
       "height": 1754
     },
+    "regionMap": {
+      "src": "/flipbooks/success-stories/figures/maps/afr.webp",
+      "width": 1200,
+      "height": 625
+    },
     "figures": [
       {
         "src": "/flipbooks/success-stories/figures/0049-1.webp",
-        "width": 1179,
-        "height": 1027,
-        "caption": "Fig. 1: RBT tool string on traditional centralizers needs tractors to be deployed beyond 60 degrees."
+        "width": 1200,
+        "height": 561,
+        "caption": null
       },
       {
         "src": "/flipbooks/success-stories/figures/0049-2.webp",
+        "width": 844,
+        "height": 1051,
+        "caption": "Fig 3: Well 6 trajectory"
+      },
+      {
+        "src": "/flipbooks/success-stories/figures/0049-3.webp",
         "width": 1200,
-        "height": 950,
-        "caption": "Fig 2: Petromac reimagined the toolstring with CA7 and weight bars to bring down the drag, enabling gravity descents above 71 degrees."
+        "height": 387,
+        "caption": null
       }
     ]
   }

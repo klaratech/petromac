@@ -44,6 +44,13 @@ export interface CaseStudy {
   /** The published flipbook page — figures, logs and layout included. */
   image: { src: string; width: number; height: number };
   /**
+   * The region world-map the printed page opens with — one of six shared
+   * assets (exported once by extract_story_figures.py into figures/maps/),
+   * with the story's region highlighted and labelled. Shown at the top of the
+   * story sidebar; `region` carries the matching tags.csv area code.
+   */
+  regionMap: { src: string; width: number; height: number } | null;
+  /**
    * The story's figures, in reading order, with the caption the layout gives
    * each one. The page used to render `image` (the whole published page) below
    * the extracted prose, which repeated every word of the story back as
