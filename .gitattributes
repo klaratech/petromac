@@ -1,0 +1,3 @@
+# Illustrator files are PDF containers — git sniffs them as text and prints
+# thousands of lines of stream data on every `git diff`/`git show`.
+*.ai binary

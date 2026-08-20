@@ -9,6 +9,14 @@ export const metadata = pageMetadata({
   description:
     'Athena turns a well plan into a go/no-go call before the run starts, combining Hermes drag-and-tension modelling with AI configuration checks.',
   path: '/simulation',
+  // Athena's own share card instead of the site-wide Petromac one — this is
+  // the only page about the product, and the logo carries its tagline.
+  ogImage: {
+    url: '/images/logos/athena-og.png',
+    width: 1200,
+    height: 630,
+    alt: 'Athena by Petromac — wireline conveyance decision engine',
+  },
 });
 
 export default function SimulationPage() {

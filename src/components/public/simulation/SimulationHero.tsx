@@ -40,22 +40,30 @@ export default function SimulationHero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[#081a3a] via-slate-900 to-slate-950 px-6 py-14 md:py-16">
       <div className="relative z-10 mx-auto max-w-4xl">
-        <div className="mb-6 flex items-center gap-4">
-          <span className="relative flex h-12 w-12 shrink-0">
-            <Image
-              src="/images/athena_logo.png"
-              alt=""
-              fill
-              className="object-contain"
-              sizes="48px"
-              aria-hidden="true"
-            />
-          </span>
-          <div>
-            <p className="text-xs font-semibold uppercase text-blue-200">
-              Athena&trade; by Petromac
+        {/* Brand block. The logo carries the name, so the text beside it
+            carries the descriptors instead of repeating "Athena".
+            `unoptimized` because the Next image optimizer refuses SVG
+            unless `dangerouslyAllowSVG` is set — and a 5 KB single-colour
+            vector has nothing to optimize anyway. The white variant is
+            deliberate: the blue master (#0c55a6) all but disappears on
+            this navy band. */}
+        <div className="mb-6 flex items-center gap-4 sm:gap-5">
+          <Image
+            src="/images/logos/athena-logo-white.svg"
+            alt="Athena by Petromac"
+            width={466}
+            height={360}
+            className="h-16 w-auto shrink-0 sm:h-20"
+            priority
+            unoptimized
+          />
+          <div className="border-l border-white/15 pl-4 sm:pl-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blue-200">
+              Wireline conveyance decision engine
             </p>
-            <p className="text-sm text-slate-300">Vendor-neutral planning intelligence</p>
+            <p className="mt-1 text-sm text-slate-300">
+              Vendor-neutral planning intelligence, by Petromac
+            </p>
           </div>
         </div>
 

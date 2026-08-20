@@ -5,6 +5,50 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Aug 2026 — Athena logo v2: two colours shipped, tagline is a large-format asset
+
+**Decision:** the new hornbill logo lives in `public/images/logos/` as three
+croppings (mark, lockup, lockup + tagline), each in the `#0c55a6` master colour
+and a `-white` variant. `/simulation` uses the white lockup in the hero and a
+composed navy share card (`athena-og.png`); the editable `.ai` master sits in
+`sources/brand/`, which — unlike the rest of `sources/` — is committed.
+
+**Why a white variant rather than a CSS filter or `currentColor`:** every
+surface the logo goes on today is the navy hero band, where the blue master is
+nearly invisible against `#081a3a`. `currentColor` would work only if the logo
+were inlined as a React component; through `next/image` it can't inherit.
+Because the Illustrator export puts its fill in one generated `.uuid-*` class,
+stripping that class and hoisting a single `fill` onto the root `<svg>` makes
+the white variant a one-value change instead of a find-and-replace over 15
+paths — that is the whole reason the files were rewritten rather than dropped
+in as exported.
+
+**Why the viewBoxes were re-cropped:** Illustrator exports the full artboard,
+so all three croppings arrived sharing `0 0 566.93 484.87`. The invisible
+padding differs per artboard and no CSS can remove it, so a logo sized `h-20`
+would render at three different apparent sizes. The tight boxes were measured
+off high-res renders against a calibration rect.
+
+**The tagline lockup is not a UI asset.** Its tagline sets at ~4% of the
+artwork's height: at the `h-20` the hero uses, "WIRELINE CONVEYANCE DECISION
+ENGINE" is 3px tall. It needs ~500px of width to read, which is why the hero
+sets that line as real HTML text instead — better for search and screen readers
+anyway — and why the only place the tagline artwork is used is the 1200×630
+share card. The same limit killed a mark in the terminal window chrome: at 16px
+the circuit strokes and orbit arcs smear into a smudge (they are already soft
+at 32px).
+
+**Side effect worth noting:** the hero's `Athena&trade; by Petromac` eyebrow is
+gone, replaced by the logo. That line was double drift against
+docs/VOCABULARY_MAP.md §0 — Athena is deliberately unmarked, and the rule says
+use the `™` character, not the entity. Both are resolved by deletion.
+
+**Still on the old Greek-goddess `athena_logo.png`:** the homepage
+`SoftwareHighlight` band and `/intranet`. Out of scope for the /simulation
+change, but the two logos are now visibly different brands on the same site.
+
+---
+
 ## Aug 2026 — Success stories are built from the InDesign package, not the exported PDF
 
 **Decision:** `extract_story_figures.py` and `build_case_studies.py` both read
