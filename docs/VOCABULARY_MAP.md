@@ -44,6 +44,28 @@ already superscripted by the font, and the existing marks all use it.
 
 ---
 
+## 0b. Success-story SEO titles (Aug 2026)
+
+The 46 story pages' `<title>`/OG titles live in
+`src/features/case-studies/content/seo-titles.ts` (`STORY_TITLES`) — the
+story-side twin of the catalog's `PRODUCT_TITLES`: editing a row changes the
+SERP/tab title and nothing visible. The H1 stays the story's full headline.
+
+Rules, enforced by `seo-titles.test.ts` at build time:
+
+- base ≤ 49 chars (root template appends " | Petromac" → ≤60 total; 44 of 46
+  headlines broke this before the map, worst at 125 chars — 20 Aug GSC audit)
+- un-branded and unmarked: no "Petromac", no ™ (the suffix brands it once)
+- keep the story's hook — the number, the tool, the country
+- every story MUST have an entry; a new edition's stories fail the unit test
+  until their titles are written (same discipline as NEW_SLUG)
+
+Status: initial 46 drafted by Claude 21 Aug 2026 from the printed headlines;
+per this document's convention they are live pending Rajesh's copy pass —
+edit the map directly, the test keeps edits inside budget.
+
+---
+
 ## 1. Executive Summary & Strategy
 
 - **Goal**: Transition from brand-only search traffic to category, tool-compatibility, and operational outcome search traffic.

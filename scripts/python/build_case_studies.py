@@ -417,12 +417,21 @@ COUNTRY_FIX = {"KSA": "Saudi Arabia", "UAE": "United Arab Emirates"}
 
 def meta_description(story: dict, title: str) -> str:
     """~155-char description from the challenge (falls back to narrative).
-    Bold markers never reach a meta tag."""
-    src = (
-        (story["challenge"][0] if story["challenge"] else "")
-        or (story["narrative"][0] if story["narrative"] else title)
+    Bold markers never reach a meta tag.
+
+    A CHALLENGE of one short sentence leaves a sub-70-char description (two
+    stories, Aug 2026 GSC audit) — top it up with the story's own SOLUTION
+    then RESULTS sentences before trimming. Real copy only, never padding."""
+    parts = (
+        (story["challenge"][:1] or story["narrative"][:1] or [title])
+        + story["solution"][:1]
+        + story["results"][:1]
     )
-    text = clean(src).replace("**", "")
+    text = ""
+    for part in parts:
+        text = (text + " " + clean(part).replace("**", "")).strip()
+        if len(text) >= 70:
+            break
     if len(text) <= 158:
         return text
     cut = text[:158]

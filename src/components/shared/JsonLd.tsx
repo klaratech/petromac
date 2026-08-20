@@ -39,3 +39,16 @@ export const ORGANIZATION_SCHEMA = {
     availableLanguage: 'English',
   },
 } as const;
+
+/**
+ * WebSite entity — homepage only, beside the Organization. Names the site as
+ * an entity and ties it to its publisher; deliberately no SearchAction (the
+ * story search is a client filter, not a crawlable ?q= URL template).
+ */
+export const WEBSITE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Petromac',
+  url: SITE_URL,
+  publisher: { '@type': 'Organization', name: 'Petromac', url: SITE_URL },
+} as const;

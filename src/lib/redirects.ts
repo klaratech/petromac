@@ -194,8 +194,16 @@ function isDeadFeed(path: string): boolean {
  */
 const DEAD_WP_PREFIXES = ['/wp-includes', '/wp-content', '/wp-admin', '/wp-json'] as const;
 
+/** WP entry-point files with no path prefix of their own — same 410 treatment
+ *  (they were 404ing, which is fine for Google but noisier for bots that
+ *  probe them forever). */
+const DEAD_WP_FILES = ['/xmlrpc.php', '/wp-login.php'] as const;
+
 function isDeadWordPressAsset(path: string): boolean {
-  return DEAD_WP_PREFIXES.some((prefix) => startsWithSegment(path, prefix));
+  return (
+    DEAD_WP_PREFIXES.some((prefix) => startsWithSegment(path, prefix)) ||
+    DEAD_WP_FILES.includes(path as (typeof DEAD_WP_FILES)[number])
+  );
 }
 
 function startsWithSegment(path: string, prefix: string): boolean {

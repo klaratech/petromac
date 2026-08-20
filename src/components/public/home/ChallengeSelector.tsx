@@ -201,7 +201,7 @@ export default function ChallengeSelector() {
               <Image
                 key={active.id}
                 src={active.video.poster}
-                alt=""
+                alt={`${active.product} — ${active.challenge} video preview`}
                 fill
                 className="object-cover motion-safe:transition-transform motion-safe:duration-300 group-hover:scale-[1.02]"
                 sizes="(max-width: 1024px) 100vw, 60vw"

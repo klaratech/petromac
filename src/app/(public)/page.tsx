@@ -4,7 +4,7 @@ import HardwareHighlight from '@/components/public/home/HardwareHighlight';
 import SoftwareHighlight from '@/components/public/home/SoftwareHighlight';
 import ProofSection from '@/components/public/home/ProofSection';
 import ContactSection from '@/components/public/home/ContactSection';
-import JsonLd, { ORGANIZATION_SCHEMA } from '@/components/shared/JsonLd';
+import JsonLd, { ORGANIZATION_SCHEMA, WEBSITE_SCHEMA } from '@/components/shared/JsonLd';
 import { pageMetadata } from '@/lib/seo';
 
 // Un-branded title — the root template appends "| Petromac" exactly once.
@@ -21,6 +21,7 @@ export default function HomePage() {
       {/* Problem → solution → proof: hero promise, challenge cards, the
           matched Hardware + Software bands, then field-proven stats. */}
       <JsonLd data={ORGANIZATION_SCHEMA} />
+      <JsonLd data={WEBSITE_SCHEMA} />
       <Hero />
       <ChallengeSelector />
       <HardwareHighlight />

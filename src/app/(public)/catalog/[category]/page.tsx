@@ -34,6 +34,20 @@ const CATEGORY_TITLES: Record<string, string> = {
   'well-intervention': 'Rollers for Well Intervention — Over Body & Wireline',
 };
 
+/**
+ * SEO-only meta descriptions where the visible tagline can't serve as one:
+ * guides-holefinders' tagline runs 167 chars (SERPs cut ~160), and
+ * tool-taxis' carries Wireline Express™ — marks never go in metadata
+ * (docs/VOCABULARY_MAP.md §0). The other two taglines fit and stay the
+ * fallback. Visible page copy is untouched by this map.
+ */
+const CATEGORY_META_DESCRIPTIONS: Record<string, string> = {
+  'tool-taxis':
+    'Wheeled Tool Taxi carriages that carry logging tools for orientation, conveyance, centering and formation testing — the heart of the Wireline Express system.',
+  'guides-holefinders':
+    'Hole finders and guides that navigate ledges, washouts and restrictions: Pathfinder plus fixed-angle guides for SLB, Halliburton and Baker Hughes tools.',
+};
+
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { category } = await params;
   const cat = getCategory(category);
@@ -41,7 +55,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const title = CATEGORY_TITLES[category] ?? cat.name;
   return pageMetadata({
     title,
-    description: cat.tagline,
+    description: CATEGORY_META_DESCRIPTIONS[category] ?? cat.tagline,
     path: `/catalog/${cat.slug}`,
   });
 }
@@ -286,7 +300,10 @@ function BackToCatalog({ className = 'mt-14' }: { className?: string }) {
         href="/catalog"
         className="group inline-flex items-center gap-2 font-heading text-base font-semibold text-brand hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded"
       >
-        <span aria-hidden="true" className="transition-transform duration-200 group-hover:-translate-x-1">
+        <span
+          aria-hidden="true"
+          className="transition-transform duration-200 group-hover:-translate-x-1"
+        >
           ←
         </span>
         Back to the full catalog

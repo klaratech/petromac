@@ -95,6 +95,7 @@ const nextConfig: NextConfig = {
     const day = 86400;
     const week = 7 * day;
     const month = 30 * day;
+    const year = 365 * day;
     // Quarterly-refresh media/documents: fresh within a day of a swap.
     const quarterlyAssets = `public, max-age=${day}, stale-while-revalidate=${month}`;
     // Weekly-refresh data: up to a week stale is acceptable per content owner.
@@ -111,6 +112,12 @@ const nextConfig: NextConfig = {
         headers: securityHeaders,
       },
       // --- Quarterly content + stable site assets ---
+      // Patent scans never change once granted, and at up to 2.9 MB they were
+      // 63% of Googlebot's crawl volume (199 MB/90 d) while shipping
+      // max-age=0 — Next's default for /public files no rule matched. A month
+      // in the browser + a year of stale-while-revalidate lets Cloudflare's
+      // edge cache them too (.pdf is in CF's default-cacheable set).
+      cacheRule('/patent_pdfs/:path*', `public, max-age=${month}, stale-while-revalidate=${year}`),
       cacheRule('/flipbooks/:path*', quarterlyAssets), // catalog PDFs + success-stories pages
       cacheRule('/images/:path*', quarterlyAssets),
       cacheRule('/videos/:path*', quarterlyAssets),

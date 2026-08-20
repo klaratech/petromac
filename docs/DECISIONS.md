@@ -128,6 +128,54 @@ calls listed in SUCCESS_STORY_REVIEW.md for sign-off.
 
 ---
 
+## Aug 2026 — External GSC audit: verify-first, and what was declined
+
+An outside agent's Search Console audit (20 Aug) arrived with a fix-list.
+Every claim was verified against production before acting — the right reflex,
+because its two "highest priority" findings were false:
+
+- **"Legacy redirects are temporary 307s"** — FALSE. All 20 spot-checked
+  paths return 301 (slash-normalisation 308). The proxy has emitted literal
+  301s since Jul 2026. The 5 "Google chose different canonical" pages are
+  the 13 Aug /case-studies→/success-stories rename still consolidating;
+  correct action is GSC re-validation and patience, not code.
+- **"/wp-includes/…wp-emoji…js returns 200"** — FALSE; it returns 410.
+  (Only polish applied: /xmlrpc.php and /wp-login.php joined the 410 set.)
+- **"4 of 5 homepage images missing alt"** — misread `alt="" aria-hidden`,
+  the CORRECT decorative pattern. One real improvement: the ChallengeSelector
+  poster got a descriptive alt.
+
+**Implemented (the true findings):** patent-PDF caching (was max-age=0;
+2.9 MB files were 63% of Googlebot's 199 MB/90 d — now month + SWR-year, CF
+edge-cacheable); 46 curated story SEO titles in `seo-titles.ts` (44 of 46
+headlines broke the 60-char budget, worst 125 — enforced by unit test, see
+VOCABULARY_MAP §0b); two sub-70-char meta descriptions topped up from real
+story copy in `meta_description()`; family-page meta map (guides-holefinders
+167→152, tool-taxis ™ stripped from metadata); Article `dateModified` from
+the flipbook manifest + `publisher.logo`; ItemList on /success-stories;
+WebSite entity on the homepage.
+
+**Declined, with reasons:**
+
+- _Product JSON-LD "critical issue"_ — the audit's Option A (add `offers`)
+  is the exact 30 Jul mistake this log already records; Option B (demote
+  Product to Thing/ItemPage) would clear a cosmetic warning by deleting
+  correct entity data. The warning is accepted and permanent (see the
+  31 Jul entry). Rajesh can overrule with Option B knowingly.
+- _`datePublished` on Articles_ — no real per-story publication dates exist;
+  inventing them is the $0.00-offers class of error. `dateModified` (real
+  edition date) shipped instead.
+- _HTML Cache-Control rework_ — the audit misread Next's SSG `s-maxage` as
+  a staleness risk; Cloudflare does not cache text/html (no HTML cache
+  rule), so every page hit reaches origin and deploys are visible
+  immediately. Fighting the framework header changes nothing.
+- _`lang="en-NZ"`_ — the audience is global oil & gas, the -iser/-izer
+  split is deliberately mixed per §0, and Google ignores the attribute.
+- _Root canonical trailing slash_ — `https://host` vs `https://host/` is
+  the same resource by URL spec; Next normalises the form. Cosmetic.
+
+---
+
 ## Aug 2026 — The print's inline bold flows through to the story pages
 
 **Decision:** `idml.py`'s `parse_story` keeps bold character runs as `**`

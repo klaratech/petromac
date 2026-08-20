@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { caseStudies, getCaseStudy } from '@/features/case-studies/content';
+import { storyTitle } from '@/features/case-studies/content/seo-titles';
 import {
   caseStudyCategories,
   categoryLabel,
@@ -12,6 +13,8 @@ import {
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 import DownloadStoryPage from '@/components/public/case-studies/DownloadStoryPage';
 import { pageMetadata } from '@/lib/seo';
+import { getFlipbookManifest } from '@/features/flipbooks/manifests';
+import { FLIPBOOK_KEYS } from '@/features/flipbooks/constants';
 
 interface Params {
   slug: string;
@@ -28,7 +31,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const cs = getCaseStudy(slug);
   if (!cs) return {};
   return pageMetadata({
-    title: cs.title,
+    // Curated short title (seo-titles.ts) — the H1 keeps the full headline.
+    title: storyTitle(cs),
     description: cs.metaDescription,
     path: `/success-stories/${slug}`,
     ogImage: {
@@ -161,8 +165,20 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
     description: cs.metaDescription,
     url: absoluteUrl(`/success-stories/${cs.slug}`),
     image: [absoluteUrl(cs.image.src)],
+    // The edition date the sitemap also reports for these pages — the only
+    // REAL date the content carries. There is deliberately no datePublished:
+    // the stories have no per-story publication dates, and inventing them is
+    // the $0.00-offers mistake again (docs/DECISIONS.md, structured data).
+    dateModified: getFlipbookManifest(FLIPBOOK_KEYS.successStories).updatedAt,
     author: { '@type': 'Organization', name: 'Petromac' },
-    publisher: { '@type': 'Organization', name: 'Petromac' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Petromac',
+      logo: {
+        '@type': 'ImageObject',
+        url: absoluteUrl('/images/Petromac-Logo.png.webp'),
+      },
+    },
     about: [{ '@type': 'Thing', name: cs.device }],
   };
   const breadcrumbSchema = {

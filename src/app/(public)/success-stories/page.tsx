@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { caseStudies } from '@/features/case-studies/content';
 import CaseStudiesBrowser from '@/components/public/case-studies/CaseStudiesBrowser';
 import SeeAlso from '@/components/public/SeeAlso';
+import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = pageMetadata({
@@ -16,8 +17,23 @@ export default function SuccessStoriesPage() {
   // which sort after the dated ones in original page order.
   const ordered = [...caseStudies].sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 
+  // The hub as a machine-readable list of its 46 stories, in display order.
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Petromac success stories',
+    numberOfItems: ordered.length,
+    itemListElement: ordered.map((cs, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: cs.title,
+      url: absoluteUrl(`/success-stories/${cs.slug}`),
+    })),
+  };
+
   return (
     <div className="bg-white">
+      <JsonLd data={itemListSchema} />
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header: title + intro on the left, the evidence cross-links as a
             compact card on the right. Publications used to be a full-width

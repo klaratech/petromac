@@ -291,6 +291,8 @@ test('dead WordPress machinery is 410, not 404', () => {
     '/wp-content/uploads/2019/07/something.png',
     '/wp-admin/',
     '/wp-json/wp/v2/posts',
+    '/xmlrpc.php',
+    '/wp-login.php',
   ]) {
     const [pathname, search] = path.split('?');
     assert.deepEqual(
