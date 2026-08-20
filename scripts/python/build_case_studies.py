@@ -416,12 +416,13 @@ COUNTRY_FIX = {"KSA": "Saudi Arabia", "UAE": "United Arab Emirates"}
 
 
 def meta_description(story: dict, title: str) -> str:
-    """~155-char description from the challenge (falls back to narrative)."""
+    """~155-char description from the challenge (falls back to narrative).
+    Bold markers never reach a meta tag."""
     src = (
         (story["challenge"][0] if story["challenge"] else "")
         or (story["narrative"][0] if story["narrative"] else title)
     )
-    text = clean(src)
+    text = clean(src).replace("**", "")
     if len(text) <= 158:
         return text
     cut = text[:158]
@@ -441,7 +442,7 @@ def find_idml() -> Path:
 def main() -> None:
     idml = find_idml()
     print(f"Source: {idml.relative_to(REPO)}")
-    pkg = Package(idml)
+    pkg = Package(idml, bold_styles=frozenset({BODY, SIDEBAR_BODY}))
     by_page = pkg.by_page()
 
     rows = list(csv.DictReader(open(BASE / "tags.csv")))

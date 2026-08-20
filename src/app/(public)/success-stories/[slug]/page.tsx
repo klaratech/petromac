@@ -82,9 +82,28 @@ function mapCaption(country: string, region: string, mapCode: string): string {
 const FIG_PREFIX = /^\s*Figs?\.?\s*\.?\s*(\d+(?:\s*&\s*\d+)?)\s*[.:]?\s*/i;
 
 /**
- * Render a narrative paragraph with its SPE citations linked to their DOI —
- * the printed page links them, and the IDML's hyperlink table carries the
- * URL. A reference without a href renders as plain text.
+ * Render a paragraph's inline typography: the print's bold spans (carried
+ * as ** markers in the generated JSON) become <strong>, and SPE citations
+ * link to their DOI within the plain segments. The bold is the page
+ * designer's scan layer — key figures, product names, outcomes — restored
+ * Aug 2026 after the print/live review.
+ */
+function richText(text: string, refs: { label: string; href: string | null }[] = []) {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
+    i % 2 === 1 ? (
+      <strong key={i} className="font-semibold text-slate-800">
+        {part}
+      </strong>
+    ) : (
+      <span key={i}>{withReferenceLinks(part, refs)}</span>
+    )
+  );
+}
+
+/**
+ * SPE citations linked to their DOI — the printed page links them, and the
+ * IDML's hyperlink table carries the URL. A reference without a href
+ * renders as plain text.
  */
 function withReferenceLinks(text: string, refs: { label: string; href: string | null }[]) {
   const linked = refs.filter((r) => r.href && text.includes(r.label));
@@ -119,7 +138,7 @@ function SidePanel({ title, paras }: { title: string; paras: string[] }) {
       <div className="space-y-2">
         {paras.map((p) => (
           <p key={p.slice(0, 48)} className="text-sm text-slate-600 leading-relaxed">
-            {p}
+            {richText(p)}
           </p>
         ))}
       </div>
@@ -227,9 +246,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                         {h.text}
                       </h2>
                     ))}
-                  <p className="text-slate-600 leading-relaxed">
-                    {withReferenceLinks(p, cs.references)}
-                  </p>
+                  <p className="text-slate-600 leading-relaxed">{richText(p, cs.references)}</p>
                 </div>
               ))}
             </div>

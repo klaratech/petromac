@@ -128,6 +128,38 @@ calls listed in SUCCESS_STORY_REVIEW.md for sign-off.
 
 ---
 
+## Aug 2026 — The print's inline bold flows through to the story pages
+
+**Decision:** `idml.py`'s `parse_story` keeps bold character runs as `**`
+markers — but ONLY for paragraph styles the caller names
+(`Package(idml, bold_styles=frozenset({BODY, SIDEBAR_BODY}))` in
+`build_case_studies.py`). The story template renders the markers as
+`<strong>`; the search haystack and meta-descriptions strip them. Rajesh's
+call (20 Aug): "it improves readability".
+
+**Why marker-in-string, not a rich-text model:** the JSON keeps its shape
+(`narrative: string[]`), so filters, related-story scoring, tests and the PDF
+endpoints are untouched; the only consumers that had to learn anything are
+the paragraph renderer (a 10-line split) and the two plain-text sinks that
+strip markers. A structured runs model would have rippled through every one
+of those for the same visual result.
+
+**Why the style gate matters:** the catalog pipeline and the figure
+extractor share `parse_story`. Un-gated, `**` would have leaked into
+catalog.json (hand-verified byte-identical before this shipped) and into
+caption text. InDesign also splits one visual bold span across ranges
+mid-word ("Mi"/"ddle East"), so adjacent markers merge before publishing.
+
+**Scope, measured not assumed:** 7 of 46 pages carry real narrative bold
+(22, 38, 40, 41, 43, 44, 46 — the newer stories, which bold key numbers,
+product names and outcomes: "**60–70°**", "**~2 days of rig time**",
+"**Petromac's Helix CX9 slip-over centralizers**"). The tracker's companion
+suspicions dissolved under the same probe: the corpus contains zero bullet
+glyphs and zero inline italics in prose — the "bullets on 27/28/38" were
+almost certainly the dotted column divider misread from page thumbnails.
+
+---
+
 ## Aug 2026 — Same-size side-by-side pairs sharing one caption merge into one card
 
 **Decision:** in `extract_story_figures.py`'s grouping, a horizontally

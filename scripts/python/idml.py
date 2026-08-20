@@ -153,10 +153,32 @@ def parse_table(table_el) -> dict:
     return {"rows": rows, "notes": cell_notes}
 
 
-def parse_story(root) -> list[dict]:
+def _mark_bold(text: str) -> str:
+    """Wrap a bold character run in ** markers, keeping surrounding
+    whitespace outside the markers so adjacent runs join cleanly."""
+    core = text.strip("\n").strip(" ")
+    if not core:
+        return text
+    head = text[: len(text) - len(text.lstrip())]
+    tail = text[len(text.rstrip()):]
+    return f"{head}**{core}**{tail}"
+
+
+def _merge_bold_runs(text: str) -> str:
+    """InDesign splits one visual bold span across ranges mid-word
+    ("Mi"/"ddle East") — collapse back-to-back markers into one span."""
+    text = text.replace("****", "")
+    return re.sub(r"\*\*( +)\*\*", r"\1", text)
+
+
+def parse_story(root, bold_styles: frozenset[str] = frozenset()) -> list[dict]:
     """Return a story's blocks in document order, each {style, text} or
     {style, table}. Tables stay inline so their position relative to the
-    surrounding copy is preserved."""
+    surrounding copy is preserved.
+
+    Paragraphs whose style is in `bold_styles` keep their bold character
+    runs as **markers** in the text; every other style stays plain — the
+    catalog pipeline and the figure extractor never ask for markers."""
     blocks: list[dict] = []
     # Paragraph ranges inside table cells are handled by parse_table, and ones
     # inside footnotes by extract_text — without these guards both duplicate
@@ -182,9 +204,13 @@ def parse_story(root) -> list[dict]:
                 tables.append(parse_table(table_el))
                 continue
             text, notes = extract_text(child)
+            if style in bold_styles and "Bold" in child.get("FontStyle", ""):
+                text = _mark_bold(text)
             texts.append(text)
             all_notes.extend(notes)
-        paras = [p.strip() for p in "".join(texts).split("\n") if p.strip()]
+        paras = [
+            _merge_bold_runs(p.strip()) for p in "".join(texts).split("\n") if p.strip()
+        ]
         for i, para in enumerate(paras):
             block = {"style": style, "text": para}
             # Footnote markers sit at the end of a paragraph, so when a range
@@ -264,7 +290,7 @@ def walk_items(
 class Package:
     """A parsed IDML package."""
 
-    def __init__(self, path):
+    def __init__(self, path, bold_styles: frozenset[str] = frozenset()):
         self.path = path
         zf = zipfile.ZipFile(path)
         self.hyperlinks = []
@@ -273,7 +299,7 @@ class Package:
             if name.startswith("Stories/Story_"):
                 st = ET.fromstring(zf.read(name)).find("Story")
                 if st is not None:
-                    self.stories[st.get("Self")] = parse_story(st)
+                    self.stories[st.get("Self")] = parse_story(st, bold_styles)
 
         designmap = ET.fromstring(zf.read("designmap.xml"))
         for dest in designmap.iter("HyperlinkURLDestination"):

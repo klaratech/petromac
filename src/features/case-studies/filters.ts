@@ -225,20 +225,25 @@ export function buildCompanyOptions(
 
 /** Free-text haystack: title, place, product, company, categories, narrative. */
 function haystack(cs: CaseStudy): string {
-  return [
-    cs.title,
-    cs.country,
-    cs.region,
-    cs.device,
-    cs.wirelineCompany,
-    ...caseStudyCategories(cs),
-    ...cs.challenge,
-    ...cs.solution,
-    ...cs.results,
-    ...cs.narrative,
-  ]
-    .join(' ')
-    .toLowerCase();
+  return (
+    [
+      cs.title,
+      cs.country,
+      cs.region,
+      cs.device,
+      cs.wirelineCompany,
+      ...caseStudyCategories(cs),
+      ...cs.challenge,
+      ...cs.solution,
+      ...cs.results,
+      ...cs.narrative,
+    ]
+      .join(' ')
+      // Narrative carries the print's bold as ** markers; strip them so a
+      // phrase search can cross a bold boundary ("required TLC conveyance").
+      .replaceAll('**', '')
+      .toLowerCase()
+  );
 }
 
 export function filterCaseStudies(studies: CaseStudy[], query: CaseStudyQuery): CaseStudy[] {

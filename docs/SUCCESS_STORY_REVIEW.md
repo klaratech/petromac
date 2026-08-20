@@ -83,7 +83,15 @@ Status: ☐ pending · ✅ approved · 🔧 tuned then approved
   not next to the relevant image" — became the rule that folded cards keep
   the print's own caption typesetting IN the pixels (each caption beside its
   sub-figure) and print nothing below.
-- **Typography flattening (corpus-wide)**: bold/italic emphasis inside
-  paragraphs, bullet glyphs (27, 28, 38) and coloured inline headings are not
-  carried — the pipeline reads paragraph STYLES, not character styles. Carrying
-  emphasis would need a rich-text narrative model. Decide if it matters enough.
+- ~~**Typography flattening (corpus-wide)**~~ **RESOLVED 20 Aug** (Rajesh:
+  improves readability → restore): the print's inline BOLD now flows through —
+  `idml.py` keeps bold character runs as `**` markers for the two prose styles
+  only (`Package(..., bold_styles=...)`; catalog and figure pipelines are
+  unaffected), the story page renders them as `<strong>`, and search /
+  meta-descriptions strip the markers. Seven pages carry real narrative bold
+  (22, 38, 40, 41, 43, 44, 46) — the newer stories, which bold key figures,
+  product names and outcomes. The rest of the old item dissolved on
+  measurement: the corpus has ZERO bullet glyphs and ZERO inline italics in
+  prose (the "bullets on 27/28/38" were a misread — likely the dotted column
+  divider), and the coloured inline headings were already carried as
+  `narrativeSubheads`.

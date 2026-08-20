@@ -1034,7 +1034,7 @@
       "Operators in the Middle East routinely require cement evaluation in very highly deviated wellbores. IBC-CBL in extended reach wells can quickly become inefficient and expensive due to difficulties in logging tool conveyance.",
       "Traditional methods of centralizing the IBC-CBL using in-line and slip-over centralizers caused excessive drag. This makes it challenging to descend past 60° deviation via gravity. Operators had to resort to pipe or tractor conveyed logging for higher deviations. Pipe conveyed logging is operationally complex, time consuming and risky, whereas tractor conveyance can sometimes be limited by force output in long laterals.",
       "To overcome this, the centralizers were replaced by centralizing Tool Taxis, and tool strings now routinely descend on gravity to >85° deviation, with eccentricity, ECCE, well within tolerances.",
-      "Track record includes horizontal logging of IBC-CBL over 20kft, with an ECCE below 0.2”."
+      "**Track record includes horizontal logging of IBC-CBL over 20kft, with an ECCE below 0.2”.**"
     ],
     "narrativeSubheads": [],
     "callout": null,
@@ -1901,10 +1901,10 @@
     "learnings": [],
     "narrative": [
       "As carbon capture operations expand, operators are encountering several challenges that complicate data acquisition:",
-      "Wells are being drilled in geologically unknown, greenfield locations, increasing uncertainty and steepening the learning curve.",
-      "Water-based muds (WBM) are often the only permissible option due to environmental restrictions around groundwater protection. This can lead to shale swelling and severe borehole washouts.",
-      "Stricter regulatory and reservoir characterization requirements demand more comprehensive data, resulting in longer and more complex logging programs.",
-      "In one case, an operator encountered severe washouts—up to 40”—preventing conventional wireline tools from reaching total depth. To overcome this, the Petromac Pathfinder was deployed to enable wireline logging. Its successful run was critical to the operation’s success, allowing complete data acquisition to satisfy both regulatory and reservoir evaluation requirements."
+      "**Wells are being drilled in geologically unknown, greenfield locations**, increasing uncertainty and steepening the learning curve.",
+      "**Water-based muds (WBM)** are often the only permissible option due to environmental restrictions around groundwater protection. This can lead to shale swelling and severe borehole washouts.",
+      "**Stricter regulatory and reservoir characterization requirements** demand more comprehensive data, resulting in longer and more complex logging programs.",
+      "In one case, an operator encountered severe washouts—up to 40”—preventing conventional wireline tools from reaching total depth. To overcome this, the **Petromac Pathfinder** was deployed to enable wireline logging. Its successful run was **critical to the operation’s success,** allowing complete data acquisition to satisfy both regulatory and reservoir evaluation requirements."
     ],
     "narrativeSubheads": [],
     "callout": null,
@@ -2014,18 +2014,18 @@
     "categories": ["Sticking Prevention", "Centralization"],
     "references": [],
     "challenge": [
-      "Halliburton’s StrataXaminer borehole imaging tool, weighing nearly 1,000 lbs, presents a major challenge: maintaining centralization in open hole while preventing sticking and stick-slip"
+      "Halliburton’s **StrataXaminer** borehole imaging tool, weighing nearly **1,000 lbs**, presents a major challenge: maintaining centralization in open hole while preventing **sticking and stick-slip**"
     ],
     "solution": [
-      "Halliburton engaged Petromac from the outset to co-develop a custom conveyance solution."
+      "Halliburton engaged **Petromac** from the outset to co-develop a **custom conveyance solution**."
     ],
     "results": [
-      "CP-12: The world’s first open-hole roller centralizer purpose-built to carry the heavy logging tools while maintaining centralization and eliminating drag-related issues. It has been field-proven in the Gulf of Mexico, delivering high-quality images with no stick-slip"
+      "CP-12: The **world’s first open-hole roller centralizer** purpose-built to carry the heavy logging tools while maintaining **centralization** and eliminating drag-related issues. It has been **field-proven in the Gulf of Mexico**, delivering **high-quality images with no stick-slip**"
     ],
     "learnings": [],
     "narrative": [
-      "Halliburton’s StrataXaminer tool pushes the limits of borehole imaging technology — but as with many wireline imaging tools, it is vulnerable to poor centralization and stick-slip in open hole. Working closely with Halliburton’s engineering team, Petromac designed a roller-based centralizer system — the first of its kind for open-hole deployments. The system from its very first deployment, successfully delivered high-resolution images with no stick-slip in the high stakes environment of deepwater Gulf of Mexico.",
-      "Following this success, the technology has been adapted and deployed with other high-resolution tools, including sonic imagers in the Asia-Pacific region."
+      "Halliburton’s **StrataXaminer** tool pushes the limits of borehole imaging technology — but as with many wireline imaging tools, it is vulnerable to **poor centralization and stick-slip** in open hole. Working closely with Halliburton’s engineering team, Petromac designed a **roller-based centralizer system** — the first of its kind for open-hole deployments. The system from its very first deployment, successfully delivered **high-resolution images with no stick-slip** in the high stakes environment of **deepwater Gulf of Mexico**.",
+      "Following this success, the technology has been adapted and deployed with other high-resolution tools, including **sonic imagers in the Asia-Pacific region**."
     ],
     "narrativeSubheads": [],
     "callout": null,
@@ -2075,20 +2075,20 @@
     "categories": ["Well Access: Deviation", "Operational Efficiency"],
     "references": [],
     "challenge": [
-      "Acquire full wireline logs in a 57° deviated geothermal well with bottomhole temperatures exceeding 200°C, where conventional methods such as TLC or tractors were deemed unreliable, high-risk, and expensive."
+      "Acquire full wireline logs in a **57° deviated geothermal well** with bottomhole temperatures **exceeding 200°C**, where conventional methods such as TLC or tractors were deemed unreliable, high-risk, and expensive."
     ],
     "solution": [
-      "Using the Hermes tension planner, Petromac conducted a full analysis of the well trajectory and deployed Tool Taxis tailored to the operational profile and predicted risks."
+      "Using the **Hermes tension planner**, Petromac conducted a full analysis of the well trajectory and deployed **Tool Taxis** tailored to the operational profile and predicted risks."
     ],
     "results": [
       "Deployment with Tool Taxis proved to be highly successful and cost-effective. All runs with Petromac reached total depth without overpull, sticking, or image degradation. Hermes tension modeling was validated in the field."
     ],
     "learnings": [],
     "narrative": [
-      "Wireline logging in a geothermal well had to be performed in sections with deviations over 57° and bottomhole temperatures exceeding 200°C. Traditional conveyance methods such as pipe conveyed or tractors were deemed unsuitable due to both risk and cost, prompting the operator to engage Petromac for a safer deployment solution.",
-      "Using Petromac’s proprietary Hermes tension model, the team conducted a detailed analysis of the well trajectory and geometry to assess conveyance risks and optimize deployment planning. All runs in the 12.25” section were completed with zero incidents — no stick-slip, no image rotation, and no overpull.",
-      "During the 8.5” section, following a mechanical sticking event, the operator opted to bypass Petromac for a run — against Hermes model recommendations. As predicted, the unassisted run failed to reach total depth. The operator reinstated Petromac for all subsequent runs that were completed smoothly through rugose hole conditions. Petromac’s model-driven conveyance restored full operational confidence and ensured uninterrupted data acquisition.",
-      "This operation is a strong demonstration of how predictive modeling, fit-for-purpose conveyance tools, and field-proven reliability can safeguard data quality and reduce risk in the harshest well environments."
+      "Wireline logging in a geothermal well had to be performed in sections with deviations over **57°** and bottomhole temperatures **exceeding 200°C**. Traditional conveyance methods such as **pipe conveyed** or **tractors** were deemed unsuitable due to both **risk** and **cost**, prompting the operator to engage Petromac for a safer deployment solution.",
+      "Using Petromac’s proprietary **Hermes tension model**, the team conducted a detailed analysis of the well trajectory and geometry to assess conveyance risks and optimize deployment planning. All runs in the 12.25” section were completed with **zero incidents** — no stick-slip, no image rotation, and no overpull.",
+      "During the 8.5” section, following a mechanical sticking event, the operator opted to bypass Petromac for a run — against Hermes model recommendations. As predicted, the **unassisted run failed to reach total depth**. The operator reinstated Petromac for all subsequent runs that were completed smoothly through rugose hole conditions. Petromac’s model-driven conveyance restored full operational confidence and ensured uninterrupted data acquisition.",
+      "This operation is a strong demonstration of how **predictive modeling, fit-for-purpose conveyance tools,** and **field-proven reliability** can safeguard data quality and reduce risk in the harshest well environments."
     ],
     "narrativeSubheads": [],
     "callout": null,
@@ -2182,20 +2182,20 @@
     "categories": ["Centralization"],
     "references": [],
     "challenge": [
-      "Powered Positioning Calipers (PPCs) when used as centralizers add length, weight, and drag but offer limited centralization near the sensors."
+      "**Powered Positioning Calipers (PPCs)** when used as centralizers add length, weight, and drag but offer limited centralization near the sensors."
     ],
     "solution": [
-      "Petromac CP8 – a roller centralizer designed for 8.5” wellbores, replaces both conventional spring centralizers and PPCs with passive mechanical rollers that centralize the tool sensors while reducing total weight, drag, and rig-up complexity."
+      "**Petromac CP8** – **a roller centralizer designed for 8.5**” wellbores, replaces both conventional spring centralizers and PPCs **with passive mechanical rollers** that centralize the tool sensors while reducing total weight, drag, and rig-up complexity."
     ],
     "results": [
-      "The CP8 system enabled smooth imaging runs with no sticking or drag-related issues, eliminating the need for PPCs entirely. The compact design also reduced rig-up time and toolstring complexity, improving operational efficiency without compromising data quality."
+      "The CP8 system enabled smooth imaging runs with **no sticking or drag-related issues**, eliminating the need for PPCs entirely. The compact design also reduced **rig-up time and toolstring complexity**, improving operational efficiency without compromising data quality."
     ],
     "learnings": [],
     "narrative": [
-      "Centralizing heavy imaging tools in deviated wells presents both mechanical and logistical challenges. In this case, an offshore operator in Asia needed to log a deep section where conventional Powered Positioning Centralizers (PPCs) have previously been used.",
-      "While PPCs offer active control, their effectiveness in deviated wells is limited— primarily because they are fixed at the ends of the toolstring and do not provide direct centralization where it’s most needed, near the sensors. Additional trade-offs include increased toolstring length, higher drag if not precisely managed, and added rig-up complexity.",
-      "Seeking a more efficient and robust solution, SLB collaborated with Petromac to adapt its roller-based centralization technology for the 8.5” borehole environment. This compact, slip-over design replaced both PPCs and traditional fixed centralizers with passive mechanical rollers—enabling smoother tool travel and consistent centralization closer to the sensors.",
-      "The result was a shorter, lighter toolstring, simplified rig-up, and clean, high-quality imaging data free from drag-related artifacts. The success of this deployment highlights the advantage of passive, mechanically simple conveyance systems in complex, high-deviation logging environments."
+      "**Centralizing heavy imaging tools in deviated wells presents both mechanical and logistical challenges**. In this case, an offshore operator in Asia needed to log a deep section where conventional Powered Positioning Centralizers (PPCs) have previously been used.",
+      "While PPCs offer active control, their effectiveness in deviated wells is limited— primarily because they are fixed at the ends of the toolstring and do not provide direct centralization where it’s most needed, near the sensors. Additional trade-offs include **increased toolstring length, higher drag if not precisely managed,** and **added rig-up complexity.**",
+      "Seeking a more efficient and robust solution, **SLB collaborated with Petromac** to adapt its **roller-based centralization technology** for the **8.5” borehole environment**. This **compact, slip-over design** replaced both PPCs and traditional fixed centralizers with passive mechanical rollers—enabling smoother tool travel and consistent centralization closer to the sensors.",
+      "The result was a **shorter, lighter toolstring**, simplified rig-up, and **clean, high-quality imaging data** free from drag-related artifacts. The success of this deployment highlights the advantage of **passive, mechanically simple conveyance systems** in complex, high-deviation logging environments."
     ],
     "narrativeSubheads": [],
     "callout": null,
@@ -2236,17 +2236,17 @@
       "Enable centralization of wireline logging tools in highly deviated 9-5/8” casing while ensuring passage through a restricted surface riser ID."
     ],
     "solution": [
-      "Petromac’s Helix slip-over centralizers deliver strong centralization in high deviations and reliably collapse to pass through tight restrictions."
+      "**Petromac’s Helix** slip-over centralizers deliver strong centralization in high deviations and reliably collapse to pass through tight restrictions."
     ],
     "results": [
-      "Six successful wireline runs completed with smooth passage through the restricted riser and excellent cement and casing integrity logs—enabled by consistent, precise centralization."
+      "**Six successful** wireline runs completed with smooth passage through the restricted riser and excellent cement and casing integrity logs—enabled by consistent, precise centralization."
     ],
     "learnings": [],
     "narrative": [
-      "Exxon (Esso) Australia planned the permanent P&A of two offshore exploration wells, requiring verification of well barrier integrity behind the 9-5/8” casing in accordance with regulatory standards. To do this cost-effectively, an intervention semi-submersible was contracted, and SLB was engaged to deploy its advanced Epilogue technology—enabling simultaneous dual casing/annulus evaluation in a single run.",
-      "However, the vessel’s 6-1/8” riser ID was too narrow for conventional fixed OD centralizers typically required for cement bond tools in the 8.535” ID of the 9-5/8” casing.",
-      "To address the restriction, Petromac’s Helix CX9 slip-over centralizers were deployed on SLB’s IBC and CBL tools. The helical arms collapse to 5.625”, allowing smooth passage through the 6-1/8” riser, while still delivering over 200 lbs of centering force in 9-5/8” casing—even at 90° deviation—ensuring reliable centralization.",
-      "A total of Six Epilogue runs were completed successfully across both wells, with smooth riser passage, optimal centralization, and high-quality data acquisition."
+      "**Exxon (Esso) Australia** planned the permanent P&A of two offshore exploration wells, requiring verification of well barrier integrity behind the 9-5/8” casing in accordance with regulatory standards. To do this cost-effectively, an intervention semi-submersible was contracted, and **SLB** was engaged to deploy its advanced **Epilogue** technology—enabling simultaneous dual casing/annulus evaluation in a single run.",
+      "However, the vessel’s **6-1/8” riser ID** was too narrow for conventional fixed OD centralizers typically required for cement bond tools in the **8.535” ID** of the 9-5/8” casing.",
+      "To address the restriction, **Petromac’s Helix CX9 slip-over centralizers** were deployed on SLB’s IBC and CBL tools. The helical arms collapse to **5.625**”, allowing smooth passage through the **6-1/8” riser**, while still delivering over **200 lbs of centering force** in 9-5/8” casing—even at **90° deviation**—ensuring reliable centralization.",
+      "A total of **Six Epilogue** runs were completed successfully across both wells, with smooth riser passage, optimal centralization, and high-quality data acquisition."
     ],
     "narrativeSubheads": [],
     "callout": null,
@@ -2352,10 +2352,10 @@
     ],
     "learnings": [],
     "narrative": [
-      "In Guyana’s deepwater wells, deviations of 60–70° had traditionally required TLC conveyance, adding risk and costly rig time. Petromac Tool Taxis improved efficiency by reducing drag and enabling gravity descent, but severe washouts still caused tool hang-ups.",
-      "The solution was the addition of the Pathfinder centralized hole-finder, which guided the toolstring smoothly through ledges and washouts.",
-      "On its first run with a CMR–MDT combination, Pathfinder enabled full gravity descent to TD through a 1,500 ft tangent at 66°. In addition, taxis ensured zero sticking even on an 8.5-hour MDT station.",
-      "Overall, by avoiding pipe-conveyed logging, the operator saved ~2 days of rig time, translating into substantial cost savings while ensuring safe, reliable data acquisition."
+      "In Guyana’s deepwater wells, deviations of **60–70°** had traditionally required **TLC conveyance**, adding risk and costly rig time. Petromac **Tool Taxis** improved efficiency by reducing drag and enabling gravity descent, but severe washouts still caused tool hang-ups.",
+      "The solution was the addition of the **Pathfinder centralized hole-finder**, which guided the toolstring smoothly through ledges and washouts.",
+      "On its first run with a CMR–MDT combination, Pathfinder enabled full **gravity descent to TD through a 1,500 ft tangent at 66°**. In addition, taxis ensured zero sticking even on an **8.5-hour MDT station**.",
+      "Overall, by avoiding pipe-conveyed logging, the operator saved **~2 days of rig time**, translating into substantial cost savings while ensuring safe, reliable data acquisition."
     ],
     "narrativeSubheads": [],
     "callout": null,
