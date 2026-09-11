@@ -50,16 +50,41 @@ jobs:
           WORKBOOK_PATH: ${{ vars.DATA_WORKBOOK_PATH }}
         run: |
           set -euo pipefail
-          token=$(curl -sf -X POST "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token" \
+          resp=$(curl -s -X POST "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token" \
             -d grant_type=client_credentials \
             -d client_id="${CLIENT_ID}" \
             -d client_secret="${CLIENT_SECRET}" \
-            -d scope=https://graph.microsoft.com/.default | jq -r .access_token)
+            -d scope=https://graph.microsoft.com/.default)
+          token=$(jq -r '.access_token // empty' <<<"$resp")
+          if [ -z "$token" ]; then
+            echo "::error::Token request failed — Entra says:"
+            jq 'del(.access_token)' <<<"$resp"
+            exit 1
+          fi
           # URL-encode the drive path but keep its / separators.
           encoded=$(jq -rn --arg p "$WORKBOOK_PATH" '$p|@uri' | sed 's/%2F/\//g')
-          curl -sfL -H "Authorization: Bearer $token" \
-            -o "sources/operations/jobs-history-master.xlsx" \
-            "https://graph.microsoft.com/v1.0/users/${OWNER_UPN}/drive/root:/${encoded}:/content"
+          out="sources/operations/jobs-history-master.xlsx"
+          http=$(curl -sL -w "%{http_code}" -H "Authorization: Bearer $token" \
+            -o "$out" \
+            "https://graph.microsoft.com/v1.0/users/${OWNER_UPN}/drive/root:/${encoded}:/content")
+          if [ "$http" != "200" ]; then
+            echo "::error::Graph download returned HTTP $http — response body:"
+            cat "$out"; echo
+            echo "--- What Graph sees at the root of ${OWNER_UPN}'s drive (names only): ---"
+            curl -s -H "Authorization: Bearer $token" \
+              "https://graph.microsoft.com/v1.0/users/${OWNER_UPN}/drive/root/children?\$select=name,folder,remoteItem&\$top=50" \
+              | jq -r '.error.message // (.value[] | .name + (if .remoteItem then "  [shortcut to another site]" else "" end))'
+            echo "403 => the Files.Read.All application permission is missing admin consent (ADMIN.md §1)."
+            echo "404 + [shortcut] above => the folder lives in SharePoint, not the personal drive — see the comment at the top of this step."
+            rm -f "$out"
+            exit 1
+          fi
+          # Sanity: an xlsx is a zip and this one is ~2 MB — a tiny file is an error page.
+          size=$(stat -c %s "$out")
+          if [ "$size" -lt 100000 ]; then
+            echo "::error::Downloaded file is only ${size} bytes — not the workbook."
+            exit 1
+          fi
           ls -la sources/operations/
 
       - name: Set up Node.js
