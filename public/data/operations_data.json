@@ -28486,5 +28486,21 @@
     "Year": "2026",
     "Successful": 1,
     "PathFinder Run (Y/N)": "NO"
+  },
+  {
+    "Country": "C\u00f4te d'Ivoire",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO"
+  },
+  {
+    "Country": "Japan",
+    "System": "Focus - OH",
+    "Subsystem": "Focus - OH",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO"
   }
 ]
