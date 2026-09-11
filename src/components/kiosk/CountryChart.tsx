@@ -7,10 +7,11 @@ const TOP_N_DEFAULT = 5;
 /**
  * CountryChart — horizontal bar chart of country deployment counts.
  *
- * Default view shows the top 5 by count; "Show all N" expands to every
- * country in a scrollable list (it used to stop at 15 with a "+N more"
- * note that contradicted the button — reworked Sep 2026). Each row is a
- * button that selects that country on the map (opening its yearly-stats
+ * Shows the top 5 by count; the "+N more countries" footer expands to
+ * every country in a scrollable list and flips to "Show less" (one
+ * control, no header button — Rajesh, Sep 2026; before that the header
+ * said "Show all 52" but capped the list at 15). Each row is a button
+ * that selects that country on the map (opening its yearly-stats
  * drawer); the trailing chevron is the visual hint for that. Renders as
  * a compact pill anchored to the bottom-left of the map container.
  */
@@ -41,23 +42,9 @@ const CountryChart = memo(function CountryChart({
       role="region"
       aria-label="Countries by deployments"
     >
-      <div className="flex items-center justify-between mb-3">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500">By Country</p>
-          <p className="text-sm font-semibold text-slate-900">
-            {expanded ? `All ${countries.length} countries` : `Top ${TOP_N_DEFAULT} countries`}
-          </p>
-        </div>
-        {countries.length > TOP_N_DEFAULT && (
-          <button
-            onClick={() => setExpanded((v) => !v)}
-            aria-expanded={expanded}
-            className={`text-xs font-medium text-blue-600 hover:text-blue-800 ${MAP_CONSTANTS.FOCUS_RING} rounded px-1`}
-          >
-            {expanded ? 'Show less' : `Show all ${countries.length}`}
-          </button>
-        )}
-      </div>
+      <p className="mb-3 text-[10px] uppercase tracking-[0.2em] text-slate-500">
+        Deployments by country
+      </p>
 
       <ul className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1">
         {visibleCountries.map(([country, count]) => {
@@ -117,12 +104,13 @@ const CountryChart = memo(function CountryChart({
         })}
       </ul>
 
-      {moreCount > 0 && (
+      {countries.length > TOP_N_DEFAULT && (
         <button
-          onClick={() => setExpanded(true)}
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
           className={`mt-2 pt-2 border-t border-slate-200 w-full text-[11px] text-blue-600 hover:text-blue-800 text-center ${MAP_CONSTANTS.FOCUS_RING} rounded`}
         >
-          + {moreCount} more countries — show all
+          {expanded ? 'Show less' : `+ ${moreCount} more countries`}
         </button>
       )}
     </div>

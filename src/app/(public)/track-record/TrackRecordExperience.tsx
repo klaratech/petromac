@@ -12,10 +12,11 @@ import {
   DEVIATION_BUCKETS,
   HOLE_LABELS,
   NO_ADVANCED_FILTERS,
+  SIZE_CLASSES,
   filterRecords,
   hasActiveFilters,
   mudOptions,
-  sizeOptions,
+  pruneSizesForHoles,
   type AdvancedFilters,
 } from '@/lib/map/filters';
 
@@ -134,7 +135,7 @@ export default function TrackRecordExperience({
     advanced.deviations.length +
     advanced.muds.length +
     advanced.holes.length +
-    (advanced.size !== null ? 1 : 0);
+    advanced.sizes.length;
 
   // Advanced filters pre-narrow the records; the map and the chart both
   // consume the SAME filtered array, so they can never disagree.
@@ -143,7 +144,10 @@ export default function TrackRecordExperience({
     [data, advanced]
   );
   const mudOpts = useMemo(() => (data ? mudOptions(data) : []), [data]);
-  const sizeOpts = useMemo(() => (data ? sizeOptions(data) : []), [data]);
+  // The hole selection scopes which size classes make sense: bit sizes
+  // exist in open hole, casing sizes in cased hole (the interlink Rajesh
+  // asked for, Sep 2026). No hole selected = both groups offered.
+  const visibleHoles = advanced.holes.length > 0 ? advanced.holes : ['OH', 'CH'];
 
   // Counter + chart from ONE shared calculation with the map's exact
   // counting semantics (lib/map/process). Default (all systems, no
@@ -169,13 +173,16 @@ export default function TrackRecordExperience({
     });
   };
 
-  const toggleAdvanced = (dim: 'deviations' | 'muds' | 'holes', value: string) => {
+  const toggleAdvanced = (dim: 'deviations' | 'muds' | 'holes' | 'sizes', value: string) => {
     setAdvanced((prev) => {
       const list = prev[dim];
-      return {
+      const next = {
         ...prev,
         [dim]: list.includes(value) ? list.filter((v) => v !== value) : [...list, value],
       };
+      // Changing the hole selection hides the other hole type's size
+      // chips — a hidden active filter would silently zero the map.
+      return dim === 'holes' ? pruneSizesForHoles(next) : next;
     });
   };
 
@@ -350,27 +357,37 @@ export default function TrackRecordExperience({
               })}
             </div>
 
-            <div className="flex items-center gap-2">
-              <label
-                htmlFor="size-filter"
-                className="text-[10px] uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap"
-              >
-                Bit / csg size
-              </label>
-              <select
-                id="size-filter"
-                value={advanced.size ?? ''}
-                onChange={(e) => setAdvanced((prev) => ({ ...prev, size: e.target.value || null }))}
-                className="text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-md px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 hover:border-slate-300"
-              >
-                <option value="">Any size</option>
-                {sizeOpts.map((opt) => (
-                  <option key={opt.key} value={opt.key}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {(['OH', 'CH'] as const)
+              .filter((hole) => visibleHoles.includes(hole))
+              .map((hole) => (
+                <div
+                  key={hole}
+                  className="flex items-center gap-2"
+                  role="group"
+                  aria-label={hole === 'OH' ? 'Filter by bit size' : 'Filter by casing size'}
+                >
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
+                    {hole === 'OH' ? 'Bit size' : 'Csg size'}
+                  </span>
+                  {SIZE_CLASSES.filter((cls) => cls.hole === hole).map((cls) => {
+                    const isOn = advanced.sizes.includes(cls.key);
+                    return (
+                      <button
+                        key={cls.key}
+                        onClick={() => toggleAdvanced('sizes', cls.key)}
+                        aria-pressed={isOn}
+                        className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border ${
+                          isOn
+                            ? 'bg-blue-50 text-brand border-brand/40 hover:border-brand/70'
+                            : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-700'
+                        }`}
+                      >
+                        {cls.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
 
             {advancedCount > 0 && (
               <button

@@ -22,15 +22,15 @@ export interface AdvancedFilters {
   muds: string[];
   /** Selected hole types ("OH" / "CH"); [] = any. */
   holes: string[];
-  /** Selected size key (see sizeKey) or null = any. */
-  size: string | null;
+  /** Selected size-class keys (see SIZE_CLASSES); [] = any. */
+  sizes: string[];
 }
 
 export const NO_ADVANCED_FILTERS: AdvancedFilters = {
   deviations: [],
   muds: [],
   holes: [],
-  size: null,
+  sizes: [],
 };
 
 export interface DeviationBucket {
@@ -41,13 +41,15 @@ export interface DeviationBucket {
   max: number;
 }
 
-/** Buckets follow the industry's usual coarse bands. The source keeps 0°
- *  for vertical wells, which lands in the first bucket. */
+/** The source keeps 0° for vertical wells, which lands in the first
+ *  bucket. High deviation is where Petromac's story lives, so that end
+ *  is split finer (Rajesh, Sep 2026): 60–70 / 70–80 / 80+. */
 export const DEVIATION_BUCKETS: DeviationBucket[] = [
   { key: '0-30', label: '0–30°', min: 0, max: 30 },
   { key: '30-60', label: '30–60°', min: 30, max: 60 },
-  { key: '60-90', label: '60–90°', min: 60, max: 90 },
-  { key: '90+', label: '90°+', min: 90, max: Infinity },
+  { key: '60-70', label: '60–70°', min: 60, max: 70 },
+  { key: '70-80', label: '70–80°', min: 70, max: 80 },
+  { key: '80+', label: '80°+', min: 80, max: Infinity },
 ];
 
 /** Mud display order — by frequency in the dataset. */
@@ -67,16 +69,75 @@ export function deviationBucketOf(record: JobRecord): string | null {
   return bucket ? bucket.key : null;
 }
 
-/** Canonical string key for a record's bit/casing size — matches the keys
- *  sizeOptions() emits ("8.5", "6", "7/9.625"). */
-export function sizeKey(record: JobRecord): string | null {
+export interface SizeClass {
+  key: string;
+  label: string;
+  /** Which hole type this class belongs to — a bit size only means
+   *  anything in open hole, a casing size only in cased hole. Selecting
+   *  a class therefore implies its hole type, which is what makes the
+   *  hole chips and the size chips interlock. */
+  hole: 'OH' | 'CH';
+  /** [min, max) in inches, tested against every size component. */
+  min: number;
+  max: number;
+}
+
+/**
+ * Size classes instead of the raw 58 distinct values (Rajesh, Sep 2026).
+ * Open hole clusters around the standard bit programme — the slim
+ * 5-7/8–6-1/2 family, the 8-1/2 class with its adjacent sizes, the
+ * 12-1/4 class, and the big tophole bits — and everything else in the
+ * column is a casing OD. Boundaries sit in the gaps between families so
+ * every size in the dataset lands in exactly one class per hole type.
+ */
+export const SIZE_CLASSES: SizeClass[] = [
+  { key: 'oh-slim', label: '≤ 6-3/4″', hole: 'OH', min: 0, max: 6.9 },
+  { key: 'oh-85', label: '7″ – 9-7/8″', hole: 'OH', min: 6.9, max: 10 },
+  { key: 'oh-1225', label: '10″ – 13-3/8″', hole: 'OH', min: 10, max: 13.45 },
+  { key: 'oh-large', label: '≥ 13-1/2″', hole: 'OH', min: 13.45, max: Infinity },
+  { key: 'ch-small', label: '≤ 5-1/2″', hole: 'CH', min: 0, max: 6 },
+  { key: 'ch-7', label: '7″ – 8-5/8″', hole: 'CH', min: 6, max: 9.4 },
+  { key: 'ch-95', label: '9-5/8″ – 9-7/8″', hole: 'CH', min: 9.4, max: 10.5 },
+  { key: 'ch-large', label: '≥ 10-3/4″', hole: 'CH', min: 10.5, max: Infinity },
+];
+
+const SIZE_CLASS_BY_KEY = new Map(SIZE_CLASSES.map((c) => [c.key, c]));
+
+/** Numeric components of a record's size — "8.5" → [8.5]; a tapered or
+ *  combined string like "7/9.625" or "4.5 & 5.5" → both numbers. */
+export function sizeComponents(record: JobRecord): number[] {
   const raw = record['Bit size / Csg size [inches]'];
-  if (raw === undefined || raw === null || raw === '') return null;
-  return String(raw).trim();
+  if (raw === undefined || raw === null || raw === '') return [];
+  return String(raw)
+    .split(/[/&]/)
+    .map((piece) => Number(piece.trim()))
+    .filter((n) => Number.isFinite(n) && n > 0);
+}
+
+/** A record matches a class when its hole type agrees AND any of its
+ *  size components falls in the class range — so a tapered 7″ × 9-5/8″
+ *  completion counts for both families it touches. */
+export function matchesSizeClass(record: JobRecord, classKey: string): boolean {
+  const cls = SIZE_CLASS_BY_KEY.get(classKey);
+  if (!cls) return false;
+  if ((record['Open Hole /Cased Hole'] ?? '').trim() !== cls.hole) return false;
+  return sizeComponents(record).some((n) => n >= cls.min && n < cls.max);
+}
+
+/** Drop selected size classes whose hole type the hole selection now
+ *  excludes — the UI hides those chips, and a hidden active filter would
+ *  silently zero the map. No hole selected = both types allowed. */
+export function pruneSizesForHoles(f: AdvancedFilters): AdvancedFilters {
+  if (f.holes.length === 0) return f;
+  const sizes = f.sizes.filter((key) => {
+    const cls = SIZE_CLASS_BY_KEY.get(key);
+    return cls !== undefined && f.holes.includes(cls.hole);
+  });
+  return sizes.length === f.sizes.length ? f : { ...f, sizes };
 }
 
 export function hasActiveFilters(f: AdvancedFilters): boolean {
-  return f.deviations.length > 0 || f.muds.length > 0 || f.holes.length > 0 || f.size !== null;
+  return f.deviations.length > 0 || f.muds.length > 0 || f.holes.length > 0 || f.sizes.length > 0;
 }
 
 /**
@@ -100,7 +161,7 @@ export function filterRecords(records: JobRecord[], f: AdvancedFilters): JobReco
       const hole = (r['Open Hole /Cased Hole'] ?? '').trim();
       if (!f.holes.includes(hole)) return false;
     }
-    if (f.size !== null && sizeKey(r) !== f.size) return false;
+    if (f.sizes.length > 0 && !f.sizes.some((key) => matchesSizeClass(r, key))) return false;
     return true;
   });
 }
@@ -116,52 +177,4 @@ export function mudOptions(records: JobRecord[]): string[] {
     ...MUD_ORDER.filter((m) => found.has(m)),
     ...[...found].filter((m) => !MUD_ORDER.includes(m)).sort(),
   ];
-}
-
-/**
- * Distinct bit/casing sizes in the data, ascending by their first numeric
- * component (so "7/9.625" sorts with the 7s). Each option carries the
- * catalog-style fraction label ("8-1/2\"").
- */
-export function sizeOptions(records: JobRecord[]): { key: string; label: string }[] {
-  const found = new Set<string>();
-  for (const r of records) {
-    const key = sizeKey(r);
-    if (key) found.add(key);
-  }
-  return [...found]
-    .map((key) => ({ key, sort: parseFloat(key) }))
-    .filter(({ sort }) => Number.isFinite(sort))
-    .sort((a, b) => a.sort - b.sort || a.key.localeCompare(b.key))
-    .map(({ key }) => ({ key, label: formatInches(key) }));
-}
-
-// Sixteenths cover every fraction the drilling world prints (1/2, 1/4,
-// 3/8, 5/8, 7/8, 15/16…). Anything that isn't a clean sixteenth stays
-// decimal rather than pretending to a fraction it isn't.
-function formatOneSize(value: string): string {
-  const num = Number(value);
-  if (!Number.isFinite(num)) return value;
-  const whole = Math.floor(num);
-  const frac = num - whole;
-  if (frac === 0) return String(whole);
-  const sixteenths = frac * 16;
-  if (Math.abs(sixteenths - Math.round(sixteenths)) > 1e-9) return String(num);
-  let n = Math.round(sixteenths);
-  let d = 16;
-  while (n % 2 === 0) {
-    n /= 2;
-    d /= 2;
-  }
-  return whole > 0 ? `${whole}-${n}/${d}` : `${n}/${d}`;
-}
-
-/** "8.5" → "8-1/2\"" · "12.25" → "12-1/4\"" · "7/9.625" → "7\" / 9-5/8\""
- *  (the column stores composite runs with "/"; sizes themselves are
- *  decimal, so every "/" is a separator). */
-export function formatInches(key: string): string {
-  return key
-    .split('/')
-    .map((piece) => `${formatOneSize(piece.trim())}"`)
-    .join(' / ');
 }
