@@ -63,10 +63,13 @@ normal GitHub Actions notifications; runs are in the Actions tab.
    `/root/apps/petromac/.env-backend` on klaratech-1): add `ENTRA_TENANT_ID`,
    `ENTRA_CLIENT_ID`, `ENTRA_CLIENT_SECRET` as GitHub repo secrets
    (`gh secret set …`).
-3. **Variables** — `DATA_WORKBOOK_OWNER` = the work account (UPN) whose
-   OneDrive holds the file; `DATA_WORKBOOK_PATH` = drive-relative path
-   (currently `04.Marketing/Jobs History Master 2.0.xlsx` — update it here,
-   not in the workflow, when a "3.0" arrives).
+3. **Variable** — `DATA_WORKBOOK_URL` = the file's SharePoint web URL
+   (currently
+   `https://petromacconz424.sharepoint.com/sites/operations/Marketing/Jobs History Master 2.0.xlsx`).
+   Update it here, not in the workflow, when a "3.0" arrives. Note the Mac's
+   `OneDrive - PETROMAC Ltd/04.Marketing/` folder is this library synced —
+   the file does NOT live in a personal OneDrive, which is why the workflow
+   addresses it via Graph `/shares` by URL.
 4. **Enable** — `gh variable set DATA_REFRESH_ENABLED -b true`.
 
 Run it on demand with `gh workflow run data-refresh.yml`. Manual drops into

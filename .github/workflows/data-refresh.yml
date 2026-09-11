@@ -1,10 +1,16 @@
 # Nightly operations-data refresh — no Mac involved.
 #
-# Downloads the Jobs History Master workbook from the company OneDrive via
+# Downloads the Jobs History Master workbook from the company SharePoint via
 # Microsoft Graph (app-only client credentials on the existing "Petromac
 # Intranet" Entra app — the same app EMAIL_SETUP.md documents), runs the
 # operations pipeline, and pushes the regenerated public/data artifacts.
 # A push deploys TEST only; production still goes through Promote.
+#
+# The workbook is addressed by its web URL (DATA_WORKBOOK_URL) through
+# Graph's /shares endpoint. The Mac shows the file under
+# "OneDrive - PETROMAC Ltd/04.Marketing/", but that folder is really the
+# synced "Marketing" library of /sites/operations — the personal-drive
+# path form (/users/{upn}/drive/root:/…) 404s on it, which is why /shares.
 #
 # GATED until the one-time setup in docs/ADMIN.md §1 is done (Entra
 # Files.Read.All application permission + the three ENTRA_* secrets +
@@ -41,13 +47,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Download workbook from OneDrive (Graph app-only)
+      - name: Download workbook from SharePoint (Graph app-only)
         env:
           TENANT_ID: ${{ secrets.ENTRA_TENANT_ID }}
           CLIENT_ID: ${{ secrets.ENTRA_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.ENTRA_CLIENT_SECRET }}
-          OWNER_UPN: ${{ vars.DATA_WORKBOOK_OWNER }}
-          WORKBOOK_PATH: ${{ vars.DATA_WORKBOOK_PATH }}
+          WORKBOOK_URL: ${{ vars.DATA_WORKBOOK_URL }}
         run: |
           set -euo pipefail
           resp=$(curl -s -X POST "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token" \
@@ -61,21 +66,19 @@ jobs:
             jq 'del(.access_token)' <<<"$resp"
             exit 1
           fi
-          # URL-encode the drive path but keep its / separators.
-          encoded=$(jq -rn --arg p "$WORKBOOK_PATH" '$p|@uri' | sed 's/%2F/\//g')
+          # Graph /shares addressing: base64url-encode the file's web URL.
+          url="${WORKBOOK_URL// /%20}"
+          enc=$(printf '%s' "$url" | base64 -w0 | tr '+/' '-_' | tr -d '=')
           out="sources/operations/jobs-history-master.xlsx"
           http=$(curl -sL -w "%{http_code}" -H "Authorization: Bearer $token" \
             -o "$out" \
-            "https://graph.microsoft.com/v1.0/users/${OWNER_UPN}/drive/root:/${encoded}:/content")
+            "https://graph.microsoft.com/v1.0/shares/u!${enc}/driveItem/content")
           if [ "$http" != "200" ]; then
             echo "::error::Graph download returned HTTP $http — response body:"
             cat "$out"; echo
-            echo "--- What Graph sees at the root of ${OWNER_UPN}'s drive (names only): ---"
-            curl -s -H "Authorization: Bearer $token" \
-              "https://graph.microsoft.com/v1.0/users/${OWNER_UPN}/drive/root/children?\$select=name,folder,remoteItem&\$top=50" \
-              | jq -r '.error.message // (.value[] | .name + (if .remoteItem then "  [shortcut to another site]" else "" end))'
-            echo "403 => the Files.Read.All application permission is missing admin consent (ADMIN.md §1)."
-            echo "404 + [shortcut] above => the folder lives in SharePoint, not the personal drive — see the comment at the top of this step."
+            echo "URL tried: $url"
+            echo "403 => Files.Read.All application permission is missing admin consent (ADMIN.md §1)."
+            echo "404 => the workbook moved or was renamed — update the DATA_WORKBOOK_URL repo variable."
             rm -f "$out"
             exit 1
           fi
