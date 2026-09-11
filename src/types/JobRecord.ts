@@ -21,7 +21,7 @@
  *   Successful, Unsuccessful - Downhole Conditions,
  *   Unsuccessful - Wrong Setup, Jar Activation, Remarks, Subsystem
  *
- * ── Slim schema (`operations_data.json`, 6 columns) ──────────────────
+ * ── Slim schema (`operations_data.json`, 10 columns) ─────────────────
  */
 export interface JobRecord {
   Country: string;
@@ -32,5 +32,13 @@ export interface JobRecord {
   Subsystem: string;
   Year: number;
   Successful: number;
-  "PathFinder Run (Y/N)": string; // <-- required for the year-wise chart
+  'PathFinder Run (Y/N)': string; // <-- required for the year-wise chart
+  /** The four below feed the Track Record page's advanced filters
+   *  (Sep 2026). Optional because a kiosk service worker may still hold
+   *  the pre-Sep-2026 6-column artifact — the page hides the advanced
+   *  UI when they're absent (see TrackRecordExperience). */
+  Mud?: string; // SOBM / WBM / OBM
+  Deviation?: number | string; // degrees; source keeps 0 for vertical
+  'Bit size / Csg size [inches]'?: number | string; // 8.5, or "7/9.625"
+  'Open Hole /Cased Hole'?: string; // OH / CH
 }

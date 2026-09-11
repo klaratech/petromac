@@ -19,7 +19,6 @@ export const APP_CONSTANTS = {
   MAP_HEIGHT: 540,
 
   // Chart settings
-  MAX_CHART_COUNTRIES: 15,
   MIN_BAR_HEIGHT: 8, // pixels
   MAX_BAR_HEIGHT: 80, // pixels
 

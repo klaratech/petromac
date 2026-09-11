@@ -31,12 +31,17 @@ class Config:
     # File paths. The pipeline (scripts/node/data-pipeline.ts) passes EXCEL_PATH
     # explicitly; the default is the drop-zone location for direct runs.
     EXCEL_PATH = os.getenv('EXCEL_PATH', os.path.join(REPO_ROOT, "sources", "operations", "jobhistory.xlsx"))
-    # Slim 6-column artifact every map surface fetches (`/data/operations_data.json`).
+    # Slim 10-column artifact every map surface fetches (`/data/operations_data.json`).
     OUTPUT_FULL_JSON = os.path.join(REPO_ROOT, "public", "data", "operations_data.json")
     # Full 33-column artifact only `/intranet/kiosk/datacheck` fetches.
     OUTPUT_DIAG_JSON = os.path.join(REPO_ROOT, "public", "data", "operations_full.json")
     # Fields included in the slim artifact — keep in sync with src/types/JobRecord.ts.
-    SLIM_FIELDS = ('Country', 'System', 'Subsystem', 'Year', 'Successful', 'PathFinder Run (Y/N)')
+    # Mud / Deviation / Bit size / OH-CH added Sep 2026 for the Track Record
+    # page's advanced filters.
+    SLIM_FIELDS = (
+        'Country', 'System', 'Subsystem', 'Year', 'Successful', 'PathFinder Run (Y/N)',
+        'Mud', 'Deviation', 'Bit size / Csg size [inches]', 'Open Hole /Cased Hole',
+    )
     MASTER_COUNTRIES_JSON = os.path.join(BASE_DIR, "master_country_list.json")
     KNOWN_CITIES_JSON = os.path.join(BASE_DIR, "known_cities.json")
 
@@ -443,7 +448,7 @@ def main():
         logging.info(f"Processing metrics: {metrics}")
 
         # Convert to records and save BOTH files:
-        # - operations_data.json : 6-column slim (every map surface)
+        # - operations_data.json : 10-column slim (every map surface)
         # - operations_full.json : 33-column full (staff datacheck)
         full_records = df.to_dicts()
 

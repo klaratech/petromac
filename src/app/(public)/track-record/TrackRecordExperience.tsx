@@ -8,6 +8,16 @@ import type { JobRecord } from '@/types/JobRecord';
 import { fetchOperationsData } from '@/lib/map/data';
 import { EXTERNAL_URLS } from '@/constants/app';
 import { cumulativeDeploymentsByYear, type YearPoint } from '@/lib/map/process';
+import {
+  DEVIATION_BUCKETS,
+  HOLE_LABELS,
+  NO_ADVANCED_FILTERS,
+  filterRecords,
+  hasActiveFilters,
+  mudOptions,
+  sizeOptions,
+  type AdvancedFilters,
+} from '@/lib/map/filters';
 
 // DrilldownMapCore brings d3 + r3f-adjacent deps; keep it lazy and CSR-only.
 const DrilldownMapCore = dynamic(() => import('@/components/geo/DrilldownMapCore'), {
@@ -78,6 +88,11 @@ export default function TrackRecordExperience({
   // null = "everything" (pre-hydration / pre-data default); becomes a real
   // array once the user interacts or data seeds it.
   const [selectedSystems, setSelectedSystems] = useState<string[] | null>(null);
+  // Advanced filters (deviation / mud / hole / size). Opposite default to
+  // the system chips ON PURPOSE: nothing selected = no constraint, chips
+  // narrow — the conventional "advanced filters" pattern.
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [advanced, setAdvanced] = useState<AdvancedFilters>(NO_ADVANCED_FILTERS);
 
   // Parallelize the three big loads (operations JSON, world topojson, d3
   // chunk) instead of a serial waterfall. Effect-only: preload() in the
@@ -85,7 +100,11 @@ export default function TrackRecordExperience({
   useEffect(() => {
     preload(EXTERNAL_URLS.WORLD_MAP_DATA, { as: 'fetch' });
     void import('@/components/geo/DrilldownMapCore');
-    fetchOperationsData(dataVersion)
+    // "-s2": schema tag on top of the generation stamp. The advanced
+    // filters need the 10-column slim artifact, and generatedAt is
+    // date-only — without the tag, a CDN edge could keep serving the
+    // 6-column JSON cached earlier the same day.
+    fetchOperationsData(`${dataVersion}-s2`)
       .then(setData)
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load track record'));
   }, [dataVersion]);
@@ -107,23 +126,56 @@ export default function TrackRecordExperience({
   const effectiveSelection = selectedSystems ?? systemOptions;
   const allSelected = effectiveSelection.length === systemOptions.length;
 
+  // A kiosk service worker may still hold the pre-Sep-2026 6-column
+  // artifact; the advanced UI only renders when the fields are present.
+  const hasAdvancedFields = !!data && data.length > 0 && 'Mud' in data[0];
+  const hasAdvanced = hasActiveFilters(advanced);
+  const advancedCount =
+    advanced.deviations.length +
+    advanced.muds.length +
+    advanced.holes.length +
+    (advanced.size !== null ? 1 : 0);
+
+  // Advanced filters pre-narrow the records; the map and the chart both
+  // consume the SAME filtered array, so they can never disagree.
+  const filteredData = useMemo(
+    () => (data ? filterRecords(data, advanced) : null),
+    [data, advanced]
+  );
+  const mudOpts = useMemo(() => (data ? mudOptions(data) : []), [data]);
+  const sizeOpts = useMemo(() => (data ? sizeOptions(data) : []), [data]);
+
   // Counter + chart from ONE shared calculation with the map's exact
-  // counting semantics (lib/map/process). Default (all systems / no data
-  // yet) uses the build-time curve so SSR and first client render match.
+  // counting semantics (lib/map/process). Default (all systems, no
+  // advanced filters / no data yet) uses the build-time curve so SSR and
+  // first client render match.
   const chartPoints = useMemo<YearPoint[]>(() => {
-    if (!data || allSelected) return defaultChart;
-    return cumulativeDeploymentsByYear(data, effectiveSelection);
-  }, [data, allSelected, effectiveSelection, defaultChart]);
+    if (!filteredData || (allSelected && !hasAdvanced)) return defaultChart;
+    return cumulativeDeploymentsByYear(filteredData, effectiveSelection);
+  }, [filteredData, allSelected, hasAdvanced, effectiveSelection, defaultChart]);
 
   const liveCount = chartPoints.length > 0 ? chartPoints[chartPoints.length - 1].total : 0;
-  // All-systems shows the marketing "+" figure; a subset shows its exact count.
+  // The unfiltered view shows the marketing "+" figure; any filtered
+  // subset (systems or advanced) shows its exact count.
   const counterText =
-    allSelected || !data ? `${stats.deployments.toLocaleString()}+` : liveCount.toLocaleString();
+    (allSelected && !hasAdvanced) || !data
+      ? `${stats.deployments.toLocaleString()}+`
+      : liveCount.toLocaleString();
 
   const toggleSystem = (system: string) => {
     setSelectedSystems((prev) => {
       const base = prev ?? systemOptions;
       return base.includes(system) ? base.filter((s) => s !== system) : [...base, system];
+    });
+  };
+
+  const toggleAdvanced = (dim: 'deviations' | 'muds' | 'holes', value: string) => {
+    setAdvanced((prev) => {
+      const list = prev[dim];
+      return {
+        ...prev,
+        [dim]: list.includes(value) ? list.filter((v) => v !== value) : [...list, value],
+      };
     });
   };
 
@@ -188,6 +240,24 @@ export default function TrackRecordExperience({
                 >
                   Clear
                 </button>
+                {hasAdvancedFields && (
+                  <>
+                    <span className="h-4 w-px bg-slate-200 shrink-0" aria-hidden="true" />
+                    <button
+                      onClick={() => setAdvancedOpen((v) => !v)}
+                      aria-expanded={advancedOpen}
+                      aria-controls="advanced-filters"
+                      className={`text-xs font-medium whitespace-nowrap rounded-full px-3 py-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border ${
+                        advancedOpen || advancedCount > 0
+                          ? 'bg-blue-50 text-brand border-brand/40 hover:border-brand/70'
+                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-700'
+                      }`}
+                    >
+                      Advanced{advancedCount > 0 ? ` · ${advancedCount}` : ''}{' '}
+                      <span aria-hidden="true">{advancedOpen ? '▴' : '▾'}</span>
+                    </button>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -201,6 +271,117 @@ export default function TrackRecordExperience({
             Records &amp; success stories <span aria-hidden="true">↓</span>
           </a>
         </div>
+
+        {/* Advanced filters — deviation group, mud type, hole type, and
+            bit/casing size. Narrowing semantics: nothing selected in a
+            group means the group doesn't constrain. All four apply BEFORE
+            aggregation, so map, counter, and sparkline always agree. */}
+        {advancedOpen && hasAdvancedFields && (
+          <div
+            id="advanced-filters"
+            className="flex flex-wrap items-center gap-x-5 gap-y-2.5 px-4 md:px-5 py-3 border-b border-slate-100 bg-slate-50/60"
+          >
+            <div className="flex items-center gap-2" role="group" aria-label="Filter by deviation">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
+                Deviation
+              </span>
+              {DEVIATION_BUCKETS.map((bucket) => {
+                const isOn = advanced.deviations.includes(bucket.key);
+                return (
+                  <button
+                    key={bucket.key}
+                    onClick={() => toggleAdvanced('deviations', bucket.key)}
+                    aria-pressed={isOn}
+                    className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border ${
+                      isOn
+                        ? 'bg-blue-50 text-brand border-brand/40 hover:border-brand/70'
+                        : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-700'
+                    }`}
+                  >
+                    {bucket.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-2" role="group" aria-label="Filter by mud type">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
+                Mud
+              </span>
+              {mudOpts.map((mud) => {
+                const isOn = advanced.muds.includes(mud);
+                return (
+                  <button
+                    key={mud}
+                    onClick={() => toggleAdvanced('muds', mud)}
+                    aria-pressed={isOn}
+                    className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border ${
+                      isOn
+                        ? 'bg-blue-50 text-brand border-brand/40 hover:border-brand/70'
+                        : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-700'
+                    }`}
+                  >
+                    {mud}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-2" role="group" aria-label="Filter by hole type">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap">
+                Hole
+              </span>
+              {Object.entries(HOLE_LABELS).map(([value, label]) => {
+                const isOn = advanced.holes.includes(value);
+                return (
+                  <button
+                    key={value}
+                    onClick={() => toggleAdvanced('holes', value)}
+                    aria-pressed={isOn}
+                    className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 border ${
+                      isOn
+                        ? 'bg-blue-50 text-brand border-brand/40 hover:border-brand/70'
+                        : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:text-slate-700'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="size-filter"
+                className="text-[10px] uppercase tracking-[0.2em] text-slate-500 whitespace-nowrap"
+              >
+                Bit / csg size
+              </label>
+              <select
+                id="size-filter"
+                value={advanced.size ?? ''}
+                onChange={(e) => setAdvanced((prev) => ({ ...prev, size: e.target.value || null }))}
+                className="text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-md px-2 py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 hover:border-slate-300"
+              >
+                <option value="">Any size</option>
+                {sizeOpts.map((opt) => (
+                  <option key={opt.key} value={opt.key}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {advancedCount > 0 && (
+              <button
+                onClick={() => setAdvanced(NO_ADVANCED_FILTERS)}
+                className="text-xs whitespace-nowrap rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-slate-500 hover:text-slate-800"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Map area — the page's hero. The chart overlay (top-left, clear
             of the right-side yearly-stats drawer) merges the live
@@ -233,7 +414,7 @@ export default function TrackRecordExperience({
             </div>
           ) : (
             <DrilldownMapCore
-              data={data}
+              data={filteredData ?? data}
               hideInlineStats
               hideSystemFilter
               selectedSystems={effectiveSelection}
