@@ -5,6 +5,47 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Sep 2026 — GSC "Not found (404)" validation on dead WP URLs fails by design
+
+**Decision:** ignore the "Validation failed" state on Search Console's
+Page indexing → Not found (404) bucket. Do not touch the redirects to clear
+it, and do not keep pressing "Validate fix".
+
+**Why:** the URLs in that bucket (`/wp-json/`, per-post `/feed/` paths,
+`/wp-includes/...wp-emoji-release.min.js?ver=...`) are dead WordPress
+infrastructure that the site deliberately answers with **410 Gone** (the
+9 Aug 2026 audit; verified live on production 11 Sep 2026). GSC's
+"Validate fix" for a 404 report only passes when a URL stops being
+not-found — i.e. returns 200 or redirects. A 410 sits in the same
+not-found class, so validation on these URLs can only ever "fail" — while
+being exactly the response that makes Google drop them fastest. The bucket
+empties as Google retires the URLs; resurrecting or redirecting them to
+green a dashboard badge would be the `$0.00 offers` mistake again
+(see "Structured-data warnings aren't errors", Jul 2026).
+
+---
+
+## Sep 2026 — Operations data refreshes itself nightly, from the Mac
+
+**Decision:** the Jobs History Master workbook syncs into the site via a
+LaunchAgent on Rajesh's Mac (`scripts/nightly-data-refresh.sh`, 02:30),
+not via a GitHub Action.
+
+**Why:** the workbook lives in the company OneDrive, which is already
+synced and authenticated on the Mac — a GitHub Action would need Microsoft
+Graph or rclone credentials as repo secrets, and those OneDrive refresh
+tokens rotate and expire, which is a recurring 3am failure mode. The Mac
+also already has the full toolchain (nvm, pyenv, git keychain auth) that
+the pipeline and the pre-push gate need. The job is gated hard: it acts
+only when the workbook hash changed AND the repo is on `main`, clean, and
+identical to `origin/main`; it stages only the three `public/data/`
+artifacts; and its push deploys TEST only — production keeps the Promote
+button. Trade-off accepted: the Mac must be on (or asleep, launchd catches
+up on wake) for a night's refresh to happen; a missed night just runs the
+next one.
+
+---
+
 ## Aug 2026 — Story figures: the layout's decor is part of the figure
 
 **Decision:** `extract_story_figures.py` now reads three more things out of the

@@ -39,6 +39,29 @@ numbers shown publicly need to be current.
 
 `pnpm run data` does this as part of a full run (operations + flipbooks).
 
+**Nightly auto-refresh (installed Sep 2026):** the steps above run
+automatically every night at 02:30 via `scripts/nightly-data-refresh.sh`,
+installed as the LaunchAgent `nz.co.petromac.data-refresh` on Rajesh's Mac.
+It watches the master workbook at
+`~/Library/CloudStorage/OneDrive-PETROMACLtd/04.Marketing/Jobs History Master 2.0.xlsx`;
+when its md5 changes it copies it into `sources/operations/`, runs the
+pipeline, commits ONLY the three `public/data/` artifacts, and pushes — which
+deploys **TEST only**; production still needs the Promote button. It skips
+(with a macOS notification) whenever acting would be unsafe: workbook missing
+or renamed, modified less than 2 min ago (mid-save), repo not on `main`,
+working tree dirty, or local `main` out of sync with `origin/main`. The
+last-synced hash is written only after success, so a skipped or failed night
+simply retries the next one. Mac asleep at 02:30 → launchd runs it on wake;
+Mac off → that night is skipped.
+
+- Log: `~/Library/Logs/petromac-data-refresh.log`
+- State: `~/Library/Application Support/petromac-data-refresh/last-synced.md5`
+- Pause: `launchctl bootout gui/501/nz.co.petromac.data-refresh`
+- Resume: `launchctl bootstrap gui/501 ~/Library/LaunchAgents/nz.co.petromac.data-refresh.plist`
+- Run now: `launchctl kickstart gui/501/nz.co.petromac.data-refresh`
+- Workbook renamed (a future "3.0")? Update `SOURCE_XLSX` at the top of the
+  script.
+
 **Withheld countries — Myanmar is suppressed, not relabelled.** Rajesh's call
 (Aug 2026), implemented as `EXCLUDED_COUNTRIES` in
 `scripts/python/normalization_config.py`. Rows for a listed country are dropped
@@ -50,7 +73,7 @@ dropped — `Excluded 54 rows for withheld countries: Myanmar`.
 Myanmar was briefly published AS Vietnam instead; that was reverted the same day
 because it made the map claim deployments in a country where they never
 happened. **Consequence to expect:** published totals sit BELOW Jobs History
-Master by exactly the excluded rows (currently 3,507 of 3,561 records and 3,114
+Master by exactly the excluded rows (currently 3,561 of 3,615 records and 3,162
 deployments), while every country actually shown keeps a true count. A
 discrepancy of that size is this list, not a pipeline bug — check it first. The
 source workbook is never modified. Do NOT "fix" a map problem by renaming one
