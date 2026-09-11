@@ -39,28 +39,38 @@ numbers shown publicly need to be current.
 
 `pnpm run data` does this as part of a full run (operations + flipbooks).
 
-**Nightly auto-refresh (installed Sep 2026):** the steps above run
-automatically every night at 02:30 via `scripts/nightly-data-refresh.sh`,
-installed as the LaunchAgent `nz.co.petromac.data-refresh` on Rajesh's Mac.
-It watches the master workbook at
-`~/Library/CloudStorage/OneDrive-PETROMACLtd/04.Marketing/Jobs History Master 2.0.xlsx`;
-when its md5 changes it copies it into `sources/operations/`, runs the
-pipeline, commits ONLY the three `public/data/` artifacts, and pushes — which
-deploys **TEST only**; production still needs the Promote button. It skips
-(with a macOS notification) whenever acting would be unsafe: workbook missing
-or renamed, modified less than 2 min ago (mid-save), repo not on `main`,
-working tree dirty, or local `main` out of sync with `origin/main`. The
-last-synced hash is written only after success, so a skipped or failed night
-simply retries the next one. Mac asleep at 02:30 → launchd runs it on wake;
-Mac off → that night is skipped.
+**Nightly auto-refresh (Sep 2026):** the steps above also run automatically
+every night via `.github/workflows/data-refresh.yml` — no Mac involved. The
+workflow downloads the master workbook from the company OneDrive through
+Microsoft Graph (app-only credentials on the same "Petromac Intranet" Entra
+app that sends the site's email), runs the pipeline, and — only when the
+records actually changed — commits the three `public/data/` artifacts and
+pushes, which deploys **TEST only**; production still needs the Promote
+button. It runs typecheck + unit tests before pushing (a bot push does not
+trigger CI) and dispatches the staging deploy itself. Failures email via
+normal GitHub Actions notifications; runs are in the Actions tab.
 
-- Log: `~/Library/Logs/petromac-data-refresh.log`
-- State: `~/Library/Application Support/petromac-data-refresh/last-synced.md5`
-- Pause: `launchctl bootout gui/501/nz.co.petromac.data-refresh`
-- Resume: `launchctl bootstrap gui/501 ~/Library/LaunchAgents/nz.co.petromac.data-refresh.plist`
-- Run now: `launchctl kickstart gui/501/nz.co.petromac.data-refresh`
-- Workbook renamed (a future "3.0")? Update `SOURCE_XLSX` at the top of the
-  script.
+**One-time setup** (until done, the job shows as "skipped" every night):
+
+1. **Entra permission** — https://entra.microsoft.com → App registrations →
+   Petromac Intranet → API permissions → Add a permission → Microsoft Graph →
+   **Application permissions** → `Files.Read.All` → Add → **Grant admin
+   consent for PETROMAC LTD**. (Same 3 clicks as `Mail.Send` in
+   EMAIL_SETUP.md. Read-only, but tenant-wide — the scoped-down alternative
+   is moving the workbook into a dedicated SharePoint library and using
+   `Sites.Selected`.)
+2. **Secrets** — the same three values the backend already uses (they live in
+   `/root/apps/petromac/.env-backend` on klaratech-1): add `ENTRA_TENANT_ID`,
+   `ENTRA_CLIENT_ID`, `ENTRA_CLIENT_SECRET` as GitHub repo secrets
+   (`gh secret set …`).
+3. **Variables** — `DATA_WORKBOOK_OWNER` = the work account (UPN) whose
+   OneDrive holds the file; `DATA_WORKBOOK_PATH` = drive-relative path
+   (currently `04.Marketing/Jobs History Master 2.0.xlsx` — update it here,
+   not in the workflow, when a "3.0" arrives).
+4. **Enable** — `gh variable set DATA_REFRESH_ENABLED -b true`.
+
+Run it on demand with `gh workflow run data-refresh.yml`. Manual drops into
+`sources/operations/` keep working exactly as before.
 
 **Withheld countries — Myanmar is suppressed, not relabelled.** Rajesh's call
 (Aug 2026), implemented as `EXCLUDED_COUNTRIES` in

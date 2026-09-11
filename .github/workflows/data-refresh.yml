@@ -1,0 +1,122 @@
+# Nightly operations-data refresh — no Mac involved.
+#
+# Downloads the Jobs History Master workbook from the company OneDrive via
+# Microsoft Graph (app-only client credentials on the existing "Petromac
+# Intranet" Entra app — the same app EMAIL_SETUP.md documents), runs the
+# operations pipeline, and pushes the regenerated public/data artifacts.
+# A push deploys TEST only; production still goes through Promote.
+#
+# GATED until the one-time setup in docs/ADMIN.md §1 is done (Entra
+# Files.Read.All application permission + the three ENTRA_* secrets +
+# the DATA_WORKBOOK_OWNER variable). Enable with:
+#   gh variable set DATA_REFRESH_ENABLED -b true
+# Until then every scheduled run shows as "skipped" — that is deliberate.
+#
+# NOTE: pushes made with GITHUB_TOKEN do not trigger on:push workflows, so
+# this job dispatches deploy-staging.yml itself and runs typecheck + unit
+# tests in-job as the CI stand-in (the staging deploy still does the full
+# production build before anything ships).
+
+name: Nightly data refresh
+
+on:
+  schedule:
+    - cron: '30 1 * * *' # 02:30/03:30 Europe/Rome depending on DST
+  workflow_dispatch:
+
+concurrency:
+  group: data-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: vars.DATA_REFRESH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: write # to dispatch the staging deploy after pushing
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download workbook from OneDrive (Graph app-only)
+        env:
+          TENANT_ID: ${{ secrets.ENTRA_TENANT_ID }}
+          CLIENT_ID: ${{ secrets.ENTRA_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.ENTRA_CLIENT_SECRET }}
+          OWNER_UPN: ${{ vars.DATA_WORKBOOK_OWNER }}
+          WORKBOOK_PATH: ${{ vars.DATA_WORKBOOK_PATH }}
+        run: |
+          set -euo pipefail
+          token=$(curl -sf -X POST "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token" \
+            -d grant_type=client_credentials \
+            -d client_id="${CLIENT_ID}" \
+            -d client_secret="${CLIENT_SECRET}" \
+            -d scope=https://graph.microsoft.com/.default | jq -r .access_token)
+          # URL-encode the drive path but keep its / separators.
+          encoded=$(jq -rn --arg p "$WORKBOOK_PATH" '$p|@uri' | sed 's/%2F/\//g')
+          curl -sfL -H "Authorization: Bearer $token" \
+            -o "sources/operations/jobs-history-master.xlsx" \
+            "https://graph.microsoft.com/v1.0/users/${OWNER_UPN}/drive/root:/${encoded}:/content"
+          ls -la sources/operations/
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pipeline dependencies
+        run: pip install polars==1.38.0 fastexcel==0.19.0 openpyxl==3.1.5
+
+      - name: Run operations pipeline
+        env:
+          SKIP_GITHUB_PUSH: 'true'
+        run: pnpm run data:operations
+
+      # operations_stats.json carries generatedAt (today's date), so it alone
+      # is not a signal — only commit when the actual records changed.
+      - name: Detect real data changes
+        id: diff
+        run: |
+          if git diff --quiet -- public/data/operations_data.json public/data/operations_full.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            git checkout -- public/data
+            echo "Workbook produced identical records — nothing to publish." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Typecheck + unit tests (CI stand-in for the bot push)
+        if: steps.diff.outputs.changed == 'true'
+        run: pnpm typecheck && pnpm test:unit
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          stats=$(jq -r '"\(.deployments) deployments, \(.countries) countries"' public/data/operations_stats.json)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/operations_data.json public/data/operations_full.json public/data/operations_stats.json
+          git commit -m "data: nightly operations refresh from OneDrive ($stats)"
+          git push
+          echo "Published: $stats — deploying to test.petromac.co.nz." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deploy to test
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-staging.yml --ref main

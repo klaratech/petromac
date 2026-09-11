@@ -25,24 +25,34 @@ green a dashboard badge would be the `$0.00 offers` mistake again
 
 ---
 
-## Sep 2026 — Operations data refreshes itself nightly, from the Mac
+## Sep 2026 — Operations data refreshes itself nightly, via GitHub Actions + Graph
 
-**Decision:** the Jobs History Master workbook syncs into the site via a
-LaunchAgent on Rajesh's Mac (`scripts/nightly-data-refresh.sh`, 02:30),
-not via a GitHub Action.
+**Decision:** the Jobs History Master workbook syncs into the site through
+`.github/workflows/data-refresh.yml` — a nightly Actions cron that pulls the
+file from the company OneDrive with **Microsoft Graph app-only credentials**
+on the existing "Petromac Intranet" Entra app, runs the pipeline, and pushes
+only when the records actually changed. Setup + enable gate:
+docs/ADMIN.md §1.
 
-**Why:** the workbook lives in the company OneDrive, which is already
-synced and authenticated on the Mac — a GitHub Action would need Microsoft
-Graph or rclone credentials as repo secrets, and those OneDrive refresh
-tokens rotate and expire, which is a recurring 3am failure mode. The Mac
-also already has the full toolchain (nvm, pyenv, git keychain auth) that
-the pipeline and the pre-push gate need. The job is gated hard: it acts
-only when the workbook hash changed AND the repo is on `main`, clean, and
-identical to `origin/main`; it stages only the three `public/data/`
-artifacts; and its push deploys TEST only — production keeps the Promote
-button. Trade-off accepted: the Mac must be on (or asleep, launchd catches
-up on wake) for a night's refresh to happen; a missed night just runs the
-next one.
+**Why this, and not the two alternatives built or proposed the same
+morning.** A Mac LaunchAgent version (`scripts/nightly-data-refresh.sh`,
+deleted the same day — it's in git history) worked in principle but carried
+two costs: the Mac has to be awake for the 02:30 window, and macOS TCC
+silently denies a bare launchd `bash` access to `~/Library/CloudStorage`
+until `/bin/bash` is granted Full Disk Access — a blunt grant for a nightly
+copy job. Running it on klaratech-1 instead was rejected on the standing
+rule: servers are dumb runners that receive containers — a git checkout,
+build toolchain, and GitHub push credential don't belong on the production
+box. Actions is the scheduled Linux box the repo already trusts with all
+three. The token-rotation objection that originally argued for the Mac
+applies to _delegated_ OneDrive flows (rclone-style refresh tokens), not to
+app-only client credentials — the same auth the email path has used since
+Jul 2026. Trade-offs accepted: `Files.Read.All` application permission is
+tenant-wide read (the scoped path is a dedicated SharePoint library +
+`Sites.Selected`, not worth it for one workbook today), and a bot push
+doesn't trigger CI — so the workflow runs typecheck + unit tests itself and
+dispatches the staging deploy, and the full build still gates in that
+deploy.
 
 ---
 
