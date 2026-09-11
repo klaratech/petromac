@@ -92,7 +92,7 @@ const SOLUTIONS: Solution[] = [
     // taller and the tab strip jumped on switch (Rajesh, Aug 2026).
     proofPoints: [
       'CP-series for open hole',
-      'HELIX, Rocker, and CA7 for cased hole — across the full range',
+      'Helix and Rocker for cased hole across the full range',
     ],
     video: {
       src: '/videos/transcoded/helix-subtitled.mp4?v=20260806',
