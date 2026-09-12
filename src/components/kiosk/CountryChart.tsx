@@ -2,18 +2,22 @@ import { memo, useState } from 'react';
 import type { CountryChartProps } from '@/types/MapTypes';
 import { MAP_CONSTANTS } from '@/constants/mapConstants';
 
-const TOP_N_DEFAULT = 5;
+/** Roughly how many rows the scroll viewport shows — only used for the
+ *  "+N more countries" arithmetic, not for slicing the list. */
+const VISIBLE_ROWS = 5;
 
 /**
  * CountryChart — horizontal bar chart of country deployment counts.
  *
- * Shows the top 5 by count; the "+N more countries" footer expands to
- * every country in a scrollable list and flips to "Show less" (one
- * control, no header button — Rajesh, Sep 2026; before that the header
- * said "Show all 52" but capped the list at 15). Each row is a button
- * that selects that country on the map (opening its yearly-stats
- * drawer); the trailing chevron is the visual hint for that. Renders as
- * a compact pill anchored to the bottom-left of the map container.
+ * The FULL list renders in a scroll viewport sized to ~5 rows with a
+ * visible scrollbar — there is no expand/collapse (v3, Rajesh Sep 2026:
+ * "why click to let the scrolling appear"). The "+N more countries"
+ * footer is a passive callout whose only job is to say the list doesn't
+ * stop at what's visible; it fades out once the user scrolls down and
+ * comes back at the top. Each row is a button that selects that country
+ * on the map (opening its yearly-stats drawer); the trailing chevron is
+ * the visual hint for that. Renders as a compact pill anchored to the
+ * bottom-left of the map container.
  */
 const CountryChart = memo(function CountryChart({
   countries,
@@ -21,13 +25,12 @@ const CountryChart = memo(function CountryChart({
   selectedCountry,
   onCountryClick,
 }: CountryChartProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [atTop, setAtTop] = useState(true);
 
   if (countries.length === 0) return null;
 
   const maxCount = countries[0][1];
-  const visibleCountries = expanded ? countries : countries.slice(0, TOP_N_DEFAULT);
-  const moreCount = countries.length - visibleCountries.length;
+  const moreCount = countries.length - VISIBLE_ROWS;
 
   return (
     <div
@@ -46,8 +49,11 @@ const CountryChart = memo(function CountryChart({
         Deployments by country
       </p>
 
-      <ul className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1">
-        {visibleCountries.map(([country, count]) => {
+      <ul
+        onScroll={(e) => setAtTop(e.currentTarget.scrollTop < 8)}
+        className="space-y-1.5 max-h-[248px] overflow-y-auto pr-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300"
+      >
+        {countries.map(([country, count]) => {
           const pct = maxCount > 0 ? (count / maxCount) * 100 : 0;
           const isSelected = selectedCountry === country;
           const label = countryLabels[country] || country;
@@ -104,14 +110,15 @@ const CountryChart = memo(function CountryChart({
         })}
       </ul>
 
-      {countries.length > TOP_N_DEFAULT && (
-        <button
-          onClick={() => setExpanded((v) => !v)}
-          aria-expanded={expanded}
-          className={`mt-2 pt-2 border-t border-slate-200 w-full text-[11px] text-blue-600 hover:text-blue-800 text-center ${MAP_CONSTANTS.FOCUS_RING} rounded`}
+      {moreCount > 0 && (
+        <p
+          aria-hidden={!atTop}
+          className={`mt-2 pt-2 border-t border-slate-200 text-[11px] text-slate-500 text-center transition-opacity duration-300 ${
+            atTop ? 'opacity-100' : 'opacity-0'
+          }`}
         >
-          {expanded ? 'Show less' : `+ ${moreCount} more countries`}
-        </button>
+          + {moreCount} more countries
+        </p>
       )}
     </div>
   );
