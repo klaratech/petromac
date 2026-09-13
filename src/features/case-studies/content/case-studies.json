@@ -1012,7 +1012,7 @@
     "page": 22,
     "title": "Cement evaluation without centralizers to 85° deviation in KSA",
     "subtitle": "Tool Taxis successfully convey a IBC-CBL to 85° deviation in 9-5/8” casing",
-    "metaDescription": "Using strong in-line and slip-over centralizers for cement evaluation tools, limits the maximum deviation the tools can descend to under gravity.",
+    "metaDescription": "Using strong inline and slip-over centralizers for cement evaluation tools, limits the maximum deviation the tools can descend to under gravity.",
     "country": "Saudi Arabia",
     "region": "MENA",
     "year": 2020,
@@ -1021,7 +1021,7 @@
     "categories": ["Well Access: Deviation", "Centralization"],
     "references": [],
     "challenge": [
-      "Using strong in-line and slip-over centralizers for cement evaluation tools, limits the maximum deviation the tools can descend to under gravity."
+      "Using strong inline and slip-over centralizers for cement evaluation tools, limits the maximum deviation the tools can descend to under gravity."
     ],
     "solution": [
       "The IBC-CBL was run on centralizing Tool Taxis, removing the need for the centralizers."
@@ -1032,7 +1032,7 @@
     "learnings": [],
     "narrative": [
       "Operators in the Middle East routinely require cement evaluation in very highly deviated wellbores. IBC-CBL in extended reach wells can quickly become inefficient and expensive due to difficulties in logging tool conveyance.",
-      "Traditional methods of centralizing the IBC-CBL using in-line and slip-over centralizers caused excessive drag. This makes it challenging to descend past 60° deviation via gravity. Operators had to resort to pipe or tractor conveyed logging for higher deviations. Pipe conveyed logging is operationally complex, time consuming and risky, whereas tractor conveyance can sometimes be limited by force output in long laterals.",
+      "Traditional methods of centralizing the IBC-CBL using inline and slip-over centralizers caused excessive drag. This makes it challenging to descend past 60° deviation via gravity. Operators had to resort to pipe or tractor conveyed logging for higher deviations. Pipe conveyed logging is operationally complex, time consuming and risky, whereas tractor conveyance can sometimes be limited by force output in long laterals.",
       "To overcome this, the centralizers were replaced by centralizing Tool Taxis, and tool strings now routinely descend on gravity to >85° deviation, with eccentricity, ECCE, well within tolerances.",
       "**Track record includes horizontal logging of IBC-CBL over 20kft, with an ECCE below 0.2”.**"
     ],
@@ -1448,7 +1448,7 @@
     "page": 30,
     "title": "PathFinder – A success story from New Zealand",
     "subtitle": "The Imager toolstring was held up above target depth. The same toolstring, fitted with Pathfinder, ran seamlessly to TD on the remedial run.",
-    "metaDescription": "Prevent hold-up on ledges in small deviated wellbores that are prone to washouts.",
+    "metaDescription": "Prevent holdup on ledges in small deviated wellbores that are prone to washouts.",
     "country": "New Zealand",
     "region": "APAC",
     "year": 2022,
@@ -1457,19 +1457,19 @@
     "categories": ["Well Access: Ledges"],
     "references": [],
     "challenge": [
-      "Prevent hold-up on ledges in small deviated wellbores that are prone to washouts."
+      "Prevent holdup on ledges in small deviated wellbores that are prone to washouts."
     ],
     "solution": ["Mitigate risk with the Petromac Pathfinder as a contingency solution."],
     "results": [
-      "OBM Imager toolstring was unable to descend past a ledge 350m above TD. The toolstring was POOH, fitted with Pathfinder and immediately ran again. Pathfinder guided the toolstring smoothly to TD without any hold-up."
+      "OBM Imager toolstring was unable to descend past a ledge 350m above TD. The toolstring was POOH, fitted with Pathfinder and immediately ran again. Pathfinder guided the toolstring smoothly to TD without any holdup."
     ],
     "learnings": [
       "Following this logging run, the Pathfinder was used on all subsequent operations.",
-      "Pathfinder eliminates costly Non-Productive Time caused by hold-up in challenging wellbores."
+      "Pathfinder eliminates costly Non-Productive Time caused by holdup in challenging wellbores."
     ],
     "narrative": [
       "Petromac Pathfinder is a hole finder device that can be attached to the bottom of any wireline logging toolstring. It has been successfully deployed on HAL, Baker and SLB tools.",
-      "The Pathfinder mandrel is made from strong, ultra-light carbon fiber composite. The integral bow-spring centralizer ensures the Pathfinder nose is at the centre of the wellbore regardless of the hole size, thereby avoiding ledges. The Pathfinder is suitable for wellbores from 6 to 26in, regardless of deviation.",
+      "The Pathfinder mandrel is made from strong, ultra-light carbon fiber composite. The integral bowspring centralizer ensures the Pathfinder nose is at the centre of the wellbore regardless of the hole size, thereby avoiding ledges. The Pathfinder is suitable for wellbores from 6 to 26in, regardless of deviation.",
       "Pathfinder was mobilized as a contingency for a four well (S-shape and J-shape) drilling campaign in New Zealand. Borehole breakouts with associated ledges were anticipated.",
       "In the third well, the Oil Based Mud Imager toolstring, ran with conventional bottom nose, was held up 350m above TD. The toolstring was pulled out of hole and fitted with the Pathfinder. The toolstring, guided by Pathfinder, ran seamlessly to TD.",
       "Pathfinder was used preventively on all logging runs of the remaining well of the campaign, and all Wireline logging operations ran smoothly."
@@ -1608,8 +1608,8 @@
     "slug": "18-inch-washout-navigated-in-vertical-well-in-peru",
     "page": 33,
     "title": "18”+ washout successfully navigated in a vertical well in Peru",
-    "subtitle": "A standalone hole-finder system (Pathfinder) centered the bottom of the tool in a huge washout ,which permitted the toolstring to pass through seamlessly.",
-    "metaDescription": "Prevent hold-up on vertical wells that are prone to huge washouts beneath the casing shoe.",
+    "subtitle": "A standalone holefinder system (Pathfinder) centered the bottom of the tool in a huge washout ,which permitted the toolstring to pass through seamlessly.",
+    "metaDescription": "Prevent holdup on vertical wells that are prone to huge washouts beneath the casing shoe.",
     "country": "Peru",
     "region": "LAM",
     "year": 2021,
@@ -1618,7 +1618,7 @@
     "categories": ["Well Access: Ledges"],
     "references": [],
     "challenge": [
-      "Prevent hold-up on vertical wells that are prone to huge washouts beneath the casing shoe."
+      "Prevent holdup on vertical wells that are prone to huge washouts beneath the casing shoe."
     ],
     "solution": [
       "Run Petromac Pathfinder to centralize the bottom of the tool in order to pass through the washouts."
@@ -1629,7 +1629,7 @@
     "learnings": [],
     "narrative": [
       "Petromac Pathfinder is a hole finder device that can be attached to the bottom of any wireline logging toolstring.",
-      "The Pathfinder mandrel is made from strong, ultra-light carbon fiber composite. The integral bow-spring centralizer ensures the Pathfinder nose is at the center of the wellbore regardless of the hole size, thereby avoiding ledges. The Pathfinder is suitable for wellbores from 6 to 26in, regardless of deviation.",
+      "The Pathfinder mandrel is made from strong, ultra-light carbon fiber composite. The integral bowspring centralizer ensures the Pathfinder nose is at the center of the wellbore regardless of the hole size, thereby avoiding ledges. The Pathfinder is suitable for wellbores from 6 to 26in, regardless of deviation.",
       "The Pathfinder was mobilized for a vertical well in a remote location in Peru, where, historically, it had not been possible to navigate the enormous washouts formed below the casing shoe."
     ],
     "narrativeSubheads": [],
@@ -2117,7 +2117,7 @@
     "page": 42,
     "title": "Enabling critical data and sample acquisition in fractured and washed out wells",
     "subtitle": "Tool Taxis with Pathfinder successfully navigated toolstrings to TD where previous runs hung up due to ledges and washouts.",
-    "metaDescription": "Prevent toolstring hold-up in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acquisition.",
+    "metaDescription": "Prevent toolstring holdup in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acquisition.",
     "country": "Australia",
     "region": "APAC",
     "year": 2024,
@@ -2126,7 +2126,7 @@
     "categories": ["Well Access: Ledges"],
     "references": [],
     "challenge": [
-      "Prevent toolstring hold-up in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acquisition."
+      "Prevent toolstring holdup in wells prone to have ledges, washouts and fractures that curtailed critical wireline data and sample acquisition."
     ],
     "solution": [
       "Run Tool Taxis with Pathfinder to enable toolstring to navigate over ledges and washouts. Low drag of Tool Taxis enables good image data quality and reduced differential sticking risk."
@@ -2353,7 +2353,7 @@
     "learnings": [],
     "narrative": [
       "In Guyana’s deepwater wells, deviations of **60–70°** had traditionally required **TLC conveyance**, adding risk and costly rig time. Petromac **Tool Taxis** improved efficiency by reducing drag and enabling gravity descent, but severe washouts still caused tool hang-ups.",
-      "The solution was the addition of the **Pathfinder centralized hole-finder**, which guided the toolstring smoothly through ledges and washouts.",
+      "The solution was the addition of the **Pathfinder centralized holefinder**, which guided the toolstring smoothly through ledges and washouts.",
       "On its first run with a CMR–MDT combination, Pathfinder enabled full **gravity descent to TD through a 1,500 ft tangent at 66°**. In addition, taxis ensured zero sticking even on an **8.5-hour MDT station**.",
       "Overall, by avoiding pipe-conveyed logging, the operator saved **~2 days of rig time**, translating into substantial cost savings while ensuring safe, reliable data acquisition."
     ],
@@ -2382,9 +2382,9 @@
   {
     "slug": "eliminate-toolstring-hold-up-on-severe-rathole-ledges",
     "page": 47,
-    "title": "Eliminate Toolstring Hold-up on Severe Rathole Ledges",
-    "subtitle": "PathFinder is a standalone hole-finder that centralizes the toolstring nose, enabling smooth passage over ledges and sudden borehole reductions.",
-    "metaDescription": "Prevent toolstring hold-up at a severe rathole ledge where the borehole reduces abruptly from 28” to 17.5”.",
+    "title": "Eliminate Toolstring Holdup on Severe Rathole Ledges",
+    "subtitle": "PathFinder is a standalone holefinder that centralizes the toolstring nose, enabling smooth passage over ledges and sudden borehole reductions.",
+    "metaDescription": "Prevent toolstring holdup at a severe rathole ledge where the borehole reduces abruptly from 28” to 17.5”.",
     "country": "Mexico",
     "region": "LAM",
     "year": 2025,
@@ -2393,10 +2393,10 @@
     "categories": ["Well Access: Ledges", "Operational Efficiency"],
     "references": [],
     "challenge": [
-      "Prevent toolstring hold-up at a severe rathole ledge where the borehole reduces abruptly from 28” to 17.5”."
+      "Prevent toolstring holdup at a severe rathole ledge where the borehole reduces abruptly from 28” to 17.5”."
     ],
     "solution": [
-      "Mitigate operational risk by deploying the PathFinder as a centralized hole-finder to guide the toolstring beyond the ledge."
+      "Mitigate operational risk by deploying the PathFinder as a centralized holefinder to guide the toolstring beyond the ledge."
     ],
     "results": [
       "PathFinder proves to be an essential enabler for logging vertical wells with challenging borehole geometries. It eliminates costly non-productive time and ensures successful passage through abrupt rathole reductions."
@@ -2503,9 +2503,9 @@
     ],
     "learnings": [],
     "narrative": [
-      "An operator in Nigeria had previously done a multi-well Cement Evaluation campaign in very high deviations using tractors for conveyance and in-line centralizers. Due to cost and operational challenges, they were looking for an alternative for the new campaign.",
+      "An operator in Nigeria had previously done a multi-well Cement Evaluation campaign in very high deviations using tractors for conveyance and inline centralizers. Due to cost and operational challenges, they were looking for an alternative for the new campaign.",
       "Following Petromac’s presentation of its ultra-low drag centralization devices (CA7) used in 7” casing, they approved its use for a test run on the first well. In combination with specially built weight bars, the CA7s conveyed the toolstring to 78° deviation by gravity alone, meeting the job depth objectives, while at the same time, providing perfect centralization and excellent data quality.",
-      "The success of the test run convinced the client to continue the campaign with Petromac’s C7s only, replacing the use of tractors and in-line centralizers."
+      "The success of the test run convinced the client to continue the campaign with Petromac’s C7s only, replacing the use of tractors and inline centralizers."
     ],
     "narrativeSubheads": [],
     "callout": null,
