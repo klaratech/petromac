@@ -3,6 +3,16 @@
 This folder is where raw content updates go **in**. The published output goes
 to `public/` (operations data → `public/data/`, flipbooks → `public/flipbooks/`).
 
+**Most updates now arrive on their own (Sep 2026):** `sources.json` is the
+registry of where each source lives in the company SharePoint, and two
+workflows pull from it — `data-refresh.yml` nightly for the job-history
+workbook, `content-refresh.yml` monthly for the catalog and success-stories
+InDesign packages (newest edition folder wins, 24h quiet period, pushes to
+TEST only). `.content-state.json` records what was last synced. Moving a
+source = edit `sources.json`. The tags xlsx is NOT auto-synced. Manual drops
+as described below keep working exactly as before — the workflows and the
+drop zone feed the same pipelines.
+
 Files you drop here are **never committed** — only the structure and this
 README are tracked. Build the published artifacts with `pnpm run data`.
 

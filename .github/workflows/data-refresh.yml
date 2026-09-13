@@ -6,15 +6,16 @@
 # operations pipeline, and pushes the regenerated public/data artifacts.
 # A push deploys TEST only; production still goes through Promote.
 #
-# The workbook is addressed by its web URL (DATA_WORKBOOK_URL) through
-# Graph's /shares endpoint. The Mac shows the file under
+# The workbook is addressed by its web URL (from sources/sources.json,
+# the registry of every SharePoint content location) through Graph's
+# /shares endpoint. The Mac shows the file under
 # "OneDrive - PETROMAC Ltd/04.Marketing/", but that folder is really the
 # synced "Marketing" library of /sites/operations — the personal-drive
 # path form (/users/{upn}/drive/root:/…) 404s on it, which is why /shares.
 #
 # GATED until the one-time setup in docs/ADMIN.md §1 is done (Entra
-# Files.Read.All application permission + the three ENTRA_* secrets +
-# the DATA_WORKBOOK_OWNER variable). Enable with:
+# Files.Read.All application permission + the three ENTRA_* secrets).
+# Enable with:
 #   gh variable set DATA_REFRESH_ENABLED -b true
 # Until then every scheduled run shows as "skipped" — that is deliberate.
 #
@@ -52,9 +53,12 @@ jobs:
           TENANT_ID: ${{ secrets.ENTRA_TENANT_ID }}
           CLIENT_ID: ${{ secrets.ENTRA_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.ENTRA_CLIENT_SECRET }}
-          WORKBOOK_URL: ${{ vars.DATA_WORKBOOK_URL }}
         run: |
           set -euo pipefail
+          # The source registry (sources/sources.json) is the single home
+          # for every SharePoint location — it replaced the
+          # DATA_WORKBOOK_URL repo variable (Sep 2026).
+          WORKBOOK_URL=$(jq -r '.operations.url' sources/sources.json)
           resp=$(curl -s -X POST "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token" \
             -d grant_type=client_credentials \
             -d client_id="${CLIENT_ID}" \
@@ -78,7 +82,7 @@ jobs:
             cat "$out"; echo
             echo "URL tried: $url"
             echo "403 => Files.Read.All application permission is missing admin consent (ADMIN.md §1)."
-            echo "404 => the workbook moved or was renamed — update the DATA_WORKBOOK_URL repo variable."
+            echo "404 => the workbook moved or was renamed — update .operations.url in sources/sources.json."
             rm -f "$out"
             exit 1
           fi

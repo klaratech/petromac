@@ -1,0 +1,239 @@
+# Monthly catalog + success-stories refresh — no Mac involved.
+#
+# For each edition-folder source in sources/sources.json: resolve the
+# parent folder in SharePoint (Graph app-only, same Entra app as
+# data-refresh.yml), pick the NEWEST subfolder that contains an .idml —
+# editions arrive as new sibling folders, so this mirrors the local drop
+# zone's "newest wins" — hash its file metadata, and only when that hash
+# differs from sources/.content-state.json AND the edition has been
+# quiet for 24h (a folder dated today is likely still being worked on)
+# download it and run the content pipeline. Outputs commit + push, which
+# deploys TEST only; production still goes through Promote.
+#
+# The 24h quiet period can be bypassed with the "force" dispatch input.
+# A no-change probe costs a few Graph calls and touches nothing.
+#
+# Expect the FIRST ingest of a source (and any runner poppler upgrade)
+# to re-encode every flipbook webp — visually identical, big diff. The
+# validators + unit tests + the test deploy gate what ships.
+
+name: Content refresh (catalog + success stories)
+
+on:
+  schedule:
+    - cron: '30 2 1 * *' # 1st of the month, 02:30 UTC
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Which source to refresh'
+        type: choice
+        options: [all, catalog, success-stories]
+        default: all
+      force:
+        description: 'Ignore the 24h quiet period'
+        type: boolean
+        default: false
+
+concurrency:
+  group: content-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: vars.DATA_REFRESH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      actions: write # to dispatch the staging deploy after pushing
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Probe SharePoint and download changed editions
+        id: sync
+        env:
+          TENANT_ID: ${{ secrets.ENTRA_TENANT_ID }}
+          CLIENT_ID: ${{ secrets.ENTRA_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.ENTRA_CLIENT_SECRET }}
+          ONLY_SOURCE: ${{ inputs.source || 'all' }}
+          FORCE: ${{ inputs.force || 'false' }}
+        run: |
+          set -euo pipefail
+          token=$(curl -s -X POST "https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token" \
+            -d grant_type=client_credentials -d client_id="${CLIENT_ID}" \
+            -d client_secret="${CLIENT_SECRET}" -d scope=https://graph.microsoft.com/.default \
+            | jq -r '.access_token // empty')
+          [ -n "$token" ] || { echo "::error::Entra token request failed"; exit 1; }
+          gapi() { curl -sf -H "Authorization: Bearer $token" "$1"; }
+
+          # Page through a children listing, emitting every item.
+          list_children() { # $1=driveId $2=itemId
+            local url="https://graph.microsoft.com/v1.0/drives/$1/items/$2/children?\$top=200"
+            while [ -n "$url" ] && [ "$url" != "null" ]; do
+              local page; page=$(gapi "$url")
+              jq -c '.value[]' <<<"$page"
+              url=$(jq -r '."@odata.nextLink" // empty' <<<"$page")
+            done
+          }
+
+          # Recursive metadata walk (skips "Document fonts" and .indd):
+          # emits "relpath|id|eTag|size|mtime|itemId" per FILE.
+          walk() { # $1=driveId $2=itemId $3=relprefix
+            list_children "$1" "$2" | while IFS= read -r item; do
+              local name kind id
+              name=$(jq -r '.name' <<<"$item")
+              id=$(jq -r '.id' <<<"$item")
+              kind=$(jq -r 'if .folder then "folder" else "file" end' <<<"$item")
+              if [ "$kind" = "folder" ]; then
+                [ "$name" = "Document fonts" ] && continue
+                walk "$1" "$id" "$3$name/"
+              else
+                case "$name" in *.indd) continue;; esac
+                jq -r --arg p "$3$name" '"\($p)|\(.id)|\(.eTag)|\(.size)|\(.lastModifiedDateTime)|\(.id)"' <<<"$item"
+              fi
+            done
+          }
+
+          state_file="sources/.content-state.json"
+          [ -f "$state_file" ] || echo '{}' > "$state_file"
+          changed=false
+          notes=""
+
+          for key in catalog success-stories; do
+            if [ "$ONLY_SOURCE" != "all" ] && [ "$ONLY_SOURCE" != "$key" ]; then continue; fi
+            parent_url=$(jq -r --arg k "$key" '.[$k].parentUrl' sources/sources.json)
+            enc=$(printf '%s' "${parent_url// /%20}" | base64 -w0 | tr '+/' '-_' | tr -d '=')
+            parent=$(gapi "https://graph.microsoft.com/v1.0/shares/u!${enc}/driveItem") \
+              || { echo "::error::$key: cannot resolve $parent_url"; exit 1; }
+            drive=$(jq -r '.parentReference.driveId' <<<"$parent")
+            pid=$(jq -r '.id' <<<"$parent")
+
+            # Newest subfolder that contains an .idml at its top level.
+            edition_id=""; edition_name=""; edition_mtime=""
+            while IFS= read -r item; do
+              jq -e '.folder' >/dev/null <<<"$item" || continue
+              fid=$(jq -r '.id' <<<"$item")
+              has_idml=$(list_children "$drive" "$fid" | jq -rs 'map(.name) | any(endswith(".idml"))')
+              [ "$has_idml" = "true" ] || continue
+              mtime=$(jq -r '.lastModifiedDateTime' <<<"$item")
+              if [ -z "$edition_mtime" ] || [[ "$mtime" > "$edition_mtime" ]]; then
+                edition_id=$fid; edition_mtime=$mtime
+                edition_name=$(jq -r '.name' <<<"$item")
+              fi
+            done < <(list_children "$drive" "$pid")
+            [ -n "$edition_id" ] || { echo "::error::$key: no edition folder with an .idml under $parent_url"; exit 1; }
+
+            listing=$(walk "$drive" "$edition_id" "" | sort)
+            hash=$(printf '%s' "$listing" | sha256sum | cut -d' ' -f1)
+            newest=$(printf '%s\n' "$listing" | awk -F'|' '{print $5}' | sort | tail -1)
+            prev=$(jq -r --arg k "$key" '.[$k].hash // "none"' "$state_file")
+            echo "## $key" >> "$GITHUB_STEP_SUMMARY"
+            echo "Edition: **$edition_name** · files: $(printf '%s\n' "$listing" | grep -c .) · newest edit: $newest" >> "$GITHUB_STEP_SUMMARY"
+
+            if [ "$hash" = "$prev" ]; then
+              echo "No change (state matches) — skipping." >> "$GITHUB_STEP_SUMMARY"
+              continue
+            fi
+            age=$(( $(date +%s) - $(date -d "$newest" +%s) ))
+            if [ "$FORCE" != "true" ] && [ "$age" -lt 86400 ]; then
+              echo "Changed, but edited $((age/3600))h ago (<24h quiet period) — likely still in progress. Skipping; re-run with force=true to ingest now." >> "$GITHUB_STEP_SUMMARY"
+              continue
+            fi
+
+            echo "Changed — downloading '$edition_name'…" >> "$GITHUB_STEP_SUMMARY"
+            dest="sources/$key/$edition_name"
+            rm -rf "sources/$key" && mkdir -p "$dest"
+            while IFS='|' read -r rel _ _ _ _ itemid; do
+              [ -n "$rel" ] || continue
+              mkdir -p "$dest/$(dirname "$rel")"
+              curl -sfL -H "Authorization: Bearer $token" \
+                -o "$dest/$rel" \
+                "https://graph.microsoft.com/v1.0/drives/$drive/items/$itemid/content" \
+                || { echo "::error::$key: failed downloading $rel"; exit 1; }
+            done <<<"$listing"
+            if [ "$key" = "catalog" ]; then
+              # The edition's export PDF is also the catalog download artifact
+              # (compressed by the flipbooks ingest) — surface it as a loose drop.
+              find "$dest" -maxdepth 1 -name '*.pdf' -exec cp {} "sources/catalog/" \;
+            fi
+            jq --arg k "$key" --arg h "$hash" --arg e "$edition_name" \
+              '.[$k] = {hash: $h, edition: $e}' "$state_file" > "$state_file.tmp" \
+              && mv "$state_file.tmp" "$state_file"
+            changed=true
+            notes="$notes $key:'$edition_name'"
+          done
+
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          echo "notes=${notes# }" >> "$GITHUB_OUTPUT"
+          # A hash recorded without new outputs (first-run bootstrap where the
+          # pipeline produces identical artifacts) still needs committing.
+          if ! git diff --quiet -- "$state_file"; then echo "state_dirty=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Set up Node.js
+        if: steps.sync.outputs.changed == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Enable pnpm and install
+        if: steps.sync.outputs.changed == 'true'
+        run: corepack enable && pnpm install --frozen-lockfile
+
+      - name: Set up Python + pipeline dependencies
+        if: steps.sync.outputs.changed == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system + Python dependencies
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q poppler-utils ghostscript qpdf
+          pip install -q -r scripts/python/requirements.txt
+
+      - name: Run content pipeline
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          SKIP_GITHUB_PUSH: 'true'
+        run: pnpm run data
+
+      - name: Validate + typecheck + unit tests
+        if: steps.sync.outputs.changed == 'true'
+        run: pnpm run data:check && pnpm typecheck && pnpm test:unit
+
+      - name: Upload figure review sheet
+        if: steps.sync.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: figures-review
+          path: public/flipbooks/success-stories/figures/REVIEW.html
+          if-no-files-found: ignore
+
+      - name: Commit and push
+        id: commit
+        if: steps.sync.outputs.changed == 'true' || steps.sync.outputs.state_dirty == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sources/.content-state.json src/features/catalog/content src/features/case-studies public/images/catalog public/flipbooks
+          if git diff --cached --quiet; then
+            echo "Pipeline outputs identical — nothing to publish." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if git diff --cached --quiet -- ':!sources/.content-state.json'; then
+            git commit -m "content: record source state (outputs unchanged)"
+          else
+            git commit -m "content: refresh from SharePoint — ${{ steps.sync.outputs.notes }}"
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+          git push
+          echo "Committed and pushed — test.petromac.co.nz will redeploy." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deploy to test
+        if: steps.commit.outputs.deploy == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-staging.yml --ref main

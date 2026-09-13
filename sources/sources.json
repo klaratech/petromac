@@ -1,0 +1,20 @@
+{
+  "_readme": "Registry of where each content source lives in the company SharePoint. The scheduled workflows read THIS file — update a URL here (commit + push) and the sync follows; nothing else to configure. Manual drops into the sources/ folders keep working exactly as before. See sources/README.md and docs/ADMIN.md.",
+  "operations": {
+    "kind": "file",
+    "url": "https://petromacconz424.sharepoint.com/sites/operations/Marketing/Jobs History Master 2.0.xlsx",
+    "refresh": "nightly — .github/workflows/data-refresh.yml"
+  },
+  "catalog": {
+    "kind": "edition-folder",
+    "parentUrl": "https://petromacconz424.sharepoint.com/sites/GraphicDesign/Success Stories/Catalogue 2026",
+    "refresh": "monthly probe — .github/workflows/content-refresh.yml",
+    "note": "The newest subfolder containing an .idml is the edition (its export PDF also becomes the catalog download artifact). Parent is year-named — point this at the new year's folder when one appears."
+  },
+  "success-stories": {
+    "kind": "edition-folder",
+    "parentUrl": "https://petromacconz424.sharepoint.com/sites/GraphicDesign/Success Stories/Success Stories",
+    "refresh": "monthly probe — .github/workflows/content-refresh.yml",
+    "note": "Newest subfolder containing an .idml is the edition (needs .idml + Links/ + export PDF, which the designer's package folders already carry). The tags xlsx is NOT auto-synced — drop it manually when tags change."
+  }
+}

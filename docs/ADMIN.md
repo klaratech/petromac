@@ -63,14 +63,30 @@ normal GitHub Actions notifications; runs are in the Actions tab.
    `/root/apps/petromac/.env-backend` on klaratech-1): add `ENTRA_TENANT_ID`,
    `ENTRA_CLIENT_ID`, `ENTRA_CLIENT_SECRET` as GitHub repo secrets
    (`gh secret set …`).
-3. **Variable** — `DATA_WORKBOOK_URL` = the file's SharePoint web URL
-   (currently
-   `https://petromacconz424.sharepoint.com/sites/operations/Marketing/Jobs History Master 2.0.xlsx`).
-   Update it here, not in the workflow, when a "3.0" arrives. Note the Mac's
+3. **Source URL** — lives in `sources/sources.json` (`.operations.url`),
+   the registry of every SharePoint content location. Update it there, not
+   in the workflow, when a "3.0" arrives. Note the Mac's
    `OneDrive - PETROMAC Ltd/04.Marketing/` folder is this library synced —
    the file does NOT live in a personal OneDrive, which is why the workflow
    addresses it via Graph `/shares` by URL.
 4. **Enable** — `gh variable set DATA_REFRESH_ENABLED -b true`.
+
+**Catalog + success stories refresh themselves too (Sep 2026):**
+`.github/workflows/content-refresh.yml` probes the `sources/sources.json`
+parent folders monthly (1st, 02:30 UTC) — the designer's edition folders in
+the `Designs` library (`/sites/GraphicDesign`). It picks the NEWEST
+subfolder containing an `.idml` (editions arrive as new sibling folders),
+and only when its content hash differs from `sources/.content-state.json`
+AND the edition has sat untouched for 24h (a folder saved today is likely
+mid-work) does it download the package, run `pnpm run data`, validate, and
+push — TEST deploy only. Run it on demand with
+`gh workflow run content-refresh.yml` (inputs: `source`, `force` to skip
+the quiet period). Caveats: the **tags xlsx is NOT auto-synced** — tag
+changes are still a manual drop; the first ingest of a source (or a runner
+poppler upgrade) re-encodes every flipbook webp — a big but visually
+identical diff; and a new catalog edition still wants a human pass over
+the `catalog.json` diff + any new-device curation warnings (§2b) before
+promoting. Manual drops keep working exactly as before.
 
 Run it on demand with `gh workflow run data-refresh.yml`. Manual drops into
 `sources/operations/` keep working exactly as before.

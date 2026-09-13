@@ -25,6 +25,33 @@ green a dashboard badge would be the `$0.00 offers` mistake again
 
 ---
 
+## Sep 2026 — All content sources sync from SharePoint via one registry
+
+**Decision:** `sources/sources.json` is the single registry of where every
+content source lives in SharePoint. `data-refresh.yml` (nightly) reads the
+workbook URL from it; `content-refresh.yml` (monthly + on-demand) probes
+the catalog and success-stories parents in the `Designs` library, picks the
+newest edition subfolder containing an `.idml`, and ingests it only when
+its metadata hash changed (`sources/.content-state.json`) AND it has been
+quiet for 24h.
+
+**Why:** Rajesh was hand-copying packages from SharePoint into `sources/`;
+the registry removes that without changing the pipelines — the workflows
+and the local drop zone feed identical inputs. Newest-subfolder selection
+mirrors the drop zone's "newest file wins", because editions arrive as new
+sibling folders (`Petromac Catalog - 06.08.2026`, `…13.09.2026`), so a
+fixed folder URL would go stale per edition. The 24h quiet period exists
+because an edition folder dated today is plausibly still being assembled —
+half-synced Links are the failure mode. State lives in a committed file,
+not repo variables, so it rides the same commit as the outputs it
+describes. Accepted rough edges: the tags xlsx stays manual; the first
+CI ingest re-encodes every flipbook webp (runner poppler ≠ Mac poppler —
+visually identical, noisy diff, gated by validators + the TEST deploy);
+and monthly cadence is just the safety net — a fresh edition is normally
+pulled on demand with `gh workflow run content-refresh.yml`.
+
+---
+
 ## Sep 2026 — Operations data refreshes itself nightly, via GitHub Actions + Graph
 
 **Decision:** the Jobs History Master workbook syncs into the site through
