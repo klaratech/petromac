@@ -42754,5 +42754,17 @@
     "Deviation": "0",
     "Bit size / Csg size [inches]": "17.5",
     "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Suriname",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "0",
+    "Bit size / Csg size [inches]": "12.25",
+    "Open Hole /Cased Hole": "OH"
   }
 ]
