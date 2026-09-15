@@ -106,7 +106,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -151,4 +151,14 @@ jobs:
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run deploy-staging.yml --ref main
+        run: |
+          # GitHub's API occasionally 500s on dispatch (seen 15 Sep 2026).
+          # The push above already landed, so a lost dispatch just leaves
+          # test stale — retry before failing the night.
+          for i in 1 2 3; do
+            gh workflow run deploy-staging.yml --ref main && exit 0
+            echo "dispatch attempt $i failed; retrying in $((i * 15))s…"
+            sleep $((i * 15))
+          done
+          echo "::error::deploy-staging dispatch failed 3x — test is stale until the next push or a manual 'gh workflow run deploy-staging.yml'."
+          exit 1
