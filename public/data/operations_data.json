@@ -42790,5 +42790,41 @@
     "Deviation": "10",
     "Bit size / Csg size [inches]": "8.5",
     "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Tanzania",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES",
+    "Mud": "SOBM",
+    "Deviation": "81",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Tanzania",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES",
+    "Mud": "SOBM",
+    "Deviation": "81",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Tanzania",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "81",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
   }
 ]
