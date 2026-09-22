@@ -39873,7 +39873,7 @@
     "Mud": "SOBM",
     "Deviation": "56.27",
     "Bit size / Csg size [inches]": "8.5",
-    "Open Hole /Cased Hole": "CH"
+    "Open Hole /Cased Hole": "OH"
   },
   {
     "Country": "Kuwait",
@@ -39885,7 +39885,7 @@
     "Mud": "SOBM",
     "Deviation": "56.27",
     "Bit size / Csg size [inches]": "8.5",
-    "Open Hole /Cased Hole": "CH"
+    "Open Hole /Cased Hole": "OH"
   },
   {
     "Country": "Namibia",
@@ -40305,7 +40305,7 @@
     "Mud": "SOBM",
     "Deviation": "54.6",
     "Bit size / Csg size [inches]": "8.5",
-    "Open Hole /Cased Hole": "CH"
+    "Open Hole /Cased Hole": "OH"
   },
   {
     "Country": "Kuwait",
@@ -40317,7 +40317,7 @@
     "Mud": "SOBM",
     "Deviation": "54.6",
     "Bit size / Csg size [inches]": "8.5",
-    "Open Hole /Cased Hole": "CH"
+    "Open Hole /Cased Hole": "OH"
   },
   {
     "Country": "Kuwait",
@@ -40473,7 +40473,7 @@
     "Mud": "SOBM",
     "Deviation": "56.27",
     "Bit size / Csg size [inches]": "12.25",
-    "Open Hole /Cased Hole": "CH"
+    "Open Hole /Cased Hole": "OH"
   },
   {
     "Country": "Iraq",
@@ -42756,15 +42756,15 @@
     "Open Hole /Cased Hole": "OH"
   },
   {
-    "Country": "Japan",
-    "System": "Focus - OH",
-    "Subsystem": "Focus - OH",
+    "Country": "Suriname",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
     "Year": "2026",
     "Successful": 1,
     "PathFinder Run (Y/N)": "NO",
-    "Mud": "WBM",
+    "Mud": "SOBM",
     "Deviation": "0",
-    "Bit size / Csg size [inches]": "17.5",
+    "Bit size / Csg size [inches]": "12.25",
     "Open Hole /Cased Hole": "OH"
   },
   {
@@ -42772,7 +42772,7 @@
     "System": "Wireline Express - FT",
     "Subsystem": "Wireline Express - FT",
     "Year": "2026",
-    "Successful": 1,
+    "Successful": 0,
     "PathFinder Run (Y/N)": "NO",
     "Mud": "SOBM",
     "Deviation": "0",
@@ -42792,6 +42792,90 @@
     "Open Hole /Cased Hole": "OH"
   },
   {
+    "Country": "Brazil",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "10",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Brazil",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "10",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Brazil",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "10",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Brazil",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "10",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Brazil",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "10",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Brazil",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "10",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Guyana",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "73",
+    "Bit size / Csg size [inches]": "12.25",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
     "Country": "Tanzania",
     "System": "Wireline Express",
     "Subsystem": "Wireline Express",
@@ -42825,6 +42909,66 @@
     "Mud": "SOBM",
     "Deviation": "81",
     "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Saudi Arabia",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "0",
+    "Bit size / Csg size [inches]": "5.875",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Saudi Arabia",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "0",
+    "Bit size / Csg size [inches]": "5.875",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Saudi Arabia",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "0",
+    "Bit size / Csg size [inches]": "5.875",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Oman",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "15",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Kuwait",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "50",
+    "Bit size / Csg size [inches]": "12.25",
     "Open Hole /Cased Hole": "OH"
   }
 ]
