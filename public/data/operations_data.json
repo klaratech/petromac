@@ -42994,5 +42994,101 @@
     "Deviation": "50",
     "Bit size / Csg size [inches]": "12.25",
     "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Oman",
+    "System": "PathFinder",
+    "Subsystem": "PathFinder",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES",
+    "Mud": "SOBM",
+    "Deviation": "20.25",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Oman",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "0",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Oman",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "0",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Kuwait",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "51.2",
+    "Bit size / Csg size [inches]": "12.25",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Kuwait",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "50",
+    "Bit size / Csg size [inches]": "12.25",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Oman",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "29",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Mexico",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "38",
+    "Bit size / Csg size [inches]": "9.625",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Mexico",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 0,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "50",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
   }
 ]
