@@ -368,6 +368,7 @@ export const enrichedProducts: EnrichedProduct[] = allProducts.map((p) => {
 if (missingCuration.length > 0) {
   // Build-time nudge for future catalog editions: new devices work with
   // defaults but should get a curation row (vendor/purpose/role).
+  // eslint-disable-next-line no-console
   console.warn(
     `[catalog enrich] ${missingCuration.length} product(s) missing curation ` +
       `(defaults applied): ${missingCuration.join(', ')} — add entries in enrich.ts`
