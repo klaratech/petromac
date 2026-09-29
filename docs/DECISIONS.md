@@ -5,6 +5,25 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Sep 2026 — Nightly operations data auto-promotes to www (data only)
+
+**Decision:** after the nightly refresh deploys test and smoke-tests it,
+the workflow promotes to production itself — but only when the three
+`operations_*.json` files are the only difference between the `production`
+git tag (moved by every promote) and the verified commit. Anything else
+pending holds www for a human promote.
+
+**Why:** since Jul 2026 production changed only on the button, so the
+nightly refresh reached test but www drifted — 16 days / 25 deployments
+behind by 29 Sep. A plain "promote nightly if test is green" would build
+all of `main`, silently shipping any half-finished code pushed that day and
+removing the go-live gate. Gating on the diff keeps the gate for everything
+a human authors while data flows. The promote builds the exact sha verified
+on test, not whatever `main` is by then. Loading the numbers at runtime
+instead was rejected: stats are build-time imports for SEO/SSR.
+
+---
+
 ## Sep 2026 — GSC "Not found (404)" validation on dead WP URLs fails by design
 
 **Decision:** ignore the "Validation failed" state on Search Console's

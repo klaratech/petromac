@@ -5,6 +5,10 @@ name: Promote to Production
 # with the PRODUCTION identity and flips the prod containers — the test
 # stack at test.petromac.co.nz is untouched. Day-to-day pushes deploy only
 # to test via deploy-staging.yml.
+#
+# Every successful promote moves the `production` git tag to the commit it
+# shipped, then verifies www. The nightly data refresh dispatches this
+# workflow itself when that tag shows only operations data is pending.
 
 on:
   workflow_dispatch:
@@ -34,6 +38,7 @@ jobs:
         component: [frontend, backend]
     outputs:
       short_sha: ${{ steps.meta.outputs.short_sha }}
+      sha: ${{ steps.meta.outputs.sha }}
     steps:
       - name: Checkout promoted ref
         uses: actions/checkout@v6
@@ -49,6 +54,7 @@ jobs:
           image="${REGISTRY}/${owner_lc}/${IMAGE_BASE}-${{ matrix.component }}"
           echo "image=$image" >> "$GITHUB_OUTPUT"
           echo "short_sha=$short_sha" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -95,7 +101,7 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # to move the production tag
       packages: read
     steps:
       - name: SSH and redeploy PROD stack only
@@ -119,6 +125,46 @@ jobs:
             docker logout ghcr.io || true
             echo "--- prod stack after deploy ---"
             docker compose ps frontend backend
+
+      # The containers are swapped at this point, so the tag records what www
+      # runs even if the check below fails. The nightly auto-promote gate
+      # diffs against it.
+      - name: Move the production tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ needs.build-and-push.outputs.sha }}
+        run: |
+          set -euo pipefail
+          if gh api "repos/$GITHUB_REPOSITORY/git/refs/tags/production" > /dev/null 2>&1; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/production" -f sha="$SHA" -F force=true > /dev/null
+          else
+            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref=refs/tags/production -f sha="$SHA" > /dev/null
+          fi
+          echo "production tag → $SHA"
+
+      - name: Verify www
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ needs.build-and-push.outputs.sha }}
+        run: |
+          set -euo pipefail
+          base=https://www.petromac.co.nz
+          want=$(gh api "repos/$GITHUB_REPOSITORY/contents/public/data/operations_stats.json?ref=$SHA" --jq .content \
+            | base64 -d | jq -r '"\(.deployments) \(.generatedAt)"')
+          # Containers need a few seconds to start serving after `up -d`.
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /tmp/home.html -w '%{http_code}' "$base/" || true)
+            got=$(curl -s "$base/data/operations_stats.json?v=$GITHUB_RUN_ID-$i" | jq -r '"\(.deployments) \(.generatedAt)"' 2>/dev/null || true)
+            if [ "$code" = 200 ] && [ "$got" = "$want" ] && grep -q 'content="index, follow"' /tmp/home.html; then
+              echo "www verified: HTTP 200, index/follow, stats $got"
+              echo "- Verified: HTTP 200, \`index, follow\`, stats \`$got\`" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "attempt $i: http=$code stats='$got' (want '$want') — retrying in 10s"
+            sleep 10
+          done
+          echo "::error::www did not verify after 2 min — check https://www.petromac.co.nz (stats want '$want', got '$got')"
+          exit 1
 
       - name: Write deployment summary
         env:

@@ -45,8 +45,11 @@ workflow downloads the master workbook from the company OneDrive through
 Microsoft Graph (app-only credentials on the same "Petromac Intranet" Entra
 app that sends the site's email), runs the pipeline, and — only when the
 records actually changed — commits the three `public/data/` artifacts and
-pushes, which deploys **TEST only**; production still needs the Promote
-button. It runs typecheck + unit tests before pushing (a bot push does not
+pushes to TEST. Once test is deployed and smoke-tested it **auto-promotes to
+www — but only when operations data is the sole unpromoted change** (the
+`production` git tag marks what www runs); if code or content is also
+waiting, www holds for the Promote button and the run summary says why.
+See DEPLOY.md "Nightly data auto-promote". It runs typecheck + unit tests before pushing (a bot push does not
 trigger CI) and dispatches the staging deploy itself. Failures email via
 normal GitHub Actions notifications; runs are in the Actions tab.
 
@@ -494,4 +497,6 @@ A push to `main` deploys to **TEST only** (https://test.petromac.co.nz).
 `www.petromac.co.nz` changes ONLY when someone runs the "Promote to
 Production" workflow — `gh workflow run deploy-prod.yml`, or GitHub → Actions.
 So content updates land on test for review first, and go live on your say-so.
+The one exception is the nightly operations data, which promotes itself when
+nothing else is pending (§1).
 See [DEPLOY.md](../DEPLOY.md).

@@ -23,6 +23,14 @@
 # this job dispatches deploy-staging.yml itself and runs typecheck + unit
 # tests in-job as the CI stand-in (the staging deploy still does the full
 # production build before anything ships).
+#
+# AUTO-PROMOTE (Sep 2026): once test is deployed and smoke-tested, the new
+# data goes to www too — but ONLY when the three operations_*.json files are
+# the sole difference between the `production` git tag (moved by every
+# Promote run) and the commit just verified on test. Any other unpromoted
+# change (code, content refresh) holds www back for a human promote, so the
+# go-live button still gates everything except data. Kill switch:
+#   gh variable set AUTO_PROMOTE_DATA -b false
 
 name: Nightly data refresh
 
@@ -39,7 +47,7 @@ jobs:
   refresh:
     if: vars.DATA_REFRESH_ENABLED == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     permissions:
       contents: write
       actions: write # to dispatch the staging deploy after pushing
@@ -148,6 +156,7 @@ jobs:
           echo "Published: $stats — deploying to test.petromac.co.nz." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Deploy to test
+        id: deploy_test
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -156,9 +165,97 @@ jobs:
           # The push above already landed, so a lost dispatch just leaves
           # test stale — retry before failing the night.
           for i in 1 2 3; do
-            gh workflow run deploy-staging.yml --ref main && exit 0
+            if out=$(gh workflow run deploy-staging.yml --ref main 2>&1); then
+              echo "$out"
+              # gh >= 2.87 prints the new run's URL; the wait step falls back
+              # to the newest dispatched run if it doesn't.
+              run_id=$(grep -oE 'actions/runs/[0-9]+' <<<"$out" | grep -oE '[0-9]+$' || true)
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "$out"
             echo "dispatch attempt $i failed; retrying in $((i * 15))s…"
             sleep $((i * 15))
           done
           echo "::error::deploy-staging dispatch failed 3x — test is stale until the next push or a manual 'gh workflow run deploy-staging.yml'."
+          exit 1
+
+      - name: Wait for the test deploy
+        id: test_deploy
+        if: steps.diff.outputs.changed == 'true' && vars.AUTO_PROMOTE_DATA != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ steps.deploy_test.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          run_id="$RUN_ID"
+          if [ -z "$run_id" ]; then
+            sleep 15
+            run_id=$(gh run list --workflow deploy-staging.yml --event workflow_dispatch --limit 1 --json databaseId -q '.[0].databaseId')
+          fi
+          echo "Waiting for deploy-staging run $run_id…"
+          gh run watch "$run_id" --interval 30 > /dev/null || true
+          conclusion=$(gh run view "$run_id" --json conclusion -q .conclusion)
+          echo "conclusion=$conclusion" >> "$GITHUB_OUTPUT"
+          if [ "$conclusion" != "success" ]; then
+            # Not an error of THIS run: a failed staging deploy reports itself,
+            # and a cancelled one means a human push superseded it.
+            echo "::warning::Test deploy $run_id ended '$conclusion' — not auto-promoting."
+            echo "Test deploy ended **$conclusion** — www not auto-promoted." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # Proves the build we're about to promote actually serves the new data.
+      - name: Smoke-test test.petromac.co.nz
+        if: steps.test_deploy.outputs.conclusion == 'success'
+        run: |
+          set -euo pipefail
+          base=https://test.petromac.co.nz
+          for path in / /track-record /catalog /success-stories; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "$base$path")
+            [ "$code" = 200 ] || { echo "::error::$base$path returned $code"; exit 1; }
+          done
+          want=$(jq -r '"\(.deployments) \(.generatedAt)"' public/data/operations_stats.json)
+          got=$(curl -s "$base/data/operations_stats.json?v=$GITHUB_RUN_ID" | jq -r '"\(.deployments) \(.generatedAt)"')
+          [ "$got" = "$want" ] || { echo "::error::test serves stats '$got', expected '$want'"; exit 1; }
+          echo "Test verified: $got" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Auto-promote data to production
+        if: steps.test_deploy.outputs.conclusion == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Tree diff between two commits needs no history, so a depth-1
+          # fetch of the tag is enough on this shallow checkout.
+          if ! git fetch -q --depth=1 origin refs/tags/production:refs/tags/production; then
+            echo "::warning::No 'production' tag yet — run Promote once by hand; not auto-promoting."
+            exit 0
+          fi
+          sha=$(git rev-parse HEAD)
+          pending=$(git diff --name-only production "$sha")
+          if [ -z "$pending" ]; then
+            echo "www already serves this commit's content — nothing to promote." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          other=$(grep -vxE 'public/data/operations_(data|full|stats)\.json' <<<"$pending" || true)
+          if [ -n "$other" ]; then
+            echo "::warning::Unpromoted non-data changes are waiting — www keeps its last promote until someone runs Promote to Production."
+            {
+              echo "### www NOT auto-promoted"
+              echo "These changes since the last promote need a human go-live:"
+              echo '```'
+              echo "$other"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          for i in 1 2 3; do
+            gh workflow run deploy-prod.yml -f ref="$sha" && {
+              echo "Data-only change — promoting \`${sha::7}\` to www." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            }
+            echo "promote dispatch attempt $i failed; retrying in $((i * 15))s…"
+            sleep $((i * 15))
+          done
+          echo "::error::deploy-prod dispatch failed 3x — www is behind test until a manual Promote."
           exit 1

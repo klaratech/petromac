@@ -44,10 +44,22 @@ Two workflows, one rule: **pushes never touch production.**
   `gh workflow run deploy-prod.yml` (add `-f ref=<sha>` to promote a
   specific commit — also how you roll back). It rebuilds that ref with
   the PRODUCTION identity (repo variables), tags `:prod` + `:sha-<short>`,
-  and redeploys ONLY the prod services. Nothing reaches
-  www.petromac.co.nz any other way. NOTE: prod containers restart only on
+  and redeploys ONLY the prod services, then moves the `production` git
+  tag to the shipped commit and verifies www (HTTP 200, `index, follow`,
+  the commit's stats). Nothing reaches www.petromac.co.nz any other way.
+  NOTE: prod containers restart only on
   promote — server env-file edits need a promote or a manual
   `docker compose up -d <services>` to take effect.
+
+**Nightly data auto-promote (Sep 2026) — the one automatic promote.**
+`data-refresh.yml` waits for its test deploy, smoke-tests
+test.petromac.co.nz (pages 200 + the new stats), then diffs the
+`production` tag against that commit. If the ONLY differences are
+`public/data/operations_{data,full,stats}.json`, it dispatches the promote
+itself with `ref=<that sha>`. Anything else pending — code, a content
+refresh — holds www for a human promote, and the run summary lists what's
+waiting. So code still goes live only on the button; data stops going
+stale. Kill switch: `gh variable set AUTO_PROMOTE_DATA -b false`.
 
 Because the site identity is baked at build time, test and prod are
 separate image builds of the same commit — the promote rebuilds rather
