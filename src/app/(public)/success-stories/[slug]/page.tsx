@@ -6,8 +6,10 @@ import { caseStudies, getCaseStudy } from '@/features/case-studies/content';
 import { storyTitle } from '@/features/case-studies/content/seo-titles';
 import {
   caseStudyCategories,
+  caseStudyQueryHref,
   categoryLabel,
   deviceCatalogLink,
+  regionLabel,
   relatedCaseStudies,
 } from '@/features/case-studies/filters';
 import JsonLd, { absoluteUrl } from '@/components/shared/JsonLd';
@@ -42,38 +44,6 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       alt: `${cs.title} — published success story`,
     },
   });
-}
-
-/** Human names for the tags.csv area codes, for the region-map caption. */
-const REGION_LABELS: Record<string, string> = {
-  MENA: 'Middle East & North Africa',
-  APAC: 'Asia-Pacific',
-  NAM: 'North America',
-  LAM: 'Latin America',
-  EUR: 'Europe',
-  AFR: 'Africa',
-};
-
-/** The map artwork's own region code, as a tags.csv area code. */
-const MAP_CODE_TO_AREA: Record<string, string> = {
-  MEA: 'MENA',
-  APAC: 'APAC',
-  NAM: 'NAM',
-  LAM: 'LAM',
-  EUR: 'EUR',
-  AFR: 'AFR',
-};
-
-/**
- * Caption for the region-map card. Normally "country · region", but when the
- * layout's placed map disagrees with the tags.csv area (page 7: Azerbaijan is
- * tagged EUR while the printed page places the MEA map), naming either region
- * would contradict the image or the filters — so the caption stays with just
- * the country. The filters keep using the tags value either way.
- */
-function mapCaption(country: string, region: string, mapCode: string): string {
-  if (MAP_CODE_TO_AREA[mapCode] !== region) return country;
-  return `${country} · ${REGION_LABELS[region] ?? region}`;
 }
 
 /**
@@ -157,6 +127,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
   const related = relatedCaseStudies(cs, caseStudies);
   const product = deviceCatalogLink(cs.device);
+  // Breadcrumb levels are FILTERED VIEWS of the index, not pages of their own:
+  // "Latin America" lists every LAM story, "Mexico" every Mexican one.
+  const regionHref = caseStudyQueryHref({ region: cs.region });
+  const countryHref = caseStudyQueryHref({ region: cs.region, country: cs.country });
 
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -191,7 +165,14 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
         name: 'Success Stories',
         item: absoluteUrl('/success-stories'),
       },
-      { '@type': 'ListItem', position: 2, name: cs.title },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: regionLabel(cs.region),
+        item: absoluteUrl(regionHref),
+      },
+      { '@type': 'ListItem', position: 3, name: cs.country, item: absoluteUrl(countryHref) },
+      { '@type': 'ListItem', position: 4, name: cs.title },
     ],
   };
 
@@ -208,33 +189,52 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
               </Link>
             </li>
             <li aria-hidden="true">/</li>
-            <li aria-current="page" className="text-slate-600 font-medium">
-              {cs.country}
+            <li>
+              <Link href={regionHref} className="hover:text-brand transition-colors">
+                {regionLabel(cs.region)}
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <Link
+                href={countryHref}
+                className="font-medium text-slate-600 hover:text-brand transition-colors"
+              >
+                {cs.country}
+              </Link>
             </li>
           </ol>
         </nav>
 
         <header className="max-w-3xl mb-10">
+          {/* Product + application chips are LINKS to the index filtered by
+              that value — "every Rocker story", "every Ledges story". Country
+              is not repeated here: the breadcrumb above already carries it
+              (and region), also as filter links. Until Sep 2026 the country
+              appeared three times — breadcrumb, badge, map caption — with none
+              of them clickable. Every application tag shows now (34 stories
+              carry two): once the chips navigate, each one is a way in, not
+              just orientation. */}
           <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
-            <span className="rounded-full bg-brand/10 px-2.5 py-0.5 font-semibold text-brand">
-              {cs.country}
-            </span>
             {cs.device && (
-              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
+              <Link
+                href={caseStudyQueryHref({ device: cs.device })}
+                title={`All ${cs.device} success stories`}
+                className="rounded-full bg-brand/10 px-2.5 py-0.5 font-semibold text-brand hover:bg-brand/20 transition-colors"
+              >
                 {cs.device}
-              </span>
+              </Link>
             )}
-            {/* One application only, matching the index card. 34 of the 46
-                stories carry a second tag, so this is a deliberate editorial
-                choice rather than all the data there is: the badge row is
-                orientation, and the narrative below covers the rest. Year is
-                gone for the same reason — an application tells a reader whether
-                the story is about their problem; a year doesn't. */}
-            {caseStudyCategories(cs)[0] && (
-              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600">
-                {categoryLabel(caseStudyCategories(cs)[0])}
-              </span>
-            )}
+            {caseStudyCategories(cs).map((category) => (
+              <Link
+                key={category}
+                href={caseStudyQueryHref({ category })}
+                title={`All ${categoryLabel(category)} success stories`}
+                className="rounded-full bg-slate-100 px-2.5 py-0.5 font-medium text-slate-600 hover:bg-slate-200 hover:text-brand transition-colors"
+              >
+                {categoryLabel(category)}
+              </Link>
+            ))}
           </div>
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-slate-900">{cs.title}</h1>
           {/* The layout's own standfirst. It was always on the page — the
@@ -357,8 +357,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           <aside className="space-y-8 rounded-xl border border-slate-200 bg-slate-50/60 p-6 lg:sticky lg:top-24">
             {/* The region world-map the printed page opens with — restored
                 Aug 2026; the first figure-extraction pass filtered it out as
-                page furniture and the location ended up as nothing but a
-                country badge. */}
+                page furniture. No caption since Sep 2026: "Country · Region"
+                repeated the breadcrumb directly above the fold. */}
             {cs.regionMap && (
               <figure>
                 <div className="rounded-lg bg-white ring-1 ring-slate-200 p-2">
@@ -371,9 +371,6 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                     sizes="(max-width: 1024px) 100vw, 288px"
                   />
                 </div>
-                <figcaption className="mt-2 text-xs font-medium text-slate-500">
-                  {mapCaption(cs.country, cs.region, cs.regionMap.code)}
-                </figcaption>
               </figure>
             )}
             <SidePanel title="Challenge" paras={cs.challenge} />

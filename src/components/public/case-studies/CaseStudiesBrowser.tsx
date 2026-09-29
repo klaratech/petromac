@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { buildClientApiUrl } from '@/lib/api';
 import { EmailPdfButton } from '@/components/shared/EmailPdfButton';
@@ -8,11 +8,13 @@ import type { CaseStudy } from '@/features/case-studies/content';
 import {
   actionButtonLabel,
   buildFacetedCaseStudyOptions,
+  caseStudyQueryHref,
   caseStudyCategories,
   categoryLabel,
   filterCaseStudies,
   isQueryActive,
   pageNumbersFor,
+  parseCaseStudyQuery,
   type CaseStudyQuery,
 } from '@/features/case-studies/filters';
 
@@ -29,11 +31,38 @@ import {
  * Cards are rendered here rather than on the server because the list is
  * filtered client-side; the full set is in the initial HTML, so the no-JS and
  * crawler view is still all 46 stories with their links.
+ *
+ * Filters live in the URL too (Sep 2026): story pages link here as
+ * `?country=Mexico`, `?product=…` etc., and a filtered view survives reload
+ * and sharing. The URL is read AFTER hydration, not during render — reading it
+ * while rendering would make the server's all-46 HTML disagree with the
+ * client's first render. `useSearchParams` is avoided for the same reason: on
+ * a static page it pushes the whole list out of the SSR HTML.
  */
 export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }) {
   const [query, setQuery] = useState<CaseStudyQuery>({});
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fromUrl = parseCaseStudyQuery(window.location.search);
+    // Drop values no story has (a hand-edited or stale link): otherwise the
+    // dropdown can't show the value — it reads "All products" — while the
+    // list is filtered to nothing. Free text is kept; zero hits is its answer.
+    for (const key of Object.keys(fromUrl) as (keyof CaseStudyQuery)[]) {
+      if (key !== 'text' && filterCaseStudies(studies, { [key]: fromUrl[key] }).length === 0) {
+        delete fromUrl[key];
+      }
+    }
+    if (isQueryActive(fromUrl)) setQuery(fromUrl);
+  }, [studies]);
+
+  /** State + URL together; replaceState so filtering doesn't bloat history. */
+  const update = (next: CaseStudyQuery) => {
+    setQuery(next);
+    const href = caseStudyQueryHref(next) + window.location.hash;
+    window.history.replaceState(window.history.state, '', href);
+  };
 
   // Counts are faceted: each dropdown's numbers respect the OTHER active
   // filters but not its own, so they always sit at or below the result count
@@ -51,7 +80,7 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
   const requestPages = active ? pageNumbers : undefined;
 
   const set = <K extends keyof CaseStudyQuery>(key: K, value: CaseStudyQuery[K]) =>
-    setQuery((q) => ({ ...q, [key]: value || undefined }));
+    update({ ...query, [key]: value || undefined });
 
   // Keeps the emailed/downloaded filename meaningful — the backend derives it
   // from these (see build_filtered_filename).
@@ -226,10 +255,26 @@ export default function CaseStudiesBrowser({ studies }: { studies: CaseStudy[] }
             here until Aug 2026; the See also card in the page header carries
             that link now, alongside publications and patents. */}
         <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
+          {/* Country has no dropdown — 46 stories over ~25 countries would be
+              a long list of ones — so when a story page's breadcrumb brings
+              you here it shows as a removable chip instead. */}
+          {query.country && (
+            <span className="mr-auto inline-flex items-center gap-1.5 rounded-full bg-brand/10 py-0.5 pl-3 pr-1 text-xs font-semibold text-brand">
+              Country: {query.country}
+              <button
+                type="button"
+                onClick={() => set('country', undefined)}
+                aria-label={`Remove country filter ${query.country}`}
+                className="rounded-full px-1.5 py-0.5 hover:bg-brand/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              >
+                ✕
+              </button>
+            </span>
+          )}
           {active && (
             <button
               type="button"
-              onClick={() => setQuery({})}
+              onClick={() => update({})}
               className="text-xs font-semibold text-slate-500 underline decoration-slate-300 underline-offset-2 hover:text-brand hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
               Clear filters

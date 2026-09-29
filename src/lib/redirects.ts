@@ -17,6 +17,8 @@
  * `src/proxy.ts` is the thin adapter that turns a resolution into a response.
  */
 
+import { CASE_STUDY_URL_PARAMS } from '@/features/case-studies/filters';
+
 /** What the proxy should do with a request. `null` means "leave it alone". */
 export type LegacyResolution =
   | { type: 'redirect'; location: string; status: 301 | 307 | 308 }
@@ -156,14 +158,17 @@ const GLOBAL_QUERY_PARAMS = new Set([
 ]);
 
 /**
- * Query parameters a specific public route legitimately reads. Empty today:
- * no public page reads a search param (`?category=` and `?stories=` are
- * legacy-only and are redirected above before this is consulted), so anything
- * else on a public URL is crawler noise. THIS IS THE EXTENSION POINT — a new
- * feature that reads `searchParams` must add its param here or the page will
- * 404 when the param is present.
+ * Query parameters a specific public route legitimately reads (`?category=`
+ * and `?stories=` are legacy-only and are redirected above before this is
+ * consulted); anything else on a public URL is crawler noise. THIS IS THE
+ * EXTENSION POINT — a new feature that reads search params must add them here
+ * or the page will 404 when the param is present without a value.
+ * /success-stories reads its filters from the URL (Sep 2026) so story pages
+ * can link to "every story from this country / with this product".
  */
-const ROUTE_QUERY_PARAMS: Record<string, readonly string[]> = {};
+const ROUTE_QUERY_PARAMS: Record<string, readonly string[]> = {
+  '/success-stories': CASE_STUDY_URL_PARAMS,
+};
 
 /** Catalog family slugs — the only valid values of the legacy `?category=`. */
 const CATALOG_CATEGORY_SLUGS = [

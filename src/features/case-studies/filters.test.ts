@@ -6,7 +6,12 @@ import {
   SHOW_FILTERED_COUNT_ON_ACTIONS,
   buildCaseStudyOptions,
   buildFacetedCaseStudyOptions,
+  caseStudyCategories,
+  caseStudyQueryHref,
+  CASE_STUDY_URL_PARAMS,
   filterCaseStudies,
+  parseCaseStudyQuery,
+  regionLabel,
   isMajorServiceCompany,
   isQueryActive,
   categoryLabel,
@@ -370,4 +375,61 @@ test('the coverage pass keeps every list at the limit and self-free', () => {
     assert.ok(!list.some((r) => r.slug === slug), `${slug} links to itself`);
     assert.equal(new Set(list.map((r) => r.slug)).size, list.length, `${slug} has a duplicate`);
   }
+});
+
+test('country filters exactly and counts as an active filter', () => {
+  const mexico = filterCaseStudies(caseStudies, { country: 'Mexico' });
+  assert.ok(mexico.length > 0);
+  assert.ok(mexico.every((cs) => cs.country === 'Mexico'));
+  // Exact match: "Gulf of Mexico" is a different place in the tags.
+  assert.ok(!mexico.some((cs) => cs.country === 'Gulf of Mexico'));
+  assert.ok(isQueryActive({ country: 'Mexico' }));
+});
+
+test('filter URLs round-trip, including awkward values', () => {
+  const query = {
+    text: 'world record',
+    region: 'LAM',
+    country: 'Mexico',
+    device: 'Wireline Express - FT',
+    category: 'Well Access: Ledges',
+    company: 'SLB',
+  };
+  const href = caseStudyQueryHref(query);
+  assert.ok(href.startsWith('/success-stories?'));
+  assert.deepEqual(parseCaseStudyQuery(href.slice(href.indexOf('?'))), query);
+  assert.equal(caseStudyQueryHref({}), '/success-stories');
+  assert.equal(caseStudyQueryHref({ region: '  ' }), '/success-stories');
+  assert.deepEqual(parseCaseStudyQuery('?utm_source=x&region='), {});
+});
+
+test('every story page filter link resolves to a non-empty index view', () => {
+  for (const cs of caseStudies) {
+    const links = [
+      { region: cs.region },
+      { region: cs.region, country: cs.country },
+      { device: cs.device },
+      ...caseStudyCategories(cs).map((category) => ({ category })),
+    ];
+    for (const q of links) {
+      const parsed = parseCaseStudyQuery(caseStudyQueryHref(q).split('?')[1] ?? '');
+      const hits = filterCaseStudies(caseStudies, parsed);
+      assert.ok(
+        hits.some((h) => h.slug === cs.slug),
+        `${cs.slug}: ${JSON.stringify(q)} does not list the story it came from`
+      );
+    }
+  }
+});
+
+test('every region code has a human label', () => {
+  for (const cs of caseStudies) assert.notEqual(regionLabel(cs.region), cs.region, cs.region);
+  assert.deepEqual([...CASE_STUDY_URL_PARAMS].sort(), [
+    'challenge',
+    'company',
+    'country',
+    'product',
+    'q',
+    'region',
+  ]);
 });

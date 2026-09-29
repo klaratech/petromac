@@ -9,6 +9,8 @@ import type { CaseStudy } from './content';
 export interface CaseStudyQuery {
   text?: string;
   region?: string;
+  /** No dropdown of its own — reached from a story page's breadcrumb. */
+  country?: string;
   category?: string;
   device?: string;
   /** A code from SERVICE_COMPANIES, or OTHER_COMPANY. */
@@ -254,6 +256,7 @@ export function filterCaseStudies(studies: CaseStudy[], query: CaseStudyQuery): 
 
   return studies.filter((cs) => {
     if (query.region && cs.region !== query.region) return false;
+    if (query.country && cs.country !== query.country) return false;
     if (query.device && cs.device !== query.device) return false;
     if (query.category && !caseStudyCategories(cs).includes(query.category)) return false;
     if (query.company && !matchesCompany(cs, query.company)) return false;
@@ -269,10 +272,63 @@ export function isQueryActive(query: CaseStudyQuery): boolean {
   return Boolean(
     (query.text && query.text.trim() !== '') ||
     query.region ||
+    query.country ||
     query.category ||
     query.device ||
     query.company
   );
+}
+
+/** Human names for the tags.csv area codes. */
+export const REGION_LABELS: Record<string, string> = {
+  MENA: 'Middle East & North Africa',
+  APAC: 'Asia-Pacific',
+  NAM: 'North America',
+  LAM: 'Latin America',
+  EUR: 'Europe',
+  AFR: 'Africa',
+};
+
+export function regionLabel(code: string): string {
+  return REGION_LABELS[code] ?? code;
+}
+
+/**
+ * URL form of a query, so a story page can link straight into a filtered
+ * index ("every story from Mexico", "every Rocker story") and a filtered view
+ * survives a reload or a shared link. Public param names, deliberately not the
+ * internal keys: `product`/`challenge` are what the dropdowns are called.
+ * They are registered in ROUTE_QUERY_PARAMS in src/lib/redirects.ts.
+ */
+const URL_PARAMS: [keyof CaseStudyQuery, string][] = [
+  ['text', 'q'],
+  ['region', 'region'],
+  ['country', 'country'],
+  ['device', 'product'],
+  ['category', 'challenge'],
+  ['company', 'company'],
+];
+
+export const CASE_STUDY_URL_PARAMS: readonly string[] = URL_PARAMS.map(([, name]) => name);
+
+export function caseStudyQueryHref(query: CaseStudyQuery): string {
+  const params = new URLSearchParams();
+  for (const [key, name] of URL_PARAMS) {
+    const value = query[key]?.trim();
+    if (value) params.set(name, value);
+  }
+  const search = params.toString();
+  return search ? `/success-stories?${search}` : '/success-stories';
+}
+
+export function parseCaseStudyQuery(search: string): CaseStudyQuery {
+  const params = new URLSearchParams(search);
+  const query: CaseStudyQuery = {};
+  for (const [key, name] of URL_PARAMS) {
+    const value = params.get(name)?.trim();
+    if (value) query[key] = value;
+  }
+  return query;
 }
 
 /**

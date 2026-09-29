@@ -313,3 +313,11 @@ test('the 410 sweep never swallows a legacy CONTENT path', () => {
   // A path merely CONTAINING "wp" is not WordPress machinery.
   assert.notDeepEqual(resolveLegacyRequest('/wpsomething'), { type: 'gone' });
 });
+
+test('/success-stories accepts its filter params, even empty ones', () => {
+  assert.equal(resolveLegacyRequest('/success-stories', '?country=Mexico&region=LAM'), null);
+  assert.equal(resolveLegacyRequest('/success-stories', '?q='), null);
+  assert.deepEqual(resolveLegacyRequest('/success-stories', '?11667727895.html'), {
+    type: 'notFound',
+  });
+});
