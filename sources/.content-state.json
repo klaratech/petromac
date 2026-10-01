@@ -2,5 +2,9 @@
   "success-stories": {
     "hash": "5c44b86d8f47e49e9f623969ece04a12ca6830d9d71a4d7cd69e7c07322da079",
     "edition": "Success Stories-Petromac Catalog 06.08"
+  },
+  "catalog": {
+    "hash": "92ec4d44a31800af6ff8081fb003299fa6a11fb76f4a749979d15297d8fc7745",
+    "edition": "Petromac Catalog 14.09.2026"
   }
 }
