@@ -43345,6 +43345,18 @@
   },
   {
     "Country": "Norway",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES",
+    "Mud": "SOBM",
+    "Deviation": "23",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Norway",
     "System": "Wireline Express",
     "Subsystem": "Wireline Express",
     "Year": "2026",
@@ -43365,6 +43377,90 @@
     "Mud": "WBM",
     "Deviation": "14",
     "Bit size / Csg size [inches]": "7/9.625",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Other",
+    "Subsystem": "Other",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "66",
+    "Bit size / Csg size [inches]": "4.5",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Other",
+    "Subsystem": "Other",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "56",
+    "Bit size / Csg size [inches]": "4.5",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Other",
+    "Subsystem": "Other",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "56",
+    "Bit size / Csg size [inches]": "4.5",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Other",
+    "Subsystem": "Other",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "56",
+    "Bit size / Csg size [inches]": "4.5",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Other",
+    "Subsystem": "Other",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "66",
+    "Bit size / Csg size [inches]": "4.5",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Other",
+    "Subsystem": "Other",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "66",
+    "Bit size / Csg size [inches]": "4.5",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Other",
+    "Subsystem": "Other",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "67",
+    "Bit size / Csg size [inches]": "4.5",
     "Open Hole /Cased Hole": "CH"
   }
 ]
