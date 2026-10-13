@@ -43462,5 +43462,29 @@
     "Deviation": "67",
     "Bit size / Csg size [inches]": "4.5",
     "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Nigeria",
+    "System": "Focus - CH",
+    "Subsystem": "Focus - CH",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "60",
+    "Bit size / Csg size [inches]": "7",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Nigeria",
+    "System": "Focus - CH",
+    "Subsystem": "Focus - CH",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "69",
+    "Bit size / Csg size [inches]": "7",
+    "Open Hole /Cased Hole": "CH"
   }
 ]
