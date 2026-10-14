@@ -42,7 +42,3 @@ export async function loadSuccessStoriesData(): Promise<SuccessStoryRow[]> {
 
   return data;
 }
-
-export function getValidationReport(): SuccessStoriesValidationReport | null {
-  return cachedValidation;
-}

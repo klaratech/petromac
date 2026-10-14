@@ -2,7 +2,7 @@ import type { FlipbookManifest } from './types';
 import type { FlipbookKey } from './constants';
 import { getFlipbookBasePath } from './constants';
 
-export function getFlipbookPageUrl(
+function getFlipbookPageUrl(
   docKey: FlipbookKey,
   manifest: FlipbookManifest,
   pageNumber: number
@@ -12,10 +12,7 @@ export function getFlipbookPageUrl(
   return `${getFlipbookBasePath(docKey)}/${pagesPath}/${pad}.${manifest.pageExtension}`;
 }
 
-export function buildFlipbookPageUrls(
-  docKey: FlipbookKey,
-  manifest: FlipbookManifest
-): string[] {
+export function buildFlipbookPageUrls(docKey: FlipbookKey, manifest: FlipbookManifest): string[] {
   return Array.from({ length: manifest.pageCount }, (_, index) =>
     getFlipbookPageUrl(docKey, manifest, index + 1)
   );

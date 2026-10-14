@@ -301,7 +301,7 @@ const SIXTEENTHS: [number, string][] = [
 ];
 
 /** 10.625 → `10-5/8″`; falls back to decimals for non-sixteenth values. */
-export function formatInches(n: number): string {
+function formatInches(n: number): string {
   const whole = Math.floor(n);
   const frac = n - whole;
   const sixteenth = Math.round(frac * 16);
@@ -313,7 +313,7 @@ export function formatInches(n: number): string {
   return `${n}″`;
 }
 
-export function formatHoleRange(p: ParsedSpecs): string {
+function formatHoleRange(p: ParsedSpecs): string {
   if (p.holeMinIn == null && p.holeMaxIn == null) return '—';
   const min = p.holeMinIn != null ? formatInches(p.holeMinIn) : '';
   if (p.holeNoLimit) return min ? `${min} +` : 'No limit';
@@ -349,7 +349,7 @@ function bearingFromModels(p: CatalogProduct): string | undefined {
 
 const missingCuration: string[] = [];
 
-export const enrichedProducts: EnrichedProduct[] = allProducts.map((p) => {
+const enrichedProducts: EnrichedProduct[] = allProducts.map((p) => {
   const curation = CURATION[p.slug];
   if (!curation) missingCuration.push(p.slug);
   const bearing = bearingFromModels(p);
@@ -373,10 +373,6 @@ if (missingCuration.length > 0) {
     `[catalog enrich] ${missingCuration.length} product(s) missing curation ` +
       `(defaults applied): ${missingCuration.join(', ')} — add entries in enrich.ts`
   );
-}
-
-export function getEnriched(slug: string): EnrichedProduct | undefined {
-  return enrichedProducts.find((p) => p.slug === slug);
 }
 
 export function enrichedInCategory(category: string): EnrichedProduct[] {

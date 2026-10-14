@@ -80,7 +80,7 @@ export function getProduct(category: string, slug: string): CatalogProduct | und
   return allProducts.find((p) => p.category === category && p.slug === slug);
 }
 
-export function productsInCategory(category: string): CatalogProduct[] {
+function productsInCategory(category: string): CatalogProduct[] {
   return allProducts.filter((p) => p.category === category);
 }
 

@@ -79,6 +79,9 @@ export function EmailPdfButton({
         } else if (staffRes.status === 401) {
           // Public fallback needs a Turnstile token — surface the widget.
           setForcePublic(true);
+        } else if (staffRes.status === 429) {
+          errorText = 'Too many sends in a minute — please wait a moment and try again.';
+          throw new Error('rate limited');
         } else {
           throw new Error('Failed to send email');
         }

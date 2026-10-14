@@ -117,7 +117,7 @@ out to `scripts/python/generate_json.py`, which needs `polars` + `fastexcel`.
 The desktop-bridge VM has neither and no network, so the pipeline is run either
 on Rajesh's Mac or in the Cowork cloud container (stage the xlsx + the
 `scripts/python` helpers, `pip install polars==1.38.0 fastexcel==0.19.0`, run
-with `EXCEL_PATH=... SKIP_GITHUB_PUSH=true`, then commit the three JSONs back
+with `EXCEL_PATH=...`, then commit the three JSONs back
 and archive the source by hand — the archiving step lives in the tsx wrapper,
 which is skipped on that path).
 

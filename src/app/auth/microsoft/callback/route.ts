@@ -16,9 +16,31 @@ import {
 } from '@/lib/auth/staffAuth';
 import { exchangeMicrosoftCode, fetchMicrosoftUser } from '@/lib/auth/entra';
 
-function errorRedirect(request: NextRequest, message: string) {
+/**
+ * Only a fixed vocabulary reaches the URL. `/intranet` renders `authError`
+ * as text, so forwarding Microsoft's raw error body (tenant ids, correlation
+ * ids, free text) both leaked details and let anyone craft a link that
+ * prints arbitrary text on a Petromac page. The full error still goes to
+ * the server log.
+ */
+const AUTH_ERROR_CODES = new Set([
+  'access_denied',
+  'invalid_request',
+  'invalid_oauth_state',
+  'missing_oauth_parameters',
+  'token_exchange_failed',
+  'profile_fetch_failed',
+  'microsoft_auth_failed',
+]);
+
+function errorRedirect(request: NextRequest, code: string, detail?: unknown) {
+  // eslint-disable-next-line no-console -- server log is the only place the real error goes
+  if (detail !== undefined) console.error(`[auth/microsoft] ${code}:`, detail);
   const redirectUrl = new URL('/intranet', getRequestOrigin(request));
-  redirectUrl.searchParams.set('authError', message);
+  redirectUrl.searchParams.set(
+    'authError',
+    AUTH_ERROR_CODES.has(code) ? code : 'microsoft_auth_failed'
+  );
   return NextResponse.redirect(redirectUrl);
 }
 
@@ -96,7 +118,6 @@ export async function GET(request: NextRequest) {
     response.cookies.set(getOAuthStateCookieName(), '', clearCookieOptions());
     return response;
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'microsoft_auth_failed';
-    return errorRedirect(request, message);
+    return errorRedirect(request, 'microsoft_auth_failed', error);
   }
 }

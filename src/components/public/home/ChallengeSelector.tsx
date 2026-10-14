@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import VideoLightbox from './VideoLightbox';
 import Image from 'next/image';
 import Link from 'next/link';
+import { openContactDrawer } from '@/lib/contactDrawer';
 
 interface Solution {
   id: string;
@@ -127,6 +128,20 @@ export default function ChallengeSelector() {
     e.preventDefault();
     setActiveId(SOLUTIONS[next].id);
     tabRefs.current[next]?.focus();
+  };
+
+  // "Request the file": the honest alternative to a download button. Opens
+  // the header's contact drawer with the ask pre-written, so the visitor
+  // only has to leave an email — and Petromac learns who wants to share
+  // the animation and where. A human replies with the MP4 (auto-fulfilment
+  // is a TODO item).
+  const requestFile = () => {
+    setLightboxOpen(false);
+    openContactDrawer({
+      title: 'Request the animation',
+      intro: `Leave your email and we'll send you the ${active.product} animation as an MP4 to share with your team.`,
+      message: `Please send me the ${active.product} animation ("${active.challenge}", ${active.video.duration}) from petromac.co.nz as a file I can share with my team.`,
+    });
   };
 
   return (
@@ -278,6 +293,16 @@ export default function ChallengeSelector() {
                     />
                   </svg>
                 </Link>
+                <p className="mt-4 text-xs text-slate-500">
+                  Want to share this animation?{' '}
+                  <button
+                    type="button"
+                    onClick={requestFile}
+                    className="font-medium text-brand underline decoration-brand/30 underline-offset-2 hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
+                  >
+                    Request the file
+                  </button>
+                </p>
               </div>
             </div>
           </div>
@@ -290,6 +315,7 @@ export default function ChallengeSelector() {
         poster={active.video.poster}
         label={`${active.product} video`}
         onClose={() => setLightboxOpen(false)}
+        onRequestFile={requestFile}
       />
     </section>
   );

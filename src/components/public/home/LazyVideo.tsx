@@ -66,6 +66,9 @@ export default function LazyVideo({ src, poster, className }: LazyVideoProps) {
       preload="none"
       aria-hidden="true"
       tabIndex={-1}
+      // Decorative loop: no controls, so the only "download" path is the
+      // right-click menu — close it like the lightbox player does.
+      onContextMenu={(e) => e.preventDefault()}
       className={className}
     />
   );

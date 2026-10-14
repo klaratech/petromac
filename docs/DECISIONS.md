@@ -5,6 +5,56 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Oct 2026 — Public videos: hide the download button, offer "Request the file"
+
+**Decision:** the homepage player (`VideoLightbox`) and the decorative loops
+(`LazyVideo`) set `controlsList="nodownload noremoteplayback"` and swallow
+the context menu, and the player and the solution panel carry a quiet
+"Request the file" link that opens the header's `ContactDrawer` prefilled
+("Please send me the Pathfinder animation … as a file I can share with my
+team"). A human replies with the MP4.
+
+**Why:** a supplier told Craig (14 Oct 2026) he had downloaded the
+Pathfinder animation from the site. Nothing short of DRM stops a determined
+visitor copying a public video — screen capture, DevTools, `curl` all still
+work — so "make it not downloadable" was reframed: remove the CASUAL path
+(the player's Download menu item, right-click → Save), and turn the
+remaining demand into a lead. The request goes through the existing
+`/api/contact` (Turnstile, honeypot, rate limit) so nothing new had to be
+hardened; automatic fulfilment is a TODO item. If an animation is ever truly
+sensitive, the answer is the intranet, not a lock on a public page.
+
+**Mechanics:** any section can open the drawer via
+`openContactDrawer(prefill)` in `src/lib/contactDrawer.ts` — a DOM event the
+`Header` listens for — so no prop-threading, and the drawer heading/intro/
+message can be tailored per ask.
+
+## Oct 2026 — Auto-promote holds now open a GitHub issue after 3 days
+
+**Decision:** when `data-refresh.yml` cannot auto-promote because non-data
+changes are pending since the `production` tag, and that tag is ≥3 days old,
+it opens (or refreshes daily) one issue labelled `auto-promote-hold`, and
+closes it once nothing non-data is pending.
+
+**Why:** the 1 Oct catalog refresh landed an hour after a promote and held
+www for two weeks; the only signal was a `::warning` in run summaries nobody
+opens. An issue reaches the inbox. The hold itself is still correct —
+content and code go live on the button.
+
+## Oct 2026 — Weekly housekeeping (server + GHCR)
+
+**Decision:** `housekeeping.yml` runs Sundays: `docker image prune -a`,
+week-old stopped containers and builder cache on klaratech-1; in GHCR it
+keeps `:prod`, `:staging` and the newest 10 tagged versions per image and
+deletes the rest plus every untagged manifest.
+
+**Why:** every push and every nightly data refresh pushes one image per
+component (~60/month) and the deploys only ran `docker image prune -f`
+(dangling layers), so both the registry and the box's disk grew unbounded.
+Rollback targets stay re-pullable from GHCR for ~10 promotes.
+
+---
+
 ## Sep 2026 — Nightly operations data auto-promotes to www (data only)
 
 **Decision:** after the nightly refresh deploys test and smoke-tests it,

@@ -59,7 +59,7 @@ export function getKioskPrimeMode(): boolean {
   return new URLSearchParams(window.location.search).get('prime') === '1';
 }
 
-export function getKioskDisplayMode(): { tvMode: boolean } {
+function getKioskDisplayMode(): { tvMode: boolean } {
   if (cachedTv === null) cachedTv = readOnce('tv');
   return { tvMode: cachedTv };
 }

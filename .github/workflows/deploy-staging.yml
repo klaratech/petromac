@@ -98,7 +98,7 @@ jobs:
       packages: read
     steps:
       - name: SSH and redeploy TEST stack only
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5 — pinned: this step holds the prod SSH key
         env:
           GHCR_USERNAME: ${{ github.actor }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

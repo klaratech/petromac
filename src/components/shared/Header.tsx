@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import ContactDrawer from '@/components/shared/ContactDrawer';
+import { CONTACT_DRAWER_EVENT, type ContactPrefill } from '@/lib/contactDrawer';
 
 const NAV_ITEMS = [
   { name: 'Home', href: '/' },
@@ -67,8 +68,21 @@ export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  // Set when a page section opens the drawer with a specific ask (see
+  // lib/contactDrawer.ts); cleared on close so the mail icon stays generic.
+  const [contactPrefill, setContactPrefill] = useState<ContactPrefill | undefined>(undefined);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  // Any section can open the contact drawer by dispatching the event.
+  useEffect(() => {
+    const onOpenContact = (e: Event) => {
+      setContactPrefill((e as CustomEvent<ContactPrefill>).detail ?? undefined);
+      setContactOpen(true);
+    };
+    window.addEventListener(CONTACT_DRAWER_EVENT, onOpenContact);
+    return () => window.removeEventListener(CONTACT_DRAWER_EVENT, onOpenContact);
+  }, []);
 
   // Close the mobile panel whenever the route changes.
   useEffect(() => {
@@ -517,7 +531,14 @@ export default function Header() {
 
       {/* Mounts only while open — ContactForm carries the Turnstile widget, and
           Turnstile cannot run a challenge inside a hidden container. */}
-      <ContactDrawer open={contactOpen} onClose={() => setContactOpen(false)} />
+      <ContactDrawer
+        open={contactOpen}
+        prefill={contactPrefill}
+        onClose={() => {
+          setContactOpen(false);
+          setContactPrefill(undefined);
+        }}
+      />
     </header>
   );
 }

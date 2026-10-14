@@ -51,16 +51,8 @@ class Config:
     FUZZY_MATCHED_LOCATIONS_LOG = os.path.join(BASE_DIR, "fuzzy_matched_locations.txt")
     UNKNOWN_LOCATIONS_LOG = os.path.join(BASE_DIR, "unknown_locations.txt")
 
-    # GitHub config
-    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-    REPO_OWNER = os.getenv("REPO_OWNER", "klaratech")
-    REPO_NAME = os.getenv("REPO_NAME", "petromac")
-    TARGET_FULL_JSON = "public/data/operations_data.json"
-    TARGET_BRANCH = "main"
-
     # Processing config
     CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "10000"))
-    MAX_RETRIES = int(os.getenv("MAX_RETRIES", "3"))
 
 # === BACKWARD COMPATIBILITY ===
 BASE_DIR = Config.BASE_DIR
@@ -72,12 +64,6 @@ FUZZY_MATCH_LOG = Config.FUZZY_MATCH_LOG
 UNKNOWN_COUNTRY_LOG = Config.UNKNOWN_COUNTRY_LOG
 FUZZY_MATCHED_LOCATIONS_LOG = Config.FUZZY_MATCHED_LOCATIONS_LOG
 UNKNOWN_LOCATIONS_LOG = Config.UNKNOWN_LOCATIONS_LOG
-GITHUB_TOKEN = Config.GITHUB_TOKEN
-REPO_OWNER = Config.REPO_OWNER
-REPO_NAME = Config.REPO_NAME
-TARGET_FULL_JSON = Config.TARGET_FULL_JSON
-TARGET_BRANCH = Config.TARGET_BRANCH
-SKIP_GITHUB_PUSH = os.getenv("SKIP_GITHUB_PUSH", "false").lower() == "true"
 
 # === VALIDATION FUNCTIONS ===
 def validate_environment() -> bool:
@@ -89,17 +75,8 @@ def validate_environment() -> bool:
         logging.error(f"Missing required files: {missing_files}")
         return False
 
-    if not GITHUB_TOKEN:
-        logging.warning("GITHUB_TOKEN not set - GitHub push will be skipped")
-
     logging.info("Environment validation passed")
     return True
-
-def validate_github_token(token: str) -> bool:
-    """Validate GitHub token format"""
-    if not token:
-        return False
-    return token.startswith(('ghp_', 'github_pat_')) and len(token) >= 40
 
 def validate_processed_data(df: pl.DataFrame) -> bool:
     """Validate the processed data meets quality standards"""
@@ -166,66 +143,6 @@ location_fuzzy_log = []
 unknown_locations = []
 
 # === HELPERS ===
-
-def push_to_github(local_path: str, github_path: str) -> bool:
-    """Push file to GitHub with error handling"""
-    if SKIP_GITHUB_PUSH:
-        logging.info("SKIP_GITHUB_PUSH=true, skipping GitHub push")
-        return True
-
-    if not GITHUB_TOKEN:
-        logging.warning("Skipping GitHub push: GITHUB_TOKEN not set")
-        return True
-
-    try:
-        from github import Github
-        logging.info(f"Pushing {os.path.basename(local_path)} to GitHub...")
-        g = Github(GITHUB_TOKEN)
-        repo = g.get_repo(f"{REPO_OWNER}/{REPO_NAME}")
-
-        with open(local_path, "r") as f:
-            content = f.read()
-
-        try:
-            existing = repo.get_contents(github_path)
-            repo.update_file(
-                path=github_path,
-                message=f"Update {os.path.basename(local_path)} ({datetime.now().isoformat(timespec='seconds')})",
-                content=content,
-                sha=existing.sha,
-                branch=TARGET_BRANCH,
-            )
-            logging.info(f"Updated {github_path}")
-        except Exception:
-            repo.create_file(
-                path=github_path,
-                message=f"Create {os.path.basename(local_path)}",
-                content=content,
-                branch=TARGET_BRANCH,
-            )
-            logging.info(f"Created {github_path}")
-
-        return True
-    except Exception as e:
-        logging.error(f"GitHub push failed: {e}")
-        return False
-
-def push_to_github_with_retry(local_path: str, github_path: str, max_retries: int = None) -> bool:
-    """Push to GitHub with exponential backoff retry"""
-    if max_retries is None:
-        max_retries = Config.MAX_RETRIES
-
-    for attempt in range(max_retries):
-        if push_to_github(local_path, github_path):
-            return True
-
-        if attempt < max_retries - 1:
-            wait_time = 2 ** attempt
-            logging.warning(f"Retrying GitHub push in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
-            time.sleep(wait_time)
-
-    logging.error(f"Failed to push to GitHub after {max_retries} attempts")
-    return False
 
 def normalize_month(value):
     if value is None:
@@ -485,8 +402,10 @@ def main():
             f.write("\n")
         logging.info(f"Wrote headline stats {stats} to {stats_path}")
 
-        # Push to GitHub with retry
-        success = push_to_github_with_retry(OUTPUT_FULL_JSON, TARGET_FULL_JSON)
+        # Publishing is the caller's job: `pnpm run data` commits locally and
+        # data-refresh.yml pushes from CI. The old PyGithub "write
+        # operations_data.json straight to main" path was removed Oct 2026 —
+        # it bypassed the hooks, the stats file and the full/slim split.
 
         # Write anomaly logs
         write_anomaly_logs()
@@ -496,7 +415,7 @@ def main():
         logging.info(f"Processing completed successfully in {elapsed:.2f}s")
 
         # Exit with appropriate code
-        sys.exit(0 if success else 1)
+        sys.exit(0)
 
     except Exception as e:
         logging.error(f"Fatal error in main: {e}")

@@ -15,6 +15,8 @@ import { refreshMicrosoftToken } from '@/lib/auth/entra';
 import type { StaffSession } from '@/types/staffSession';
 import { buildServerApiUrl } from '@/lib/api';
 import { getRequestOrigin } from '@/lib/auth/requestOrigin';
+import { getSiteUrl, isProductionSite } from '@/lib/siteUrl';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 /**
  * Sends a catalog / success-stories PDF AS the signed-in staff member, via
@@ -28,11 +30,57 @@ import { getRequestOrigin } from '@/lib/auth/requestOrigin';
  */
 const CATALOG_PDF_PATH = '/flipbooks/catalog/petromac-product-catalog.pdf';
 
+// A 12 h staff session on a shared trade-show tablet is the threat model:
+// whoever picks the tablet up can mail PDFs AS the signed-in staff member.
+// Same shape as the backend's PDF_RATE_LIMIT; keyed per staff account so one
+// person can't drain another's allowance.
+const SEND_RATE_LIMIT = { limit: 5, windowMs: 60_000 };
+
+/**
+ * Same-origin check, mirroring the backend's `is_origin_allowed`: a browser
+ * sends `Origin` on every cross-site POST and on same-origin fetches, so a
+ * request from another site (or a bare curl replaying a stolen cookie) is
+ * refused. In production the configured site URL is authoritative; on
+ * test/dev the request's own origin is accepted so the staging host works.
+ */
+function isAllowedOrigin(request: NextRequest): boolean {
+  const origin = request.headers.get('origin');
+  if (!origin) return false;
+  const allowed = new Set([getRequestOrigin(request)]);
+  if (isProductionSite()) allowed.add(getSiteUrl());
+  try {
+    return allowed.has(new URL(origin).origin);
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: NextRequest) {
+  if (!isAllowedOrigin(request)) {
+    return NextResponse.json({ error: 'invalid_origin' }, { status: 403 });
+  }
+
   const cookieStore = await cookies();
   const session = readStaffSession(cookieStore);
   if (!session) {
     return NextResponse.json({ error: 'no_staff_session' }, { status: 401 });
+  }
+
+  const clientIp =
+    request.headers.get('cf-connecting-ip') ??
+    request.headers.get('x-real-ip') ??
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    'unknown';
+  const rate = checkRateLimit(
+    `staff-send-pdf:${session.user.email.toLowerCase()}`,
+    SEND_RATE_LIMIT.limit,
+    SEND_RATE_LIMIT.windowMs
+  );
+  if (!rate.allowed) {
+    return NextResponse.json(
+      { error: 'rate_limited' },
+      { status: 429, headers: { 'Retry-After': String(rate.retryAfter) } }
+    );
   }
 
   // Valid access token in the session? Use it. Otherwise mint a fresh one
@@ -109,6 +157,10 @@ export async function POST(request: NextRequest) {
         headers: {
           'Content-Type': 'application/json',
           Origin: getRequestOrigin(request),
+          // The backend keys its PDF rate limit on the caller's IP. Without
+          // this, every staff send shared ONE bucket (the frontend
+          // container's address) — 5 per minute for the whole company.
+          'X-Real-IP': clientIp,
         },
         body: JSON.stringify({ pageNumbers: body.pageNumbers, mode: 'download' }),
         cache: 'no-store',

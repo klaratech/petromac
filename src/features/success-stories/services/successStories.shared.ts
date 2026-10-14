@@ -109,46 +109,45 @@ export function parseSuccessStoriesTagsCsv(csvText: string): SuccessStoryRow[] {
   // raising a `missingPageRows` count. The page<=0 gate lives downstream
   // in filterSuccessStories() so render / download paths still skip
   // them.
-  return parsed.data
-    .map((row) => {
-      const pageValue = pickField(row, PAGE_FIELD_CANDIDATES);
-      const page = Number.parseInt(pageValue || '0', 10);
+  return parsed.data.map((row) => {
+    const pageValue = pickField(row, PAGE_FIELD_CANDIDATES);
+    const page = Number.parseInt(pageValue || '0', 10);
 
-      const areaRaw = pickField(row, AREA_FIELD_CANDIDATES);
-      const companyRaw = pickField(row, COMPANY_FIELD_CANDIDATES);
-      const techRaw = pickField(row, DEVICE_FIELD_CANDIDATES);
+    const areaRaw = pickField(row, AREA_FIELD_CANDIDATES);
+    const companyRaw = pickField(row, COMPANY_FIELD_CANDIDATES);
+    const techRaw = pickField(row, DEVICE_FIELD_CANDIDATES);
 
-      const areas = areaRaw ? normalizeMulti(areaRaw, normalizeArea) : [];
-      const companies = companyRaw ? normalizeMulti(companyRaw, normalizeCompany) : [];
-      const techs = techRaw ? normalizeMulti(techRaw, normalizeTech) : [];
+    const areas = areaRaw ? normalizeMulti(areaRaw, normalizeArea) : [];
+    const companies = companyRaw ? normalizeMulti(companyRaw, normalizeCompany) : [];
+    const techs = techRaw ? normalizeMulti(techRaw, normalizeTech) : [];
 
-      const yearValue = pickField(row, YEAR_FIELD_CANDIDATES);
-      const year = Number.parseInt(yearValue || '0', 10);
+    const yearValue = pickField(row, YEAR_FIELD_CANDIDATES);
+    const year = Number.parseInt(yearValue || '0', 10);
 
-      const storyRow: SuccessStoryRow = {
-        page,
-        areas,
-        companies,
-        techs,
-      };
+    const storyRow: SuccessStoryRow = {
+      page,
+      areas,
+      companies,
+      techs,
+    };
 
-      if (areaRaw) storyRow.areaRaw = areaRaw;
-      if (companyRaw) storyRow.companyRaw = companyRaw;
-      if (techRaw) storyRow.techRaw = techRaw;
+    if (areaRaw) storyRow.areaRaw = areaRaw;
+    if (companyRaw) storyRow.companyRaw = companyRaw;
+    if (techRaw) storyRow.techRaw = techRaw;
 
-      const country = pickField(row, COUNTRY_FIELD_CANDIDATES);
-      if (country) storyRow.country = country;
+    const country = pickField(row, COUNTRY_FIELD_CANDIDATES);
+    if (country) storyRow.country = country;
 
-      const category1 = pickField(row, CATEGORY1_FIELD_CANDIDATES);
-      if (category1) storyRow.category1 = category1;
+    const category1 = pickField(row, CATEGORY1_FIELD_CANDIDATES);
+    if (category1) storyRow.category1 = category1;
 
-      const category2 = pickField(row, CATEGORY2_FIELD_CANDIDATES);
-      if (category2) storyRow.category2 = category2;
+    const category2 = pickField(row, CATEGORY2_FIELD_CANDIDATES);
+    if (category2) storyRow.category2 = category2;
 
-      if (year > 0) storyRow.year = year;
+    if (year > 0) storyRow.year = year;
 
-      return storyRow;
-    });
+    return storyRow;
+  });
 }
 
 export function buildValidationReport(rows: SuccessStoryRow[]): SuccessStoriesValidationReport {
@@ -189,7 +188,7 @@ function matchesFilter(values: string[], selected: string[]): boolean {
   return values.some((value) => selected.includes(value));
 }
 
-export function filterSuccessStories(
+function filterSuccessStories(
   data: SuccessStoryRow[],
   filters: SuccessStoriesFilters
 ): SuccessStoryRow[] {
@@ -236,9 +235,21 @@ export function getAvailableOptions(
   // For each dimension, count against data filtered by the OTHER dimensions
   // so the user sees how many stories each option would yield.
   const { areas: fAreas = [], companies: fCompanies = [], techs: fTechs = [] } = filters;
-  const filteredForAreas = filterSuccessStories(data, { areas: [], companies: fCompanies, techs: fTechs });
-  const filteredForCompanies = filterSuccessStories(data, { areas: fAreas, companies: [], techs: fTechs });
-  const filteredForTechs = filterSuccessStories(data, { areas: fAreas, companies: fCompanies, techs: [] });
+  const filteredForAreas = filterSuccessStories(data, {
+    areas: [],
+    companies: fCompanies,
+    techs: fTechs,
+  });
+  const filteredForCompanies = filterSuccessStories(data, {
+    areas: fAreas,
+    companies: [],
+    techs: fTechs,
+  });
+  const filteredForTechs = filterSuccessStories(data, {
+    areas: fAreas,
+    companies: fCompanies,
+    techs: [],
+  });
 
   const allAreas = uniqueSorted(data.flatMap((row) => row.areas));
   const allCompanies = uniqueSorted(data.flatMap((row) => row.companies));

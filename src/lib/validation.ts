@@ -16,9 +16,9 @@ export function validateCountryLabels(data: unknown): Record<string, string> {
 }
 
 // Network error handling
-export async function fetchWithRetry(
-  url: string, 
-  options: RequestInit = {}, 
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit = {},
   maxRetries = 3
 ): Promise<Response> {
   let lastError: Error;
@@ -26,21 +26,21 @@ export async function fetchWithRetry(
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const response = await fetch(url, options);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       return response;
     } catch (error) {
       lastError = error instanceof Error ? error : new Error('Unknown error');
-      
+
       if (attempt === maxRetries) {
         break;
       }
-      
+
       // Exponential backoff
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt) * 1000));
     }
   }
 

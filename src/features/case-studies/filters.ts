@@ -209,7 +209,7 @@ export function buildFacetedCaseStudyOptions(studies: CaseStudy[], query: CaseSt
 }
 
 /** Named majors that actually appear, then "Other" if anything else does. */
-export function buildCompanyOptions(
+function buildCompanyOptions(
   studies: CaseStudy[]
 ): { value: string; label: string; count: number }[] {
   const options = SERVICE_COMPANIES.map(({ code, label }) => ({
@@ -280,7 +280,7 @@ export function isQueryActive(query: CaseStudyQuery): boolean {
 }
 
 /** Human names for the tags.csv area codes. */
-export const REGION_LABELS: Record<string, string> = {
+const REGION_LABELS: Record<string, string> = {
   MENA: 'Middle East & North Africa',
   APAC: 'Asia-Pacific',
   NAM: 'North America',

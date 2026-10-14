@@ -27,7 +27,7 @@
  */
 
 export const PRIVACY_TITLE = 'Privacy Policy';
-export const PRIVACY_UPDATED = 'Last updated: 28 July 2026 · Version 2.4';
+const PRIVACY_UPDATED = 'Last updated: 28 July 2026 · Version 2.4';
 
 export default function PrivacyContent() {
   return (

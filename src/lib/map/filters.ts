@@ -53,7 +53,7 @@ export const DEVIATION_BUCKETS: DeviationBucket[] = [
 ];
 
 /** Mud display order — by frequency in the dataset. */
-export const MUD_ORDER = ['SOBM', 'WBM', 'OBM'];
+const MUD_ORDER = ['SOBM', 'WBM', 'OBM'];
 
 export const HOLE_LABELS: Record<string, string> = {
   OH: 'Open hole',

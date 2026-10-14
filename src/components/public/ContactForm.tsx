@@ -13,11 +13,14 @@ import TurnstileWidget, {
  * and the simulation page's contact section. Only the email field and
  * message are required.
  */
-export default function ContactForm() {
+export default function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
+  // `initialMessage` seeds the body for a specific ask (e.g. "Request this
+  // animation" from the homepage). Read once on mount — the drawer that
+  // carries this form remounts on every open, so a new prefill always lands.
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: '',
+    message: initialMessage,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error' | 'verify-failed'>(

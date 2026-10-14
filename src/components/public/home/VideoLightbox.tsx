@@ -20,6 +20,7 @@ export default function VideoLightbox({
   poster,
   label,
   onClose,
+  onRequestFile,
 }: {
   open: boolean;
   /** MP4 source for the active solution. */
@@ -28,6 +29,12 @@ export default function VideoLightbox({
   /** Accessible name for the dialog, e.g. "Wireline Express video". */
   label: string;
   onClose: () => void;
+  /**
+   * Optional "want the file?" action rendered under the player. The lightbox
+   * is where a visitor looks for a download button, so this is where the
+   * honest alternative belongs — see ChallengeSelector for the handler.
+   */
+  onRequestFile?: (() => void) | undefined;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -102,11 +109,29 @@ export default function VideoLightbox({
           src={src}
           poster={poster}
           controls
+          // Hides the player's Download item and the right-click "Save video".
+          // This removes the casual path only — anyone can still capture a
+          // public video — so the "request the file" link below is the real
+          // answer, not a lock (Oct 2026, after a supplier downloaded one).
+          controlsList="nodownload noremoteplayback"
+          onContextMenu={(e) => e.preventDefault()}
           playsInline
           preload="metadata"
           autoPlay
           className="block w-full max-h-[85vh] rounded-lg bg-black aspect-video object-contain"
         />
+        {onRequestFile && (
+          <p className="mt-3 text-center text-sm text-slate-300">
+            Want to share this animation with your team?{' '}
+            <button
+              type="button"
+              onClick={onRequestFile}
+              className="font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-sm"
+            >
+              Request the file
+            </button>
+          </p>
+        )}
       </div>
     </dialog>
   );

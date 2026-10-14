@@ -52,17 +52,3 @@ export function fetchOperationsData(version?: string): Promise<JobRecord[]> {
 
   return operationsPromise;
 }
-
-/**
- * Fetch country labels mapping. Same story as fetchOperationsData: pull
- * the static JSON from /public/data instead of via the backend route.
- */
-export async function fetchCountryLabels(): Promise<Record<string, string>> {
-  const response = await fetch('/data/country_labels.json');
-
-  if (!response.ok) {
-    throw new Error(`Failed to load country labels: ${response.status}`);
-  }
-
-  return response.json();
-}

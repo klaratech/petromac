@@ -40,6 +40,7 @@ pip install -r requirements.txt
 ```
 
 **Key Dependencies:**
+
 - `polars` - High-performance DataFrame library (replaces pandas)
 - `fastapi` - Web framework for successstories API
 - `pypdf` - PDF manipulation
@@ -52,10 +53,12 @@ pip install -r requirements.txt
 Processes the raw Excel file into sanitized JSON for public consumption.
 
 **Input:**
+
 - Excel file: `data/private/raw/jobhistory.xlsx`
 - Reference data: `master_country_list.json`, `known_cities.json`
 
 **Output:**
+
 - Sanitized JSON: `public/data/operations_data.json`
 - Processing logs: `*.log`, `*_matched_*.txt`, `unknown_*.txt`
 
@@ -115,18 +118,11 @@ GITHUB_TOKEN=$YOUR_TOKEN python generate_json.py
 
 ## GitHub Actions Integration
 
-The `generate_json.py` script is automatically run via GitHub Actions:
-
-- **Trigger**: Manual dispatch or weekly schedule (Sunday 2 AM UTC)
-- **Workflow**: `.github/workflows/data-build.yaml`
-- **Output**: Commits sanitized JSON back to repository
-
-### Running via GitHub Actions
-
-1. Go to repository **Actions** tab
-2. Select **Data Build Pipeline** workflow
-3. Click **Run workflow**
-4. Choose whether to commit output (default: yes)
+`generate_json.py` runs every night from `.github/workflows/data-refresh.yml`
+(workbook pulled from SharePoint via Graph, outputs committed by the
+workflow). The script itself only writes files; it has not pushed to GitHub
+since Oct 2026, so no `GITHUB_TOKEN` is needed to run it anywhere. See
+docs/ADMIN.md §1.
 
 ## Development
 
@@ -163,6 +159,7 @@ pip install --upgrade -r requirements.txt
 ### File Not Found Errors
 
 Ensure paths are correct relative to repository root:
+
 - Input: `data/private/raw/jobhistory.xlsx`
 - Output: `public/data/operations_data.json`
 
@@ -175,6 +172,7 @@ Ensure paths are correct relative to repository root:
 ### Import Errors
 
 Make sure you're in the correct directory:
+
 ```bash
 cd scripts/python
 python generate_json.py

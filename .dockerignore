@@ -31,9 +31,11 @@ backend/.venv
 test-results
 playwright-report
 
-# Docs / templates not needed at runtime
+# Docs / templates not needed at runtime (docs/ carries a 17.8 MB BrandBook.pdf)
 *.md
 !README.md
+docs/
+public/flipbooks/success-stories/figures/REVIEW.html
 Dockerfile
 backend/Dockerfile
 .dockerignore

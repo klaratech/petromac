@@ -179,7 +179,7 @@ jobs:
         if: steps.sync.outputs.changed == 'true'
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Enable pnpm and install
         if: steps.sync.outputs.changed == 'true'

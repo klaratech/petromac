@@ -51,6 +51,7 @@ jobs:
     permissions:
       contents: write
       actions: write # to dispatch the staging deploy after pushing
+      issues: write # to open/update the "www is behind test" issue when a hold drags on
 
     steps:
       - name: Checkout repository
@@ -105,7 +106,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Enable pnpm
         run: corepack enable
@@ -122,8 +123,6 @@ jobs:
         run: pip install polars==1.38.0 fastexcel==0.19.0 openpyxl==3.1.5
 
       - name: Run operations pipeline
-        env:
-          SKIP_GITHUB_PUSH: 'true'
         run: pnpm run data:operations
 
       # operations_stats.json carries generatedAt (today's date), so it alone
@@ -233,11 +232,17 @@ jobs:
           fi
           sha=$(git rev-parse HEAD)
           pending=$(git diff --name-only production "$sha")
+          other=$(grep -vxE 'public/data/operations_(data|full|stats)\.json' <<<"$pending" || true)
+          if [ -z "$other" ]; then
+            # Nothing non-data is pending — resolve any hold issue from before.
+            for n in $(gh issue list --label auto-promote-hold --state open --json number --jq '.[].number'); do
+              gh issue close "$n" --comment "Resolved: the pending changes were promoted." > /dev/null || true
+            done
+          fi
           if [ -z "$pending" ]; then
             echo "www already serves this commit's content — nothing to promote." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          other=$(grep -vxE 'public/data/operations_(data|full|stats)\.json' <<<"$pending" || true)
           if [ -n "$other" ]; then
             echo "::warning::Unpromoted non-data changes are waiting — www keeps its last promote until someone runs Promote to Production."
             {
@@ -247,6 +252,37 @@ jobs:
               echo "$other"
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
+            # A run-summary warning is invisible unless someone opens the run.
+            # Once the hold is older than HOLD_NOTIFY_DAYS, open (or refresh)
+            # ONE issue so it lands in the inbox — the Oct 2026 catalog
+            # refresh held www for two weeks before anyone noticed.
+            prod_date=$(git log -1 --format=%cI production 2>/dev/null || true)
+            if [ -z "$prod_date" ]; then
+              prod_date=$(gh api "repos/$GITHUB_REPOSITORY/commits/$(git rev-parse production)" --jq .commit.committer.date)
+            fi
+            held_days=$(( ( $(date +%s) - $(date -d "$prod_date" +%s) ) / 86400 ))
+            echo "www has been behind test for ${held_days} day(s) (production tag dated $prod_date)."
+            if [ "$held_days" -ge "${HOLD_NOTIFY_DAYS:-3}" ]; then
+              title="www is ${held_days} days behind test — Promote to Production needed"
+              body=$(printf '%s\n' \
+                "The nightly data refresh cannot auto-promote because non-data changes have been waiting since the last promote (\`production\` tag → $(git rev-parse --short production), $prod_date)." \
+                "" \
+                "Pending since then:" \
+                '```' "$other" '```' \
+                "" \
+                "Go live: **Actions → Promote to Production → Run workflow**, or \`gh workflow run deploy-prod.yml\`. Operations data on www is also stale until then." \
+                "" \
+                "_Opened automatically by data-refresh.yml; it updates this issue daily and closes it after the next promote._")
+              existing=$(gh issue list --label auto-promote-hold --state open --json number --jq '.[0].number // empty')
+              if [ -n "$existing" ]; then
+                gh issue edit "$existing" --title "$title" --body "$body" > /dev/null
+                echo "Updated issue #$existing"
+              else
+                gh label create auto-promote-hold --color D93F0B --description "www is behind test; a human promote is needed" --force > /dev/null 2>&1 || true
+                gh issue create --title "$title" --body "$body" --label auto-promote-hold > /dev/null
+                echo "Opened a new auto-promote-hold issue"
+              fi
+            fi
             exit 0
           fi
           for i in 1 2 3; do

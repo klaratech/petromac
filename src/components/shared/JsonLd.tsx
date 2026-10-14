@@ -9,8 +9,11 @@ export default function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script
       type="application/ld+json"
-      // JSON.stringify output of our own literal objects — no user input.
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      // Our own objects, but much of the text is editorial content from the
+      // InDesign packages (story titles, product names). Escaping `<` keeps a
+      // literal "</script>" in a title from closing the block — JSON stays
+      // valid because \u003c is just the escaped form of the same character.
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }}
     />
   );
 }

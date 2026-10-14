@@ -45,14 +45,4 @@ export const EXTERNAL_URLS = {
 } as const;
 
 // Device types
-export const DEVICE_TYPES = [
-  'Taxi',
-  'Pathfinder',
-  'Helix',
-  'CP-12',
-  'CP-8',
-  'Rocker',
-  'THOR',
-] as const;
-
-export type DeviceType = (typeof DEVICE_TYPES)[number];
+export type DeviceType = 'Taxi' | 'Pathfinder' | 'Helix' | 'CP-12' | 'CP-8' | 'Rocker' | 'THOR';

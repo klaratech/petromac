@@ -134,7 +134,6 @@ function processOperations(): void {
     console.log(`📊 operations  — ${configuredSource}`);
     run('python3', ['scripts/python/generate_json.py'], {
       EXCEL_PATH: configuredSource,
-      SKIP_GITHUB_PUSH: 'true',
     });
     return;
   }
@@ -150,7 +149,6 @@ function processOperations(): void {
   console.log(`📊 operations  — ${src.name}`);
   run('python3', ['scripts/python/generate_json.py'], {
     EXCEL_PATH: src.path,
-    SKIP_GITHUB_PUSH: 'true',
   });
   archive(allFiles(dir));
 }

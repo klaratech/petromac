@@ -7,11 +7,10 @@ import logging
 import base64
 import threading
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import os
-import threading
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -211,9 +210,14 @@ def is_email_configured() -> bool:
 def verify_turnstile(token: str, remote_ip: str) -> bool:
     """Server-side Cloudflare Turnstile check. Enforced only when
     TURNSTILE_SECRET_KEY is set — dev/staging without keys keep working.
-    Fails CLOSED on missing/invalid tokens, but OPEN on siteverify outages
-    (a Cloudflare API blip shouldn't silence the contact form; honeypot,
-    timing and rate limits still apply)."""
+    Fails CLOSED on missing/invalid tokens AND on a definite answer from
+    siteverify (4xx/5xx HTTP status, unparseable body) — a rotated or wrong
+    TURNSTILE_SECRET_KEY must not silently disable the bot check, which is
+    what the old catch-all `except Exception: return True` did. Fails OPEN
+    only on a transport failure (DNS, connect, timeout): a Cloudflare blip
+    shouldn't silence the contact form, and honeypot, timing and rate limits
+    still apply. Every non-success is logged so a misconfiguration shows up
+    in `docker logs` instead of in missing leads."""
     secret = os.getenv("TURNSTILE_SECRET_KEY")
     if not secret:
         return True
@@ -231,9 +235,19 @@ def verify_turnstile(token: str, remote_ip: str) -> bool:
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
             payload = json.loads(resp.read().decode("utf-8"))
-        return bool(payload.get("success"))
-    except Exception:
+    except urllib.error.HTTPError as exc:
+        logger.error("turnstile: siteverify HTTP %s — failing closed", exc.code)
+        return False
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        logger.warning("turnstile: siteverify unreachable (%s) — failing open", exc)
         return True
+    except (ValueError, UnicodeDecodeError) as exc:
+        logger.error("turnstile: siteverify returned an unreadable body (%s) — failing closed", exc)
+        return False
+    ok = bool(payload.get("success"))
+    if not ok:
+        logger.info("turnstile: rejected token, error-codes=%s", payload.get("error-codes"))
+    return ok
 
 
 def _fetch_graph_token() -> str:
@@ -518,14 +532,8 @@ async def submit_contact(request: Request):
     if len(name) > 200 or len(email) > 320 or len(message) > 10_000:
         return JSONResponse({"ok": False, "error": "Validation failed"}, status_code=400)
 
-    if not verify_turnstile(
-        str(form.get("cf-turnstile-response", "")), get_client_ip(request.headers)
-    ):
-        return JSONResponse(
-            {"ok": False, "error": "Verification failed. Please try again."},
-            status_code=403,
-        )
-
+    # Rate limit BEFORE the siteverify round-trip (same order as send_pdf):
+    # otherwise one IP can make us hammer Cloudflare's API without limit.
     allowed, retry_after = check_rate_limit(
         f"contact:{get_client_ip(request.headers)}",
         CONTACT_RATE_LIMIT["limit"],
@@ -536,6 +544,14 @@ async def submit_contact(request: Request):
             {"ok": False, "error": "Too many submissions. Please try again later."},
             status_code=429,
             headers={"Retry-After": str(retry_after)},
+        )
+
+    if not verify_turnstile(
+        str(form.get("cf-turnstile-response", "")), get_client_ip(request.headers)
+    ):
+        return JSONResponse(
+            {"ok": False, "error": "Verification failed. Please try again."},
+            status_code=403,
         )
 
     contact_to_email = os.getenv("CONTACT_TO_EMAIL")
@@ -551,7 +567,7 @@ async def submit_contact(request: Request):
     escaped_message = html.escape(message)
     send_email(
         to_address=contact_to_email,
-        subject=f"Contact Form: {escaped_name}",
+        subject=f"Contact Form: {display_name}",
         text_body=f"From: {display_name} <{email}>\n\nMessage:\n{message}",
         html_body=(
             "<h2>New Contact Form Submission</h2>"

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from 'react';
 import ContactForm from '@/components/public/ContactForm';
+import type { ContactPrefill } from '@/lib/contactDrawer';
 
 /**
  * Contact form in a slide-out drawer, so a visitor can send a message without
@@ -21,8 +22,21 @@ import ContactForm from '@/components/public/ContactForm';
  * "go to the full page" next to a working form just invites people to abandon
  * the one they're already looking at.
  */
-export default function ContactDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+export default function ContactDrawer({
+  open,
+  onClose,
+  prefill,
+}: {
+  open: boolean;
+  onClose: () => void;
+  /** Optional heading/intro/message override for a specific ask — see lib/contactDrawer.ts. */
+  prefill?: ContactPrefill | undefined;
+}) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const title = prefill?.title ?? 'Send us a message';
+  const intro =
+    prefill?.intro ??
+    "Tell us about your well or tool string and we'll point you to the right regional manager.";
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -71,7 +85,7 @@ export default function ContactDrawer({ open, onClose }: { open: boolean; onClos
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-brand">
               Contact
             </p>
-            <h2 className="font-heading text-lg font-bold text-white">Send us a message</h2>
+            <h2 className="font-heading text-lg font-bold text-white">{title}</h2>
           </div>
           <button
             type="button"
@@ -91,11 +105,8 @@ export default function ContactDrawer({ open, onClose }: { open: boolean; onClos
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-6">
-          <p className="mb-5 text-sm leading-relaxed text-slate-400">
-            Tell us about your well or tool string and we&apos;ll point you to the right regional
-            manager.
-          </p>
-          <ContactForm />
+          <p className="mb-5 text-sm leading-relaxed text-slate-400">{intro}</p>
+          <ContactForm initialMessage={prefill?.message ?? ''} />
         </div>
       </div>
     </div>
