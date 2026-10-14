@@ -131,15 +131,16 @@ export default function ChallengeSelector() {
   };
 
   // "Request the file": the honest alternative to a download button. Opens
-  // the header's contact drawer with the ask pre-written, so the visitor
-  // only has to leave an email — and Petromac learns who wants to share
-  // the animation and where. A human replies with the MP4 (auto-fulfilment
-  // is a TODO item).
+  // the header's contact drawer with the ask pre-written (editable, so the
+  // visitor can add context) and `mediaAsset` set: on send, the backend
+  // mails them a signed 7-day download link and info@ gets the message with
+  // the lead. Petromac learns who wants to share the animation and where.
   const requestFile = () => {
     setLightboxOpen(false);
     openContactDrawer({
       title: 'Request the animation',
-      intro: `Leave your email and we'll send you the ${active.product} animation as an MP4 to share with your team.`,
+      intro: `Leave your email and we'll send you a download link for the ${active.product} animation (MP4) to share with your team. Add a line about your well or project if you like.`,
+      mediaAsset: active.id,
       message: `Hi, I'd like a copy of the ${active.product} animation (${active.challenge}) shown on petromac.co.nz, as a video file I can share with my team. Thanks!`,
     });
   };

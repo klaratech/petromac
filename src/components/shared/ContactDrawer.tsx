@@ -106,7 +106,7 @@ export default function ContactDrawer({
 
         <div className="flex-1 overflow-y-auto px-6 py-6">
           <p className="mb-5 text-sm leading-relaxed text-slate-400">{intro}</p>
-          <ContactForm initialMessage={prefill?.message ?? ''} />
+          <ContactForm initialMessage={prefill?.message ?? ''} mediaAsset={prefill?.mediaAsset} />
         </div>
       </div>
     </div>

@@ -13,7 +13,14 @@ import TurnstileWidget, {
  * and the simulation page's contact section. Only the email field and
  * message are required.
  */
-export default function ContactForm({ initialMessage = '' }: { initialMessage?: string }) {
+export default function ContactForm({
+  initialMessage = '',
+  mediaAsset,
+}: {
+  initialMessage?: string;
+  /** Animation requested — posted as `media_asset`; see lib/contactDrawer.ts. */
+  mediaAsset?: string | undefined;
+}) {
   // `initialMessage` seeds the body for a specific ask (e.g. "Request this
   // animation" from the homepage). Read once on mount — the drawer that
   // carries this form remounts on every open, so a new prefill always lands.
@@ -26,6 +33,9 @@ export default function ContactForm({ initialMessage = '' }: { initialMessage?: 
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error' | 'verify-failed'>(
     'idle'
   );
+  // Set from the server's reply: true when a download link went out alongside
+  // the message, so the success copy can say "check your inbox".
+  const [mediaLinkSent, setMediaLinkSent] = useState(false);
   // Server-provided reason for a rejected submission (e.g. "message too
   // short") — shown instead of the generic error when available.
   const [serverError, setServerError] = useState<string | null>(null);
@@ -92,9 +102,14 @@ export default function ContactForm({ initialMessage = '' }: { initialMessage?: 
         body: formDataObj,
       });
 
-      const result = (await response.json()) as { ok: boolean; error?: string };
+      const result = (await response.json()) as {
+        ok: boolean;
+        error?: string;
+        mediaLinkSent?: boolean;
+      };
 
       if (response.ok && result.ok) {
+        setMediaLinkSent(Boolean(result.mediaLinkSent));
         setSubmitStatus('success');
         setServerError(null);
         setFormData({ name: '', email: '', message: '' });
@@ -132,6 +147,8 @@ export default function ContactForm({ initialMessage = '' }: { initialMessage?: 
           showing success (Martin's "email went nowhere", Aug 2026).
           `_hp_check` matches no autofill vocabulary. Keep the name in sync
           with backend submit_contact. */}
+      {mediaAsset && <input type="hidden" name="media_asset" value={mediaAsset} />}
+
       <input
         type="text"
         name="_hp_check"
@@ -216,7 +233,7 @@ export default function ContactForm({ initialMessage = '' }: { initialMessage?: 
           disabled={isSubmitting}
           className="rounded-lg bg-brand px-6 py-2.5 font-semibold text-white shadow-sm transition-all hover:bg-brand/90 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-700"
         >
-          {isSubmitting ? 'Sending…' : 'Send message'}
+          {isSubmitting ? 'Sending…' : mediaAsset ? 'Send me the file' : 'Send message'}
         </button>
       </div>
 
@@ -227,7 +244,9 @@ export default function ContactForm({ initialMessage = '' }: { initialMessage?: 
             role="alert"
             className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-300"
           >
-            Thank you for your message — we&apos;ll get back to you soon.
+            {mediaLinkSent
+              ? 'Thank you — the download link is on its way to your inbox (check spam if it takes more than a few minutes).'
+              : 'Thank you for your message — we’ll get back to you soon.'}
           </div>
         )}
         {submitStatus === 'verify-failed' && (

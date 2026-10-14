@@ -17,6 +17,12 @@ export interface ContactPrefill {
   intro?: string;
   /** Pre-written message body (the visitor can still edit it). */
   message?: string;
+  /**
+   * Homepage animation being requested (a `MEDIA_ASSETS` key in the backend,
+   * = the ChallengeSelector solution id). When set, /api/contact also mails
+   * the visitor a signed download link, and the success copy says so.
+   */
+  mediaAsset?: string;
 }
 
 export function openContactDrawer(prefill?: ContactPrefill): void {

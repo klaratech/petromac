@@ -58,13 +58,13 @@ the ones left open.
       still resolves. Visual check on test before promote — fonts are
       load-bearing for CLS, so compare LCP AND CLS. This also subsumes the
       "Fonts" item in the Performance section below.
-- [ ] **Auto-fulfil "Request this animation".** Today the homepage link calls
-      `openContactDrawer()` (`src/lib/contactDrawer.ts`) with a prefilled
-      message and a human replies with the MP4. Next step: a backend endpoint
-      that emails the file link automatically — Turnstile + rate limit exactly
-      like `/api/contact`, allowlisted asset names only (no path from the
-      client), and a log line per requester (email + asset + IP) so the leads
-      are not lost.
+- [ ] **Watch the "Request the file" flow for a few weeks.** Shipped 14 Oct:
+      the contact drawer posts `media_asset`, `/api/contact` mails a signed
+      7-day link (`/api/media/download/<asset>?t=…`) and info@ gets the lead.
+      Check `docker logs petromac-backend | grep media:` for issued/downloaded
+      counts; if nobody downloads, drop the link mail and keep the lead. Set
+      `MEDIA_LINK_SECRET` in `.env-backend` at some point (optional — see
+      `.env.example`).
 - [ ] **`/intranet/kiosk/*` is reachable unauthenticated.** Only
       `src/app/(public)/intranet/page.tsx` reads the staff session; the
       `(kiosk)` route group has no gate (`robots: noindex` only). The kiosk
@@ -217,7 +217,7 @@ Open:
       queries (`hrsct`, `bowspring`, `tlc logging`, `holefinder`,
       `oriented core`, `wireline malaysia`); the BODY-COPY / H1 pass is not
       started (14 Oct grep: `tlc logging`, `oriented core`, `wireline
-    malaysia` appear in zero components). That is where the ranking upside
+  malaysia` appear in zero components). That is where the ranking upside
       is — a title alone rarely moves position 23 → page 1.
 - [ ] **Meta descriptions pass** on the pages the vocabulary map didn't cover
       (it was a title proposal). The 20 Aug audit fixed only the two
@@ -341,7 +341,7 @@ a dashboard; none is verifiable from the repo, so all are "(unverified as of
 
 - [ ] **Send one test scan from an HQ printer** — a confirmation, not a gate:
       the SPF trim already shipped (`v=spf1 +mx +ip4:161.65.142.140
-    include:spf.protection.outlook.com ~all`). If a scan fails, revert SPF
+  include:spf.protection.outlook.com ~all`). If a scan fails, revert SPF
       from the snapshot at `/root/dns-backups/` — one edit, live in minutes.
 - [ ] **CANCEL ChemiCloud** — cleared 7 Aug (no mailboxes ever existed there;
       the WordPress content is archived). One check first: read the SMTP host

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import hmac
 import html
 import io
 import json
@@ -17,7 +19,7 @@ from urllib.parse import urlparse
 
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, EmailStr, Field
 from pypdf import PdfReader, PdfWriter
 
@@ -51,6 +53,7 @@ SUCCESS_STORIES_PDF_PATH = _emailable_pdf("success-stories")
 CONTACT_RATE_LIMIT = {"limit": 3, "window_ms": 60_000}
 EMAIL_RATE_LIMIT = {"limit": 3, "window_ms": 60_000}
 PDF_RATE_LIMIT = {"limit": 5, "window_ms": 60_000}
+MEDIA_LINK_TTL_SECONDS = 7 * 24 * 3600
 DEFAULT_MAX_PAGES = 60
 
 _rate_limit_lock = threading.Lock()
@@ -486,6 +489,13 @@ async def submit_contact(request: Request):
     name = str(form.get("name", "")).strip()
     email = str(form.get("email", "")).strip()
     message = str(form.get("message", "")).strip()
+    # Optional: which homepage animation the visitor asked for (see
+    # MEDIA_ASSETS). Unknown values are ignored rather than rejected, so a
+    # stale page can never block a plain contact message.
+    media_asset = str(form.get("media_asset", "")).strip()
+    if media_asset and media_asset not in MEDIA_ASSETS:
+        logger.warning("contact: ignoring unknown media_asset=%r", media_asset[:40])
+        media_asset = ""
     # Honeypot renamed from `company` (Aug 2026): Chrome/Edge autofill treats
     # a field NAMED company as an address field and fills it even when hidden
     # and autocomplete=off — so real visitors with autofill were silently
@@ -565,20 +575,40 @@ async def submit_contact(request: Request):
     escaped_name = html.escape(display_name)
     escaped_email = html.escape(email)
     escaped_message = html.escape(message)
+
+    # Animation request: mail the visitor their link FIRST, so the info@ copy
+    # can say truthfully whether it went out. The visitor's address passes
+    # the same allowlist as the public PDF sends.
+    media_note = ""
+    media_subject = ""
+    if media_asset:
+        media_label = MEDIA_ASSETS[media_asset]["label"]
+        media_subject = f"Animation request ({media_label}): "
+        if not is_recipient_allowed(email, contact_to_email):
+            media_note = f"<p><strong>Animation requested:</strong> {html.escape(media_label)} — NOT sent (recipient not allowed), please follow up by hand.</p>"
+        else:
+            try:
+                send_media_link(recipient=email, asset_key=media_asset, request=request)
+                media_note = f"<p><strong>Animation requested:</strong> {html.escape(media_label)} — a download link (valid 7 days) was sent to them automatically.</p>"
+            except Exception as exc:
+                logger.error("contact: media link to %r failed: %s", email, exc)
+                media_note = f"<p><strong>Animation requested:</strong> {html.escape(media_label)} — sending the link FAILED ({html.escape(str(exc))[:120]}), please send it by hand.</p>"
+
     send_email(
         to_address=contact_to_email,
-        subject=f"Contact Form: {display_name}",
+        subject=f"Contact Form: {media_subject}{display_name}",
         text_body=f"From: {display_name} <{email}>\n\nMessage:\n{message}",
         html_body=(
             "<h2>New Contact Form Submission</h2>"
             f"<p><strong>Name:</strong> {escaped_name}</p>"
             f"<p><strong>Email:</strong> {escaped_email}</p>"
+            f"{media_note}"
             "<p><strong>Message:</strong></p>"
             f"<p>{escaped_message.replace(chr(10), '<br>')}</p>"
         ),
         reply_to=email,
     )
-    return {"ok": True}
+    return {"ok": True, "mediaLinkSent": bool(media_asset and "automatically" in media_note)}
 
 
 @app.post("/api/pdf/success-stories")
@@ -682,3 +712,176 @@ async def send_pdf(payload: SendPdfRequest, request: Request):
     )
 
     return {"success": True}
+
+
+# --- Public animation downloads: signed, expiring links -----------------------
+#
+# "Request the file" on the homepage (Oct 2026) opens the ordinary contact
+# drawer with the message prefilled and a hidden `media_asset` field; the
+# visitor can add context before sending. /api/contact then does its normal
+# job (the message reaches info@ with Reply-To) AND mails the visitor a
+# download link. The MP4s are PUBLIC assets (the page has to play them), so
+# this is NOT an access control — it is lead capture. The link is signed and
+# expires after MEDIA_LINK_TTL_SECONDS; each download is logged against its
+# token. Anyone holding the link can use it until then, exactly as anyone
+# holding the raw asset URL can — see docs/DECISIONS.md Oct 2026.
+#
+# Assets are an allowlist keyed by the homepage solution id; the client never
+# names a path. Files live in the FRONTEND container (public/videos), so the
+# download endpoint streams them from the site itself over the public origin,
+# which also lets Cloudflare serve the bytes from its cache.
+MEDIA_ASSETS: dict[str, dict[str, str]] = {
+    "differential-sticking": {
+        "file": "differential-sticking-subtitled.mp4",
+        "label": "Wireline Express — Differential Sticking",
+        "download_as": "Petromac-Wireline-Express-Differential-Sticking.mp4",
+    },
+    "high-deviations": {
+        "file": "WirelineExpress.mp4",
+        "label": "Wireline Express — High Deviations",
+        "download_as": "Petromac-Wireline-Express-High-Deviations.mp4",
+    },
+    "incomplete-operations": {
+        "file": "pf-subtitled.mp4",
+        "label": "Pathfinder — Incomplete Operations",
+        "download_as": "Petromac-Pathfinder.mp4",
+    },
+    "centralisation": {
+        "file": "helix-subtitled.mp4",
+        "label": "Focus Centralisers — Helix",
+        "download_as": "Petromac-Focus-Helix.mp4",
+    },
+}
+
+
+def media_link_key() -> bytes:
+    """Signing key for download links. MEDIA_LINK_SECRET if set; otherwise a
+    key DERIVED (HMAC, fixed label) from the Entra client secret, which the
+    backend already needs for mail — so the feature works with no new config,
+    and setting MEDIA_LINK_SECRET later just rotates every outstanding link."""
+    explicit = os.getenv("MEDIA_LINK_SECRET")
+    if explicit:
+        return explicit.encode("utf-8")
+    base = os.getenv("ENTRA_CLIENT_SECRET", "")
+    if not base:
+        raise RuntimeError("Set MEDIA_LINK_SECRET (or ENTRA_CLIENT_SECRET) to issue download links.")
+    return hmac.new(base.encode("utf-8"), b"petromac-media-link-v1", hashlib.sha256).digest()
+
+
+def _b64url(raw: bytes) -> str:
+    return base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
+
+
+def sign_media_link(asset: str, expires_at: int) -> str:
+    sig = hmac.new(media_link_key(), f"{asset}.{expires_at}".encode("utf-8"), hashlib.sha256).digest()
+    return f"{expires_at}.{_b64url(sig[:20])}"
+
+
+def verify_media_link(asset: str, token: str, now: float | None = None) -> bool:
+    try:
+        exp_text, _sig = token.split(".", 1)
+        expires_at = int(exp_text)
+    except (ValueError, AttributeError):
+        return False
+    if (now if now is not None else time.time()) > expires_at:
+        return False
+    try:
+        expected = sign_media_link(asset, expires_at)
+    except RuntimeError:
+        return False
+    return hmac.compare_digest(expected, token)
+
+
+def public_site_base(request: Request) -> str:
+    """Origin to build links against: the validated request Origin (so the
+    test site links to test), else the configured site URL."""
+    origin = request.headers.get("origin")
+    if origin and origin.rstrip("/") in {o.rstrip("/") for o in get_allowed_origins()}:
+        return origin.rstrip("/")
+    return get_allowed_origins()[0].rstrip("/")
+
+
+def send_media_link(*, recipient: str, asset_key: str, request: Request) -> str:
+    """Issue a signed download link for `asset_key` and mail it to `recipient`.
+    Returns the human label of the asset (for the info@ notification). Raises
+    KeyError for an unknown asset."""
+    asset = MEDIA_ASSETS[asset_key]
+    expires_at = int(time.time()) + MEDIA_LINK_TTL_SECONDS
+    token = sign_media_link(asset_key, expires_at)
+    link = f"{public_site_base(request)}/api/media/download/{asset_key}?t={token}"
+    expires_text = datetime.fromtimestamp(expires_at, tz=timezone.utc).strftime("%d %b %Y")
+    label = asset["label"]
+    logger.info(
+        "media: link issued asset=%s to=%r ip=%s exp=%s",
+        asset_key, recipient, get_client_ip(request.headers), expires_at,
+    )
+    send_email(
+        to_address=recipient,
+        subject=f"Your Petromac animation: {label}",
+        text_body=(
+            "Thank you for your interest in Petromac.\n\n"
+            f"Download the {label} animation here (link valid until {expires_text}):\n{link}\n\n"
+            "Feel free to share it with your team. Visit https://www.petromac.co.nz for more."
+        ),
+        html_body=(
+            '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">'
+            '<h2 style="color: #1e40af;">Thank you for your interest in Petromac</h2>'
+            f"<p>Here is the <strong>{html.escape(label)}</strong> animation you asked for, "
+            "as an MP4 you can share with your team.</p>"
+            f'<p style="margin: 24px 0;"><a href="{html.escape(link)}" '
+            'style="background: #1e40af; color: #fff; padding: 12px 20px; border-radius: 8px; '
+            'text-decoration: none; font-weight: bold;">Download the animation</a></p>'
+            f'<p style="color: #6b7280; font-size: 13px;">The link works until {expires_text}. '
+            "If the button does not work, copy this address into your browser:<br />"
+            f'<a href="{html.escape(link)}" style="color: #1e40af; word-break: break-all;">{html.escape(link)}</a></p>'
+            '<hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />'
+            '<p style="color: #6b7280; font-size: 14px;"><strong>Petromac</strong><br />'
+            "Wireline Logging Solutions<br />"
+            '<a href="https://www.petromac.co.nz" style="color: #1e40af;">www.petromac.co.nz</a></p>'
+            "</div>"
+        ),
+    )
+    return label
+
+
+@app.get("/api/media/download/{asset}")
+def download_media(asset: str, request: Request, t: str = ""):
+    meta = MEDIA_ASSETS.get(asset)
+    if meta is None or not verify_media_link(asset, t):
+        raise HTTPException(status_code=404, detail="This download link is invalid or has expired.")
+
+    ip = get_client_ip(request.headers)
+    logger.info("media: download asset=%s token=%s ip=%s", asset, t[:16], ip)
+
+    # Stream from the site's own public URL so the bytes come from the
+    # frontend container (via Cloudflare's cache) — the backend image carries
+    # no videos. Host header is what cloudflared forwarded, i.e. the site.
+    host = request.headers.get("host") or ""
+    allowed_hosts = {urlparse(o).netloc for o in get_allowed_origins()}
+    base = f"https://{host}" if host in allowed_hosts else get_allowed_origins()[0].rstrip("/")
+    upstream = urllib.request.Request(f"{base}/videos/transcoded/{meta['file']}")
+    try:
+        resp = urllib.request.urlopen(upstream, timeout=30)
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        logger.error("media: upstream fetch failed for %s: %s", meta["file"], exc)
+        raise HTTPException(status_code=502, detail="The file is temporarily unavailable.")
+
+    def body():
+        try:
+            while True:
+                chunk = resp.read(1024 * 256)
+                if not chunk:
+                    break
+                yield chunk
+        finally:
+            resp.close()
+
+    headers = {
+        "Content-Disposition": f'attachment; filename="{meta["download_as"]}"',
+        "Cache-Control": "private, no-store",
+        "X-Robots-Tag": "noindex",
+    }
+    length = resp.headers.get("Content-Length")
+    if length:
+        headers["Content-Length"] = length
+    return StreamingResponse(body(), media_type="video/mp4", headers=headers)

@@ -11,8 +11,14 @@ _current state_ and _how to operate it_; the reasoning lives here.
 (`LazyVideo`) set `controlsList="nodownload noremoteplayback"` and swallow
 the context menu, and the player and the solution panel carry a quiet
 "Request the file" link that opens the header's `ContactDrawer` prefilled
-("Please send me the Pathfinder animation … as a file I can share with my
-team"). A human replies with the MP4.
+(editable — the visitor can add context) with a hidden `media_asset`. On
+send, `/api/contact` does its normal job (message to info@, Reply-To set)
+AND mails the visitor a **signed download link** valid 7 days
+(`/api/media/download/<asset>?t=…`, served by the backend streaming the
+public MP4 with `Content-Disposition: attachment`); every issue and every
+download is logged. Assets are an allowlist keyed by the homepage solution
+id. The signing key is `MEDIA_LINK_SECRET`, or derived from
+`ENTRA_CLIENT_SECRET` so no new config was needed.
 
 **Why:** a supplier told Craig (14 Oct 2026) he had downloaded the
 Pathfinder animation from the site. Nothing short of DRM stops a determined
@@ -21,8 +27,11 @@ work — so "make it not downloadable" was reframed: remove the CASUAL path
 (the player's Download menu item, right-click → Save), and turn the
 remaining demand into a lead. The request goes through the existing
 `/api/contact` (Turnstile, honeypot, rate limit) so nothing new had to be
-hardened; automatic fulfilment is a TODO item. If an animation is ever truly
-sensitive, the answer is the intranet, not a lock on a public page.
+hardened, and the visitor gets the file without anyone at Petromac lifting a
+finger — while info@ still sees who asked. The link is NOT a security
+boundary: the MP4 it serves is already public, and anyone holding the link
+can use it for 7 days. If an animation is ever truly sensitive, the answer
+is the intranet, not a lock on a public page.
 
 **Mechanics:** any section can open the drawer via
 `openContactDrawer(prefill)` in `src/lib/contactDrawer.ts` — a DOM event the
