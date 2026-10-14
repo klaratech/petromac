@@ -63,6 +63,10 @@ jobs:
 
       - name: Build and push (linux/amd64)
         uses: docker/build-push-action@v7
+        env:
+          # Stop uploading a *.dockerbuild record per build as a workflow
+          # artifact — ~100 accumulated with nobody reading them.
+          DOCKER_BUILD_RECORD_UPLOAD: false
         with:
           context: .
           file: ${{ steps.dockerfile.outputs.file }}

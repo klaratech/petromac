@@ -26,7 +26,7 @@ Browser → Cloudflare edge → cloudflared (klaratech-1) → 127.0.0.1:3015 (fr
     fixed Jul 2026. If reconciling the live `/root/apps/petromac/docker-compose.yml`,
     keep the prefix.
 - App folder on server: `/root/apps/petromac/`
-- Images: `ghcr.io/klaratech/petromac-frontend:latest`, `ghcr.io/klaratech/petromac-backend:latest`
+- Images: `ghcr.io/klaratech/petromac-{frontend,backend}` — `:prod` + `:sha-<short>` (production), `:staging` + `:staging-<sha>` (test). There is no `:latest`.
 - DNS, TLS, and routing live in Cloudflare; the server has no public ports open beyond SSH.
 
 ## CI/CD — test-first with a promote button (Jul 2026)
@@ -171,7 +171,7 @@ banner exchange`, which looks like a server fault but is purely local.
   three containers) — the backend logs every request with status codes,
   the first stop for "the form doesn't work" reports.
 - **Image Pulls & Containerd Hygiene**: CI workflows pull images sequentially (`docker compose pull frontend-test` then `backend-test`) rather than in parallel to avoid `containerd` layer extraction race conditions (`commit failed: rename ... /ingest/...`). Workflows execute `docker logout ghcr.io` post-deploy to scrub ephemeral login tokens from `/root/.docker/config.json` (resolving Docker's standard unencrypted credentials warning).
-- **Server Prune**: Reclaim disk space on `klaratech-1` via `docker image prune -a -f && docker builder prune -a -f`.
+- **Server Prune**: `housekeeping.yml` runs every Sunday (03:17 UTC) — Docker image/container/builder prune on `klaratech-1` plus a GHCR prune that keeps `:prod`, `:staging` and the newest 10 tagged builds per image. Run it any time with `gh workflow run housekeeping.yml`. Manual equivalent on the box: `docker image prune -a -f && docker builder prune -a -f`.
 - Debugging ladder: DNS (`dig @1.1.1.1`) → edge (`curl -I`, look for
   `server: cloudflare` + CF-RAY) → tunnel (`systemctl status cloudflared`)
   → containers (`docker ps`) → app logs. Local machines can lie — macOS
@@ -204,7 +204,7 @@ banner exchange`, which looks like a server fault but is purely local.
 ```bash
 ssh klaratech-1
 cd /root/apps/petromac
-# edit docker-compose.yml: change :latest to :sha-<short> for the affected service
+# edit docker-compose.yml: change :prod to :sha-<short> for the affected service
 docker compose pull && docker compose up -d
 ```
 

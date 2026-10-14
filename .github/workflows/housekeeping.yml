@@ -1,0 +1,115 @@
+name: Housekeeping (server + GHCR prune)
+
+# Weekly janitor. Two independent jobs:
+#   server — on klaratech-1: drop Docker images no running/stopped container
+#            uses, stale build cache, and stopped containers older than a week.
+#            Only ever touches Docker; never cloudflared, never other apps'
+#            running containers (prune keeps anything a container references).
+#   ghcr   — in the registry: keep the tags the compose file pulls (:prod,
+#            :staging), the last KEEP_TAGGED sha-/staging- builds per image
+#            (rollback window), and delete the rest + every untagged manifest.
+#            Each push and each nightly data refresh adds one image per
+#            component, so without this the package list grows ~60/month.
+#
+# Run it by hand any time: gh workflow run housekeeping.yml
+
+on:
+  schedule:
+    - cron: '17 3 * * 0' # Sundays 03:17 UTC
+  workflow_dispatch:
+    inputs:
+      keep_tagged:
+        description: 'Tagged GHCR versions to keep per image (besides :prod/:staging)'
+        required: false
+        default: '10'
+
+permissions: {}
+
+jobs:
+  server:
+    name: Prune Docker on klaratech-1
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and prune
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            echo "--- before ---"
+            df -h / | tail -1
+            docker system df
+            echo "--- running containers (kept) ---"
+            docker ps --format '{{.Names}}  {{.Image}}'
+            echo "--- prune ---"
+            # Stopped containers older than 7 days (a freshly stopped one may
+            # be someone mid-debug).
+            docker container prune -f --filter "until=168h"
+            # Images not referenced by ANY container (running or stopped).
+            # The four petromac containers pin :prod/:staging, so those stay;
+            # old :sha-*/:staging-* pulls go. All re-pullable from GHCR.
+            docker image prune -a -f
+            # BuildKit cache from any local builds.
+            docker builder prune -a -f
+            echo "--- after ---"
+            df -h / | tail -1
+            docker system df
+
+  ghcr:
+    name: Prune GHCR image versions
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [petromac-frontend, petromac-backend]
+    steps:
+      - name: Delete stale versions of ${{ matrix.package }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PKG: ${{ matrix.package }}
+          OWNER: ${{ github.repository_owner }}
+          KEEP_TAGGED: ${{ inputs.keep_tagged || '10' }}
+        run: |
+          set -euo pipefail
+          base="orgs/$OWNER/packages/container/$PKG"
+          if ! gh api "$base" > /dev/null 2>&1; then
+            base="users/$OWNER/packages/container/$PKG"
+          fi
+          versions=$(gh api --paginate "$base/versions?per_page=100" \
+            | jq -s 'add | sort_by(.created_at) | reverse')
+          total=$(jq length <<<"$versions")
+
+          # Protected: anything carrying a tag the compose file pulls.
+          # Keepers: the newest KEEP_TAGGED tagged versions beyond those.
+          # Everything else — older tagged builds and every untagged manifest
+          # (left behind each time :prod/:staging moved) — is deleted.
+          to_delete=$(jq -r --argjson keep "$KEEP_TAGGED" '
+            map(.tags = (.metadata.container.tags // []))
+            | map(select((.tags | index("prod") or index("staging")) | not))
+            | (map(select(.tags | length > 0)) | .[$keep:]) + map(select(.tags | length == 0))
+            | .[] | "\(.id)\t\(.created_at[0:10])\t\(.tags | join(","))"
+          ' <<<"$versions")
+
+          n=$(grep -c . <<<"$to_delete" || true)
+          echo "$PKG: $total versions, deleting $n"
+          {
+            echo "### $PKG"
+            echo "- versions before: $total, deleted: $n (kept :prod, :staging + newest $KEEP_TAGGED tagged)"
+          } >> "$GITHUB_STEP_SUMMARY"
+          [ "$n" -eq 0 ] && exit 0
+
+          failed=0
+          while IFS=$'\t' read -r id date tags; do
+            [ -z "$id" ] && continue
+            if gh api -X DELETE "$base/versions/$id" > /dev/null; then
+              echo "deleted $id ($date) ${tags:-<untagged>}"
+            else
+              echo "::warning::could not delete $id ($date) ${tags:-<untagged>}"
+              failed=$((failed + 1))
+            fi
+          done <<<"$to_delete"
+          [ "$failed" -eq 0 ] || echo "- $failed deletions failed (see log)" >> "$GITHUB_STEP_SUMMARY"

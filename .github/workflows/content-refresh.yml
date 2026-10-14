@@ -143,10 +143,14 @@ jobs:
             fi
 
             echo "Changed — downloading '$edition_name'…" >> "$GITHUB_STEP_SUMMARY"
+            # Names come from SharePoint; refuse anything that could climb out
+            # of sources/ before `rm -rf`/`curl -o` act on them.
+            case "$edition_name" in ''|.|..|*/*|*..*) echo "::error::$key: unsafe edition folder name '$edition_name'"; exit 1;; esac
             dest="sources/$key/$edition_name"
             rm -rf "sources/$key" && mkdir -p "$dest"
             while IFS='|' read -r rel _ _ _ _ itemid; do
               [ -n "$rel" ] || continue
+              case "$rel" in /*|*..*) echo "::error::$key: unsafe path '$rel' in listing"; exit 1;; esac
               mkdir -p "$dest/$(dirname "$rel")"
               curl -sfL -H "Authorization: Bearer $token" \
                 -o "$dest/$rel" \
@@ -214,6 +218,11 @@ jobs:
       - name: Commit and push
         id: commit
         if: steps.sync.outputs.changed == 'true' || steps.sync.outputs.state_dirty == 'true'
+        env:
+          # Passed through env, not interpolated into the script: `notes`
+          # carries SharePoint FOLDER NAMES, and `${{ }}` inside `run:` would
+          # let a folder called `$(…)` execute in a job with contents: write.
+          NOTES: ${{ steps.sync.outputs.notes }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -226,7 +235,7 @@ jobs:
           if git diff --cached --quiet -- ':!sources/.content-state.json'; then
             git commit -m "content: record source state (outputs unchanged)"
           else
-            git commit -m "content: refresh from SharePoint — ${{ steps.sync.outputs.notes }}"
+            git commit -m "content: refresh from SharePoint — $NOTES"
             echo "deploy=true" >> "$GITHUB_OUTPUT"
           fi
           git push
