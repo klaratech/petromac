@@ -140,7 +140,7 @@ export default function ChallengeSelector() {
     openContactDrawer({
       title: 'Request the animation',
       intro: `Leave your email and we'll send you the ${active.product} animation as an MP4 to share with your team.`,
-      message: `Please send me the ${active.product} animation ("${active.challenge}", ${active.video.duration}) from petromac.co.nz as a file I can share with my team.`,
+      message: `Hi, I'd like a copy of the ${active.product} animation (${active.challenge}) shown on petromac.co.nz, as a video file I can share with my team. Thanks!`,
     });
   };
 
