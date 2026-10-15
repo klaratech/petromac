@@ -42708,6 +42708,18 @@
     "Open Hole /Cased Hole": "OH"
   },
   {
+    "Country": "Norway",
+    "System": "Other",
+    "Subsystem": "Other",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "66",
+    "Bit size / Csg size [inches]": "4.5",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
     "Country": "Saudi Arabia",
     "System": "Wireline Express",
     "Subsystem": "Wireline Express",
@@ -43308,90 +43320,6 @@
     "Open Hole /Cased Hole": "OH"
   },
   {
-    "Country": "C\u00f4te d'Ivoire",
-    "System": "Wireline Express - FT",
-    "Subsystem": "Wireline Express - FT",
-    "Year": "2026",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "NO",
-    "Mud": "SOBM",
-    "Deviation": "1",
-    "Bit size / Csg size [inches]": "8.5",
-    "Open Hole /Cased Hole": "OH"
-  },
-  {
-    "Country": "Croatia",
-    "System": "Wireline Express",
-    "Subsystem": "Wireline Express",
-    "Year": "2026",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES",
-    "Mud": "WBM",
-    "Deviation": "48",
-    "Bit size / Csg size [inches]": "8.5",
-    "Open Hole /Cased Hole": "OH"
-  },
-  {
-    "Country": "Croatia",
-    "System": "Wireline Express",
-    "Subsystem": "Wireline Express",
-    "Year": "2026",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES",
-    "Mud": "WBM",
-    "Deviation": "48",
-    "Bit size / Csg size [inches]": "8.5",
-    "Open Hole /Cased Hole": "OH"
-  },
-  {
-    "Country": "Norway",
-    "System": "Wireline Express - FT",
-    "Subsystem": "Wireline Express - FT",
-    "Year": "2026",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "YES",
-    "Mud": "SOBM",
-    "Deviation": "23",
-    "Bit size / Csg size [inches]": "8.5",
-    "Open Hole /Cased Hole": "OH"
-  },
-  {
-    "Country": "Norway",
-    "System": "Wireline Express",
-    "Subsystem": "Wireline Express",
-    "Year": "2026",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "NO",
-    "Mud": "SOBM",
-    "Deviation": "85",
-    "Bit size / Csg size [inches]": "9.625",
-    "Open Hole /Cased Hole": "CH"
-  },
-  {
-    "Country": "Colombia",
-    "System": "Focus - CH",
-    "Subsystem": "Helix",
-    "Year": "2026",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "NO",
-    "Mud": "WBM",
-    "Deviation": "14",
-    "Bit size / Csg size [inches]": "7/9.625",
-    "Open Hole /Cased Hole": "CH"
-  },
-  {
-    "Country": "Norway",
-    "System": "Other",
-    "Subsystem": "Other",
-    "Year": "2026",
-    "Successful": 1,
-    "PathFinder Run (Y/N)": "NO",
-    "Mud": "WBM",
-    "Deviation": "66",
-    "Bit size / Csg size [inches]": "4.5",
-    "Open Hole /Cased Hole": "CH"
-  },
-  {
     "Country": "Norway",
     "System": "Other",
     "Subsystem": "Other",
@@ -43461,6 +43389,78 @@
     "Mud": "WBM",
     "Deviation": "67",
     "Bit size / Csg size [inches]": "4.5",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "C\u00f4te d'Ivoire",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "1",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Croatia",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES",
+    "Mud": "WBM",
+    "Deviation": "48",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Croatia",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES",
+    "Mud": "WBM",
+    "Deviation": "48",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Wireline Express - FT",
+    "Subsystem": "Wireline Express - FT",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "YES",
+    "Mud": "SOBM",
+    "Deviation": "23",
+    "Bit size / Csg size [inches]": "8.5",
+    "Open Hole /Cased Hole": "OH"
+  },
+  {
+    "Country": "Norway",
+    "System": "Wireline Express",
+    "Subsystem": "Wireline Express",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "SOBM",
+    "Deviation": "85",
+    "Bit size / Csg size [inches]": "9.625",
+    "Open Hole /Cased Hole": "CH"
+  },
+  {
+    "Country": "Colombia",
+    "System": "Focus - CH",
+    "Subsystem": "Helix",
+    "Year": "2026",
+    "Successful": 1,
+    "PathFinder Run (Y/N)": "NO",
+    "Mud": "WBM",
+    "Deviation": "14",
+    "Bit size / Csg size [inches]": "7/9.625",
     "Open Hole /Cased Hole": "CH"
   },
   {
