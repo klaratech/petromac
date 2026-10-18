@@ -4,7 +4,6 @@ import { allProducts, categories, catalog } from '@/features/catalog/content';
 import { caseStudies } from '@/features/case-studies/content';
 import { getFlipbookManifest } from '@/features/flipbooks/manifests';
 import { FLIPBOOK_KEYS } from '@/features/flipbooks/constants';
-import { SITE_VIDEOS } from '@/features/videos';
 
 const BASE_URL = getSiteUrl();
 
@@ -46,7 +45,6 @@ const PAGE_LAST_MODIFIED: Record<string, string> = {
   '/contact': '2026-08-06',
   '/privacy': '2026-07-26',
   '/terms': '2026-07-26',
-  '/watch': '2026-10-18',
 };
 
 /**
@@ -98,14 +96,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Product videos — one page per clip (Oct 2026); dated by the cut.
-  const videoUrls: MetadataRoute.Sitemap = SITE_VIDEOS.map((v) => ({
-    url: `${BASE_URL}/watch/${v.slug}`,
-    lastModified: new Date(v.published),
-    changeFrequency: 'yearly',
-    priority: 0.6,
-  }));
-
   const staticEntry = (
     path: string,
     changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'],
@@ -130,10 +120,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticEntry('/contact', 'yearly', 0.7),
     staticEntry('/privacy', 'yearly', 0.3),
     staticEntry('/terms', 'yearly', 0.3),
-    staticEntry('/watch', 'monthly', 0.6),
     ...familyUrls,
     ...productUrls,
     ...caseStudyUrls,
-    ...videoUrls,
   ];
 }

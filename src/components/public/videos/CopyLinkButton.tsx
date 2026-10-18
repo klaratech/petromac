@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * "Copy link" for a video's own page — writes the ABSOLUTE /watch URL to the
+ * "Copy link" for a video — writes the ABSOLUTE `/#<slug>` URL to the
  * clipboard so it can be pasted straight into a slide deck, a PDF or an email.
  * Falls back to showing the URL (selectable) where the Clipboard API is
  * unavailable (non-secure contexts, some embedded browsers).
@@ -12,7 +12,7 @@ export default function CopyLinkButton({
   path,
   className = '',
 }: {
-  /** Site-relative path, e.g. "/watch/high-deviations". */
+  /** Site-relative path, e.g. "/#high-deviations". */
   path: string;
   className?: string;
 }) {

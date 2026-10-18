@@ -11,7 +11,6 @@ import {
 } from './redirects';
 import { caseStudies } from '@/features/case-studies/content';
 import { allProducts } from '@/features/catalog/content';
-import { VIDEO_SLUGS } from '@/features/videos';
 
 /**
  * The P0 acceptance criterion from the 30 Jul 2026 Search Console audit:
@@ -236,29 +235,6 @@ test('an unknown param WITH a value is left alone, not 404ed', () => {
   assert.equal(resolveLegacyRequest('/catalog', '?category=not-a-family'), null);
   assert.equal(resolveLegacyRequest('/track-record', '?stories=99'), null);
   assert.equal(resolveLegacyRequest('/catalog/tool-taxis', '?tab=specs'), null);
-});
-
-test('/?watch=<slug> resolves to the video page; unknown slugs are left alone', () => {
-  assert.deepEqual(resolveLegacyRequest('/', '?watch=high-deviations'), {
-    type: 'redirect',
-    location: '/watch/high-deviations',
-    status: 301,
-  });
-  for (const slug of VIDEO_SLUGS) {
-    assert.deepEqual(resolveLegacyRequest('/', `?watch=${slug}`), {
-      type: 'redirect',
-      location: `/watch/${slug}`,
-      status: 301,
-    });
-  }
-  assert.equal(resolveLegacyRequest('/', '?watch=not-a-video'), null);
-  // The pages themselves are ordinary routes: no params, slash canonicalised.
-  assert.equal(resolveLegacyRequest('/watch/high-deviations'), null);
-  assert.deepEqual(resolveLegacyRequest('/watch/high-deviations/'), {
-    type: 'redirect',
-    location: '/watch/high-deviations',
-    status: 308,
-  });
 });
 
 test('tracking params outside the allowlist still resolve', () => {

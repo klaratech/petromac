@@ -1,15 +1,15 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import VideoLightbox from './VideoLightbox';
 import Image from 'next/image';
 import Link from 'next/link';
 import { openContactDrawer } from '@/lib/contactDrawer';
-import { SITE_VIDEOS, requestFilePrefill, watchPath } from '@/features/videos';
+import { SITE_VIDEOS, requestFilePrefill, videoHref } from '@/features/videos';
 import CopyLinkButton from '@/components/public/videos/CopyLinkButton';
 
-// The four solutions ARE the four public videos — one list, shared with the
-// /watch pages so a tab here and its permalink can never drift apart.
+// The four solutions ARE the four public videos — one list, so a tab and
+// its `/#<slug>` link can never drift apart.
 const SOLUTIONS = SITE_VIDEOS;
 
 /**
@@ -22,8 +22,35 @@ export default function ChallengeSelector() {
   const [activeId, setActiveId] = useState(SOLUTIONS[0].slug);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const active = SOLUTIONS.find((s) => s.slug === activeId) ?? SOLUTIONS[0];
+
+  // Deep link: `/#<slug>` opens the page on that tab, scrolled to the
+  // selector, so the PDF sent after a presentation can point at exactly the
+  // clip that was shown (Oct 2026). No element carries the slug as its id
+  // (tabs are `challenge-tab-<slug>`), so the browser does not jump on its
+  // own and the scroll is ours — with the section's scroll-margin, under the
+  // sticky header. Hydration-safe: SSR renders the first tab, the hash is
+  // read after mount. Also answers `hashchange`, for in-page links.
+  useEffect(() => {
+    const apply = () => {
+      const slug = window.location.hash.slice(1);
+      if (!SOLUTIONS.some((s) => s.slug === slug)) return;
+      setActiveId(slug);
+      sectionRef.current?.scrollIntoView();
+    };
+    apply();
+    window.addEventListener('hashchange', apply);
+    return () => window.removeEventListener('hashchange', apply);
+  }, []);
+
+  // Keep the URL in step with the active tab so the address bar is always
+  // the link to what is on screen — replaceState, so Back is not polluted.
+  const selectTab = (slug: string) => {
+    setActiveId(slug);
+    window.history.replaceState(null, '', videoHref(slug));
+  };
 
   // Roving-tabindex arrow navigation per the WAI-ARIA tabs pattern.
   const onTabKeyDown = (e: React.KeyboardEvent, index: number) => {
@@ -35,7 +62,7 @@ export default function ChallengeSelector() {
     else if (e.key === 'End') next = last;
     if (next === null) return;
     e.preventDefault();
-    setActiveId(SOLUTIONS[next].slug);
+    selectTab(SOLUTIONS[next].slug);
     tabRefs.current[next]?.focus();
   };
 
@@ -51,6 +78,7 @@ export default function ChallengeSelector() {
 
   return (
     <section
+      ref={sectionRef}
       id="challenges"
       // Was bg-white, which landed as a hard flash straight after the dark hero
       // video. A short gradient from slate-100 eases the transition and gives
@@ -87,7 +115,7 @@ export default function ChallengeSelector() {
                 aria-selected={selected}
                 aria-controls={`challenge-panel-${s.slug}`}
                 tabIndex={selected ? 0 : -1}
-                onClick={() => setActiveId(s.slug)}
+                onClick={() => selectTab(s.slug)}
                 onKeyDown={(e) => onTabKeyDown(e, i)}
                 className={`flex min-h-[3.25rem] md:min-h-[3.75rem] items-center justify-center rounded-lg border-2 px-3 py-2 text-sm md:text-[15px] font-semibold leading-snug text-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${
                   selected
@@ -208,11 +236,10 @@ export default function ChallengeSelector() {
                     Request the file
                   </button>{' '}
                   <span aria-hidden="true">·</span>{' '}
-                  {/* Each video has its own page (/watch/<slug>, Oct 2026) so a
-                      link to exactly this animation can go into a slide deck or
-                      a PDF; this copies that URL. */}
+                  {/* Copies `/#<slug>` — the link that opens this page on this
+                      video, for a slide deck or a PDF (Oct 2026). */}
                   <CopyLinkButton
-                    path={watchPath(active.slug)}
+                    path={videoHref(active.slug)}
                     className="font-medium text-brand underline decoration-brand/30 underline-offset-2 hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
                   />
                 </p>
