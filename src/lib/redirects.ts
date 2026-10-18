@@ -18,6 +18,7 @@
  */
 
 import { CASE_STUDY_URL_PARAMS } from '@/features/case-studies/filters';
+import { VIDEO_SLUGS } from '@/features/videos';
 
 /** What the proxy should do with a request. `null` means "leave it alone". */
 export type LegacyResolution =
@@ -341,6 +342,15 @@ export function resolveLegacyRequest(rawPathname: string, search = ''): LegacyRe
   if (key === '/track-record' && params.get('stories') === '1') {
     // Deliberately temporary: Track Record may grow its own stories view again.
     return { type: 'redirect', location: '/success-stories', status: 307 };
+  }
+  // 8b. `/?watch=<slug>` → the video's own page (Oct 2026). The short form
+  //     is handy to type or to deep-link the homepage selector; the page is
+  //     the canonical. Unknown slugs fall through (valued, so not junk).
+  if (key === '/') {
+    const watch = params.get('watch');
+    if (watch && VIDEO_SLUGS.includes(watch)) {
+      return { type: 'redirect', location: `/watch/${watch}`, status: 301 };
+    }
   }
 
   // 9. Canonicalise the trailing slash for everything else (what Next's

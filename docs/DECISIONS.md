@@ -5,6 +5,40 @@ _current state_ and _how to operate it_; the reasoning lives here.
 
 ---
 
+## Oct 2026 — Every public video gets its own URL (`/watch/<slug>`)
+
+**Decision:** the four homepage animations are also served as standalone
+pages — `/watch` (index) and `/watch/differential-sticking`,
+`/watch/high-deviations`, `/watch/incomplete-operations`,
+`/watch/centralisation` — with the poster as each page's share image, a
+`VideoObject` JSON-LD block, the same no-download player as the lightbox,
+"Request the file" and a "Copy link" action (also added to the homepage
+panel). `/?watch=<slug>` 301s to the page. The video metadata moved out of
+`ChallengeSelector` into `src/features/videos/index.ts`, the single list
+both surfaces read.
+
+**Why:** after an in-person presentation Rajesh sends the PDF of the slides
+with a link to the video he showed. Until now the only link was
+`/#challenges`, which lands on the FIRST tab regardless of which clip was
+shown, and unfurls in Outlook/Teams/LinkedIn as the generic site card. A
+page per video gives a short URL that reads well in a slide footer, a
+thumbnail preview when pasted, a `VideoObject` Google can list, and a
+place where the "Request the file" lead flow is one click away for the
+person who received the link.
+
+**Why `/watch` and not `/videos`:** `/videos/…` is the static asset tree
+(the MP4s), exempt from the proxy's URL rules — pages there would collide
+with files.
+
+**Slugs are frozen.** They are the homepage tab ids AND the backend
+`MEDIA_ASSETS` keys, and once a link has gone out in a PDF it has to keep
+resolving. A renamed video gets a redirect in `redirects.ts`, not a new slug.
+
+**Not done:** no nav entry — the top bar's shape is settled (Aug 2026) and
+the pages are reached from the homepage panel, the sitemap and the links
+people are sent. No autoplay: an unmuted autoplay is blocked without a
+gesture on the page itself, and a muted one would hide the narration.
+
 ## Oct 2026 — Public videos: hide the download button, offer "Request the file"
 
 **Decision:** the homepage player (`VideoLightbox`) and the decorative loops

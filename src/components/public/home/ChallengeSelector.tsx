@@ -5,103 +5,12 @@ import VideoLightbox from './VideoLightbox';
 import Image from 'next/image';
 import Link from 'next/link';
 import { openContactDrawer } from '@/lib/contactDrawer';
+import { SITE_VIDEOS, requestFilePrefill, watchPath } from '@/features/videos';
+import CopyLinkButton from '@/components/public/videos/CopyLinkButton';
 
-interface Solution {
-  id: string;
-  /** Challenge name — shown on the tab and as the panel heading. */
-  challenge: string;
-  /** Petromac product/system that addresses it. */
-  product: string;
-  /** One concise explanatory paragraph. */
-  summary: string;
-  /** Two or three short proof points. */
-  proofPoints: string[];
-  video: { src: string; poster: string; duration: string };
-}
-
-// Tab order: Differential Sticking, High Deviations (Wireline Express),
-// Incomplete Operations (Pathfinder), Centralisation (Focus). Copy is
-// carried over from the previous challenge cards — no new claims.
-const SOLUTIONS: Solution[] = [
-  {
-    id: 'differential-sticking',
-    challenge: 'Differential Sticking',
-    product: 'Wireline Express',
-    summary:
-      'Wireline Express carries the tool string on wheeled carriages, offsetting it from the wellbore wall where differential sticking takes hold.',
-    proofPoints: [
-      '~99% less contact area with the borehole wall',
-      'Tools roll free instead of getting stuck',
-    ],
-    video: {
-      // Subtitled cuts carry the narration audio track (EXCEPT Wireline
-      // Express — see the High Deviations entry). Posters are real frames
-      // pulled with ffmpeg -ss <t> -frames:v 1.
-      src: '/videos/transcoded/differential-sticking-subtitled.mp4?v=20260806',
-      poster: '/images/posters/differential-sticking-poster.jpg',
-      duration: '3:32',
-    },
-  },
-  {
-    id: 'high-deviations',
-    challenge: 'High Deviations',
-    product: 'Wireline Express',
-    summary:
-      'Wireline Express provides gravity-descent conveyance in high-deviation open hole, designed for tortuous wellbore profiles.',
-    proofPoints: [
-      'World record: 80° deviation descent — in open hole',
-      'Field-proven across operators worldwide',
-    ],
-    video: {
-      // The full master cut, WITH narration audio. The subtitled 212s cut is
-      // silent at every generation including its original (verified Aug 2026,
-      // -inf dB) — no fixable source exists, so High Deviations plays the
-      // 250s master, whose audio track is intact. Kiosk keeps the subtitled
-      // cut, where burned subtitles do the narrating on a loud floor.
-      src: '/videos/transcoded/WirelineExpress.mp4?v=20260806',
-      poster: '/images/posters/wireline-express-poster.jpg',
-      duration: '4:10',
-    },
-  },
-  {
-    id: 'incomplete-operations',
-    challenge: 'Incomplete Operations',
-    product: 'Pathfinder',
-    summary:
-      'Pathfinder hole finder and guide devices navigate ledges, restrictions, and washouts so logging programmes reach total depth on the first attempt.',
-    proofPoints: [
-      'No costly contingency runs',
-      'Plan ahead with Athena to anticipate every tight zone',
-    ],
-    video: {
-      src: '/videos/transcoded/pf-subtitled.mp4?v=20260806',
-      poster: '/images/posters/pf-poster.jpg',
-      duration: '1:41',
-    },
-  },
-  {
-    id: 'centralisation',
-    challenge: 'Centralisation',
-    product: 'Focus Centralisers',
-    // Restructured Aug 2026 (Rajesh): the benefit leads and the product
-    // split moved down into the bullets. Previously the summary was the
-    // open/cased breakdown and the bullets were the benefits — which buried
-    // what the range actually does for you under a parts list.
-    summary:
-      'Innovative centralizer mechanisms for better data quality, no stick-slip, greater efficiency, and easy navigation through restrictions:',
-    // Still two proof points like every other tab — a third made this panel
-    // taller and the tab strip jumped on switch (Rajesh, Aug 2026).
-    proofPoints: [
-      'CP-series for open hole',
-      'Helix and Rocker for cased hole across the full range',
-    ],
-    video: {
-      src: '/videos/transcoded/helix-subtitled.mp4?v=20260806',
-      poster: '/images/posters/helix-poster.jpg',
-      duration: '2:00',
-    },
-  },
-];
+// The four solutions ARE the four public videos — one list, shared with the
+// /watch pages so a tab here and its permalink can never drift apart.
+const SOLUTIONS = SITE_VIDEOS;
 
 /**
  * "What challenge are you facing?" — WAI-ARIA tabs. The four challenges are
@@ -110,11 +19,11 @@ const SOLUTIONS: Solution[] = [
  * product, summary, proof points, and one catalog CTA.
  */
 export default function ChallengeSelector() {
-  const [activeId, setActiveId] = useState(SOLUTIONS[0].id);
+  const [activeId, setActiveId] = useState(SOLUTIONS[0].slug);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const active = SOLUTIONS.find((s) => s.id === activeId) ?? SOLUTIONS[0];
+  const active = SOLUTIONS.find((s) => s.slug === activeId) ?? SOLUTIONS[0];
 
   // Roving-tabindex arrow navigation per the WAI-ARIA tabs pattern.
   const onTabKeyDown = (e: React.KeyboardEvent, index: number) => {
@@ -126,7 +35,7 @@ export default function ChallengeSelector() {
     else if (e.key === 'End') next = last;
     if (next === null) return;
     e.preventDefault();
-    setActiveId(SOLUTIONS[next].id);
+    setActiveId(SOLUTIONS[next].slug);
     tabRefs.current[next]?.focus();
   };
 
@@ -137,12 +46,7 @@ export default function ChallengeSelector() {
   // the lead. Petromac learns who wants to share the animation and where.
   const requestFile = () => {
     setLightboxOpen(false);
-    openContactDrawer({
-      title: 'Request the animation',
-      intro: `Leave your email and we'll send you a download link for the ${active.product} animation (MP4) to share with your team. Add a line about your well or project if you like.`,
-      mediaAsset: active.id,
-      message: `Hi, I'd like a copy of the ${active.product} animation (${active.challenge}) shown on petromac.co.nz, as a video file I can share with my team. Thanks!`,
-    });
+    openContactDrawer(requestFilePrefill(active));
   };
 
   return (
@@ -171,19 +75,19 @@ export default function ChallengeSelector() {
           className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-6"
         >
           {SOLUTIONS.map((s, i) => {
-            const selected = s.id === activeId;
+            const selected = s.slug === activeId;
             return (
               <button
-                key={s.id}
+                key={s.slug}
                 ref={(el) => {
                   tabRefs.current[i] = el;
                 }}
                 role="tab"
-                id={`challenge-tab-${s.id}`}
+                id={`challenge-tab-${s.slug}`}
                 aria-selected={selected}
-                aria-controls={`challenge-panel-${s.id}`}
+                aria-controls={`challenge-panel-${s.slug}`}
                 tabIndex={selected ? 0 : -1}
-                onClick={() => setActiveId(s.id)}
+                onClick={() => setActiveId(s.slug)}
                 onKeyDown={(e) => onTabKeyDown(e, i)}
                 className={`flex min-h-[3.25rem] md:min-h-[3.75rem] items-center justify-center rounded-lg border-2 px-3 py-2 text-sm md:text-[15px] font-semibold leading-snug text-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${
                   selected
@@ -200,8 +104,8 @@ export default function ChallengeSelector() {
         {/* Solution panel */}
         <div
           role="tabpanel"
-          id={`challenge-panel-${active.id}`}
-          aria-labelledby={`challenge-tab-${active.id}`}
+          id={`challenge-panel-${active.slug}`}
+          aria-labelledby={`challenge-tab-${active.slug}`}
           tabIndex={0}
           className="rounded-xl border-2 border-slate-300 bg-white shadow-sm overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
         >
@@ -211,12 +115,12 @@ export default function ChallengeSelector() {
             <button
               type="button"
               onClick={() => setLightboxOpen(true)}
-              aria-label={`Watch the ${active.product} video (${active.video.duration})`}
+              aria-label={`Watch the ${active.product} video (${active.duration})`}
               className="group relative block w-full aspect-video bg-slate-900 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
             >
               <Image
-                key={active.id}
-                src={active.video.poster}
+                key={active.slug}
+                src={active.poster}
                 alt={`${active.product} — ${active.challenge} video preview`}
                 fill
                 className="object-cover motion-safe:transition-transform motion-safe:duration-300 group-hover:scale-[1.02]"
@@ -302,7 +206,15 @@ export default function ChallengeSelector() {
                     className="font-medium text-brand underline decoration-brand/30 underline-offset-2 hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
                   >
                     Request the file
-                  </button>
+                  </button>{' '}
+                  <span aria-hidden="true">·</span>{' '}
+                  {/* Each video has its own page (/watch/<slug>, Oct 2026) so a
+                      link to exactly this animation can go into a slide deck or
+                      a PDF; this copies that URL. */}
+                  <CopyLinkButton
+                    path={watchPath(active.slug)}
+                    className="font-medium text-brand underline decoration-brand/30 underline-offset-2 hover:decoration-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm"
+                  />
                 </p>
               </div>
             </div>
@@ -312,8 +224,8 @@ export default function ChallengeSelector() {
 
       <VideoLightbox
         open={lightboxOpen}
-        src={active.video.src}
-        poster={active.video.poster}
+        src={active.src}
+        poster={active.poster}
         label={`${active.product} video`}
         onClose={() => setLightboxOpen(false)}
         onRequestFile={requestFile}
